@@ -910,12 +910,21 @@ function mailCode(cid, remplacement) {
   const fratrie = ADMIN.convocations.filter(x => x.stage_id === c.stage_id && !enAttente(x) && (x.email_parent || '').trim().toLowerCase() === mail);
   const enfants = fratrie.length ? fratrie : [c];
   const prenoms = enfants.map(x => x.prenom).join(', ').replace(/, ([^,]*)$/, ' et $1');
+  const plur = enfants.length > 1;
+  const periode = String(s.titre).split(/\s[–-]\s/).slice(1).join(' – ') || s.titre;
+  const conv = convUrl(s, c);
   const sujet = `Convocation – ${s.titre}`;
-  const corps = `Bonjour,\n\n${remplacement ? 'Une place s\'est libérée : ' : ''}${prenoms} ${enfants.length > 1 ? 'sont convoqués' : 'est convoqué(e)'} au ${s.titre}, ${fmtDates(s.date_debut, s.date_fin)}${s.lieu ? ', ' + s.lieu : ''}.\n\n`
-    + `Merci de confirmer ${enfants.length > 1 ? 'leur' : 'sa'} présence${s.date_limite && s.date_limite >= today() ? ' avant le ' + fmtD(s.date_limite) : ' dès que possible'} sur l'espace parents, où vous trouverez aussi les informations pratiques, les documents à fournir et le paiement :\n${SITE_URL}#parents\n\n`
-    + (convUrl(s, c) ? `La convocation (PDF) : ${convUrl(s, c)}\n\n` : '')
+  const corps = `Bonjour,\n\n`
+    + (remplacement ? `Une place s'est libérée : ` : '')
+    + `${prenoms} ${plur ? 'ont été sélectionnés' : 'a été sélectionné(e)'} pour participer au stage de perfectionnement du Centre Départemental d'Entraînement M11 / M13 de ${periode}. `
+    + `Ce stage se déroule ${fmtDates(s.date_debut, s.date_fin)}${s.lieu ? ', au ' + s.lieu : ''}.\n\n`
+    + `Merci de confirmer ${plur ? 'leur' : 'sa'} présence${s.date_limite && s.date_limite >= today() ? ' avant le ' + fmtD(s.date_limite) : ' dès que possible'} sur l'espace parents, où vous trouverez aussi les informations pratiques, les documents à fournir et le paiement :\n${SITE_URL}#parents\n\n`
+    + `Les identifiants de connexion sont en bas de ce mail.\n\n`
+    + `Vous trouverez également sur le site la liste des autres enfants convoqués afin de pouvoir organiser du covoiturage.\n\n`
+    + (conv ? `Lien pour ouvrir la convocation (PDF) : ${conv}\nVous la retrouverez également dans votre espace parents.\n\n` : '')
+    + `Vos identifiants :\n`
     + enfants.map(x => `${x.prenom} — Nom : ${x.nom} · Année de naissance : ${x.annee_naissance} · Code : ${x.code}`).join('\n')
-    + `\n\nSportivement,\nLe Comité du Var de Volley-Ball`;
+    + `\n`;
   window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(c.email_parent.trim())}&su=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`, '_blank', 'noopener');
 }
 async function recuAdmin(cid) {
