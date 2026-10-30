@@ -126,6 +126,10 @@
   .convoques { margin-top: 14px; columns: 3 220px; column-gap: 24px; }
   .convoques div { break-inside: avoid; padding: 6px 0; border-bottom: 1px solid var(--line2); font-size: 14px; }
   .convoques small { color: var(--muted); }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; background: #C9D2E2; }
+  .dot.present { background: #2E9E4F; } .dot.absent { background: #D9534F; } .dot.attente { background: #C9D2E2; }
+  .convoques .cv-absent { color: var(--muted); text-decoration: line-through; text-decoration-color: rgba(163,35,29,.45); }
+  .conv-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
 
   /* Formulaires */
   .field { display: flex; flex-direction: column; gap: 6px; }
@@ -469,7 +473,8 @@ async function loadPublic() {
         </div>
         <div class="stage-foot">
           ${conv ? `<details><summary>Liste des convoqués (${conv.length})</summary>
-            <div class="convoques">${conv.length ? conv.map(c => `<div>${esc(c.prenom)} ${esc(c.nom)}${c.club ? ` <small>· ${esc(c.club)}</small>` : ''}</div>`).join('') : '<div class="muted">La liste sera publiée avec l\'envoi des convocations.</div>'}</div></details>` : '<span></span>'}
+            <div class="conv-legend"><span><i class="dot present"></i>Présence confirmée (${conv.filter(c => c.reponse === 'present').length})</span><span><i class="dot absent"></i>Absent(e) (${conv.filter(c => c.reponse === 'absent').length})</span><span><i class="dot attente"></i>En attente de réponse (${conv.filter(c => !c.reponse || c.reponse === 'attente').length})</span></div>
+            <div class="convoques">${conv.length ? conv.map(c => `<div class="cv-${c.reponse || 'attente'}"><i class="dot ${c.reponse || 'attente'}"></i>${esc(c.prenom)} ${esc(c.nom)}${c.club ? ` <small>· ${esc(c.club)}</small>` : ''}</div>`).join('') : '<div class="muted">La liste sera publiée avec l\'envoi des convocations.</div>'}</div></details>` : '<span></span>'}
           <a class="btn accent" href="#parents">Répondre à la convocation</a>
         </div>
       </article>`;
