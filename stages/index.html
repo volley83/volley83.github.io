@@ -537,10 +537,7 @@ function renderConv(c) {
         <button type="button" class="${rep === 'present' ? 'sel-present' : ''}" onclick="pick(${c.stage_id},'present')">✓ Sera présent(e)</button>
         <button type="button" class="${rep === 'absent' ? 'sel-absent' : ''}" onclick="pick(${c.stage_id},'absent')">✗ Sera absent(e)</button>
       </div>
-      <div class="grid2" style="margin-top:12px">
-        <div class="field"><label for="tel-${c.stage_id}">Téléphone d'un parent (joignable pendant le stage)</label><input id="tel-${c.stage_id}" type="tel" value="${esc(c.tel_parent || '')}" autocomplete="tel"></div>
-        <div class="field"><label for="com-${c.stage_id}">Commentaire (facultatif)</label><input id="com-${c.stage_id}" value="${esc(c.commentaire || '')}" maxlength="500" placeholder="Arrivée tardive, covoiturage…"></div>
-      </div>
+      <div class="field" style="margin-top:12px"><label for="com-${c.stage_id}">Commentaire (facultatif)</label><input id="com-${c.stage_id}" value="${esc(c.commentaire || '')}" maxlength="500" placeholder="Arrivée tardive, covoiturage, information à signaler…"></div>
       <input type="hidden" id="rep-${c.stage_id}" value="${rep === 'attente' ? '' : rep}">
       <div class="btnrow"><button class="btn primary" id="save-${c.stage_id}" onclick="saveReponse(${c.stage_id})">Enregistrer ma réponse</button></div>
       <div class="msg" id="msg-${c.stage_id}" hidden style="margin-top:10px"></div>
@@ -584,7 +581,7 @@ async function saveReponse(sid) {
   const btn = $('save-' + sid); btn.disabled = true;
   try {
     const ok = await rpc('stg_parent_repondre', { p_nom: PARENT.nom, p_annee: +PARENT.naissance, p_code: PARENT.code,
-      p_stage: sid, p_reponse: rep, p_tel: $('tel-' + sid).value, p_commentaire: $('com-' + sid).value });
+      p_stage: sid, p_reponse: rep, p_tel: '', p_commentaire: $('com-' + sid).value });
     if (!ok) throw new Error('refus');
     await refreshParent();
     const m2 = $('msg-' + sid);
