@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stages – Comité du Var de Volley-Ball</title>
+<meta name="description" content="Stages du Comité du Var de Volley-Ball : convocations, réponse des familles, documents et reçus de paiement.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #0B2149; --navy2: #14305f; --blue: #1E4FA3; --accent: #F6C21B;
+    --bg: #F4F6FA; --card: #FFFFFF; --line: #E2E7F0; --line2: #EDF0F5;
+    --text: #14203A; --muted: #56627A;
+    --ok: #11672F; --ok-bg: #E7F6EC; --warn: #8A5A00; --warn-bg: #FFF4D6; --bad: #A3231D; --bad-bg: #FCE9E8;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; font-size: 15px; line-height: 1.5; min-height: 100vh; }
+  [hidden] { display: none !important; }
+  a { color: var(--blue); }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  h1, h2, h3, .cond { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: .5px; color: var(--navy); }
+
+  /* En-tête */
+  header { background: #fff; border-bottom: 1px solid var(--line); }
+  .head { display: flex; align-items: center; gap: 16px; height: 76px; }
+  .head img { height: 48px; width: auto; display: block; }
+  .head .sep { width: 1px; height: 36px; background: var(--line); }
+  .head .t { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 24px; text-transform: uppercase; color: var(--navy); letter-spacing: .5px; }
+  .head nav { margin-left: auto; display: flex; gap: 8px; }
+  .navbtn { display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--line); background: #fff; color: var(--text); font-weight: 600; font-size: 14px; text-decoration: none; cursor: pointer; }
+  .navbtn.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+
+  .hero { background: var(--navy); color: #fff; padding: 40px 0 44px; }
+  .hero h1 { color: #fff; font-size: 46px; font-weight: 800; line-height: 1; }
+  .hero .k { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-size: 15px; margin-bottom: 8px; }
+  .hero p { color: #C9D4EA; max-width: 680px; margin-top: 12px; font-size: 16px; }
+
+  main { padding: 32px 0 64px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+  .stack { display: flex; flex-direction: column; gap: 18px; }
+  .muted { color: var(--muted); }
+  .small { font-size: 13px; }
+
+  /* Stage */
+  .stage-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .stage-head h2 { font-size: 30px; font-weight: 800; line-height: 1.05; }
+  .tag { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 13px; font-size: 12px; font-weight: 700; background: #E9EFFA; color: var(--blue); }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px 20px; margin: 16px 0 4px; }
+  .fact b { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); font-weight: 700; }
+  .fact span { font-weight: 600; }
+  .pre { white-space: pre-line; }
+  .btnrow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid transparent; font-weight: 700; font-size: 15px; font-family: inherit; cursor: pointer; text-decoration: none; }
+  .btn.primary { background: var(--navy); color: #fff; }
+  .btn.accent { background: var(--accent); color: var(--navy); }
+  .btn.ghost { background: #fff; border-color: var(--line); color: var(--text); }
+  .btn.ok { background: var(--ok); color: #fff; }
+  .btn.danger { background: #fff; border-color: #f2c4c1; color: var(--bad); }
+  .btn[disabled] { opacity: .55; cursor: wait; }
+  .convoques { margin-top: 14px; columns: 3 220px; column-gap: 24px; }
+  .convoques div { break-inside: avoid; padding: 6px 0; border-bottom: 1px solid var(--line2); font-size: 14px; }
+  .convoques small { color: var(--muted); }
+
+  /* Formulaires */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 13px; font-weight: 700; }
+  input, select, textarea { font-family: inherit; font-size: 15px; color: var(--text); background: #fff; border: 1px solid #C9D2E2; border-radius: 10px; padding: 11px 12px; outline: none; width: 100%; }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(30,79,163,.15); }
+  textarea { min-height: 90px; resize: vertical; }
+  .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .msg { border-radius: 10px; padding: 12px 14px; font-size: 14px; }
+  .msg.ok { background: var(--ok-bg); color: var(--ok); }
+  .msg.err { background: var(--bad-bg); color: var(--bad); }
+  .msg.info { background: #E9EFFA; color: var(--navy); }
+
+  /* Espace parents */
+  .login { max-width: 560px; margin: 0 auto; }
+  .child-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+  .child-head h2 { font-size: 32px; font-weight: 800; }
+  .block { border-top: 1px solid var(--line); padding-top: 16px; margin-top: 16px; }
+  .block h3 { font-size: 18px; font-weight: 800; margin-bottom: 10px; }
+  .status { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 16px; font-size: 14px; font-weight: 700; }
+  .status.ok { background: var(--ok-bg); color: var(--ok); }
+  .status.warn { background: var(--warn-bg); color: var(--warn); }
+  .status.bad { background: var(--bad-bg); color: var(--bad); }
+  .choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .choice button { min-height: 52px; border-radius: 10px; border: 2px solid var(--line); background: #fff; font-weight: 700; font-size: 16px; font-family: inherit; cursor: pointer; color: var(--text); }
+  .choice button.sel-present { border-color: var(--ok); background: var(--ok-bg); color: var(--ok); }
+  .choice button.sel-absent { border-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
+  .doclist { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .doclist li { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+  .ico { width: 26px; height: 26px; border-radius: 13px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; font-weight: 800; }
+  .ico.ok { background: var(--ok-bg); color: var(--ok); }
+  .ico.bad { background: var(--bad-bg); color: var(--bad); }
+
+  /* Admin */
+  .admin-top { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+  .stage-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .stage-tab { padding: 8px 14px; border-radius: 20px; border: 1px solid var(--line); background: #fff; font-weight: 600; font-size: 14px; cursor: pointer; font-family: inherit; color: var(--text); min-height: 40px; }
+  .stage-tab.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .kpis { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+  .kpi { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; cursor: pointer; text-align: left; font-family: inherit; color: var(--text); }
+  .kpi.on { border-color: var(--navy); box-shadow: inset 0 0 0 1px var(--navy); }
+  .kpi b { display: block; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 30px; line-height: 1; color: var(--navy); }
+  .kpi span { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .tablebox { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+  table.suivi { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 980px; }
+  .suivi th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); padding: 10px; border-bottom: 1px solid var(--line); background: #F8FAFD; position: sticky; top: 0; }
+  .suivi td { padding: 10px; border-bottom: 1px solid var(--line2); vertical-align: top; }
+  .suivi tr:last-child td { border-bottom: 0; }
+  .suivi select, .suivi input { padding: 6px 8px; font-size: 13px; border-radius: 8px; }
+  .suivi td:nth-child(3) select { min-width: 132px; }
+  .suivi .code { font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 700; letter-spacing: 1px; background: #F4F6FA; padding: 2px 6px; border-radius: 6px; }
+  .chk { display: flex; align-items: center; gap: 6px; font-size: 13px; white-space: nowrap; margin-bottom: 4px; cursor: pointer; }
+  .chk input { width: 18px; height: 18px; padding: 0; accent-color: var(--ok); }
+  .pay { display: grid; grid-template-columns: auto 1fr; gap: 6px 8px; align-items: center; min-width: 230px; }
+  .linkbtn { background: none; border: 0; color: var(--blue); font-weight: 600; cursor: pointer; font-family: inherit; font-size: 13px; padding: 4px 0; text-decoration: underline; }
+  .linkbtn.red { color: var(--bad); }
+  details.box { background: #fff; border: 1px solid var(--line); border-radius: 12px; }
+  details.box > summary { cursor: pointer; padding: 14px 18px; font-weight: 700; list-style: none; display: flex; align-items: center; gap: 8px; }
+  details.box > summary::before { content: '▸'; color: var(--muted); }
+  details.box[open] > summary::before { content: '▾'; }
+  details.box > div { padding: 0 18px 18px; display: flex; flex-direction: column; gap: 14px; }
+  .preview { max-height: 240px; overflow: auto; border: 1px solid var(--line); border-radius: 10px; font-size: 13px; }
+  .preview table { width: 100%; border-collapse: collapse; }
+  .preview td, .preview th { padding: 6px 8px; border-bottom: 1px solid var(--line2); text-align: left; }
+  .preview tr.bad td { background: var(--bad-bg); }
+
+  .overlay { position: fixed; inset: 0; background: rgba(11,33,73,.55); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50; }
+  .modal { background: #fff; border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 14px; }
+
+  footer { border-top: 1px solid var(--line); background: #fff; padding: 22px 0; font-size: 13px; color: var(--muted); }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; align-items: center; }
+  .adminlink { background: none; border: 0; color: var(--muted); font-size: 13px; cursor: pointer; font-family: inherit; text-decoration: underline; }
+
+  @media (max-width: 900px) { .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 640px) {
+    .head { height: auto; padding: 12px 0; flex-wrap: wrap; }
+    .head .sep { display: none; }
+    .head nav { margin-left: 0; width: 100%; }
+    .head nav .navbtn { flex: 1; justify-content: center; }
+    .hero h1 { font-size: 36px; }
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+    .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stage-head h2 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap head">
+    <a href="https://www.volley83.fr" aria-label="Comité du Var de Volley-Ball"><img src="logo-comite-var.jpg" alt="Comité du Var Volley-Ball"></a>
+    <div class="sep"></div>
+    <div class="t">Stages</div>
+    <nav aria-label="Navigation">
+      <a class="navbtn" id="nav-stages" href="#stages">Les stages</a>
+      <a class="navbtn" id="nav-parents" href="#parents">Espace parents</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ===================== PUBLIC : STAGES ===================== -->
+<section id="view-stages">
+  <div class="hero">
+    <div class="wrap">
+      <div class="k">Centre Départemental · Stages</div>
+      <h1>Les stages du Comité du Var</h1>
+      <p>Retrouvez les stages à venir, la liste des convoqués, et confirmez la présence de votre enfant depuis l'espace parents, avec le code personnel indiqué dans la convocation.</p>
+    </div>
+  </div>
+  <main class="wrap stack" id="stages-list">
+    <div class="card muted">Chargement des stages…</div>
+  </main>
+</section>
+
+<!-- ===================== ESPACE PARENTS ===================== -->
+<section id="view-parents" hidden>
+  <div class="hero">
+    <div class="wrap">
+      <div class="k">Espace parents</div>
+      <h1>Convocation de votre enfant</h1>
+      <p>Confirmez sa présence, vérifiez les documents à fournir et téléchargez vos reçus de paiement.</p>
+    </div>
+  </div>
+  <main class="wrap">
+    <form class="card stack login" id="login-form" novalidate>
+      <h2 style="font-size:24px">Se connecter</h2>
+      <p class="muted small">Le code personnel à 4 caractères figure dans le mail de convocation. Il est le même pour tous les stages de la saison.</p>
+      <div class="field"><label for="l-nom">Nom de famille de l'enfant</label><input id="l-nom" autocomplete="family-name" required></div>
+      <div class="field"><label for="l-naiss">Date de naissance de l'enfant</label><input id="l-naiss" type="date" required></div>
+      <div class="field"><label for="l-code">Code personnel</label><input id="l-code" maxlength="4" autocomplete="off" autocapitalize="characters" placeholder="ex. K7M2" style="text-transform:uppercase;letter-spacing:3px;font-weight:700" required></div>
+      <div class="msg err" id="login-msg" hidden></div>
+      <button class="btn primary" type="submit" id="login-btn">Accéder à la convocation</button>
+      <p class="muted small">Code perdu ? Écrivez à <a href="mailto:contact@volley83.fr">contact@volley83.fr</a>.</p>
+    </form>
+    <div id="child-view" class="stack" hidden></div>
+  </main>
+</section>
+
+<!-- ===================== ADMIN ===================== -->
+<section id="view-admin" hidden>
+  <main class="wrap stack">
+    <div class="admin-top">
+      <h1 style="font-size:34px;font-weight:800">Gestion des stages</h1>
+      <div class="btnrow" style="margin:0">
+        <button class="btn ghost" onclick="loadAdmin()">↻ Actualiser</button>
+        <button class="btn ghost" onclick="adminLogout()">Déconnexion</button>
+      </div>
+    </div>
+    <div class="stage-tabs" id="a-tabs"></div>
+    <div id="a-stage"></div>
+  </main>
+</section>
+
+<div class="overlay" id="admin-login" hidden>
+  <form class="modal" id="admin-form" novalidate>
+    <h2 style="font-size:24px">Accès organisateurs</h2>
+    <div class="field"><label for="a-pwd">Mot de passe</label><input id="a-pwd" type="password" autocomplete="current-password"></div>
+    <div class="msg err" id="a-msg" hidden></div>
+    <div class="btnrow" style="margin:0">
+      <button class="btn primary" type="submit">Connexion</button>
+      <button class="btn ghost" type="button" onclick="document.getElementById('admin-login').hidden=true">Annuler</button>
+    </div>
+  </form>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>Comité Départemental du Var de Volley-Ball · Maison des sports du Var, 133 bd du Général Brosset, 83200 Toulon · <a href="mailto:contact@volley83.fr">contact@volley83.fr</a> · 06 13 30 34 25</span>
+    <button class="adminlink" onclick="openAdmin()">Accès organisateurs</button>
+  </div>
+  <div class="wrap small" style="margin-top:8px">Données utilisées uniquement pour l'organisation des stages du Comité, supprimées en fin de saison.</div>
+</footer>
+
+<script>
+// ======================== CONFIG ========================
+const SUPABASE_URL = 'https://nssdhgpvkdbgdewsnlgl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_GeMMc45mQbDOq-ZkU5vXZw_lYJe9KXf';
+const SITE_URL = 'https://volley83.github.io/stages/';
+const COMITE = {
+  nom: 'Comité Départemental du Var de Volley-Ball',
+  adresse: ['Maison des sports du Var', '133, boulevard du Général Brosset', '83200 Toulon'],
+  contact: 'contact@volley83.fr · 06 13 30 34 25',
+  ville: 'Toulon',
+};
+const MODES = ['Chèque', 'Espèces', 'Virement', 'Carte bancaire / HelloAsso', 'Chèques vacances', 'Autre'];
+const DOCS_DEFAUT = ['Autorisation parentale', 'Fiche sanitaire', 'Code de vie'];
+
+// ======================== OUTILS ========================
+const $ = id => document.getElementById(id);
+function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+async function rpc(fn, args) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, {
+    method: 'POST',
+    headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify(args || {}),
+  });
+  const txt = await res.text();
+  if (!res.ok) { let m = txt; try { m = JSON.parse(txt).message || txt; } catch(e) {} throw new Error(m); }
+  return txt ? JSON.parse(txt) : null;
+}
+const MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const JOURS = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+function parseD(s) { if (!s) return null; const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); }
+function fmtD(s, withDay) { const d = parseD(s); if (!d) return ''; return (withDay ? JOURS[d.getDay()] + ' ' : '') + d.getDate() + (d.getDate() === 1 ? 'er' : '') + ' ' + MOIS[d.getMonth()] + ' ' + d.getFullYear(); }
+function fmtShort(s) { const d = parseD(s); return d ? String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear() : ''; }
+function fmtDates(a, b) {
+  if (!b || b === a) return fmtD(a, true);
+  const da = parseD(a), db = parseD(b);
+  if (da.getMonth() === db.getMonth() && da.getFullYear() === db.getFullYear())
+    return JOURS[da.getDay()] + ' ' + da.getDate() + ' et ' + JOURS[db.getDay()] + ' ' + db.getDate() + ' ' + MOIS[db.getMonth()] + ' ' + db.getFullYear();
+  return 'du ' + fmtD(a, true) + ' au ' + fmtD(b, true);
+}
+function euros(n) { const v = Number(n || 0); return (Number.isInteger(v) ? v : v.toFixed(2).replace('.', ',')) + ' €'; }
+function today() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+
+// Montant en toutes lettres (reçus)
+function nombreEnLettres(n) {
+  const u = ['zéro','un','deux','trois','quatre','cinq','six','sept','huit','neuf','dix','onze','douze','treize','quatorze','quinze','seize','dix-sept','dix-huit','dix-neuf'];
+  const d = ['','','vingt','trente','quarante','cinquante','soixante','soixante','quatre-vingt','quatre-vingt'];
+  function sous100(x) {
+    if (x < 20) return u[x];
+    const dz = Math.floor(x / 10), un = x % 10;
+    if (dz === 7 || dz === 9) return d[dz] + (dz === 7 && un === 1 ? ' et ' : '-') + u[10 + un];
+    if (un === 0) return d[dz] + (dz === 8 ? 's' : '');
+    return d[dz] + (un === 1 && dz < 8 ? ' et ' : '-') + u[un];
+  }
+  function sous1000(x) {
+    const c = Math.floor(x / 100), r = x % 100;
+    let s = c === 0 ? '' : (c === 1 ? 'cent' : u[c] + ' cent' + (r === 0 ? 's' : ''));
+    if (r) s += (s ? ' ' : '') + sous100(r);
+    return s || 'zéro';
+  }
+  if (n < 1000) return sous1000(n);
+  const m = Math.floor(n / 1000), r = n % 1000;
+  return (m === 1 ? 'mille' : sous1000(m) + ' mille') + (r ? ' ' + sous1000(r) : '');
+}
+function montantEnLettres(v) {
+  const e = Math.floor(v + 1e-9), c = Math.round((v - e) * 100);
+  let s = nombreEnLettres(e) + ' euro' + (e > 1 ? 's' : '');
+  if (c) s += ' et ' + nombreEnLettres(c) + ' centime' + (c > 1 ? 's' : '');
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// ======================== NAVIGATION ========================
+function route() {
+  const h = location.hash.replace('#', '') || 'stages';
+  const isAdmin = h === 'admin' && ADMIN_PWD;
+  $('view-stages').hidden = !(h === 'stages' || (h === 'admin' && !ADMIN_PWD));
+  $('view-parents').hidden = h !== 'parents';
+  $('view-admin').hidden = !isAdmin;
+  $('nav-stages').classList.toggle('on', h === 'stages');
+  $('nav-parents').classList.toggle('on', h === 'parents');
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', route);
+
+// ======================== PUBLIC ========================
+async function loadPublic() {
+  const box = $('stages-list');
+  try {
+    const stages = await rpc('stg_public_stages') || [];
+    if (!stages.length) { box.innerHTML = '<div class="card"><h2 style="font-size:24px">Aucun stage annoncé pour le moment</h2><p class="muted" style="margin-top:6px">Les prochains stages apparaîtront ici dès l\'envoi des convocations.</p></div>'; return; }
+    box.innerHTML = stages.map(s => {
+      const conv = s.convoques;
+      return `<article class="card">
+        <div class="stage-head">
+          <div><h2>${esc(s.titre)}</h2><div class="muted" style="margin-top:4px;font-weight:600">${esc(fmtDates(s.date_debut, s.date_fin))}</div></div>
+          ${s.categorie ? `<span class="tag">${esc(s.categorie)}</span>` : ''}
+        </div>
+        <div class="facts">
+          ${s.lieu ? `<div class="fact"><b>Lieu</b><span>${esc(s.lieu)}</span></div>` : ''}
+          ${s.horaires ? `<div class="fact"><b>Horaires</b><span class="pre">${esc(s.horaires)}</span></div>` : ''}
+          ${Number(s.tarif) ? `<div class="fact"><b>Participation</b><span>${euros(s.tarif)}</span></div>` : ''}
+          ${s.date_limite ? `<div class="fact"><b>Réponse avant le</b><span>${esc(fmtD(s.date_limite))}</span></div>` : ''}
+        </div>
+        ${s.infos ? `<p class="pre" style="margin-top:12px">${esc(s.infos)}</p>` : ''}
+        ${conv ? `<details style="margin-top:14px"><summary style="cursor:pointer;font-weight:700;color:var(--blue)">Liste des convoqués (${conv.length})</summary>
+          <div class="convoques">${conv.map(c => `<div>${esc(c.prenom)} ${esc(c.nom)}${c.club ? ` <small>· ${esc(c.club)}</small>` : ''}</div>`).join('')}</div></details>` : ''}
+        <div class="btnrow"><a class="btn accent" href="#parents">Répondre à la convocation</a></div>
+      </article>`;
+    }).join('');
+  } catch(e) {
+    console.error(e);
+    box.innerHTML = '<div class="card msg err">Impossible de charger les stages pour le moment. Réessayez dans quelques instants.</div>';
+  }
+}
+
+// ======================== ESPACE PARENTS ========================
+let PARENT = null;   // { nom, naissance, code, data }
+
+$('login-form').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  const nom = $('l-nom').value.trim(), naissance = $('l-naiss').value, code = $('l-code').value.trim().toUpperCase();
+  const msg = $('login-msg');
+  if (!nom || !naissance || code.length !== 4) { msg.textContent = 'Merci de remplir les trois champs (le code fait 4 caractères).'; msg.hidden = false; return; }
+  $('login-btn').disabled = true; msg.hidden = true;
+  try {
+    const data = await rpc('stg_parent_login', { p_nom: nom, p_naissance: naissance, p_code: code });
+    if (!data) { msg.textContent = 'Aucune convocation ne correspond. Vérifiez le nom, la date de naissance et le code.'; msg.hidden = false; return; }
+    PARENT = { nom, naissance, code, data };
+    try { sessionStorage.setItem('stg_parent', JSON.stringify({ nom, naissance, code })); } catch(e) {}
+    renderChild();
+  } catch(e) { msg.textContent = 'Connexion impossible pour le moment. Réessayez dans quelques instants.'; msg.hidden = false; }
+  finally { $('login-btn').disabled = false; }
+});
+
+function parentLogout() {
+  PARENT = null;
+  try { sessionStorage.removeItem('stg_parent'); } catch(e) {}
+  $('child-view').hidden = true; $('login-form').hidden = false;
+  $('l-code').value = '';
+}
+
+async function refreshParent() {
+  const d = await rpc('stg_parent_login', { p_nom: PARENT.nom, p_naissance: PARENT.naissance, p_code: PARENT.code });
+  if (d) { PARENT.data = d; renderChild(); }
+}
+
+function renderChild() {
+  const d = PARENT.data;
+  $('login-form').hidden = true;
+  const v = $('child-view'); v.hidden = false;
+  const convs = d.convocations || [];
+  v.innerHTML = `
+    <div class="card child-head">
+      <div><div class="muted small" style="font-weight:700;text-transform:uppercase;letter-spacing:.6px">Convocations de</div>
+      <h2>${esc(d.prenom)} ${esc(d.nom)}</h2>${d.club ? `<div class="muted">${esc(d.club)}</div>` : ''}</div>
+      <button class="btn ghost" onclick="parentLogout()">Se déconnecter</button>
+    </div>
+    ${convs.length ? convs.map(renderConv).join('') : '<div class="card">Aucune convocation en cours pour le moment.</div>'}`;
+}
+
+function renderConv(c) {
+  const passe = parseD(c.date_fin || c.date_debut) < parseD(today());
+  const docs = c.documents || [], recus = c.docs_recus || [];
+  const manquants = docs.filter(x => !recus.includes(x));
+  const rep = c.reponse;
+  const repTxt = rep === 'present' ? '<span class="status ok">✓ Présence confirmée</span>' : rep === 'absent' ? '<span class="status bad">Absence signalée</span>' : '<span class="status warn">En attente de votre réponse</span>';
+  return `<article class="card" id="conv-${c.stage_id}">
+    <div class="stage-head">
+      <div><h2>${esc(c.titre)}</h2><div class="muted" style="margin-top:4px;font-weight:600">${esc(fmtDates(c.date_debut, c.date_fin))}${c.lieu ? ' · ' + esc(c.lieu) : ''}</div></div>
+      ${repTxt}
+    </div>
+    ${c.horaires ? `<p class="pre" style="margin-top:10px"><b>Horaires :</b> ${esc(c.horaires)}</p>` : ''}
+    ${c.infos ? `<p class="pre" style="margin-top:6px">${esc(c.infos)}</p>` : ''}
+
+    ${passe ? '' : `<div class="block">
+      <h3>1. Votre réponse</h3>
+      ${c.date_limite ? `<p class="small muted" style="margin-bottom:10px">À donner avant le ${esc(fmtD(c.date_limite))}. Vous pouvez la modifier jusqu'au stage.</p>` : ''}
+      <div class="choice">
+        <button type="button" class="${rep === 'present' ? 'sel-present' : ''}" onclick="pick(${c.stage_id},'present')">✓ Sera présent(e)</button>
+        <button type="button" class="${rep === 'absent' ? 'sel-absent' : ''}" onclick="pick(${c.stage_id},'absent')">✗ Sera absent(e)</button>
+      </div>
+      <div class="grid2" style="margin-top:12px">
+        <div class="field"><label for="tel-${c.stage_id}">Téléphone d'un parent (joignable pendant le stage)</label><input id="tel-${c.stage_id}" type="tel" value="${esc(c.tel_parent || '')}" autocomplete="tel"></div>
+        <div class="field"><label for="com-${c.stage_id}">Commentaire (facultatif)</label><input id="com-${c.stage_id}" value="${esc(c.commentaire || '')}" maxlength="500" placeholder="Arrivée tardive, covoiturage…"></div>
+      </div>
+      <input type="hidden" id="rep-${c.stage_id}" value="${rep === 'attente' ? '' : rep}">
+      <div class="btnrow"><button class="btn primary" id="save-${c.stage_id}" onclick="saveReponse(${c.stage_id})">Enregistrer ma réponse</button></div>
+      <div class="msg" id="msg-${c.stage_id}" hidden style="margin-top:10px"></div>
+    </div>`}
+
+    ${docs.length ? `<div class="block">
+      <h3>${passe ? '' : '2. '}Documents</h3>
+      <ul class="doclist">${docs.map(x => recus.includes(x)
+        ? `<li><span class="ico ok">✓</span>${esc(x)} <span class="muted small" style="font-weight:500">· reçu</span></li>`
+        : `<li><span class="ico bad">!</span>${esc(x)} <span class="small" style="font-weight:600;color:var(--bad)">· manquant</span></li>`).join('')}</ul>
+      ${manquants.length ? `<p class="msg info" style="margin-top:12px">Merci d'envoyer ${manquants.length > 1 ? 'les documents manquants' : 'le document manquant'} au Comité par mail à <a href="mailto:contact@volley83.fr?subject=${encodeURIComponent('Documents stage – ' + c.titre)}">contact@volley83.fr</a>, ou de ${manquants.length > 1 ? 'les' : 'le'} remettre au début du stage.</p>` : '<p class="msg ok" style="margin-top:12px">Dossier complet, merci !</p>'}
+    </div>` : ''}
+
+    <div class="block">
+      <h3>${passe ? '' : '3. '}Paiement</h3>
+      ${c.paye
+        ? `<p><span class="status ok">✓ Paiement reçu</span></p>
+           <p style="margin-top:10px">${euros(c.montant != null ? c.montant : c.tarif)}${c.paiement_mode ? ' par ' + esc(c.paiement_mode.toLowerCase()) : ''}${c.paiement_date ? ' le ' + esc(fmtD(c.paiement_date)) : ''}.</p>
+           <div class="btnrow"><button class="btn ok" onclick="downloadRecuParent(${c.stage_id})">⬇ Télécharger le reçu de paiement</button></div>`
+        : `<p>${Number(c.tarif) ? `Participation : <b>${euros(c.tarif)}</b>.` : ''} ${c.paiement_infos ? `<span class="pre">${esc(c.paiement_infos)}</span>` : ''}</p>
+           <p class="small muted" style="margin-top:6px">Une fois le paiement enregistré par le Comité, vous pourrez télécharger votre reçu ici.</p>`}
+    </div>
+  </article>`;
+}
+
+function pick(sid, val) {
+  $('rep-' + sid).value = val;
+  const btns = document.querySelectorAll('#conv-' + sid + ' .choice button');
+  btns[0].className = val === 'present' ? 'sel-present' : '';
+  btns[1].className = val === 'absent' ? 'sel-absent' : '';
+}
+
+async function saveReponse(sid) {
+  const rep = $('rep-' + sid).value, msg = $('msg-' + sid);
+  if (!rep) { msg.className = 'msg err'; msg.textContent = 'Indiquez si votre enfant sera présent ou absent.'; msg.hidden = false; return; }
+  const btn = $('save-' + sid); btn.disabled = true;
+  try {
+    const ok = await rpc('stg_parent_repondre', { p_nom: PARENT.nom, p_naissance: PARENT.naissance, p_code: PARENT.code,
+      p_stage: sid, p_reponse: rep, p_tel: $('tel-' + sid).value, p_commentaire: $('com-' + sid).value });
+    if (!ok) throw new Error('refus');
+    await refreshParent();
+    const m2 = $('msg-' + sid);
+    if (m2) { m2.className = 'msg ok'; m2.textContent = rep === 'present' ? '✓ Merci, la présence est confirmée.' : '✓ Merci, l\'absence est enregistrée.'; m2.hidden = false; }
+  } catch(e) {
+    msg.className = 'msg err'; msg.textContent = 'L\'enregistrement n\'a pas fonctionné. Réessayez dans quelques instants.'; msg.hidden = false;
+  } finally { const b = $('save-' + sid); if (b) b.disabled = false; }
+}
+
+function downloadRecuParent(sid) {
+  const c = PARENT.data.convocations.find(x => x.stage_id === sid);
+  genererRecu({ prenom: PARENT.data.prenom, nom: PARENT.data.nom, titre: c.titre, date_debut: c.date_debut, date_fin: c.date_fin,
+    montant: c.montant != null ? c.montant : c.tarif, mode: c.paiement_mode, date: c.paiement_date, num: c.recu_num });
+}
+
+// ======================== REÇU PDF ========================
+let LOGO_DATA = null;
+function loadLogo() {
+  return new Promise(resolve => {
+    if (LOGO_DATA) return resolve(LOGO_DATA);
+    const img = new Image();
+    img.onload = () => { const cv = document.createElement('canvas'); cv.width = img.naturalWidth; cv.height = img.naturalHeight;
+      cv.getContext('2d').drawImage(img, 0, 0); LOGO_DATA = { url: cv.toDataURL('image/jpeg', 0.92), w: img.naturalWidth, h: img.naturalHeight }; resolve(LOGO_DATA); };
+    img.onerror = () => resolve(null);
+    img.src = 'logo-comite-var.jpg';
+  });
+}
+async function genererRecu(r) {
+  if (!window.jspdf) { alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const logo = await loadLogo();
+  const L = 20, W = 170;
+  if (logo) { const h = 22, w = h * logo.w / logo.h; doc.addImage(logo.url, 'JPEG', L, 16, w, h); }
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(20, 32, 58);
+  doc.text(COMITE.nom, L + W, 20, { align: 'right' });
+  doc.setFont('helvetica', 'normal'); doc.setTextColor(86, 98, 122);
+  COMITE.adresse.concat([COMITE.contact]).forEach((t, i) => doc.text(t, L + W, 25 + i * 4.6, { align: 'right' }));
+
+  doc.setDrawColor(11, 33, 73); doc.setLineWidth(0.6); doc.line(L, 50, L + W, 50);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(20); doc.setTextColor(11, 33, 73);
+  doc.text('REÇU DE PAIEMENT', L, 64);
+  doc.setFontSize(12); doc.text('N° ' + (r.num || '—'), L + W, 64, { align: 'right' });
+
+  const m = Number(r.montant || 0);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(11.5); doc.setTextColor(20, 32, 58);
+  const para = `Le ${COMITE.nom} certifie avoir reçu la somme de ${euros(m)} (${montantEnLettres(m).toLowerCase()}) au titre de la participation de ${r.prenom} ${r.nom} au stage « ${r.titre} », ${fmtDates(r.date_debut, r.date_fin)}.`;
+  doc.text(doc.splitTextToSize(para, W), L, 80, { lineHeightFactor: 1.5 });
+
+  const rows = [['Stagiaire', r.prenom + ' ' + r.nom], ['Stage', r.titre], ['Dates', fmtDates(r.date_debut, r.date_fin)],
+    ['Montant', euros(m)], ['Mode de paiement', r.mode || '—'], ['Date du paiement', r.date ? fmtD(r.date) : '—']];
+  let y = 112;
+  doc.setDrawColor(226, 231, 240); doc.setLineWidth(0.3);
+  rows.forEach(([k, v]) => {
+    doc.setFont('helvetica', 'bold'); doc.setTextColor(86, 98, 122); doc.text(k, L + 4, y);
+    doc.setFont('helvetica', 'normal'); doc.setTextColor(20, 32, 58);
+    doc.text(doc.splitTextToSize(String(v), W - 60), L + 58, y);
+    doc.line(L, y + 4, L + W, y + 4); y += 11;
+  });
+  doc.text(`Fait à ${COMITE.ville}, le ${fmtD(today())}.`, L, y + 12);
+  doc.setFont('helvetica', 'bold'); doc.text('Pour le Comité du Var de Volley-Ball', L + W, y + 26, { align: 'right' });
+  doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(120, 128, 145);
+  doc.text('Ce reçu atteste du paiement d\'une prestation (stage). Il ne constitue pas un reçu fiscal.', L, 285);
+  doc.save(`Recu_${(r.num || 'stage').replace(/[^\w-]/g, '')}_${r.nom}_${r.prenom}.pdf`.replace(/\s+/g, '_'));
+}
+
+// ======================== ADMIN ========================
+let ADMIN_PWD = '', ADMIN = { stages: [], convocations: [] }, CUR = null, FILTRE = 'tous', IMPORT_ROWS = [];
+
+function openAdmin() { $('admin-login').hidden = false; $('a-msg').hidden = true; setTimeout(() => $('a-pwd').focus(), 30); }
+$('admin-form').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  const pwd = $('a-pwd').value;
+  try {
+    await rpc('stg_admin_get', { pwd });
+    ADMIN_PWD = pwd; try { sessionStorage.setItem('stg_admin', pwd); } catch(e) {}
+    $('admin-login').hidden = true; $('a-pwd').value = '';
+    location.hash = 'admin'; await loadAdmin(); route();
+  } catch(e) { $('a-msg').textContent = /refus/i.test(e.message) ? 'Mot de passe incorrect.' : 'Connexion impossible : ' + e.message; $('a-msg').hidden = false; }
+});
+function adminLogout() { ADMIN_PWD = ''; try { sessionStorage.removeItem('stg_admin'); } catch(e) {} location.hash = 'stages'; route(); }
+
+async function loadAdmin() {
+  ADMIN = await rpc('stg_admin_get', { pwd: ADMIN_PWD });
+  if (CUR !== 'new' && !ADMIN.stages.find(s => s.id === CUR)) CUR = ADMIN.stages[0] ? ADMIN.stages[0].id : 'new';
+  renderAdmin();
+}
+
+function renderAdmin() {
+  $('a-tabs').innerHTML = ADMIN.stages.map(s => `<button class="stage-tab ${s.id === CUR ? 'on' : ''}" onclick="CUR=${s.id};FILTRE='tous';renderAdmin()">${esc(s.titre)} · ${fmtShort(s.date_debut)}${s.actif ? '' : ' (masqué)'}</button>`).join('')
+    + `<button class="stage-tab ${CUR === 'new' ? 'on' : ''}" onclick="CUR='new';renderAdmin()">＋ Nouveau stage</button>`;
+  const box = $('a-stage');
+  if (CUR === 'new') { box.innerHTML = stageForm({ documents: DOCS_DEFAUT, liste_publique: true, actif: true }); return; }
+  const s = ADMIN.stages.find(x => x.id === CUR);
+  const list = ADMIN.convocations.filter(c => c.stage_id === CUR);
+  const docs = s.documents || [];
+  const k = {
+    tous: list.length,
+    present: list.filter(c => c.reponse === 'present').length,
+    absent: list.filter(c => c.reponse === 'absent').length,
+    attente: list.filter(c => c.reponse === 'attente').length,
+    docs: list.filter(c => c.reponse !== 'absent' && docs.some(d => !(c.docs_recus || []).includes(d))).length,
+    impaye: list.filter(c => c.reponse !== 'absent' && !c.paye).length,
+  };
+  const shown = list.filter(c => FILTRE === 'tous' || (FILTRE === 'docs' ? c.reponse !== 'absent' && docs.some(d => !(c.docs_recus || []).includes(d))
+    : FILTRE === 'impaye' ? c.reponse !== 'absent' && !c.paye : c.reponse === FILTRE));
+  const kpi = (key, lbl) => `<button class="kpi ${FILTRE === key ? 'on' : ''}" onclick="FILTRE='${key}';renderAdmin()"><b>${k[key]}</b><span>${lbl}</span></button>`;
+  box.innerHTML = `<div class="stack">
+    <div class="card"><div class="stage-head"><div><h2>${esc(s.titre)}</h2><div class="muted" style="font-weight:600">${esc(fmtDates(s.date_debut, s.date_fin))}${s.lieu ? ' · ' + esc(s.lieu) : ''} · ${euros(s.tarif)}</div></div>
+      ${s.date_limite ? `<span class="tag">Réponse avant le ${fmtShort(s.date_limite)}</span>` : ''}</div></div>
+    <div class="kpis">${kpi('tous', 'convoqués')}${kpi('present', 'présents')}${kpi('absent', 'absents')}${kpi('attente', 'sans réponse')}${kpi('docs', 'dossiers incomplets')}${kpi('impaye', 'non payés')}</div>
+    <div class="btnrow" style="margin:0">
+      <button class="btn primary" onclick="exportCodes(${s.id})">⬇ Export pour les convocations (codes)</button>
+      <button class="btn ghost" onclick="exportSuivi(${s.id})">⬇ Export du suivi</button>
+    </div>
+    ${list.length ? `<div class="tablebox"><table class="suivi">
+      <thead><tr><th>Stagiaire</th><th>Code</th><th>Réponse</th><th>Documents reçus</th><th>Paiement</th><th>Reçu</th><th></th></tr></thead>
+      <tbody>${shown.map(c => rowAdmin(c, s)).join('') || '<tr><td colspan="7" class="muted">Personne dans ce filtre.</td></tr>'}</tbody></table></div>`
+      : '<div class="card msg info">Aucun convoqué pour ce stage : importez la liste ci-dessous.</div>'}
+    <details class="box" ${list.length ? '' : 'open'}><summary>Importer des convoqués depuis Excel</summary><div>
+      <p class="small">Dans Excel, sélectionnez les colonnes <b>Nom, Prénom, Date de naissance, Club, Mail des parents</b> (le mail est facultatif), copiez (Ctrl+C) puis collez ici (Ctrl+V). La ligne de titres est ignorée si elle est copiée. Un enfant déjà connu garde son code.</p>
+      <textarea id="imp-text" placeholder="MARTIN	Léa	04/03/2016	VC Hyères	parent@mail.fr" oninput="previewImport()"></textarea>
+      <div id="imp-preview"></div>
+    </div></details>
+    <details class="box"><summary>Modifier les informations du stage</summary><div>${stageForm(s)}</div></details>
+  </div>`;
+}
+
+function rowAdmin(c, s) {
+  const docs = s.documents || [];
+  return `<tr>
+    <td><b>${esc(c.nom)} ${esc(c.prenom)}</b><div class="small muted">${esc(c.club || '')}${c.date_naissance ? ' · né(e) le ' + fmtShort(c.date_naissance) : ''}</div>
+      ${c.email_parent ? `<div class="small"><a href="mailto:${esc(c.email_parent)}">${esc(c.email_parent)}</a></div>` : ''}
+      ${c.tel_parent ? `<div class="small">📞 <a href="tel:${esc(c.tel_parent.replace(/\s/g, ''))}">${esc(c.tel_parent)}</a></div>` : ''}
+      ${c.commentaire ? `<div class="small muted">« ${esc(c.commentaire)} »</div>` : ''}</td>
+    <td><span class="code">${esc(c.code)}</span></td>
+    <td><select aria-label="Réponse" onchange="upd(${c.id},{reponse:this.value})">
+      ${[['attente','Sans réponse'],['present','Présent'],['absent','Absent']].map(([v, l]) => `<option value="${v}" ${c.reponse === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
+      ${c.reponse_le ? `<div class="small muted">le ${fmtShort(String(c.reponse_le).slice(0,10))}</div>` : ''}</td>
+    <td>${docs.map((d, i) => `<label class="chk"><input type="checkbox" ${(c.docs_recus || []).includes(d) ? 'checked' : ''} onchange="toggleDoc(${c.id},${i},this.checked)">${esc(d)}</label>`).join('') || '<span class="muted small">—</span>'}</td>
+    <td><div class="pay">
+      <input type="checkbox" style="width:18px;height:18px;padding:0;accent-color:var(--ok)" ${c.paye ? 'checked' : ''} aria-label="Payé" onchange="togglePaye(${c.id},this.checked)"><b class="small">${c.paye ? 'Payé' : 'Non payé'}</b>
+      <span class="small muted">Mode</span><select aria-label="Mode de paiement" onchange="upd(${c.id},{paiement_mode:this.value})"><option value="">—</option>${MODES.map(m => `<option ${c.paiement_mode === m ? 'selected' : ''}>${m}</option>`).join('')}</select>
+      <span class="small muted">Date</span><input type="date" value="${esc(c.paiement_date || '')}" aria-label="Date du paiement" onchange="upd(${c.id},{paiement_date:this.value})">
+      <span class="small muted">Montant</span><input type="number" step="0.01" min="0" value="${c.montant != null ? c.montant : ''}" placeholder="${s.tarif}" aria-label="Montant" onchange="upd(${c.id},{montant:this.value})">
+    </div></td>
+    <td>${c.paye ? `<b class="small">${esc(c.recu_num || '')}</b><br><button class="linkbtn" onclick="recuAdmin(${c.id})">⬇ Reçu PDF</button>` : '<span class="muted small">—</span>'}</td>
+    <td><button class="linkbtn red" onclick="retirer(${c.id})" aria-label="Retirer du stage">Retirer</button></td>
+  </tr>`;
+}
+
+async function upd(cid, patch) {
+  try {
+    const r = await rpc('stg_admin_update_conv', { pwd: ADMIN_PWD, cid, p: patch });
+    const c = ADMIN.convocations.find(x => x.id === cid);
+    Object.assign(c, { reponse: r.reponse, reponse_le: r.reponse_le, docs_recus: r.docs_recus, paye: r.paye, paiement_mode: r.paiement_mode,
+      paiement_date: r.paiement_date, montant: r.montant, recu_num: r.recu_num });
+    renderAdmin();
+  } catch(e) { alert('Enregistrement impossible : ' + e.message); loadAdmin(); }
+}
+function toggleDoc(cid, i, on) {
+  const c = ADMIN.convocations.find(x => x.id === cid), s = ADMIN.stages.find(x => x.id === c.stage_id);
+  const set = new Set(c.docs_recus || []); const d = s.documents[i];
+  on ? set.add(d) : set.delete(d);
+  upd(cid, { docs_recus: [...set] });
+}
+function togglePaye(cid, on) {
+  const c = ADMIN.convocations.find(x => x.id === cid), s = ADMIN.stages.find(x => x.id === c.stage_id);
+  const p = { paye: on };
+  if (on && !c.paiement_date) p.paiement_date = today();
+  if (on && c.montant == null) p.montant = String(s.tarif);
+  upd(cid, p);
+}
+async function retirer(cid) {
+  const c = ADMIN.convocations.find(x => x.id === cid);
+  if (!confirm(`Retirer ${c.prenom} ${c.nom} de ce stage ?`)) return;
+  try { await rpc('stg_admin_remove_conv', { pwd: ADMIN_PWD, cid }); await loadAdmin(); } catch(e) { alert(e.message); }
+}
+function recuAdmin(cid) {
+  const c = ADMIN.convocations.find(x => x.id === cid), s = ADMIN.stages.find(x => x.id === c.stage_id);
+  genererRecu({ prenom: c.prenom, nom: c.nom, titre: s.titre, date_debut: s.date_debut, date_fin: s.date_fin,
+    montant: c.montant != null ? c.montant : s.tarif, mode: c.paiement_mode, date: c.paiement_date, num: c.recu_num });
+}
+
+// ----- Formulaire stage -----
+function stageForm(s) {
+  const v = k => esc(s[k] == null ? '' : s[k]);
+  return `<form class="card stack" onsubmit="saveStage(event, ${s.id || 'null'})" style="${s.id ? 'border:0;padding:0' : ''}">
+    ${s.id ? '' : '<h2 style="font-size:24px">Nouveau stage</h2>'}
+    <div class="grid2">
+      <div class="field"><label>Titre</label><input name="titre" required value="${v('titre')}" placeholder="Stage CDE M11-M13 – Vacances de Noël"></div>
+      <div class="field"><label>Catégorie</label><input name="categorie" value="${v('categorie')}" placeholder="M11-M13, Beach M15-M18…"></div>
+    </div>
+    <div class="grid3">
+      <div class="field"><label>Premier jour</label><input type="date" name="date_debut" required value="${v('date_debut')}"></div>
+      <div class="field"><label>Dernier jour</label><input type="date" name="date_fin" value="${v('date_fin')}"></div>
+      <div class="field"><label>Réponse des familles avant le</label><input type="date" name="date_limite" value="${v('date_limite')}"></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label>Lieu</label><input name="lieu" value="${v('lieu')}"></div>
+      <div class="field"><label>Tarif (€)</label><input type="number" step="0.01" min="0" name="tarif" value="${v('tarif')}"></div>
+    </div>
+    <div class="field"><label>Horaires</label><textarea name="horaires" style="min-height:60px">${v('horaires')}</textarea></div>
+    <div class="field"><label>Informations pour les familles (matériel, repas, programme…)</label><textarea name="infos">${v('infos')}</textarea></div>
+    <div class="field"><label>Modalités de paiement</label><textarea name="paiement_infos" style="min-height:60px" placeholder="Chèque à l'ordre du Comité du Var de Volley-Ball, à remettre le premier jour…">${v('paiement_infos')}</textarea></div>
+    <div class="field"><label>Documents demandés (un par ligne)</label><textarea name="documents" style="min-height:80px">${esc((s.documents || []).join('\n'))}</textarea></div>
+    <label class="chk"><input type="checkbox" name="liste_publique" ${s.liste_publique !== false ? 'checked' : ''}>Afficher la liste des convoqués (prénom, nom, club) sur la page publique</label>
+    <label class="chk"><input type="checkbox" name="actif" ${s.actif !== false ? 'checked' : ''}>Stage visible sur le site</label>
+    <div class="btnrow" style="margin:0">
+      <button class="btn primary" type="submit">${s.id ? 'Enregistrer les modifications' : 'Créer le stage'}</button>
+      ${s.id ? `<button class="btn danger" type="button" onclick="supprimerStage(${s.id})">Supprimer ce stage</button>` : ''}
+    </div>
+  </form>`;
+}
+async function saveStage(ev, id) {
+  ev.preventDefault();
+  const f = ev.target, g = n => f.elements[n];
+  const s = { id, titre: g('titre').value.trim(), categorie: g('categorie').value.trim(), date_debut: g('date_debut').value, date_fin: g('date_fin').value,
+    date_limite: g('date_limite').value, lieu: g('lieu').value.trim(), tarif: g('tarif').value, horaires: g('horaires').value.trim(),
+    infos: g('infos').value.trim(), paiement_infos: g('paiement_infos').value.trim(),
+    documents: g('documents').value.split('\n').map(x => x.trim()).filter(Boolean),
+    liste_publique: g('liste_publique').checked, actif: g('actif').checked };
+  if (!s.titre || !s.date_debut) { alert('Le titre et le premier jour sont obligatoires.'); return; }
+  try { CUR = await rpc('stg_admin_save_stage', { pwd: ADMIN_PWD, s }); await loadAdmin(); loadPublic(); }
+  catch(e) { alert('Enregistrement impossible : ' + e.message); }
+}
+async function supprimerStage(id) {
+  const s = ADMIN.stages.find(x => x.id === id);
+  if (!confirm(`Supprimer définitivement le stage « ${s.titre} » et tout son suivi (réponses, paiements) ?`)) return;
+  try { await rpc('stg_admin_delete_stage', { pwd: ADMIN_PWD, sid: id }); CUR = null; await loadAdmin(); loadPublic(); } catch(e) { alert(e.message); }
+}
+
+// ----- Import depuis Excel -----
+function parseDate(t) {
+  t = String(t || '').trim();
+  const valid = (y, mo, d) => { const x = new Date(y, mo - 1, d); return x.getFullYear() === y && x.getMonth() === mo - 1 && x.getDate() === d && y > 1990 && y < 2100
+    ? `${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}` : null; };
+  let m = t.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})$/);
+  if (m) { let y = +m[3]; if (y < 100) y += 2000; return valid(y, +m[2], +m[1]); }
+  m = t.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return valid(+m[1], +m[2], +m[3]);
+  if (/^\d{5}$/.test(t)) { const d = new Date(Date.UTC(1899, 11, 30) + (+t) * 86400000); return d.toISOString().slice(0, 10); }
+  return null;
+}
+function previewImport() {
+  const lines = $('imp-text').value.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  IMPORT_ROWS = [];
+  const rows = lines.map(l => {
+    const c = l.split(/\t|;/).map(x => x.trim());
+    if (/^nom$/i.test(c[0])) return null;
+    const r = { nom: c[0] || '', prenom: c[1] || '', date_naissance: parseDate(c[2]), club: c[3] || '', email_parent: c[4] || '' };
+    r.ok = !!(r.nom && r.prenom && r.date_naissance);
+    if (r.ok) IMPORT_ROWS.push(r);
+    return r;
+  }).filter(Boolean);
+  const bad = rows.filter(r => !r.ok).length;
+  $('imp-preview').innerHTML = rows.length ? `<div class="preview"><table><thead><tr><th>Nom</th><th>Prénom</th><th>Naissance</th><th>Club</th><th>Mail</th></tr></thead><tbody>
+    ${rows.map(r => `<tr class="${r.ok ? '' : 'bad'}"><td>${esc(r.nom)}</td><td>${esc(r.prenom)}</td><td>${r.date_naissance ? fmtShort(r.date_naissance) : '<b>date ?</b>'}</td><td>${esc(r.club)}</td><td>${esc(r.email_parent)}</td></tr>`).join('')}</tbody></table></div>
+    ${bad ? `<p class="small" style="color:var(--bad)">${bad} ligne(s) en rouge seront ignorées (nom, prénom ou date de naissance illisible).</p>` : ''}
+    <div class="btnrow" style="margin:0"><button class="btn primary" onclick="doImport()">Importer ${IMPORT_ROWS.length} convoqué(s)</button></div>` : '';
+}
+async function doImport() {
+  if (!IMPORT_ROWS.length) return;
+  try {
+    const r = await rpc('stg_admin_import', { pwd: ADMIN_PWD, sid: CUR, rows: IMPORT_ROWS.map(({ ok, ...x }) => x) });
+    await loadAdmin(); loadPublic();
+    alert(`Import terminé : ${r.ajoutes_au_stage} enfant(s) ajouté(s) au stage, dont ${r.nouveaux_enfants} nouveau(x) avec un code créé.`);
+  } catch(e) { alert('Import impossible : ' + e.message); }
+}
+
+// ----- Exports -----
+function csvDownload(name, header, rows) {
+  const cell = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const csv = '﻿' + [header].concat(rows).map(r => r.map(cell).join(';')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = name; document.body.appendChild(a); a.click(); a.remove();
+}
+function slug(t) { return String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w]+/g, '-').replace(/^-|-$/g, ''); }
+function exportCodes(sid) {
+  const s = ADMIN.stages.find(x => x.id === sid);
+  const list = ADMIN.convocations.filter(c => c.stage_id === sid);
+  csvDownload(`Convocations-${slug(s.titre)}.csv`, ['Nom', 'Prénom', 'Date de naissance', 'Club', 'Mail parent', 'Code', 'Lien espace parents', 'Stage', 'Dates', 'Réponse avant le'],
+    list.map(c => [c.nom, c.prenom, fmtShort(c.date_naissance), c.club, c.email_parent, c.code, SITE_URL + '#parents', s.titre, fmtDates(s.date_debut, s.date_fin), s.date_limite ? fmtD(s.date_limite) : '']));
+}
+function exportSuivi(sid) {
+  const s = ADMIN.stages.find(x => x.id === sid), docs = s.documents || [];
+  const list = ADMIN.convocations.filter(c => c.stage_id === sid);
+  const lab = { attente: 'Sans réponse', present: 'Présent', absent: 'Absent' };
+  csvDownload(`Suivi-${slug(s.titre)}.csv`, ['Nom', 'Prénom', 'Club', 'Réponse', 'Téléphone parent', 'Commentaire'].concat(docs).concat(['Payé', 'Mode', 'Date paiement', 'Montant', 'N° reçu']),
+    list.map(c => [c.nom, c.prenom, c.club, lab[c.reponse], c.tel_parent, c.commentaire].concat(docs.map(d => (c.docs_recus || []).includes(d) ? 'Reçu' : 'Manquant'))
+      .concat([c.paye ? 'Oui' : 'Non', c.paiement_mode, c.paiement_date ? fmtShort(c.paiement_date) : '', c.paye ? String(c.montant != null ? c.montant : s.tarif).replace('.', ',') : '', c.recu_num])));
+}
+
+// ======================== DÉMARRAGE ========================
+(async function init() {
+  try { const a = sessionStorage.getItem('stg_admin'); if (a) { await rpc('stg_admin_get', { pwd: a }); ADMIN_PWD = a; await loadAdmin(); } } catch(e) { ADMIN_PWD = ''; }
+  try {
+    const p = JSON.parse(sessionStorage.getItem('stg_parent') || 'null');
+    if (p) { const d = await rpc('stg_parent_login', { p_nom: p.nom, p_naissance: p.naissance, p_code: p.code }); if (d) { PARENT = { ...p, data: d }; renderChild(); } }
+  } catch(e) {}
+  route();
+  loadPublic();
+})();
+</script>
+</body>
+</html>
