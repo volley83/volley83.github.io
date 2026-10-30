@@ -721,8 +721,8 @@ function renderAdmin() {
       <tbody>${shown.map(c => rowAdmin(c, s)).join('') || '<tr><td colspan="7" class="muted">Personne dans ce filtre.</td></tr>'}</tbody></table></div>`
       : '<div class="card msg info">Aucun convoqué pour ce stage : importez la liste ci-dessous.</div>'}
     <details class="box" ${list.length ? '' : 'open'}><summary>Importer des convoqués depuis Excel</summary><div>
-      <p class="small">Dans Excel, sélectionnez les colonnes <b>Nom, Prénom, Année de naissance, Club, Mail des parents</b> (le mail est facultatif), copiez (Ctrl+C) puis collez ici (Ctrl+V). La ligne de titres est ignorée si elle est copiée. Un enfant déjà connu garde son code. Vous pouvez aussi taper une ligne à la main : NOM Prénom Année Club mail.</p>
-      <textarea id="imp-text" placeholder="MARTIN	Léa	04/03/2016	VC Hyères	parent@mail.fr" oninput="previewImport()"></textarea>
+      <p class="small">Dans Excel, sélectionnez les colonnes <b>Nom, Prénom, Club, Année de naissance, Mail des parents</b> (le mail est facultatif), copiez (Ctrl+C) puis collez ici (Ctrl+V). La ligne de titres est ignorée si elle est copiée. Un enfant déjà connu garde son code. Vous pouvez aussi taper une ligne à la main : NOM Prénom Club Année mail.</p>
+      <textarea id="imp-text" placeholder="MARTIN	Léa	VCHPL	2016	parent@mail.fr" oninput="previewImport()"></textarea>
       <div id="imp-preview"></div>
     </div></details>
     <details class="box"><summary>Modifier les informations du stage</summary><div>${stageForm(s)}</div></details>
@@ -856,21 +856,24 @@ function previewImport() {
     if (c.length < 3) {
       // Ligne tapée à la main (espaces) : NOM [NOM…] Prénom ANNÉE [Club…] [mail]
       const t = l.split(/\s+/), iy = t.findIndex(x => /^(\d{4}|\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{2,4})$/.test(x));
-      if (iy >= 2) {
+      if (iy >= 3) {   // NOM Prénom Club… Année mail
         const after = t.slice(iy + 1), im = after.findIndex(x => x.includes('@'));
-        c = [t.slice(0, iy - 1).join(' '), t[iy - 1], t[iy], (im >= 0 ? after.slice(0, im) : after).join(' '), im >= 0 ? after[im] : ''];
+        c = [t[0], t[1], t.slice(2, iy).join(' '), t[iy], im >= 0 ? after[im] : ''];
       }
     }
+    // Ordre attendu : Nom, Prénom, Club, Année, Mail (l'ancien ordre Nom, Prénom, Année, Club reste accepté)
+    const isYear = x => /^(\d{4}|\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{2,4}|\d{4}-\d{2}-\d{2})$/.test(String(x || '').trim());
+    if (!isYear(c[3]) && isYear(c[2])) c = [c[0], c[1], c[3], c[2], c[4]];
     if (/^nom$/i.test(c[0])) return null;
-    const y = /^\d{4}$/.test(c[2] || '') ? +c[2] : (parseDate(c[2]) ? +parseDate(c[2]).slice(0, 4) : null);
-    const r = { nom: c[0] || '', prenom: c[1] || '', annee_naissance: y && y > 1990 && y < 2100 ? y : null, club: c[3] || '', email_parent: c[4] || '' };
+    const y = /^\d{4}$/.test(c[3] || '') ? +c[3] : (parseDate(c[3]) ? +parseDate(c[3]).slice(0, 4) : null);
+    const r = { nom: c[0] || '', prenom: c[1] || '', club: c[2] || '', annee_naissance: y && y > 1990 && y < 2100 ? y : null, email_parent: c[4] || '' };
     r.ok = !!(r.nom && r.prenom && r.annee_naissance);
     if (r.ok) IMPORT_ROWS.push(r);
     return r;
   }).filter(Boolean);
   const bad = rows.filter(r => !r.ok).length;
-  $('imp-preview').innerHTML = rows.length ? `<div class="preview"><table><thead><tr><th>Nom</th><th>Prénom</th><th>Année</th><th>Club</th><th>Mail</th></tr></thead><tbody>
-    ${rows.map(r => `<tr class="${r.ok ? '' : 'bad'}"><td>${esc(r.nom)}</td><td>${esc(r.prenom)}</td><td>${r.annee_naissance || '<b>année ?</b>'}</td><td>${esc(r.club)}</td><td>${esc(r.email_parent)}</td></tr>`).join('')}</tbody></table></div>
+  $('imp-preview').innerHTML = rows.length ? `<div class="preview"><table><thead><tr><th>Nom</th><th>Prénom</th><th>Club</th><th>Année</th><th>Mail</th></tr></thead><tbody>
+    ${rows.map(r => `<tr class="${r.ok ? '' : 'bad'}"><td>${esc(r.nom)}</td><td>${esc(r.prenom)}</td><td>${esc(r.club)}</td><td>${r.annee_naissance || '<b>année ?</b>'}</td><td>${esc(r.email_parent)}</td></tr>`).join('')}</tbody></table></div>
     ${bad ? `<p class="small" style="color:var(--bad)">${bad} ligne(s) en rouge seront ignorées (nom, prénom ou année de naissance illisible).</p>` : ''}
     <div class="btnrow" style="margin:0"><button class="btn primary" onclick="doImport()">Importer ${IMPORT_ROWS.length} convoqué(s)</button></div>` : '';
 }
@@ -895,8 +898,8 @@ function slug(t) { return String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').rep
 function exportCodes(sid) {
   const s = ADMIN.stages.find(x => x.id === sid);
   const list = ADMIN.convocations.filter(c => c.stage_id === sid);
-  csvDownload(`Convocations-${slug(s.titre)}.csv`, ['Nom', 'Prénom', 'Année de naissance', 'Club', 'Mail parent', 'Code', 'Lien espace parents', 'Stage', 'Dates', 'Réponse avant le'],
-    list.map(c => [c.nom, c.prenom, c.annee_naissance, c.club, c.email_parent, c.code, SITE_URL + '#parents', s.titre, fmtDates(s.date_debut, s.date_fin), s.date_limite ? fmtD(s.date_limite) : '']));
+  csvDownload(`Convocations-${slug(s.titre)}.csv`, ['Nom', 'Prénom', 'Club', 'Année de naissance', 'Mail parent', 'Code', 'Lien espace parents', 'Stage', 'Dates', 'Réponse avant le'],
+    list.map(c => [c.nom, c.prenom, c.club, c.annee_naissance, c.email_parent, c.code, SITE_URL + '#parents', s.titre, fmtDates(s.date_debut, s.date_fin), s.date_limite ? fmtD(s.date_limite) : '']));
 }
 // Une ligne par adresse mail : les frères et sœurs sont regroupés, la famille reçoit un seul mail avec tous les codes
 function exportFamilles(sid) {
