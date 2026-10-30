@@ -36,6 +36,20 @@
   .hero { background: var(--navy); color: #fff; padding: 40px 0 44px; }
   .hero h1 { color: #fff; font-size: 46px; font-weight: 800; line-height: 1; }
   .hero .k { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-size: 15px; margin-bottom: 8px; }
+  .hero .wrap { display: flex; align-items: center; justify-content: space-between; gap: 32px; }
+  .hero-badge { flex-shrink: 0; width: 170px; height: 170px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 6px rgba(246,194,27,.45), 0 12px 32px rgba(0,0,0,.35); }
+  .hero-badge { overflow: hidden; }
+  .hero-badge img { width: 70%; height: auto; display: block; }
+  .hero-badge.wide { width: 220px; height: 150px; border-radius: 18px; }
+  .hero-badge.wide img { width: 84%; }
+  .brand-band { background: #fff; border-top: 1px solid var(--line); }
+  .brand-band .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 20px 48px; padding-top: 22px; padding-bottom: 22px; }
+  .brand-band img { height: 84px; width: auto; display: block; }
+  .brand-band .t { font-size: 13px; color: var(--muted); max-width: 400px; line-height: 1.5; }
+  .brand-band .t b { color: var(--navy); display: block; font-size: 14px; }
+  .login-logo { width: 96px; height: auto; display: block; margin: 0 auto 4px; }
+  .child-head .logo-sm { height: 64px; width: auto; display: block; }
+  @media (max-width: 720px) { .hero-badge { display: none; } .brand-band img { height: 64px; } }
   .hero p { color: #C9D4EA; max-width: 680px; margin-top: 12px; font-size: 16px; }
 
   main { padding: 32px 0 64px; }
@@ -216,9 +230,12 @@
 <section id="view-stages">
   <div class="hero">
     <div class="wrap">
-      <div class="k">Centre Départemental · Stages</div>
+      <div>
+      <div class="k">Centre Départemental d'Entraînement M11 – M13</div>
       <h1>Les stages du Comité du Var</h1>
       <p>Retrouvez les stages à venir, la liste des convoqués, et confirmez la présence de votre enfant depuis l'espace parents, avec le code personnel indiqué dans la convocation.</p>
+      </div>
+      <div class="hero-badge"><img src="logo-centre-departemental.jpg" alt="Centre Départemental d'Entraînement M11 – M13"></div>
     </div>
   </div>
   <main class="wrap stack" id="stages-list">
@@ -230,14 +247,18 @@
 <section id="view-parents" hidden>
   <div class="hero">
     <div class="wrap">
+      <div>
       <div class="k">Espace parents</div>
       <h1>Convocation de votre enfant</h1>
       <p>Confirmez sa présence, vérifiez les documents à fournir et téléchargez vos reçus de paiement.</p>
+      </div>
+      <div class="hero-badge wide"><img src="logo-selection-var.jpg" alt="Sélection du Var Volley-Ball"></div>
     </div>
   </div>
   <main class="wrap">
     <form class="card stack login" id="login-form" novalidate>
-      <h2 style="font-size:24px">Se connecter</h2>
+      <img class="login-logo" src="logo-centre-departemental.jpg" alt="">
+      <h2 style="font-size:24px;text-align:center">Se connecter</h2>
       <p class="muted small">Le code personnel à 4 caractères figure dans le mail de convocation. Il est le même pour tous les stages de la saison.</p>
       <div class="field"><label for="l-nom">Nom de famille de l'enfant</label><input id="l-nom" autocomplete="family-name" required></div>
       <div class="field"><label for="l-naiss">Année de naissance de l'enfant</label><input id="l-naiss" type="number" inputmode="numeric" min="2000" max="2030" placeholder="ex. 2015" required></div>
@@ -277,6 +298,13 @@
   </form>
 </div>
 
+<div class="brand-band">
+  <div class="wrap">
+    <img src="logo-centre-departemental.jpg" alt="Centre Départemental d'Entraînement M11 – M13">
+    <div class="t"><b>Centre Départemental d'Entraînement M11 – M13</b>Les stages préparent les jeunes Varois et Varoises aux sélections du Var.</div>
+    <img src="logo-selection-var.jpg" alt="Sélection du Var Volley-Ball">
+  </div>
+</div>
 <footer>
   <div class="wrap">
     <span>Comité Départemental du Var de Volley-Ball · Maison des sports du Var, 133 bd du Général Brosset, 83200 Toulon · <a href="mailto:contact@volley83.fr">contact@volley83.fr</a> · 06 13 30 34 25</span>
@@ -481,7 +509,7 @@ function renderChild() {
     <div class="card child-head">
       <div><div class="muted small" style="font-weight:700;text-transform:uppercase;letter-spacing:.6px">Convocations de</div>
       <h2>${esc(d.prenom)} ${esc(d.nom)}</h2>${d.club ? `<div class="muted">${esc(d.club)}</div>` : ''}</div>
-      <button class="btn ghost" onclick="parentLogout()">Se déconnecter</button>
+      <div style="display:flex;align-items:center;gap:16px"><img class="logo-sm" src="logo-centre-departemental.jpg" alt=""><button class="btn ghost" onclick="parentLogout()">Se déconnecter</button></div>
     </div>
     ${convs.length ? convs.map(renderConv).join('') : '<div class="card">Aucune convocation en cours pour le moment.</div>'}`;
 }
@@ -572,14 +600,16 @@ function downloadRecuParent(sid) {
 
 // ======================== REÇU PDF ========================
 let LOGO_DATA = null;
-function loadLogo() {
+const LOGOS = {};
+function loadLogo(src = 'logo-comite-var.jpg') {
   return new Promise(resolve => {
-    if (LOGO_DATA) return resolve(LOGO_DATA);
+    if (LOGOS[src]) return resolve(LOGOS[src]);
     const img = new Image();
     img.onload = () => { const cv = document.createElement('canvas'); cv.width = img.naturalWidth; cv.height = img.naturalHeight;
-      cv.getContext('2d').drawImage(img, 0, 0); LOGO_DATA = { url: cv.toDataURL('image/jpeg', 0.92), w: img.naturalWidth, h: img.naturalHeight }; resolve(LOGO_DATA); };
+      const ctx = cv.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height); ctx.drawImage(img, 0, 0);
+      LOGOS[src] = { url: cv.toDataURL('image/jpeg', 0.92), w: img.naturalWidth, h: img.naturalHeight }; resolve(LOGOS[src]); };
     img.onerror = () => resolve(null);
-    img.src = 'logo-comite-var.jpg';
+    img.src = src;
   });
 }
 async function genererRecu(r) {
@@ -588,7 +618,10 @@ async function genererRecu(r) {
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const logo = await loadLogo();
   const L = 20, W = 170;
-  if (logo) { const h = 22, w = h * logo.w / logo.h; doc.addImage(logo.url, 'JPEG', L, 16, w, h); }
+  let lx = L;
+  if (logo) { const h = 20, w = h * logo.w / logo.h; doc.addImage(logo.url, 'JPEG', lx, 17, w, h); lx += w + 6; }
+  const centre = await loadLogo('logo-centre-departemental.jpg');
+  if (centre) { const h = 26, w = h * centre.w / centre.h; doc.addImage(centre.url, 'JPEG', lx, 14, w, h); }
   doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(20, 32, 58);
   doc.text(COMITE.nom, L + W, 20, { align: 'right' });
   doc.setFont('helvetica', 'normal'); doc.setTextColor(86, 98, 122);
