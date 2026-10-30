@@ -674,7 +674,11 @@ function adminLogout() { ADMIN_PWD = ''; try { sessionStorage.removeItem('stg_ad
 
 async function loadAdmin() {
   ADMIN = await rpc('stg_admin_get', { pwd: ADMIN_PWD });
-  if (CUR !== 'new' && !ADMIN.stages.find(s => s.id === CUR)) CUR = ADMIN.stages[0] ? ADMIN.stages[0].id : 'new';
+  ADMIN.stages.sort((a, b) => String(a.date_debut).localeCompare(String(b.date_debut)));   // ordre chronologique
+  if (CUR !== 'new' && !ADMIN.stages.find(s => s.id === CUR)) {
+    const next = ADMIN.stages.find(s => (s.date_fin || s.date_debut) >= today());           // le prochain stage à venir
+    CUR = next ? next.id : (ADMIN.stages.length ? ADMIN.stages.at(-1).id : 'new');
+  }
   renderAdmin();
 }
 
@@ -711,7 +715,7 @@ function renderAdmin() {
       <tbody>${shown.map(c => rowAdmin(c, s)).join('') || '<tr><td colspan="7" class="muted">Personne dans ce filtre.</td></tr>'}</tbody></table></div>`
       : '<div class="card msg info">Aucun convoqué pour ce stage : importez la liste ci-dessous.</div>'}
     <details class="box" ${list.length ? '' : 'open'}><summary>Importer des convoqués depuis Excel</summary><div>
-      <p class="small">Dans Excel, sélectionnez les colonnes <b>Nom, Prénom, Année de naissance, Club, Mail des parents</b> (le mail est facultatif), copiez (Ctrl+C) puis collez ici (Ctrl+V). La ligne de titres est ignorée si elle est copiée. Un enfant déjà connu garde son code.</p>
+      <p class="small">Dans Excel, sélectionnez les colonnes <b>Nom, Prénom, Année de naissance, Club, Mail des parents</b> (le mail est facultatif), copiez (Ctrl+C) puis collez ici (Ctrl+V). La ligne de titres est ignorée si elle est copiée. Un enfant déjà connu garde son code. Vous pouvez aussi taper une ligne à la main : NOM Prénom Année Club mail.</p>
       <textarea id="imp-text" placeholder="MARTIN	Léa	04/03/2016	VC Hyères	parent@mail.fr" oninput="previewImport()"></textarea>
       <div id="imp-preview"></div>
     </div></details>
@@ -842,7 +846,15 @@ function previewImport() {
   const lines = $('imp-text').value.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   IMPORT_ROWS = [];
   const rows = lines.map(l => {
-    const c = l.split(/\t|;/).map(x => x.trim());
+    let c = l.split(/\t|;/).map(x => x.trim());
+    if (c.length < 3) {
+      // Ligne tapée à la main (espaces) : NOM [NOM…] Prénom ANNÉE [Club…] [mail]
+      const t = l.split(/\s+/), iy = t.findIndex(x => /^(\d{4}|\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{2,4})$/.test(x));
+      if (iy >= 2) {
+        const after = t.slice(iy + 1), im = after.findIndex(x => x.includes('@'));
+        c = [t.slice(0, iy - 1).join(' '), t[iy - 1], t[iy], (im >= 0 ? after.slice(0, im) : after).join(' '), im >= 0 ? after[im] : ''];
+      }
+    }
     if (/^nom$/i.test(c[0])) return null;
     const y = /^\d{4}$/.test(c[2] || '') ? +c[2] : (parseDate(c[2]) ? +parseDate(c[2]).slice(0, 4) : null);
     const r = { nom: c[0] || '', prenom: c[1] || '', annee_naissance: y && y > 1990 && y < 2100 ? y : null, club: c[3] || '', email_parent: c[4] || '' };
