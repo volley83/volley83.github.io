@@ -918,7 +918,7 @@ function mailCode(cid, remplacement) {
     + (remplacement ? `Une place s'est libérée : ` : '')
     + `${prenoms} ${plur ? 'ont été sélectionnés' : 'a été sélectionné(e)'} pour participer au stage de perfectionnement du Centre Départemental d'Entraînement M11 / M13 de ${periode}. `
     + `Ce stage se déroule ${fmtDates(s.date_debut, s.date_fin)}${s.lieu ? ', au ' + s.lieu : ''}.\n\n`
-    + `Merci de confirmer ${plur ? 'leur' : 'sa'} présence${s.date_limite && s.date_limite >= today() ? ' avant le ' + fmtD(s.date_limite) : ' dès que possible'} sur l'espace parents, où vous trouverez aussi les informations pratiques, les documents à fournir et le paiement :\n${SITE_URL}#parents\n\n`
+    + `Merci de confirmer ${plur ? 'leur' : 'sa'} présence${s.date_limite && s.date_limite >= today() ? ' avant le ' + fmtD(s.date_limite) : ' dès que possible'} sur l'espace parents, où vous trouverez aussi les informations pratiques, les documents à fournir et le suivi du paiement. Un reçu de paiement y sera téléchargeable à l'issue du stage :\n${SITE_URL}#parents\n\n`
     + `Les identifiants de connexion sont en bas de ce mail.\n\n`
     + `Vous trouverez également sur le site les dates des prochains stages de la saison, pour vous organiser à l'avance, ainsi que la liste des enfants convoqués, pour faciliter le covoiturage.\n\n`
     + (conv ? `Lien pour ouvrir la convocation (PDF) : ${conv}\nVous la retrouverez également dans votre espace parents.\n\n` : '')
