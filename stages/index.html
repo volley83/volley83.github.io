@@ -43,9 +43,10 @@
   .hero-badge.wide { width: 220px; height: 150px; border-radius: 18px; }
   .hero-badge.wide img { width: 84%; }
   .brand-band { background: #fff; border-top: 1px solid var(--line); }
-  .brand-band .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 20px 48px; padding-top: 22px; padding-bottom: 22px; }
+  .brand-band .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px 32px; padding-top: 22px; padding-bottom: 22px; }
   .brand-band img { height: 84px; width: auto; display: block; }
-  .brand-band .t { font-size: 13px; color: var(--muted); max-width: 400px; line-height: 1.5; }
+  .brand-band .t { flex: 1; text-align: center; font-size: 14px; color: var(--muted); line-height: 1.5; }
+  @media (max-width: 900px) { .brand-band .wrap { flex-wrap: wrap; justify-content: center; } .brand-band .t { flex-basis: 100%; order: 3; } }
   .brand-band .t b { color: var(--navy); display: block; font-size: 14px; }
   .login-logo { width: 96px; height: auto; display: block; margin: 0 auto 4px; }
   .child-head .logo-sm { height: 64px; width: auto; display: block; }
@@ -436,7 +437,7 @@ async function loadPublic() {
       <h2 style="font-size:24px">${full.length ? 'Les stages suivants' : 'Calendrier de la saison'}</h2>
       <p class="muted small" style="margin-top:4px">Les convocations sont envoyées aux familles quelques semaines avant chaque stage.</p>
       <div class="season-list">${later.map(s => `<div class="season-row">
-        <div class="season-date"><b>${parseD(s.date_debut).getDate()}${s.date_fin && s.date_fin !== s.date_debut ? '–' + parseD(s.date_fin).getDate() : ''}</b><span>${MOIS[parseD(s.date_debut).getMonth()].slice(0, 4)}${MOIS[parseD(s.date_debut).getMonth()].length > 4 ? '.' : ''} ${parseD(s.date_debut).getFullYear()}</span></div>
+        <div class="season-date"><b>${parseD(s.date_debut).getDate()}${s.date_fin && s.date_fin !== s.date_debut ? '–' + parseD(s.date_fin).getDate() : ''}</b><span>${['janv.','févr.','mars','avril','mai','juin','juil.','août','sept.','oct.','nov.','déc.'].at(parseD(s.date_debut).getMonth())} ${parseD(s.date_debut).getFullYear()}</span></div>
         <div><div class="season-title">${esc(s.titre)}</div><div class="muted small">${esc(fmtDates(s.date_debut, s.date_fin))}${s.lieu ? ' · ' + esc(s.lieu.split(',')[0]) : ''}${Number(s.tarif) ? ' · ' + euros(s.tarif) : ''}</div></div>
         <span class="tag" style="background:#F4F6FA;color:var(--muted)">Convocations à venir</span>
       </div>`).join('')}</div></section>` : '';
