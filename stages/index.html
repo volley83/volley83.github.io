@@ -183,6 +183,9 @@
   .suivi tr.row-present td:first-child { box-shadow: inset 4px 0 0 #2E9E4F; }
   .suivi tr.row-absent td:first-child { box-shadow: inset 4px 0 0 #D9534F; }
   .suivi tr.row-absent td { background: #FFF8F7; }
+  .suivi td.cell-ok { background: var(--ok-bg) !important; }
+  .suivi td.cell-part { background: #FFFBEA !important; }
+  .suivi td.cell-ok .pay b, .suivi td.cell-ok::before { color: var(--ok); }
   .suivi .code { font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 700; letter-spacing: 1px; background: #F4F6FA; padding: 2px 6px; border-radius: 6px; }
   .chk { display: flex; align-items: center; gap: 6px; font-size: 13px; white-space: nowrap; margin-bottom: 4px; cursor: pointer; }
   .chk input { width: 18px; height: 18px; padding: 0; accent-color: var(--ok); }
@@ -737,8 +740,8 @@ function rowAdmin(c, s) {
     <td><select aria-label="Réponse" class="rep rep-${c.reponse}" onchange="upd(${c.id},{reponse:this.value})">
       ${[['attente','Sans réponse'],['present','Présent'],['absent','Absent']].map(([v, l]) => `<option value="${v}" ${c.reponse === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
       ${c.reponse_le ? `<div class="small muted">le ${fmtShort(String(c.reponse_le).slice(0,10))}</div>` : ''}</td>
-    <td>${docs.map((d, i) => `<label class="chk"><input type="checkbox" ${(c.docs_recus || []).includes(d) ? 'checked' : ''} onchange="toggleDoc(${c.id},${i},this.checked)">${esc(d)}</label>`).join('') || '<span class="muted small">—</span>'}</td>
-    <td><div class="pay">
+    <td class="${docs.length && docs.every(d => (c.docs_recus || []).includes(d)) ? 'cell-ok' : (c.docs_recus || []).some(d => docs.includes(d)) ? 'cell-part' : ''}">${docs.map((d, i) => `<label class="chk"><input type="checkbox" ${(c.docs_recus || []).includes(d) ? 'checked' : ''} onchange="toggleDoc(${c.id},${i},this.checked)">${esc(d)}</label>`).join('') || '<span class="muted small">—</span>'}</td>
+    <td class="${c.paye ? 'cell-ok' : ''}"><div class="pay">
       <input type="checkbox" style="width:18px;height:18px;padding:0;accent-color:var(--ok)" ${c.paye ? 'checked' : ''} aria-label="Payé" onchange="togglePaye(${c.id},this.checked)"><b class="small">${c.paye ? 'Payé' : 'Non payé'}</b>
       <span class="small muted">Mode</span><select aria-label="Mode de paiement" onchange="upd(${c.id},{paiement_mode:this.value})"><option value="">—</option>${MODES.map(m => `<option ${c.paiement_mode === m ? 'selected' : ''}>${m}</option>`).join('')}</select>
       <span class="small muted">Date</span><input type="date" value="${esc(c.paiement_date || '')}" aria-label="Date du paiement" onchange="upd(${c.id},{paiement_date:this.value})">
