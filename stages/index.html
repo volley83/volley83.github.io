@@ -570,6 +570,7 @@ function renderConv(c) {
       <div><h2>${esc(c.titre)}</h2><div class="muted" style="margin-top:4px;font-weight:600">${esc(fmtDates(c.date_debut, c.date_fin))}${c.lieu ? ' · ' + esc(c.lieu) : ''}</div></div>
       ${repTxt}
     </div>
+    ${c.convocation_url ? `<div class="btnrow" style="margin-top:12px"><a class="btn ghost" href="${esc(c.convocation_url)}" target="_blank" rel="noopener">📄 Convocation (PDF)</a></div>` : ''}
     ${c.horaires ? `<div class="txt one" style="margin-top:12px">${richText(c.horaires)}</div>` : ''}
     ${c.infos ? `<details style="margin-top:6px"><summary style="cursor:pointer;font-weight:700;color:var(--blue);min-height:40px;display:flex;align-items:center">Informations pratiques et matériel</summary><div class="txt" style="margin-top:8px">${richText(c.infos)}</div></details>` : ''}
 
@@ -770,6 +771,7 @@ function renderAdmin() {
     <div class="btnrow" style="margin:0">
       <button class="btn accent" onclick="docListe(${s.id}, 'pdf')">📄 Liste des convoqués à diffuser (PDF)</button>
       <button class="btn ghost" onclick="docListe(${s.id}, 'png')">🖼 Image pour les réseaux</button>
+      <button class="btn accent" onclick="docListe(${s.id}, 'pdf', 'presents')">📋 Liste des présents, absents en rouge (PDF)</button>
     </div>
     ${list.length ? `<div class="tablebox"><table class="suivi">
       <thead><tr><th>Stagiaire</th><th>Code</th><th>Réponse</th><th>Documents reçus <span style="text-transform:none;letter-spacing:0;font-weight:500">(valables toute la saison)</span></th><th>Paiement</th><th>Reçu</th><th></th></tr></thead>
@@ -887,6 +889,7 @@ async function activer(cid) {
   catch(e) { alert(e.message); return; }
   if (c.email_parent && confirm(`${c.prenom} est convoqué(e).\n\nPréparer le mail pour prévenir la famille (${c.email_parent}) ?`)) mailCode(cid, true);
 }
+const convUrl = (s, c) => (c.sexe === 'M' && s.convocation_url_m) ? s.convocation_url_m : (s.convocation_url || '');
 // Mail individuel avec le code (remplaçant, famille qui a perdu le mail…) : ouvre un brouillon Gmail prérempli
 function mailCode(cid, remplacement) {
   const c = ADMIN.convocations.find(x => x.id === cid), s = ADMIN.stages.find(x => x.id === c.stage_id);
@@ -898,6 +901,7 @@ function mailCode(cid, remplacement) {
   const sujet = `Convocation – ${s.titre}`;
   const corps = `Bonjour,\n\n${remplacement ? 'Une place s\'est libérée : ' : ''}${prenoms} ${enfants.length > 1 ? 'sont convoqués' : 'est convoqué(e)'} au ${s.titre}, ${fmtDates(s.date_debut, s.date_fin)}${s.lieu ? ', ' + s.lieu : ''}.\n\n`
     + `Merci de confirmer ${enfants.length > 1 ? 'leur' : 'sa'} présence${s.date_limite && s.date_limite >= today() ? ' avant le ' + fmtD(s.date_limite) : ' dès que possible'} sur l'espace parents, où vous trouverez aussi les informations pratiques, les documents à fournir et le paiement :\n${SITE_URL}#parents\n\n`
+    + (convUrl(s, c) ? `La convocation (PDF) : ${convUrl(s, c)}\n\n` : '')
     + enfants.map(x => `${x.prenom} — Nom : ${x.nom} · Année de naissance : ${x.annee_naissance} · Code : ${x.code}`).join('\n')
     + `\n\nSportivement,\nLe Comité du Var de Volley-Ball`;
   window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(c.email_parent.trim())}&su=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`, '_blank', 'noopener');
@@ -935,6 +939,10 @@ function stageForm(s) {
     <div class="field"><label>Horaires</label><textarea name="horaires" style="min-height:60px">${v('horaires')}</textarea></div>
     <div class="field"><label>Informations pour les familles (matériel, repas, programme…)</label><textarea name="infos">${v('infos')}</textarea></div>
     <div class="field"><label>Modalités de paiement</label><textarea name="paiement_infos" style="min-height:60px" placeholder="Chèque à l'ordre du Comité du Var de Volley-Ball, à remettre le premier jour…">${v('paiement_infos')}</textarea></div>
+    <div class="grid2">
+      <div class="field"><label>Lien du PDF de la convocation</label><input name="convocation_url" type="url" value="${v('convocation_url')}" placeholder="https://…"><span class="small muted">Bouton « Convocation » dans l'espace parents et lien dans le mail « Envoyer le code ».</span></div>
+      <div class="field"><label>Convocation des garçons, si différente</label><input name="convocation_url_m" type="url" value="${v('convocation_url_m')}" placeholder="Laisser vide si la même pour tous"></div>
+    </div>
     <div class="field"><label>Lien du document des points travaillés (à découper et coller dans le classeur)</label><input name="points_url" type="url" value="${v('points_url')}" placeholder="https://… (fichier PDF sur Google Drive, ou dans le dépôt GitHub)"><span class="small muted">Visible uniquement dans l'espace parents des enfants convoqués. Laisser vide tant que le document n'est pas prêt.</span></div>
     <div class="field"><label>Documents demandés (un par ligne)</label><textarea name="documents" style="min-height:80px">${esc((s.documents || []).map(d => (s.documents_liens || {})[d] ? d + ' | ' + s.documents_liens[d] : d).join('\n'))}</textarea><span class="small muted">Pour proposer le document vierge aux familles, ajouter son lien après une barre : <code>Fiche sanitaire | https://…</code></span></div>
     <label class="chk"><input type="checkbox" name="liste_publique" ${s.liste_publique !== false ? 'checked' : ''}>Afficher la liste des convoqués (prénom, nom, club) sur la page publique</label>
@@ -961,6 +969,7 @@ async function saveStage(ev, id) {
   const s = { id, titre: g('titre').value.trim(), categorie: g('categorie').value.trim(), date_debut: g('date_debut').value, date_fin: g('date_fin').value,
     date_limite: g('date_limite').value, lieu: g('lieu').value.trim(), tarif: g('tarif').value, horaires: g('horaires').value.trim(),
     infos: g('infos').value.trim(), paiement_infos: g('paiement_infos').value.trim(), points_url: g('points_url').value.trim(),
+    convocation_url: g('convocation_url').value.trim(), convocation_url_m: g('convocation_url_m').value.trim(),
     ...parseDocs(g('documents').value),
     liste_publique: g('liste_publique').checked, actif: g('actif').checked };
   if (!s.titre || !s.date_debut) { alert('Le titre et le premier jour sont obligatoires.'); return; }
@@ -1027,14 +1036,15 @@ async function doImport() {
 
 // ----- Liste des convoqués à diffuser aux clubs (PDF pour le mail, image pour les réseaux) -----
 function loadImg(src) { return new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = src; }); }
-async function docListe(sid, fmt) {
+async function docListe(sid, fmt, mode) {
+  const PRES = mode === 'presents';   // après les réponses : absents en rouge, repêchés inclus, sans liste d'attente
   const s = ADMIN.stages.find(x => x.id === sid);
   const sx = SEXE === 'F' || SEXE === 'M' ? SEXE : null;
   if (!sx) { alert('Choisissez d\'abord l\'onglet « Filles » ou « Garçons » au-dessus : une liste est créée pour chacun.'); return; }
   const F = sx === 'F', e = F ? 'e' : '';
   const byNom = (a, b) => (a.nom + ' ' + a.prenom).localeCompare(b.nom + ' ' + b.prenom, 'fr');
-  const conv = ADMIN.convocations.filter(c => c.stage_id === sid && !enAttente(c) && c.sexe === sx && c.reponse !== 'absent').sort(byNom);
-  const att = ADMIN.convocations.filter(c => c.stage_id === sid && enAttente(c) && c.sexe === sx).sort((a, b) => (a.rang_attente || 0) - (b.rang_attente || 0));
+  const conv = ADMIN.convocations.filter(c => c.stage_id === sid && !enAttente(c) && c.sexe === sx && (PRES || c.reponse !== 'absent')).sort(byNom);
+  const att = PRES ? [] : ADMIN.convocations.filter(c => c.stage_id === sid && enAttente(c) && c.sexe === sx).sort((a, b) => (a.rang_attente || 0) - (b.rang_attente || 0));
   if (!conv.length) { alert('Aucun' + (F ? 'e convoquée' : ' convoqué') + ' pour ce stage.'); return; }
   if (fmt === 'pdf' && !window.jspdf) { alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.'); return; }
   try { await Promise.all(['800 40px "Barlow Condensed"', '600 40px "Barlow Condensed"', '400 20px Inter', '600 20px Inter', '700 20px Inter', 'italic 600 20px Inter'].map(f => document.fonts.load(f))); } catch(err) {}
@@ -1060,7 +1070,7 @@ async function docListe(sid, fmt) {
   g.fillStyle = LINE; g.fillRect(60, 190, W - 120, 2);
   txt('COMMISSION TECHNIQUE', W / 2, 236, `700 30px ${COND}`, MUTED, 'center');
   const periode = String(s.titre).split(/\s[–-]\s/).slice(1).join(' – ') || s.titre;
-  txt(`Liste des convoqué${e}s – ${periode}`, W / 2, 292, `800 58px ${COND}`, NAVY, 'center', W - 140);
+  txt(`Liste des ${PRES ? 'présent' : 'convoqué'}${e}s – ${periode}`, W / 2, 292, `800 58px ${COND}`, NAVY, 'center', W - 140);
   g.fillStyle = GOLD; g.fillRect(W / 2 - 70, 330, 140, 6);
   txt(`Stage ${F ? 'féminin' : 'masculin'} · ${fmtDates(s.date_debut, s.date_fin)}${s.lieu ? ' · ' + s.lieu.split(',')[0] : ''}`, W / 2, 374, `500 26px ${BODY}`, MUTED, 'center', W - 140);
   // Tableau : deux colonnes, remplies de haut en bas puis à droite
@@ -1084,11 +1094,15 @@ async function docListe(sid, fmt) {
         g.fillStyle = LINE; g.fillRect(x, y + (r + 1) * rh - 1, CW, 1);
         if (!c) return;
         const cy = y + r * rh + rh / 2;
+        const abs = PRES && c.reponse === 'absent', nr = PRES && c.reponse === 'attente';
+        if (abs) { g.fillStyle = '#FDECEC'; g.fillRect(x, y + r * rh, CW, rh - 1); }
+        const cN = abs ? '#B42318' : nr ? '#8A94A6' : NAVY, cP = abs ? '#B42318' : nr ? '#8A94A6' : '#1B2433', cC = abs ? '#B42318' : MUTED;
         let nx = x + 14;
         if (ranked) { txt(String(i + 1), nx + 12, cy, `800 ${fs * 0.85}px ${BODY}`, WAIT, 'center'); nx += 34; }
-        txt(String(c.nom).toUpperCase(), nx, cy, `600 ${fs}px ${BODY}`, NAVY, 'left', cols[1] - (nx - x) - 8);
-        txt(c.prenom, x + cols[1] + 14, cy, `400 ${fs}px ${BODY}`, '#1B2433', 'left', cols[2] - cols[1] - 20);
-        txt(c.club || '', x + (cols[2] + cols[3]) / 2, cy, `600 ${fs * 0.9}px ${BODY}`, MUTED, 'center', cols[3] - cols[2] - 10);
+        txt(String(c.nom).toUpperCase(), nx, cy, `600 ${fs}px ${BODY}`, cN, 'left', cols[1] - (nx - x) - 8);
+        txt(c.prenom, x + cols[1] + 14, cy, `${nr ? 'italic ' : ''}400 ${fs}px ${BODY}`, cP, 'left', cols[2] - cols[1] - 20);
+        txt(abs ? 'ABSENT' + e.toUpperCase() : c.club || '', x + (cols[2] + cols[3]) / 2, cy, `${abs ? 800 : 600} ${fs * (abs ? 0.72 : 0.9)}px ${BODY}`, cC, 'center', cols[3] - cols[2] - 10);
+        if (abs) { g.font = `600 ${fs}px ${BODY}`; const w = Math.min(g.measureText(String(c.nom).toUpperCase()).width, cols[1] - (nx - x) - 8); g.fillStyle = '#B42318'; g.fillRect(nx, cy, w, 2); }
       });
     }
     X.forEach(x => { g.strokeStyle = LINE; g.lineWidth = 1; g.strokeRect(x + 0.5, y - rh + 0.5, CW - 1, rh * (n + 1) - 1); });
@@ -1103,6 +1117,11 @@ async function docListe(sid, fmt) {
   }
   // Notes
   y += 44;
+  if (PRES) {
+    const nA = conv.filter(c => c.reponse === 'absent').length, nR = conv.filter(c => c.reponse === 'attente').length, nP = conv.length - nA - nR;
+    txt(`${nP} présent${e}${nP > 1 ? 's' : ''}  ·  ${nA} absent${e}${nA > 1 ? 's' : ''} (en rouge, convocation déclinée)${nR ? `  ·  ${nR} sans réponse (en gris)` : ''}`, W / 2, y, `700 22px ${BODY}`, NAVY, 'center', W - 140);
+    y += 46;
+  }
   if (att.length) { txt(`${F ? 'Les joueuses' : 'Les joueurs'} de la liste d'attente seront convoqué${e}s, dans l'ordre, au fur et à mesure que des places se libèrent.`, W / 2, y, `italic 600 21px ${BODY}`, '#B42318', 'center', W - 140); y += 46; }
   const rappel = `${F ? 'Les joueuses' : 'Les joueurs'} qui n'auront pas donné leur réponse (positive ou négative) avant la date limite indiquée sur la convocation ne seront plus convoqué${e}s pour les autres stages de la saison. ${F ? 'Les joueuses indisponibles' : 'Les joueurs indisponibles'} sur ces vacances seront convoqué${e}s sur un prochain stage.`;
   g.font = `500 20px ${BODY}`;
@@ -1122,7 +1141,7 @@ async function docListe(sid, fmt) {
   g.fillStyle = LINE; g.fillRect(60, H - 82, W - 120, 2);
   txt('Maison des sports du Var – 133, boulevard du Général Brosset – 83200 Toulon', W / 2, H - 56, `600 18px ${BODY}`, NAVY, 'center');
   txt('06 13 30 34 25 · contact@volley83.fr · www.volley83.fr', W / 2, H - 30, `400 17px ${BODY}`, MUTED, 'center');
-  const nomFichier = `Liste-convoque${e}s-${slug(s.titre)}`;
+  const nomFichier = `Liste-${PRES ? 'present' : 'convoque'}${e}s-${slug(s.titre)}`;
   if (fmt === 'pdf') {
     const { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' });
     doc.addImage(cv.toDataURL('image/png'), 'PNG', 0, 0, 210, 297, undefined, 'FAST');
