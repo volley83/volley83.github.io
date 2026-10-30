@@ -129,6 +129,9 @@
   .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; background: #C9D2E2; }
   .dot.present { background: #2E9E4F; } .dot.absent { background: #D9534F; } .dot.attente { background: #C9D2E2; }
   .convoques .cv-absent { color: var(--muted); text-decoration: line-through; text-decoration-color: rgba(163,35,29,.45); }
+  .conv-grp { margin-top: 14px; }
+  .conv-h { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 18px; text-transform: uppercase; color: var(--navy); }
+  .conv-h small { font-family: Inter, sans-serif; text-transform: none; font-weight: 500; font-size: 13px; color: var(--muted); }
   .conv-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
 
   /* Formulaires */
@@ -187,6 +190,9 @@
   .suivi tr.row-present td:first-child { box-shadow: inset 4px 0 0 #2E9E4F; }
   .suivi tr.row-absent td:first-child { box-shadow: inset 4px 0 0 #D9534F; }
   .suivi tr.row-absent td { background: #FFF8F7; }
+  .suivi tr.grp td { background: var(--navy); color: #fff; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 1px; text-transform: uppercase; padding: 8px 12px; }
+  .suivi tr.grp-F td { background: #9C2F6B; } .suivi tr.grp-M td { background: var(--blue); } .suivi tr.grp-x td { background: var(--muted); }
+  .suivi select.sx { margin-left: 6px; padding: 2px 4px; font-size: 12px; border-radius: 6px; }
   .suivi td.cell-ok { background: var(--ok-bg) !important; }
   .suivi td.cell-part { background: #FFFBEA !important; }
   .suivi td.cell-ok .pay b, .suivi td.cell-ok::before { color: var(--ok); }
@@ -473,8 +479,14 @@ async function loadPublic() {
         </div>
         <div class="stage-foot">
           ${conv ? `<details><summary>Liste des convoqués (${conv.length})</summary>
-            <div class="conv-legend"><span><i class="dot present"></i>Présence confirmée (${conv.filter(c => c.reponse === 'present').length})</span><span><i class="dot absent"></i>Absent(e) (${conv.filter(c => c.reponse === 'absent').length})</span><span><i class="dot attente"></i>En attente de réponse (${conv.filter(c => !c.reponse || c.reponse === 'attente').length})</span></div>
-            <div class="convoques">${conv.length ? conv.map(c => `<div class="cv-${c.reponse || 'attente'}"><i class="dot ${c.reponse || 'attente'}"></i>${esc(c.prenom)} ${esc(c.nom)}${c.club ? ` <small>· ${esc(c.club)}</small>` : ''}</div>`).join('') : '<div class="muted">La liste sera publiée avec l\'envoi des convocations.</div>'}</div></details>` : '<span></span>'}
+            <div class="conv-legend"><span><i class="dot present"></i>Présence confirmée</span><span><i class="dot absent"></i>Absent(e)</span><span><i class="dot attente"></i>En attente de réponse</span></div>
+            ${conv.length ? [['F', 'Filles'], ['M', 'Garçons'], ['?', 'Convoqués']].map(([g, lbl]) => {
+              const grp = conv.filter(c => (c.sexe || '?') === g);
+              if (!grp.length) return '';
+              const n = st => grp.filter(c => (c.reponse || 'attente') === st).length;
+              return `<div class="conv-grp"><div class="conv-h">${lbl} · ${grp.length} <small>(${n('present')} présence${n('present') > 1 ? 's' : ''} confirmée${n('present') > 1 ? 's' : ''}, ${n('absent')} absent${n('absent') > 1 ? 's' : ''}, ${n('attente')} en attente)</small></div>
+                <div class="convoques">${grp.map(c => `<div class="cv-${c.reponse || 'attente'}"><i class="dot ${c.reponse || 'attente'}"></i>${esc(c.prenom)} ${esc(c.nom)}${c.club ? ` <small>· ${esc(c.club)}</small>` : ''}</div>`).join('')}</div></div>`;
+            }).join('') : '<div class="muted">La liste sera publiée avec l\'envoi des convocations.</div>'}</details>` : '<span></span>'}
           <a class="btn accent" href="#parents">Répondre à la convocation</a>
         </div>
       </article>`;
@@ -668,7 +680,9 @@ async function genererRecu(r) {
 }
 
 // ======================== ADMIN ========================
-let ADMIN_PWD = '', ADMIN = { stages: [], convocations: [] }, CUR = null, FILTRE = 'tous', IMPORT_ROWS = [];
+let ADMIN_PWD = '', ADMIN = { stages: [], convocations: [] }, CUR = null, FILTRE = 'tous', SEXE = 'tous', IMPORT_ROWS = [], IMPORT_SEXE = '';
+const SEXE_LBL = { F: 'Filles', M: 'Garçons' };
+
 
 function openAdmin() { $('admin-login').hidden = false; $('a-msg').hidden = true; setTimeout(() => $('a-pwd').focus(), 30); }
 $('admin-form').addEventListener('submit', async ev => {
@@ -699,8 +713,11 @@ function renderAdmin() {
   const box = $('a-stage');
   if (CUR === 'new') { box.innerHTML = stageForm({ documents: DOCS_DEFAUT, liste_publique: true, actif: true }); return; }
   const s = ADMIN.stages.find(x => x.id === CUR);
-  const list = ADMIN.convocations.filter(c => c.stage_id === CUR);
+  const all = ADMIN.convocations.filter(c => c.stage_id === CUR);
+  const list = all.filter(c => SEXE === 'tous' || (c.sexe || '?') === SEXE);
   const docs = s.documents || [];
+  const nF = all.filter(c => c.sexe === 'F').length, nM = all.filter(c => c.sexe === 'M').length, nX = all.length - nF - nM;
+  const sx = (key, lbl, n) => `<button class="stage-tab ${SEXE === key ? 'on' : ''}" onclick="SEXE='${key}';renderAdmin()">${lbl} (${n})</button>`;
   const k = {
     tous: list.length,
     present: list.filter(c => c.reponse === 'present').length,
@@ -715,6 +732,7 @@ function renderAdmin() {
   box.innerHTML = `<div class="stack">
     <div class="card"><div class="stage-head"><div><h2>${esc(s.titre)}</h2><div class="muted" style="font-weight:600">${esc(fmtDates(s.date_debut, s.date_fin))}${s.lieu ? ' · ' + esc(s.lieu) : ''} · ${euros(s.tarif)}</div></div>
       ${s.date_limite ? `<span class="tag">Réponse avant le ${fmtShort(s.date_limite)}</span>` : ''}</div></div>
+    <div class="stage-tabs">${sx('tous', 'Filles et garçons', all.length)}${sx('F', 'Filles', nF)}${sx('M', 'Garçons', nM)}${nX ? sx('?', 'Non renseigné', nX) : ''}</div>
     <div class="kpis">${kpi('tous', 'convoqués')}${kpi('present', 'présents')}${kpi('absent', 'absents')}${kpi('attente', 'sans réponse')}${kpi('docs', 'dossiers incomplets')}${kpi('impaye', 'non payés')}</div>
     <div class="btnrow" style="margin:0">
       <button class="btn primary" onclick="exportCodes(${s.id})">⬇ Export pour les convocations (codes)</button>
@@ -723,10 +741,18 @@ function renderAdmin() {
     </div>
     ${list.length ? `<div class="tablebox"><table class="suivi">
       <thead><tr><th>Stagiaire</th><th>Code</th><th>Réponse</th><th>Documents reçus <span style="text-transform:none;letter-spacing:0;font-weight:500">(valables toute la saison)</span></th><th>Paiement</th><th>Reçu</th><th></th></tr></thead>
-      <tbody>${shown.map(c => rowAdmin(c, s)).join('') || '<tr><td colspan="7" class="muted">Personne dans ce filtre.</td></tr>'}</tbody></table></div>`
+      <tbody>${[['F', 'Filles'], ['M', 'Garçons'], ['?', 'Sexe non renseigné']].map(([g, lbl]) => {
+        const grp = shown.filter(c => (c.sexe || '?') === g);
+        return grp.length ? `<tr class="grp grp-${g === '?' ? 'x' : g}"><td colspan="7">${lbl} · ${grp.length}</td></tr>` + grp.map(c => rowAdmin(c, s)).join('') : '';
+      }).join('') || '<tr><td colspan="7" class="muted">Personne dans ce filtre.</td></tr>'}</tbody></table></div>`
       : '<div class="card msg info">Aucun convoqué pour ce stage : importez la liste ci-dessous.</div>'}
     <details class="box" ${list.length ? '' : 'open'}><summary>Importer des convoqués depuis Excel</summary><div>
       <p class="small">Dans Excel, sélectionnez les colonnes <b>Nom, Prénom, Club, Année de naissance, Mail des parents</b> (le mail est facultatif), copiez (Ctrl+C) puis collez ici (Ctrl+V). La ligne de titres est ignorée si elle est copiée. Un enfant déjà connu garde son code. Vous pouvez aussi taper une ligne à la main : NOM Prénom Club Année mail.</p>
+      <div class="field"><label>Ces enfants sont :</label>
+        <div style="display:flex;gap:18px;flex-wrap:wrap">
+          <label class="chk" style="font-size:15px"><input type="radio" name="imp-sexe" value="F" ${IMPORT_SEXE === 'F' ? 'checked' : ''} onchange="IMPORT_SEXE='F';previewImport()">des filles</label>
+          <label class="chk" style="font-size:15px"><input type="radio" name="imp-sexe" value="M" ${IMPORT_SEXE === 'M' ? 'checked' : ''} onchange="IMPORT_SEXE='M';previewImport()">des garçons</label>
+        </div></div>
       <textarea id="imp-text" placeholder="MARTIN	Léa	VCHPL	2016	parent@mail.fr" oninput="previewImport()"></textarea>
       <div id="imp-preview"></div>
     </div></details>
@@ -737,7 +763,9 @@ function renderAdmin() {
 function rowAdmin(c, s) {
   const docs = s.documents || [];
   return `<tr class="row-${c.reponse}">
-    <td><b>${esc(c.nom)} ${esc(c.prenom)}</b><div class="small muted">${esc(c.club || '')}${c.annee_naissance ? ' · ' + c.annee_naissance : ''}</div>
+    <td><b>${esc(c.nom)} ${esc(c.prenom)}</b>
+      <select class="sx" aria-label="Fille ou garçon" onchange="setSexe(${c.enfant_id}, this.value)"><option value="">?</option><option value="F" ${c.sexe === 'F' ? 'selected' : ''}>Fille</option><option value="M" ${c.sexe === 'M' ? 'selected' : ''}>Garçon</option></select>
+      <div class="small muted">${esc(c.club || '')}${c.annee_naissance ? ' · ' + c.annee_naissance : ''}</div>
       ${c.email_parent ? `<div class="small"><a href="mailto:${esc(c.email_parent)}">${esc(c.email_parent)}</a></div>` : ''}
       ${c.tel_parent ? `<div class="small">📞 <a href="tel:${esc(c.tel_parent.replace(/\s/g, ''))}">${esc(c.tel_parent)}</a></div>` : ''}
       ${c.commentaire ? `<div class="small muted">« ${esc(c.commentaire)} »</div>` : ''}</td>
@@ -780,6 +808,11 @@ function togglePaye(cid, on) {
   if (on && !c.paiement_date) p.paiement_date = today();
   if (on && c.montant == null) p.montant = String(s.tarif);
   upd(cid, p);
+}
+async function setSexe(eid, v) {
+  try { await rpc('stg_admin_update_enfant', { pwd: ADMIN_PWD, eid, p: { sexe: v } });
+    ADMIN.convocations.filter(x => x.enfant_id === eid).forEach(x => { x.sexe = v || null; }); renderAdmin(); loadPublic(); }
+  catch(e) { alert('Enregistrement impossible : ' + e.message); }
 }
 async function retirer(cid) {
   const c = ADMIN.convocations.find(x => x.id === cid);
@@ -871,7 +904,7 @@ function previewImport() {
     if (!isYear(c[3]) && isYear(c[2])) c = [c[0], c[1], c[3], c[2], c[4]];
     if (/^nom$/i.test(c[0])) return null;
     const y = /^\d{4}$/.test(c[3] || '') ? +c[3] : (parseDate(c[3]) ? +parseDate(c[3]).slice(0, 4) : null);
-    const r = { nom: c[0] || '', prenom: c[1] || '', club: c[2] || '', annee_naissance: y && y > 1990 && y < 2100 ? y : null, email_parent: c[4] || '' };
+    const r = { nom: c[0] || '', prenom: c[1] || '', club: c[2] || '', annee_naissance: y && y > 1990 && y < 2100 ? y : null, email_parent: c[4] || '', sexe: IMPORT_SEXE };
     r.ok = !!(r.nom && r.prenom && r.annee_naissance);
     if (r.ok) IMPORT_ROWS.push(r);
     return r;
@@ -880,12 +913,13 @@ function previewImport() {
   $('imp-preview').innerHTML = rows.length ? `<div class="preview"><table><thead><tr><th>Nom</th><th>Prénom</th><th>Club</th><th>Année</th><th>Mail</th></tr></thead><tbody>
     ${rows.map(r => `<tr class="${r.ok ? '' : 'bad'}"><td>${esc(r.nom)}</td><td>${esc(r.prenom)}</td><td>${esc(r.club)}</td><td>${r.annee_naissance || '<b>année ?</b>'}</td><td>${esc(r.email_parent)}</td></tr>`).join('')}</tbody></table></div>
     ${bad ? `<p class="small" style="color:var(--bad)">${bad} ligne(s) en rouge seront ignorées (nom, prénom ou année de naissance illisible).</p>` : ''}
-    <div class="btnrow" style="margin:0"><button class="btn primary" onclick="doImport()">Importer ${IMPORT_ROWS.length} convoqué(s)</button></div>` : '';
+    ${IMPORT_SEXE ? `<div class="btnrow" style="margin:0"><button class="btn primary" onclick="doImport()">Importer ${IMPORT_ROWS.length} ${IMPORT_SEXE === 'F' ? 'fille(s)' : 'garçon(s)'}</button></div>` : '<p class="msg err">Indiquez au-dessus s\'il s\'agit de filles ou de garçons.</p>'}` : '';
 }
 async function doImport() {
-  if (!IMPORT_ROWS.length) return;
+  if (!IMPORT_ROWS.length || !IMPORT_SEXE) return;
   try {
     const r = await rpc('stg_admin_import', { pwd: ADMIN_PWD, sid: CUR, rows: IMPORT_ROWS.map(({ ok, ...x }) => x) });
+    SEXE = IMPORT_SEXE;
     await loadAdmin(); loadPublic();
     alert(`Import terminé : ${r.ajoutes_au_stage} enfant(s) ajouté(s) au stage, dont ${r.nouveaux_enfants} nouveau(x) avec un code créé.`);
   } catch(e) { alert('Import impossible : ' + e.message); }
@@ -902,14 +936,14 @@ function csvDownload(name, header, rows) {
 function slug(t) { return String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w]+/g, '-').replace(/^-|-$/g, ''); }
 function exportCodes(sid) {
   const s = ADMIN.stages.find(x => x.id === sid);
-  const list = ADMIN.convocations.filter(c => c.stage_id === sid);
-  csvDownload(`Convocations-${slug(s.titre)}.csv`, ['Nom', 'Prénom', 'Club', 'Année de naissance', 'Mail parent', 'Code', 'Lien espace parents', 'Stage', 'Dates', 'Réponse avant le'],
-    list.map(c => [c.nom, c.prenom, c.club, c.annee_naissance, c.email_parent, c.code, SITE_URL + '#parents', s.titre, fmtDates(s.date_debut, s.date_fin), s.date_limite ? fmtD(s.date_limite) : '']));
+  const list = ADMIN.convocations.filter(c => c.stage_id === sid && (SEXE === 'tous' || (c.sexe || '?') === SEXE));
+  csvDownload(`Convocations-${slug(s.titre)}.csv`, ['Nom', 'Prénom', 'Fille/Garçon', 'Club', 'Année de naissance', 'Mail parent', 'Code', 'Lien espace parents', 'Stage', 'Dates', 'Réponse avant le'],
+    list.map(c => [c.nom, c.prenom, c.sexe === 'F' ? 'Fille' : c.sexe === 'M' ? 'Garçon' : '', c.club, c.annee_naissance, c.email_parent, c.code, SITE_URL + '#parents', s.titre, fmtDates(s.date_debut, s.date_fin), s.date_limite ? fmtD(s.date_limite) : '']));
 }
 // Une ligne par adresse mail : les frères et sœurs sont regroupés, la famille reçoit un seul mail avec tous les codes
 function exportFamilles(sid) {
   const s = ADMIN.stages.find(x => x.id === sid);
-  const list = ADMIN.convocations.filter(c => c.stage_id === sid);
+  const list = ADMIN.convocations.filter(c => c.stage_id === sid && (SEXE === 'tous' || (c.sexe || '?') === SEXE));
   const fam = new Map(), sansMail = [];
   list.forEach(c => {
     const k = (c.email_parent || '').trim().toLowerCase();
@@ -928,10 +962,10 @@ function exportFamilles(sid) {
 }
 function exportSuivi(sid) {
   const s = ADMIN.stages.find(x => x.id === sid), docs = s.documents || [];
-  const list = ADMIN.convocations.filter(c => c.stage_id === sid);
+  const list = ADMIN.convocations.filter(c => c.stage_id === sid && (SEXE === 'tous' || (c.sexe || '?') === SEXE));
   const lab = { attente: 'Sans réponse', present: 'Présent', absent: 'Absent' };
-  csvDownload(`Suivi-${slug(s.titre)}.csv`, ['Nom', 'Prénom', 'Club', 'Réponse', 'Téléphone parent', 'Commentaire'].concat(docs).concat(['Payé', 'Mode', 'Date paiement', 'Montant', 'N° reçu']),
-    list.map(c => [c.nom, c.prenom, c.club, lab[c.reponse], c.tel_parent, c.commentaire].concat(docs.map(d => (c.docs_recus || []).includes(d) ? 'Reçu' : 'Manquant'))
+  csvDownload(`Suivi-${slug(s.titre)}.csv`, ['Nom', 'Prénom', 'Fille/Garçon', 'Club', 'Réponse', 'Téléphone parent', 'Commentaire'].concat(docs).concat(['Payé', 'Mode', 'Date paiement', 'Montant', 'N° reçu']),
+    list.map(c => [c.nom, c.prenom, c.sexe === 'F' ? 'Fille' : c.sexe === 'M' ? 'Garçon' : '', c.club, lab[c.reponse], c.tel_parent, c.commentaire].concat(docs.map(d => (c.docs_recus || []).includes(d) ? 'Reçu' : 'Manquant'))
       .concat([c.paye ? 'Oui' : 'Non', c.paiement_mode, c.paiement_date ? fmtShort(c.paiement_date) : '', c.paye ? String(c.montant != null ? c.montant : s.tarif).replace('.', ',') : '', c.recu_num])));
 }
 
