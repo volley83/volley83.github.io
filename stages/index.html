@@ -345,7 +345,8 @@ const COMITE = {
   contact: 'contact@volley83.fr · 06 13 30 34 25',
   ville: 'Toulon',
 };
-const MODES = ['Chèque', 'Espèces', 'Virement', 'Carte bancaire / HelloAsso', 'Chèques vacances', 'Autre'];
+const MODES = ['Chèque', 'Espèces', 'Virement', 'Carte bancaire / HelloAsso', 'Chèques vacances', 'Autre (sans reçu)'];
+const sansRecu = m => /^autre/i.test(m || '');
 const DOCS_DEFAUT = ['Fiche de renseignements et autorisation parentale', 'Fiche sanitaire', 'Code de vie'];
 
 // ======================== OUTILS ========================
@@ -573,7 +574,7 @@ function renderConv(c) {
       <h3>${passe ? '' : '2. '}Documents</h3>
       <ul class="doclist">${docs.map(x => recus.includes(x)
         ? `<li><span class="ico ok">✓</span>${esc(x)} <span class="muted small" style="font-weight:500">· reçu</span></li>`
-        : `<li><span class="ico bad">!</span>${esc(x)} <span class="small" style="font-weight:600;color:var(--bad)">· manquant</span></li>`).join('')}</ul>
+        : `<li><span class="ico bad">!</span>${esc(x)} <span class="small" style="font-weight:600;color:var(--bad)">· manquant</span>${(c.documents_liens || {})[x] ? ` <a class="small" style="font-weight:700;white-space:nowrap" href="${esc(c.documents_liens[x])}" target="_blank" rel="noopener">⬇ Document vierge</a>` : ''}</li>`).join('')}</ul>
       ${manquants.length ? `<p class="msg info" style="margin-top:12px">Merci d'envoyer ${manquants.length > 1 ? 'les documents manquants' : 'le document manquant'} au Comité par mail à <a href="mailto:contact@volley83.fr?subject=${encodeURIComponent('Documents stage – ' + c.titre)}">contact@volley83.fr</a>, ou de ${manquants.length > 1 ? 'les' : 'le'} remettre au début du stage.</p>` : '<p class="msg ok" style="margin-top:12px">Dossier complet, merci !</p>'}
     </div>` : ''}
 
@@ -586,10 +587,12 @@ function renderConv(c) {
       <h3>${passe ? '' : '3. '}Paiement</h3>
       ${c.paye
         ? `<p><span class="status ok">✓ Paiement reçu</span></p>
-           <p style="margin-top:10px">${euros(c.montant != null ? c.montant : c.tarif)}${c.paiement_mode ? ' par ' + esc(c.paiement_mode.toLowerCase()) : ''}${c.paiement_date ? ' le ' + esc(fmtD(c.paiement_date)) : ''}.</p>
-           <div class="btnrow"><button class="btn ok" onclick="downloadRecuParent(${c.stage_id})">⬇ Télécharger le reçu de paiement</button></div>`
+           <p style="margin-top:10px">${euros(c.montant != null ? c.montant : c.tarif)}${c.paiement_mode && !sansRecu(c.paiement_mode) ? ' par ' + esc(c.paiement_mode.toLowerCase()) : ''}${c.paiement_date ? ' le ' + esc(fmtD(c.paiement_date)) : ''}.</p>
+           ${sansRecu(c.paiement_mode) ? '' : passe
+             ? `<div class="btnrow"><button class="btn ok" id="recu-${c.stage_id}" onclick="downloadRecuParent(${c.stage_id})">⬇ Télécharger le reçu de paiement</button></div>`
+             : '<p class="small muted" style="margin-top:6px">Le reçu sera disponible ici après le stage.</p>'}`
         : `${c.paiement_infos ? `<div class="txt one dots">${richText(c.paiement_infos)}</div>` : (Number(c.tarif) ? `<p>Participation : <b>${euros(c.tarif)}</b>.</p>` : '')}
-           <p class="small muted" style="margin-top:6px">Une fois le paiement enregistré par le Comité, vous pourrez télécharger votre reçu ici.</p>`}
+           <p class="small muted" style="margin-top:6px">Une fois le paiement enregistré par le Comité, le reçu sera disponible ici après le stage.</p>`}
     </div>
   </article>`;
 }
@@ -617,10 +620,15 @@ async function saveReponse(sid) {
   } finally { const b = $('save-' + sid); if (b) b.disabled = false; }
 }
 
-function downloadRecuParent(sid) {
+async function downloadRecuParent(sid) {
   const c = PARENT.data.convocations.find(x => x.stage_id === sid);
-  genererRecu({ prenom: PARENT.data.prenom, nom: PARENT.data.nom, titre: c.titre, date_debut: c.date_debut, date_fin: c.date_fin,
-    montant: c.montant != null ? c.montant : c.tarif, mode: c.paiement_mode, date: c.paiement_date, num: c.recu_num });
+  try {
+    const num = await rpc('stg_parent_recu', { p_nom: PARENT.nom, p_annee: +PARENT.naissance, p_code: PARENT.code, p_stage: sid });
+    if (!num) { alert('Le reçu n\'est pas encore disponible : il pourra être téléchargé après le stage.'); return; }
+    c.recu_num = num;
+    genererRecu({ prenom: PARENT.data.prenom, nom: PARENT.data.nom, titre: c.titre, date_debut: c.date_debut, date_fin: c.date_fin,
+      montant: c.montant != null ? c.montant : c.tarif, mode: c.paiement_mode, date: c.paiement_date, num });
+  } catch(e) { alert('Le reçu n\'a pas pu être généré. Réessayez dans quelques instants.'); }
 }
 
 // ======================== REÇU PDF ========================
@@ -780,7 +788,10 @@ function rowAdmin(c, s) {
       <span class="small muted">Date</span><input type="date" value="${esc(c.paiement_date || '')}" aria-label="Date du paiement" onchange="upd(${c.id},{paiement_date:this.value})">
       <span class="small muted">Montant</span><input type="number" step="0.01" min="0" value="${c.montant != null ? c.montant : ''}" placeholder="${s.tarif}" aria-label="Montant" onchange="upd(${c.id},{montant:this.value})">
     </div></td>
-    <td>${c.paye ? `<b class="small">${esc(c.recu_num || '')}</b><br><button class="linkbtn" onclick="recuAdmin(${c.id})">⬇ Reçu PDF</button>` : '<span class="muted small">—</span>'}</td>
+    <td>${!c.paye ? '<span class="muted small">—</span>'
+      : sansRecu(c.paiement_mode) ? '<span class="muted small">Sans reçu</span>'
+      : (s.date_fin || s.date_debut) >= today() ? '<span class="muted small">Après le stage</span>'
+      : `${c.recu_num ? `<b class="small">${esc(c.recu_num)}</b><br>` : ''}<button class="linkbtn" onclick="recuAdmin(${c.id})">⬇ Reçu PDF</button>`}</td>
     <td><button class="linkbtn red" onclick="retirer(${c.id})" aria-label="Retirer du stage">Retirer</button></td>
   </tr>`;
 }
@@ -819,10 +830,16 @@ async function retirer(cid) {
   if (!confirm(`Retirer ${c.prenom} ${c.nom} de ce stage ?`)) return;
   try { await rpc('stg_admin_remove_conv', { pwd: ADMIN_PWD, cid }); await loadAdmin(); } catch(e) { alert(e.message); }
 }
-function recuAdmin(cid) {
+async function recuAdmin(cid) {
   const c = ADMIN.convocations.find(x => x.id === cid), s = ADMIN.stages.find(x => x.id === c.stage_id);
-  genererRecu({ prenom: c.prenom, nom: c.nom, titre: s.titre, date_debut: s.date_debut, date_fin: s.date_fin,
-    montant: c.montant != null ? c.montant : s.tarif, mode: c.paiement_mode, date: c.paiement_date, num: c.recu_num });
+  try {
+    const num = await rpc('stg_admin_recu', { pwd: ADMIN_PWD, cid });
+    if (!num) { alert('Reçu indisponible : il faut que le paiement soit enregistré (hors mode « Autre ») et que le stage soit terminé.'); return; }
+    c.recu_num = num;
+    genererRecu({ prenom: c.prenom, nom: c.nom, titre: s.titre, date_debut: s.date_debut, date_fin: s.date_fin,
+      montant: c.montant != null ? c.montant : s.tarif, mode: c.paiement_mode, date: c.paiement_date, num });
+    renderAdmin();
+  } catch(e) { alert(e.message); }
 }
 
 // ----- Formulaire stage -----
@@ -847,7 +864,7 @@ function stageForm(s) {
     <div class="field"><label>Informations pour les familles (matériel, repas, programme…)</label><textarea name="infos">${v('infos')}</textarea></div>
     <div class="field"><label>Modalités de paiement</label><textarea name="paiement_infos" style="min-height:60px" placeholder="Chèque à l'ordre du Comité du Var de Volley-Ball, à remettre le premier jour…">${v('paiement_infos')}</textarea></div>
     <div class="field"><label>Lien du document des points travaillés (à découper et coller dans le classeur)</label><input name="points_url" type="url" value="${v('points_url')}" placeholder="https://… (fichier PDF sur Google Drive, ou dans le dépôt GitHub)"><span class="small muted">Visible uniquement dans l'espace parents des enfants convoqués. Laisser vide tant que le document n'est pas prêt.</span></div>
-    <div class="field"><label>Documents demandés (un par ligne)</label><textarea name="documents" style="min-height:80px">${esc((s.documents || []).join('\n'))}</textarea></div>
+    <div class="field"><label>Documents demandés (un par ligne)</label><textarea name="documents" style="min-height:80px">${esc((s.documents || []).map(d => (s.documents_liens || {})[d] ? d + ' | ' + s.documents_liens[d] : d).join('\n'))}</textarea><span class="small muted">Pour proposer le document vierge aux familles, ajouter son lien après une barre : <code>Fiche sanitaire | https://…</code></span></div>
     <label class="chk"><input type="checkbox" name="liste_publique" ${s.liste_publique !== false ? 'checked' : ''}>Afficher la liste des convoqués (prénom, nom, club) sur la page publique</label>
     <label class="chk"><input type="checkbox" name="actif" ${s.actif !== false ? 'checked' : ''}>Stage visible sur le site</label>
     <div class="btnrow" style="margin:0">
@@ -856,13 +873,23 @@ function stageForm(s) {
     </div>
   </form>`;
 }
+function parseDocs(txt) {
+  const documents = [], documents_liens = {};
+  txt.split('\n').map(x => x.trim()).filter(Boolean).forEach(l => {
+    const i = l.indexOf('|'), nom = (i < 0 ? l : l.slice(0, i)).trim(), url = i < 0 ? '' : l.slice(i + 1).trim();
+    if (!nom) return;
+    documents.push(nom);
+    if (/^https?:\/\//i.test(url)) documents_liens[nom] = url;
+  });
+  return { documents, documents_liens };
+}
 async function saveStage(ev, id) {
   ev.preventDefault();
   const f = ev.target, g = n => f.elements[n];
   const s = { id, titre: g('titre').value.trim(), categorie: g('categorie').value.trim(), date_debut: g('date_debut').value, date_fin: g('date_fin').value,
     date_limite: g('date_limite').value, lieu: g('lieu').value.trim(), tarif: g('tarif').value, horaires: g('horaires').value.trim(),
     infos: g('infos').value.trim(), paiement_infos: g('paiement_infos').value.trim(), points_url: g('points_url').value.trim(),
-    documents: g('documents').value.split('\n').map(x => x.trim()).filter(Boolean),
+    ...parseDocs(g('documents').value),
     liste_publique: g('liste_publique').checked, actif: g('actif').checked };
   if (!s.titre || !s.date_debut) { alert('Le titre et le premier jour sont obligatoires.'); return; }
   try { CUR = await rpc('stg_admin_save_stage', { pwd: ADMIN_PWD, s }); await loadAdmin(); loadPublic(); }
