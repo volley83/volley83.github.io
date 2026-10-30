@@ -755,7 +755,7 @@ function renderAdmin() {
       }).join('') || '<tr><td colspan="7" class="muted">Personne dans ce filtre.</td></tr>'}</tbody></table></div>`
       : '<div class="card msg info">Aucun convoqué pour ce stage : importez la liste ci-dessous.</div>'}
     <details class="box" ${list.length ? '' : 'open'}><summary>Importer des convoqués depuis Excel</summary><div>
-      <p class="small">Dans Excel, sélectionnez les colonnes <b>Nom, Prénom, Club, Année de naissance, Mail des parents</b> (le mail est facultatif), copiez (Ctrl+C) puis collez ici (Ctrl+V). La ligne de titres est ignorée si elle est copiée. Un enfant déjà connu garde son code. Vous pouvez aussi taper une ligne à la main : NOM Prénom Club Année mail.</p>
+      <p class="small">Dans Excel, sélectionnez les colonnes les lignes depuis la colonne <b>Nom</b> jusqu'au <b>mail des parents</b> (ordre : Nom, Prénom, Club, Année ; les colonnes intermédiaires — documents, paiement, remarques — sont ignorées, le mail est facultatif), copiez (Ctrl+C) puis collez ici (Ctrl+V). La ligne de titres est ignorée si elle est copiée. Un enfant déjà connu garde son code. Vous pouvez aussi taper une ligne à la main : NOM Prénom Club Année mail.</p>
       <div class="field"><label>Ces enfants sont :</label>
         <div style="display:flex;gap:18px;flex-wrap:wrap">
           <label class="chk" style="font-size:15px"><input type="radio" name="imp-sexe" value="F" ${IMPORT_SEXE === 'F' ? 'checked' : ''} onchange="IMPORT_SEXE='F';previewImport()">des filles</label>
@@ -928,10 +928,11 @@ function previewImport() {
     }
     // Ordre attendu : Nom, Prénom, Club, Année, Mail (l'ancien ordre Nom, Prénom, Année, Club reste accepté)
     const isYear = x => /^(\d{4}|\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{2,4}|\d{4}-\d{2}-\d{2})$/.test(String(x || '').trim());
-    if (!isYear(c[3]) && isYear(c[2])) c = [c[0], c[1], c[3], c[2], c[4]];
+    if (!isYear(c[3]) && isYear(c[2])) c = [c[0], c[1], c[3], c[2], ...c.slice(4)];
     if (/^nom$/i.test(c[0])) return null;
+    const mail = c.find(x => /^\S+@\S+\.\S+$/.test(String(x || '').trim())) || '';   // le mail peut être dans n'importe quelle colonne
     const y = /^\d{4}$/.test(c[3] || '') ? +c[3] : (parseDate(c[3]) ? +parseDate(c[3]).slice(0, 4) : null);
-    const r = { nom: c[0] || '', prenom: c[1] || '', club: c[2] || '', annee_naissance: y && y > 1990 && y < 2100 ? y : null, email_parent: c[4] || '', sexe: IMPORT_SEXE };
+    const r = { nom: c[0] || '', prenom: c[1] || '', club: c[2] || '', annee_naissance: y && y > 1990 && y < 2100 ? y : null, email_parent: mail, sexe: IMPORT_SEXE };
     r.ok = !!(r.nom && r.prenom && r.annee_naissance);
     if (r.ok) IMPORT_ROWS.push(r);
     return r;
