@@ -815,7 +815,7 @@ function rowAdmin(c, s) {
     <td><b>${esc(c.nom)} ${esc(c.prenom)}</b>
       <select class="sx" aria-label="Fille ou garçon" onchange="setSexe(${c.enfant_id}, this.value)"><option value="">?</option><option value="F" ${c.sexe === 'F' ? 'selected' : ''}>Fille</option><option value="M" ${c.sexe === 'M' ? 'selected' : ''}>Garçon</option></select>
       <div class="small muted">${esc(c.club || '')}${c.annee_naissance ? ' · ' + c.annee_naissance : ''}</div>
-      ${c.email_parent ? `<div class="small"><a href="mailto:${esc(c.email_parent)}">${esc(c.email_parent)}</a></div>` : ''}
+      ${c.email_parent ? `<div class="small"><a href="mailto:${esc(c.email_parent)}">${esc(c.email_parent)}</a> · <button class="linkbtn small" onclick="mailCode(${c.id})" title="Ouvre un brouillon Gmail avec le code, pour cette famille uniquement">✉ Envoyer le code</button></div>` : ''}
       ${c.tel_parent ? `<div class="small">📞 <a href="tel:${esc(c.tel_parent.replace(/\s/g, ''))}">${esc(c.tel_parent)}</a></div>` : ''}
       ${c.commentaire ? `<div class="small muted">« ${esc(c.commentaire)} »</div>` : ''}</td>
     <td><span class="code">${esc(c.code)}</span></td>
@@ -885,13 +885,22 @@ async function activer(cid) {
   if (!confirm(`Convoquer ${c.prenom} ${c.nom} au stage « ${s.titre} » ?`)) return;
   try { await rpc('stg_admin_update_conv', { pwd: ADMIN_PWD, cid, p: { statut: 'convoque' } }); await loadAdmin(); loadPublic(); }
   catch(e) { alert(e.message); return; }
-  if (c.email_parent && confirm(`${c.prenom} est convoqué(e).\n\nPréparer le mail pour prévenir la famille (${c.email_parent}) ?`)) {
-    const sujet = `Convocation – ${s.titre}`;
-    const corps = `Bonjour,\n\nUne place s'est libérée : ${c.prenom} est convoqué(e) au ${s.titre}, ${fmtDates(s.date_debut, s.date_fin)}${s.lieu ? ', ' + s.lieu : ''}.\n\n`
-      + `Merci de confirmer sa présence${s.date_limite && s.date_limite >= today() ? ' avant le ' + fmtD(s.date_limite) : ' dès que possible'} sur l'espace parents :\n${SITE_URL}#parents\n\n`
-      + `Nom : ${c.nom}\nAnnée de naissance : ${c.annee_naissance}\nCode : ${c.code}\n\nSportivement,\nLe Comité du Var de Volley-Ball`;
-    location.href = `mailto:${encodeURIComponent(c.email_parent)}?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`;
-  }
+  if (c.email_parent && confirm(`${c.prenom} est convoqué(e).\n\nPréparer le mail pour prévenir la famille (${c.email_parent}) ?`)) mailCode(cid, true);
+}
+// Mail individuel avec le code (remplaçant, famille qui a perdu le mail…) : ouvre un brouillon Gmail prérempli
+function mailCode(cid, remplacement) {
+  const c = ADMIN.convocations.find(x => x.id === cid), s = ADMIN.stages.find(x => x.id === c.stage_id);
+  if (!c.email_parent) { alert('Pas d\'adresse mail pour cette famille. Code de ' + c.prenom + ' : ' + c.code); return; }
+  const mail = c.email_parent.trim().toLowerCase();
+  const fratrie = ADMIN.convocations.filter(x => x.stage_id === c.stage_id && !enAttente(x) && (x.email_parent || '').trim().toLowerCase() === mail);
+  const enfants = fratrie.length ? fratrie : [c];
+  const prenoms = enfants.map(x => x.prenom).join(', ').replace(/, ([^,]*)$/, ' et $1');
+  const sujet = `Convocation – ${s.titre}`;
+  const corps = `Bonjour,\n\n${remplacement ? 'Une place s\'est libérée : ' : ''}${prenoms} ${enfants.length > 1 ? 'sont convoqués' : 'est convoqué(e)'} au ${s.titre}, ${fmtDates(s.date_debut, s.date_fin)}${s.lieu ? ', ' + s.lieu : ''}.\n\n`
+    + `Merci de confirmer ${enfants.length > 1 ? 'leur' : 'sa'} présence${s.date_limite && s.date_limite >= today() ? ' avant le ' + fmtD(s.date_limite) : ' dès que possible'} sur l'espace parents, où vous trouverez aussi les informations pratiques, les documents à fournir et le paiement :\n${SITE_URL}#parents\n\n`
+    + enfants.map(x => `${x.prenom} — Nom : ${x.nom} · Année de naissance : ${x.annee_naissance} · Code : ${x.code}`).join('\n')
+    + `\n\nSportivement,\nLe Comité du Var de Volley-Ball`;
+  window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(c.email_parent.trim())}&su=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`, '_blank', 'noopener');
 }
 async function recuAdmin(cid) {
   const c = ADMIN.convocations.find(x => x.id === cid), s = ADMIN.stages.find(x => x.id === c.stage_id);
