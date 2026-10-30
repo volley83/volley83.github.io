@@ -20,7 +20,7 @@
   body { background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; font-size: 15px; line-height: 1.5; min-height: 100vh; }
   [hidden] { display: none !important; }
   a { color: var(--blue); }
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
   h1, h2, h3, .cond { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: .5px; color: var(--navy); }
 
   /* En-tête */
@@ -52,6 +52,54 @@
   .fact b { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); font-weight: 700; }
   .fact span { font-weight: 600; }
   .pre { white-space: pre-line; }
+
+  /* Fiche stage (public) */
+  .stage-card { padding: 0; overflow: hidden; }
+  main.wrap { padding-top: 32px; padding-bottom: 64px; }
+  .season { padding: 24px 28px; }
+  .season-list { display: flex; flex-direction: column; margin-top: 14px; }
+  .season-row { display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 14px 0; border-top: 1px solid var(--line2); }
+  .season-date { text-align: center; background: var(--navy); color: #fff; border-radius: 10px; padding: 8px 4px; line-height: 1.1; }
+  .season-date b { display: block; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 22px; }
+  .season-date span { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: #C9D4EA; }
+  .season-title { font-weight: 700; font-size: 16px; color: var(--navy); }
+  @media (max-width: 560px) { .season { padding: 20px 18px; } .season-row { grid-template-columns: 64px minmax(0, 1fr); } .season-row .tag { grid-column: 2; justify-self: start; } }
+  .stage-top { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px 24px; padding: 26px 28px 22px; border-bottom: 1px solid var(--line); }
+  .stage-top h2 { font-size: 32px; font-weight: 800; line-height: 1.05; }
+  .stage-dates { margin-top: 8px; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 17px; color: var(--blue); }
+  .stage-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+  .stage-info { padding: 24px 28px; display: flex; flex-direction: column; gap: 18px; border-right: 1px solid var(--line); }
+  .info-row { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; align-items: start; }
+  .info-ico { width: 40px; height: 40px; border-radius: 10px; background: #E9EFFA; color: var(--blue); display: flex; align-items: center; justify-content: center; }
+  .info-ico svg { width: 20px; height: 20px; }
+  .info-row b { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin-bottom: 2px; }
+  .info-row .val { font-size: 15.5px; line-height: 1.55; }
+  .info-row .big { font-size: 22px; font-weight: 800; color: var(--navy); font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; }
+  .info-row.alert .info-ico { background: var(--warn-bg); color: var(--warn); }
+  .stage-extra { padding: 24px 28px; background: #FAFBFD; }
+  .stage-extra h3 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .txt p { margin: 0 0 10px; line-height: 1.6; }
+  .txt .sub { font-weight: 700; color: var(--navy); margin: 14px 0 8px; }
+  .txt .sub:first-child { margin-top: 0; }
+  .txt ul { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 18px; margin: 0 0 10px; }
+  .txt.one ul { grid-template-columns: 1fr; }
+  .txt.dots li::before { width: 7px; height: 7px; border: 0; border-radius: 2px; background: var(--accent); transform: rotate(45deg); top: 7px; left: 6px; }
+  .txt li { position: relative; padding-left: 26px; line-height: 1.45; font-size: 14.5px; overflow-wrap: anywhere; }
+  .txt p, .doclist li { overflow-wrap: anywhere; }
+  .txt li::before { content: ''; position: absolute; left: 0; top: 2px; width: 16px; height: 16px; border-radius: 5px; border: 2px solid var(--blue); box-sizing: border-box; }
+  .stage-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding: 18px 28px; border-top: 1px solid var(--line); }
+  .stage-foot details { flex: 1 1 320px; }
+  .stage-foot summary { cursor: pointer; font-weight: 700; color: var(--blue); min-height: 44px; display: flex; align-items: center; }
+  @media (max-width: 860px) {
+    .stage-body { grid-template-columns: 1fr; }
+    .stage-info { border-right: 0; border-bottom: 1px solid var(--line); }
+  }
+  @media (max-width: 560px) {
+    .stage-top, .stage-info, .stage-extra, .stage-foot { padding-left: 18px; padding-right: 18px; }
+    .stage-top h2 { font-size: 26px; }
+    .txt ul { grid-template-columns: 1fr; }
+    .stage-foot .btn { width: 100%; }
+  }
   .btnrow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid transparent; font-weight: 700; font-size: 15px; font-family: inherit; cursor: pointer; text-decoration: none; }
   .btn.primary { background: var(--navy); color: #fff; }
@@ -308,6 +356,32 @@ function montantEnLettres(v) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+// Texte libre -> paragraphes, sous-titres (« … : ») et listes (lignes commençant par - ou •)
+function richText(t) {
+  const lines = String(t || '').split(/\r?\n/);
+  let html = '', list = [];
+  const link = x => esc(x).replace(/https?:\/\/[^\s<]+/g, u => `<a href="${u}" target="_blank" rel="noopener">${/helloasso/.test(u) ? 'payer en ligne sur HelloAsso' : u.replace(/^https?:\/\//, '')}</a>`);
+  const flush = () => { if (list.length) { html += '<ul>' + list.map(x => `<li>${link(x)}</li>`).join('') + '</ul>'; list = []; } };
+  lines.forEach(l => {
+    const x = l.trim();
+    if (!x) { flush(); return; }
+    const m = x.match(/^[-•*]\s*(.+)$/);
+    if (m) { list.push(m[1]); return; }
+    flush();
+    html += /:$/.test(x) ? `<p class="sub">${esc(x.replace(/\s*:$/, ''))}</p>` : `<p>${link(x)}</p>`;
+  });
+  flush();
+  return html;
+}
+const ICO = {
+  lieu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+  heure: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  prix: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 6.5A7 7 0 1 0 17 17.5M4 10.5h9M4 13.5h9"/></svg>',
+  limite: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M12 14v3"/></svg>',
+  cal: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+};
+const infoRow = (ico, lbl, val, cls) => `<div class="info-row ${cls || ''}"><span class="info-ico">${ICO[ico]}</span><div><b>${lbl}</b><div class="val">${val}</div></div></div>`;
+
 // ======================== NAVIGATION ========================
 function route() {
   const h = location.hash.replace('#', '') || 'stages';
@@ -327,25 +401,40 @@ async function loadPublic() {
   try {
     const stages = await rpc('stg_public_stages') || [];
     if (!stages.length) { box.innerHTML = '<div class="card"><h2 style="font-size:24px">Aucun stage annoncé pour le moment</h2><p class="muted" style="margin-top:6px">Les prochains stages apparaîtront ici dès l\'envoi des convocations.</p></div>'; return; }
-    box.innerHTML = stages.map(s => {
+    // Stages avec convocations envoyées : fiche complète ; les autres : calendrier compact de la saison
+    const full = stages.filter(s => !s.liste_publique || (s.convoques && s.convoques.length));
+    const later = stages.filter(s => !full.includes(s));
+    const cal = later.length ? `<section class="card season">
+      <h2 style="font-size:24px">${full.length ? 'Les stages suivants' : 'Calendrier de la saison'}</h2>
+      <p class="muted small" style="margin-top:4px">Les convocations sont envoyées aux familles quelques semaines avant chaque stage.</p>
+      <div class="season-list">${later.map(s => `<div class="season-row">
+        <div class="season-date"><b>${parseD(s.date_debut).getDate()}${s.date_fin && s.date_fin !== s.date_debut ? '–' + parseD(s.date_fin).getDate() : ''}</b><span>${MOIS[parseD(s.date_debut).getMonth()].slice(0, 4)}${MOIS[parseD(s.date_debut).getMonth()].length > 4 ? '.' : ''} ${parseD(s.date_debut).getFullYear()}</span></div>
+        <div><div class="season-title">${esc(s.titre)}</div><div class="muted small">${esc(fmtDates(s.date_debut, s.date_fin))}${s.lieu ? ' · ' + esc(s.lieu.split(',')[0]) : ''}${Number(s.tarif) ? ' · ' + euros(s.tarif) : ''}</div></div>
+        <span class="tag" style="background:#F4F6FA;color:var(--muted)">Convocations à venir</span>
+      </div>`).join('')}</div></section>` : '';
+    box.innerHTML = full.map(s => {
       const conv = s.convoques;
-      return `<article class="card">
-        <div class="stage-head">
-          <div><h2>${esc(s.titre)}</h2><div class="muted" style="margin-top:4px;font-weight:600">${esc(fmtDates(s.date_debut, s.date_fin))}</div></div>
+      return `<article class="card stage-card">
+        <div class="stage-top">
+          <div><h2>${esc(s.titre)}</h2><div class="stage-dates">${ICO.cal}${esc(fmtDates(s.date_debut, s.date_fin))}</div></div>
           ${s.categorie ? `<span class="tag">${esc(s.categorie)}</span>` : ''}
         </div>
-        <div class="facts">
-          ${s.lieu ? `<div class="fact"><b>Lieu</b><span>${esc(s.lieu)}</span></div>` : ''}
-          ${s.horaires ? `<div class="fact"><b>Horaires</b><span class="pre">${esc(s.horaires)}</span></div>` : ''}
-          ${Number(s.tarif) ? `<div class="fact"><b>Participation</b><span>${euros(s.tarif)}</span></div>` : ''}
-          ${s.date_limite ? `<div class="fact"><b>Réponse avant le</b><span>${esc(fmtD(s.date_limite))}</span></div>` : ''}
+        <div class="stage-body">
+          <div class="stage-info">
+            ${s.lieu ? infoRow('lieu', 'Lieu', esc(s.lieu)) : ''}
+            ${s.horaires ? infoRow('heure', 'Horaires', `<div class="txt one">${richText(s.horaires)}</div>`) : ''}
+            ${Number(s.tarif) ? infoRow('prix', 'Participation', `<span class="big">${euros(s.tarif)}</span>`) : ''}
+            ${s.date_limite ? infoRow('limite', 'Réponse des familles avant le', `<strong>${esc(fmtD(s.date_limite, true))}</strong>`, 'alert') : ''}
+          </div>
+          <div class="stage-extra">${s.infos ? `<div class="txt">${richText(s.infos)}</div>` : '<p class="muted">Les informations pratiques seront précisées dans la convocation.</p>'}</div>
         </div>
-        ${s.infos ? `<p class="pre" style="margin-top:12px">${esc(s.infos)}</p>` : ''}
-        ${conv ? `<details style="margin-top:14px"><summary style="cursor:pointer;font-weight:700;color:var(--blue)">Liste des convoqués (${conv.length})</summary>
-          <div class="convoques">${conv.map(c => `<div>${esc(c.prenom)} ${esc(c.nom)}${c.club ? ` <small>· ${esc(c.club)}</small>` : ''}</div>`).join('')}</div></details>` : ''}
-        <div class="btnrow"><a class="btn accent" href="#parents">Répondre à la convocation</a></div>
+        <div class="stage-foot">
+          ${conv ? `<details><summary>Liste des convoqués (${conv.length})</summary>
+            <div class="convoques">${conv.length ? conv.map(c => `<div>${esc(c.prenom)} ${esc(c.nom)}${c.club ? ` <small>· ${esc(c.club)}</small>` : ''}</div>`).join('') : '<div class="muted">La liste sera publiée avec l\'envoi des convocations.</div>'}</div></details>` : '<span></span>'}
+          <a class="btn accent" href="#parents">Répondre à la convocation</a>
+        </div>
       </article>`;
-    }).join('');
+    }).join('') + cal;
   } catch(e) {
     console.error(e);
     box.innerHTML = '<div class="card msg err">Impossible de charger les stages pour le moment. Réessayez dans quelques instants.</div>';
@@ -408,8 +497,8 @@ function renderConv(c) {
       <div><h2>${esc(c.titre)}</h2><div class="muted" style="margin-top:4px;font-weight:600">${esc(fmtDates(c.date_debut, c.date_fin))}${c.lieu ? ' · ' + esc(c.lieu) : ''}</div></div>
       ${repTxt}
     </div>
-    ${c.horaires ? `<p class="pre" style="margin-top:10px"><b>Horaires :</b> ${esc(c.horaires)}</p>` : ''}
-    ${c.infos ? `<p class="pre" style="margin-top:6px">${esc(c.infos)}</p>` : ''}
+    ${c.horaires ? `<div class="txt one" style="margin-top:12px">${richText(c.horaires)}</div>` : ''}
+    ${c.infos ? `<details style="margin-top:6px"><summary style="cursor:pointer;font-weight:700;color:var(--blue);min-height:40px;display:flex;align-items:center">Informations pratiques et matériel</summary><div class="txt" style="margin-top:8px">${richText(c.infos)}</div></details>` : ''}
 
     ${passe ? '' : `<div class="block">
       <h3>1. Votre réponse</h3>
@@ -446,7 +535,7 @@ function renderConv(c) {
         ? `<p><span class="status ok">✓ Paiement reçu</span></p>
            <p style="margin-top:10px">${euros(c.montant != null ? c.montant : c.tarif)}${c.paiement_mode ? ' par ' + esc(c.paiement_mode.toLowerCase()) : ''}${c.paiement_date ? ' le ' + esc(fmtD(c.paiement_date)) : ''}.</p>
            <div class="btnrow"><button class="btn ok" onclick="downloadRecuParent(${c.stage_id})">⬇ Télécharger le reçu de paiement</button></div>`
-        : `<p>${Number(c.tarif) ? `Participation : <b>${euros(c.tarif)}</b>.` : ''} ${c.paiement_infos ? `<span class="pre">${esc(c.paiement_infos)}</span>` : ''}</p>
+        : `${c.paiement_infos ? `<div class="txt one dots">${richText(c.paiement_infos)}</div>` : (Number(c.tarif) ? `<p>Participation : <b>${euros(c.tarif)}</b>.</p>` : '')}
            <p class="small muted" style="margin-top:6px">Une fois le paiement enregistré par le Comité, vous pourrez télécharger votre reçu ici.</p>`}
     </div>
   </article>`;
