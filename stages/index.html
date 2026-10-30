@@ -192,7 +192,7 @@
       <h2 style="font-size:24px">Se connecter</h2>
       <p class="muted small">Le code personnel à 4 caractères figure dans le mail de convocation. Il est le même pour tous les stages de la saison.</p>
       <div class="field"><label for="l-nom">Nom de famille de l'enfant</label><input id="l-nom" autocomplete="family-name" required></div>
-      <div class="field"><label for="l-naiss">Date de naissance de l'enfant</label><input id="l-naiss" type="date" required></div>
+      <div class="field"><label for="l-naiss">Année de naissance de l'enfant</label><input id="l-naiss" type="number" inputmode="numeric" min="2000" max="2030" placeholder="ex. 2015" required></div>
       <div class="field"><label for="l-code">Code personnel</label><input id="l-code" maxlength="4" autocomplete="off" autocapitalize="characters" placeholder="ex. K7M2" style="text-transform:uppercase;letter-spacing:3px;font-weight:700" required></div>
       <div class="msg err" id="login-msg" hidden></div>
       <button class="btn primary" type="submit" id="login-btn">Accéder à la convocation</button>
@@ -359,11 +359,11 @@ $('login-form').addEventListener('submit', async ev => {
   ev.preventDefault();
   const nom = $('l-nom').value.trim(), naissance = $('l-naiss').value, code = $('l-code').value.trim().toUpperCase();
   const msg = $('login-msg');
-  if (!nom || !naissance || code.length !== 4) { msg.textContent = 'Merci de remplir les trois champs (le code fait 4 caractères).'; msg.hidden = false; return; }
+  if (!nom || !/^\d{4}$/.test(naissance) || code.length !== 4) { msg.textContent = 'Merci de remplir les trois champs (année sur 4 chiffres, code de 4 caractères).'; msg.hidden = false; return; }
   $('login-btn').disabled = true; msg.hidden = true;
   try {
-    const data = await rpc('stg_parent_login', { p_nom: nom, p_naissance: naissance, p_code: code });
-    if (!data) { msg.textContent = 'Aucune convocation ne correspond. Vérifiez le nom, la date de naissance et le code.'; msg.hidden = false; return; }
+    const data = await rpc('stg_parent_login', { p_nom: nom, p_annee: +naissance, p_code: code });
+    if (!data) { msg.textContent = 'Aucune convocation ne correspond. Vérifiez le nom, l\'année de naissance et le code.'; msg.hidden = false; return; }
     PARENT = { nom, naissance, code, data };
     try { sessionStorage.setItem('stg_parent', JSON.stringify({ nom, naissance, code })); } catch(e) {}
     renderChild();
@@ -379,7 +379,7 @@ function parentLogout() {
 }
 
 async function refreshParent() {
-  const d = await rpc('stg_parent_login', { p_nom: PARENT.nom, p_naissance: PARENT.naissance, p_code: PARENT.code });
+  const d = await rpc('stg_parent_login', { p_nom: PARENT.nom, p_annee: +PARENT.naissance, p_code: PARENT.code });
   if (d) { PARENT.data = d; renderChild(); }
 }
 
@@ -435,6 +435,11 @@ function renderConv(c) {
       ${manquants.length ? `<p class="msg info" style="margin-top:12px">Merci d'envoyer ${manquants.length > 1 ? 'les documents manquants' : 'le document manquant'} au Comité par mail à <a href="mailto:contact@volley83.fr?subject=${encodeURIComponent('Documents stage – ' + c.titre)}">contact@volley83.fr</a>, ou de ${manquants.length > 1 ? 'les' : 'le'} remettre au début du stage.</p>` : '<p class="msg ok" style="margin-top:12px">Dossier complet, merci !</p>'}
     </div>` : ''}
 
+    ${c.points_url ? `<div class="block">
+      <h3>Classeur de suivi</h3>
+      <p>Les points travaillés pendant ce stage, à imprimer, découper et coller dans le classeur de suivi.</p>
+      <div class="btnrow"><a class="btn accent" href="${esc(c.points_url)}" target="_blank" rel="noopener">📄 Points travaillés</a></div>
+    </div>` : ''}
     <div class="block">
       <h3>${passe ? '' : '3. '}Paiement</h3>
       ${c.paye
@@ -459,7 +464,7 @@ async function saveReponse(sid) {
   if (!rep) { msg.className = 'msg err'; msg.textContent = 'Indiquez si votre enfant sera présent ou absent.'; msg.hidden = false; return; }
   const btn = $('save-' + sid); btn.disabled = true;
   try {
-    const ok = await rpc('stg_parent_repondre', { p_nom: PARENT.nom, p_naissance: PARENT.naissance, p_code: PARENT.code,
+    const ok = await rpc('stg_parent_repondre', { p_nom: PARENT.nom, p_annee: +PARENT.naissance, p_code: PARENT.code,
       p_stage: sid, p_reponse: rep, p_tel: $('tel-' + sid).value, p_commentaire: $('com-' + sid).value });
     if (!ok) throw new Error('refus');
     await refreshParent();
@@ -582,7 +587,7 @@ function renderAdmin() {
       <tbody>${shown.map(c => rowAdmin(c, s)).join('') || '<tr><td colspan="7" class="muted">Personne dans ce filtre.</td></tr>'}</tbody></table></div>`
       : '<div class="card msg info">Aucun convoqué pour ce stage : importez la liste ci-dessous.</div>'}
     <details class="box" ${list.length ? '' : 'open'}><summary>Importer des convoqués depuis Excel</summary><div>
-      <p class="small">Dans Excel, sélectionnez les colonnes <b>Nom, Prénom, Date de naissance, Club, Mail des parents</b> (le mail est facultatif), copiez (Ctrl+C) puis collez ici (Ctrl+V). La ligne de titres est ignorée si elle est copiée. Un enfant déjà connu garde son code.</p>
+      <p class="small">Dans Excel, sélectionnez les colonnes <b>Nom, Prénom, Année de naissance, Club, Mail des parents</b> (le mail est facultatif), copiez (Ctrl+C) puis collez ici (Ctrl+V). La ligne de titres est ignorée si elle est copiée. Un enfant déjà connu garde son code.</p>
       <textarea id="imp-text" placeholder="MARTIN	Léa	04/03/2016	VC Hyères	parent@mail.fr" oninput="previewImport()"></textarea>
       <div id="imp-preview"></div>
     </div></details>
@@ -593,7 +598,7 @@ function renderAdmin() {
 function rowAdmin(c, s) {
   const docs = s.documents || [];
   return `<tr>
-    <td><b>${esc(c.nom)} ${esc(c.prenom)}</b><div class="small muted">${esc(c.club || '')}${c.date_naissance ? ' · né(e) le ' + fmtShort(c.date_naissance) : ''}</div>
+    <td><b>${esc(c.nom)} ${esc(c.prenom)}</b><div class="small muted">${esc(c.club || '')}${c.annee_naissance ? ' · ' + c.annee_naissance : ''}</div>
       ${c.email_parent ? `<div class="small"><a href="mailto:${esc(c.email_parent)}">${esc(c.email_parent)}</a></div>` : ''}
       ${c.tel_parent ? `<div class="small">📞 <a href="tel:${esc(c.tel_parent.replace(/\s/g, ''))}">${esc(c.tel_parent)}</a></div>` : ''}
       ${c.commentaire ? `<div class="small muted">« ${esc(c.commentaire)} »</div>` : ''}</td>
@@ -669,6 +674,7 @@ function stageForm(s) {
     <div class="field"><label>Horaires</label><textarea name="horaires" style="min-height:60px">${v('horaires')}</textarea></div>
     <div class="field"><label>Informations pour les familles (matériel, repas, programme…)</label><textarea name="infos">${v('infos')}</textarea></div>
     <div class="field"><label>Modalités de paiement</label><textarea name="paiement_infos" style="min-height:60px" placeholder="Chèque à l'ordre du Comité du Var de Volley-Ball, à remettre le premier jour…">${v('paiement_infos')}</textarea></div>
+    <div class="field"><label>Lien du document des points travaillés (à découper et coller dans le classeur)</label><input name="points_url" type="url" value="${v('points_url')}" placeholder="https://… (fichier PDF sur Google Drive, ou dans le dépôt GitHub)"><span class="small muted">Visible uniquement dans l'espace parents des enfants convoqués. Laisser vide tant que le document n'est pas prêt.</span></div>
     <div class="field"><label>Documents demandés (un par ligne)</label><textarea name="documents" style="min-height:80px">${esc((s.documents || []).join('\n'))}</textarea></div>
     <label class="chk"><input type="checkbox" name="liste_publique" ${s.liste_publique !== false ? 'checked' : ''}>Afficher la liste des convoqués (prénom, nom, club) sur la page publique</label>
     <label class="chk"><input type="checkbox" name="actif" ${s.actif !== false ? 'checked' : ''}>Stage visible sur le site</label>
@@ -683,7 +689,7 @@ async function saveStage(ev, id) {
   const f = ev.target, g = n => f.elements[n];
   const s = { id, titre: g('titre').value.trim(), categorie: g('categorie').value.trim(), date_debut: g('date_debut').value, date_fin: g('date_fin').value,
     date_limite: g('date_limite').value, lieu: g('lieu').value.trim(), tarif: g('tarif').value, horaires: g('horaires').value.trim(),
-    infos: g('infos').value.trim(), paiement_infos: g('paiement_infos').value.trim(),
+    infos: g('infos').value.trim(), paiement_infos: g('paiement_infos').value.trim(), points_url: g('points_url').value.trim(),
     documents: g('documents').value.split('\n').map(x => x.trim()).filter(Boolean),
     liste_publique: g('liste_publique').checked, actif: g('actif').checked };
   if (!s.titre || !s.date_debut) { alert('Le titre et le premier jour sont obligatoires.'); return; }
@@ -714,15 +720,16 @@ function previewImport() {
   const rows = lines.map(l => {
     const c = l.split(/\t|;/).map(x => x.trim());
     if (/^nom$/i.test(c[0])) return null;
-    const r = { nom: c[0] || '', prenom: c[1] || '', date_naissance: parseDate(c[2]), club: c[3] || '', email_parent: c[4] || '' };
-    r.ok = !!(r.nom && r.prenom && r.date_naissance);
+    const y = /^\d{4}$/.test(c[2] || '') ? +c[2] : (parseDate(c[2]) ? +parseDate(c[2]).slice(0, 4) : null);
+    const r = { nom: c[0] || '', prenom: c[1] || '', annee_naissance: y && y > 1990 && y < 2100 ? y : null, club: c[3] || '', email_parent: c[4] || '' };
+    r.ok = !!(r.nom && r.prenom && r.annee_naissance);
     if (r.ok) IMPORT_ROWS.push(r);
     return r;
   }).filter(Boolean);
   const bad = rows.filter(r => !r.ok).length;
-  $('imp-preview').innerHTML = rows.length ? `<div class="preview"><table><thead><tr><th>Nom</th><th>Prénom</th><th>Naissance</th><th>Club</th><th>Mail</th></tr></thead><tbody>
-    ${rows.map(r => `<tr class="${r.ok ? '' : 'bad'}"><td>${esc(r.nom)}</td><td>${esc(r.prenom)}</td><td>${r.date_naissance ? fmtShort(r.date_naissance) : '<b>date ?</b>'}</td><td>${esc(r.club)}</td><td>${esc(r.email_parent)}</td></tr>`).join('')}</tbody></table></div>
-    ${bad ? `<p class="small" style="color:var(--bad)">${bad} ligne(s) en rouge seront ignorées (nom, prénom ou date de naissance illisible).</p>` : ''}
+  $('imp-preview').innerHTML = rows.length ? `<div class="preview"><table><thead><tr><th>Nom</th><th>Prénom</th><th>Année</th><th>Club</th><th>Mail</th></tr></thead><tbody>
+    ${rows.map(r => `<tr class="${r.ok ? '' : 'bad'}"><td>${esc(r.nom)}</td><td>${esc(r.prenom)}</td><td>${r.annee_naissance || '<b>année ?</b>'}</td><td>${esc(r.club)}</td><td>${esc(r.email_parent)}</td></tr>`).join('')}</tbody></table></div>
+    ${bad ? `<p class="small" style="color:var(--bad)">${bad} ligne(s) en rouge seront ignorées (nom, prénom ou année de naissance illisible).</p>` : ''}
     <div class="btnrow" style="margin:0"><button class="btn primary" onclick="doImport()">Importer ${IMPORT_ROWS.length} convoqué(s)</button></div>` : '';
 }
 async function doImport() {
@@ -746,8 +753,8 @@ function slug(t) { return String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').rep
 function exportCodes(sid) {
   const s = ADMIN.stages.find(x => x.id === sid);
   const list = ADMIN.convocations.filter(c => c.stage_id === sid);
-  csvDownload(`Convocations-${slug(s.titre)}.csv`, ['Nom', 'Prénom', 'Date de naissance', 'Club', 'Mail parent', 'Code', 'Lien espace parents', 'Stage', 'Dates', 'Réponse avant le'],
-    list.map(c => [c.nom, c.prenom, fmtShort(c.date_naissance), c.club, c.email_parent, c.code, SITE_URL + '#parents', s.titre, fmtDates(s.date_debut, s.date_fin), s.date_limite ? fmtD(s.date_limite) : '']));
+  csvDownload(`Convocations-${slug(s.titre)}.csv`, ['Nom', 'Prénom', 'Année de naissance', 'Club', 'Mail parent', 'Code', 'Lien espace parents', 'Stage', 'Dates', 'Réponse avant le'],
+    list.map(c => [c.nom, c.prenom, c.annee_naissance, c.club, c.email_parent, c.code, SITE_URL + '#parents', s.titre, fmtDates(s.date_debut, s.date_fin), s.date_limite ? fmtD(s.date_limite) : '']));
 }
 // Une ligne par adresse mail : les frères et sœurs sont regroupés, la famille reçoit un seul mail avec tous les codes
 function exportFamilles(sid) {
@@ -783,7 +790,7 @@ function exportSuivi(sid) {
   try { const a = sessionStorage.getItem('stg_admin'); if (a) { await rpc('stg_admin_get', { pwd: a }); ADMIN_PWD = a; await loadAdmin(); } } catch(e) { ADMIN_PWD = ''; }
   try {
     const p = JSON.parse(sessionStorage.getItem('stg_parent') || 'null');
-    if (p) { const d = await rpc('stg_parent_login', { p_nom: p.nom, p_naissance: p.naissance, p_code: p.code }); if (d) { PARENT = { ...p, data: d }; renderChild(); } }
+    if (p) { const d = await rpc('stg_parent_login', { p_nom: p.nom, p_annee: +p.naissance, p_code: p.code }); if (d) { PARENT = { ...p, data: d }; renderChild(); } }
   } catch(e) {}
   route();
   loadPublic();
