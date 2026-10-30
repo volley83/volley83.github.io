@@ -272,8 +272,9 @@ function fmtShort(s) { const d = parseD(s); return d ? String(d.getDate()).padSt
 function fmtDates(a, b) {
   if (!b || b === a) return fmtD(a, true);
   const da = parseD(a), db = parseD(b);
+  const deuxJours = Math.round((db - da) / 864e5) === 1;
   if (da.getMonth() === db.getMonth() && da.getFullYear() === db.getFullYear())
-    return JOURS[da.getDay()] + ' ' + da.getDate() + ' et ' + JOURS[db.getDay()] + ' ' + db.getDate() + ' ' + MOIS[db.getMonth()] + ' ' + db.getFullYear();
+    return (deuxJours ? '' : 'du ') + JOURS[da.getDay()] + ' ' + da.getDate() + (deuxJours ? ' et ' : ' au ') + JOURS[db.getDay()] + ' ' + db.getDate() + ' ' + MOIS[db.getMonth()] + ' ' + db.getFullYear();
   return 'du ' + fmtD(a, true) + ' au ' + fmtD(b, true);
 }
 function euros(n) { const v = Number(n || 0); return (Number.isInteger(v) ? v : v.toFixed(2).replace('.', ',')) + ' €'; }
@@ -573,10 +574,11 @@ function renderAdmin() {
     <div class="kpis">${kpi('tous', 'convoqués')}${kpi('present', 'présents')}${kpi('absent', 'absents')}${kpi('attente', 'sans réponse')}${kpi('docs', 'dossiers incomplets')}${kpi('impaye', 'non payés')}</div>
     <div class="btnrow" style="margin:0">
       <button class="btn primary" onclick="exportCodes(${s.id})">⬇ Export pour les convocations (codes)</button>
+      <button class="btn ghost" onclick="exportFamilles(${s.id})">⬇ Export par famille (publipostage)</button>
       <button class="btn ghost" onclick="exportSuivi(${s.id})">⬇ Export du suivi</button>
     </div>
     ${list.length ? `<div class="tablebox"><table class="suivi">
-      <thead><tr><th>Stagiaire</th><th>Code</th><th>Réponse</th><th>Documents reçus</th><th>Paiement</th><th>Reçu</th><th></th></tr></thead>
+      <thead><tr><th>Stagiaire</th><th>Code</th><th>Réponse</th><th>Documents reçus <span style="text-transform:none;letter-spacing:0;font-weight:500">(valables toute la saison)</span></th><th>Paiement</th><th>Reçu</th><th></th></tr></thead>
       <tbody>${shown.map(c => rowAdmin(c, s)).join('') || '<tr><td colspan="7" class="muted">Personne dans ce filtre.</td></tr>'}</tbody></table></div>`
       : '<div class="card msg info">Aucun convoqué pour ce stage : importez la liste ci-dessous.</div>'}
     <details class="box" ${list.length ? '' : 'open'}><summary>Importer des convoqués depuis Excel</summary><div>
@@ -615,8 +617,10 @@ async function upd(cid, patch) {
   try {
     const r = await rpc('stg_admin_update_conv', { pwd: ADMIN_PWD, cid, p: patch });
     const c = ADMIN.convocations.find(x => x.id === cid);
-    Object.assign(c, { reponse: r.reponse, reponse_le: r.reponse_le, docs_recus: r.docs_recus, paye: r.paye, paiement_mode: r.paiement_mode,
+    Object.assign(c, { reponse: r.reponse, reponse_le: r.reponse_le, paye: r.paye, paiement_mode: r.paiement_mode,
       paiement_date: r.paiement_date, montant: r.montant, recu_num: r.recu_num });
+    // documents rattachés à l'enfant : valables pour tous ses stages de la saison
+    ADMIN.convocations.filter(x => x.enfant_id === c.enfant_id).forEach(x => { x.docs_recus = r.docs_recus; });
     renderAdmin();
   } catch(e) { alert('Enregistrement impossible : ' + e.message); loadAdmin(); }
 }
@@ -744,6 +748,26 @@ function exportCodes(sid) {
   const list = ADMIN.convocations.filter(c => c.stage_id === sid);
   csvDownload(`Convocations-${slug(s.titre)}.csv`, ['Nom', 'Prénom', 'Date de naissance', 'Club', 'Mail parent', 'Code', 'Lien espace parents', 'Stage', 'Dates', 'Réponse avant le'],
     list.map(c => [c.nom, c.prenom, fmtShort(c.date_naissance), c.club, c.email_parent, c.code, SITE_URL + '#parents', s.titre, fmtDates(s.date_debut, s.date_fin), s.date_limite ? fmtD(s.date_limite) : '']));
+}
+// Une ligne par adresse mail : les frères et sœurs sont regroupés, la famille reçoit un seul mail avec tous les codes
+function exportFamilles(sid) {
+  const s = ADMIN.stages.find(x => x.id === sid);
+  const list = ADMIN.convocations.filter(c => c.stage_id === sid);
+  const fam = new Map(), sansMail = [];
+  list.forEach(c => {
+    const k = (c.email_parent || '').trim().toLowerCase();
+    if (!k) { sansMail.push(c); return; }
+    if (!fam.has(k)) fam.set(k, { mail: c.email_parent.trim(), enfants: [] });
+    fam.get(k).enfants.push(c);
+  });
+  const rows = [...fam.values()].map(f => {
+    const e = f.enfants;
+    const prenoms = e.map(c => c.prenom).join(e.length > 2 ? ', ' : ' et ').replace(/, ([^,]*)$/, ' et $1');
+    const codes = e.length === 1 ? e[0].code : e.map(c => `${c.prenom} : ${c.code}`).join(' / ');
+    return [f.mail, prenoms, e.map(c => c.nom).filter((v, i, a) => a.indexOf(v) === i).join(' / '), codes, e.length, SITE_URL + '#parents', s.titre, fmtDates(s.date_debut, s.date_fin), s.date_limite ? fmtD(s.date_limite) : ''];
+  });
+  csvDownload(`Publipostage-${slug(s.titre)}.csv`, ['Mail', 'Prénom', 'Nom', 'Code', 'Nombre enfants', 'Lien', 'Stage', 'Dates', 'Réponse avant le'], rows);
+  if (sansMail.length) alert(`Fichier créé : ${rows.length} famille(s).\n\n${sansMail.length} enfant(s) sans adresse mail, à prévenir autrement :\n` + sansMail.map(c => `${c.prenom} ${c.nom} (code ${c.code})`).join('\n'));
 }
 function exportSuivi(sid) {
   const s = ADMIN.stages.find(x => x.id === sid), docs = s.documents || [];
