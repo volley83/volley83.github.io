@@ -126,6 +126,14 @@
   .convoques { margin-top: 14px; columns: 3 220px; column-gap: 24px; }
   .convoques div { break-inside: avoid; padding: 6px 0; border-bottom: 1px solid var(--line2); font-size: 14px; }
   .convoques small { color: var(--muted); }
+  .conv-pdf { display: flex; align-items: center; gap: 16px; margin-top: 16px; padding: 16px 18px; border-radius: 14px; background: #FFF7DB; border: 2px solid var(--accent); color: var(--text); text-decoration: none; }
+  .conv-pdf:hover { background: #FFF1C2; }
+  .conv-pdf-ico { flex: none; width: 52px; height: 62px; border-radius: 6px; background: #C8312A; color: #fff; font-weight: 800; font-size: 14px; letter-spacing: .5px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; box-shadow: inset -10px 10px 0 -2px rgba(255,255,255,.35); }
+  .conv-pdf-txt { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .conv-pdf-txt b { font-size: 17px; color: var(--navy); }
+  .conv-pdf-txt span { font-size: 14px; color: var(--muted); }
+  .conv-pdf-btn { flex: none; background: var(--navy); color: #fff; font-weight: 700; padding: 12px 18px; border-radius: 10px; white-space: nowrap; }
+  @media (max-width: 640px) { .conv-pdf { flex-wrap: wrap; } .conv-pdf-btn { width: 100%; text-align: center; } }
   .conv-h.wait { margin-top: 14px; color: #9A5B00; }
   ol.convoques.wait { padding-left: 0; list-style: none; counter-reset: att; }
   ol.convoques.wait li { break-inside: avoid; padding: 6px 0; border-bottom: 1px solid var(--line2); font-size: 14px; counter-increment: att; }
@@ -570,7 +578,11 @@ function renderConv(c) {
       <div><h2>${esc(c.titre)}</h2><div class="muted" style="margin-top:4px;font-weight:600">${esc(fmtDates(c.date_debut, c.date_fin))}${c.lieu ? ' · ' + esc(c.lieu) : ''}</div></div>
       ${repTxt}
     </div>
-    ${c.convocation_url ? `<div class="btnrow" style="margin-top:12px"><a class="btn ghost" href="${esc(c.convocation_url)}" target="_blank" rel="noopener">📄 Convocation (PDF)</a></div>` : ''}
+    ${c.convocation_url ? `<a class="conv-pdf" href="${esc(c.convocation_url)}" target="_blank" rel="noopener">
+      <span class="conv-pdf-ico" aria-hidden="true">PDF</span>
+      <span class="conv-pdf-txt"><b>La convocation officielle du stage</b><span>Horaires, matériel à apporter, modalités de paiement : à lire et à conserver.</span></span>
+      <span class="conv-pdf-btn">Ouvrir la convocation ↗</span>
+    </a>` : ''}
     ${c.horaires ? `<div class="txt one" style="margin-top:12px">${richText(c.horaires)}</div>` : ''}
     ${c.infos ? `<details style="margin-top:6px"><summary style="cursor:pointer;font-weight:700;color:var(--blue);min-height:40px;display:flex;align-items:center">Informations pratiques et matériel</summary><div class="txt" style="margin-top:8px">${richText(c.infos)}</div></details>` : ''}
 
