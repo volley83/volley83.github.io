@@ -176,7 +176,13 @@
   .suivi td { padding: 10px; border-bottom: 1px solid var(--line2); vertical-align: top; }
   .suivi tr:last-child td { border-bottom: 0; }
   .suivi select, .suivi input { padding: 6px 8px; font-size: 13px; border-radius: 8px; }
-  .suivi td:nth-child(3) select { min-width: 132px; }
+  .suivi td:nth-child(3) select { min-width: 132px; font-weight: 700; }
+  .suivi select.rep-present { background: var(--ok-bg); border-color: #8fd1a3; color: var(--ok); }
+  .suivi select.rep-absent { background: var(--bad-bg); border-color: #efb3ae; color: var(--bad); }
+  .suivi select.rep-attente { background: var(--warn-bg); border-color: #f0d38a; color: var(--warn); }
+  .suivi tr.row-present td:first-child { box-shadow: inset 4px 0 0 #2E9E4F; }
+  .suivi tr.row-absent td:first-child { box-shadow: inset 4px 0 0 #D9534F; }
+  .suivi tr.row-absent td { background: #FFF8F7; }
   .suivi .code { font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 700; letter-spacing: 1px; background: #F4F6FA; padding: 2px 6px; border-radius: 6px; }
   .chk { display: flex; align-items: center; gap: 6px; font-size: 13px; white-space: nowrap; margin-bottom: 4px; cursor: pointer; }
   .chk input { width: 18px; height: 18px; padding: 0; accent-color: var(--ok); }
@@ -722,13 +728,13 @@ function renderAdmin() {
 
 function rowAdmin(c, s) {
   const docs = s.documents || [];
-  return `<tr>
+  return `<tr class="row-${c.reponse}">
     <td><b>${esc(c.nom)} ${esc(c.prenom)}</b><div class="small muted">${esc(c.club || '')}${c.annee_naissance ? ' · ' + c.annee_naissance : ''}</div>
       ${c.email_parent ? `<div class="small"><a href="mailto:${esc(c.email_parent)}">${esc(c.email_parent)}</a></div>` : ''}
       ${c.tel_parent ? `<div class="small">📞 <a href="tel:${esc(c.tel_parent.replace(/\s/g, ''))}">${esc(c.tel_parent)}</a></div>` : ''}
       ${c.commentaire ? `<div class="small muted">« ${esc(c.commentaire)} »</div>` : ''}</td>
     <td><span class="code">${esc(c.code)}</span></td>
-    <td><select aria-label="Réponse" onchange="upd(${c.id},{reponse:this.value})">
+    <td><select aria-label="Réponse" class="rep rep-${c.reponse}" onchange="upd(${c.id},{reponse:this.value})">
       ${[['attente','Sans réponse'],['present','Présent'],['absent','Absent']].map(([v, l]) => `<option value="${v}" ${c.reponse === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
       ${c.reponse_le ? `<div class="small muted">le ${fmtShort(String(c.reponse_le).slice(0,10))}</div>` : ''}</td>
     <td>${docs.map((d, i) => `<label class="chk"><input type="checkbox" ${(c.docs_recus || []).includes(d) ? 'checked' : ''} onchange="toggleDoc(${c.id},${i},this.checked)">${esc(d)}</label>`).join('') || '<span class="muted small">—</span>'}</td>
