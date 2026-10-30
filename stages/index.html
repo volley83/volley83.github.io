@@ -126,6 +126,12 @@
   .convoques { margin-top: 14px; columns: 3 220px; column-gap: 24px; }
   .convoques div { break-inside: avoid; padding: 6px 0; border-bottom: 1px solid var(--line2); font-size: 14px; }
   .convoques small { color: var(--muted); }
+  .conv-h.wait { margin-top: 14px; color: #9A5B00; }
+  ol.convoques.wait { padding-left: 0; list-style: none; counter-reset: att; }
+  ol.convoques.wait li { break-inside: avoid; padding: 6px 0; border-bottom: 1px solid var(--line2); font-size: 14px; counter-increment: att; }
+  ol.convoques.wait li::before { content: counter(att); display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; margin-right: 8px; border-radius: 11px; background: #FDEBD3; color: #9A5B00; font-size: 12px; font-weight: 700; }
+  tr.row-wait td { background: #FFF8EE; }
+  .rang { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; border-radius: 14px; background: #FDEBD3; color: #9A5B00; font-weight: 800; }
   .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; background: #C9D2E2; }
   .dot.present { background: #2E9E4F; } .dot.absent { background: #D9534F; } .dot.attente { background: #C9D2E2; }
   .convoques .cv-absent { color: var(--muted); text-decoration: line-through; text-decoration-color: rgba(163,35,29,.45); }
@@ -463,7 +469,8 @@ async function loadPublic() {
         <span class="tag" style="background:#F4F6FA;color:var(--muted)">Convocations à venir</span>
       </div>`).join('')}</div></section>` : '';
     box.innerHTML = full.map(s => {
-      const conv = s.convoques;
+      const conv = s.convoques ? s.convoques.filter(c => c.statut !== 'attente') : null;
+      const att = s.convoques ? s.convoques.filter(c => c.statut === 'attente') : [];
       return `<article class="card stage-card">
         <div class="stage-top">
           <div><h2>${esc(s.titre)}</h2><div class="stage-dates">${ICO.cal}${esc(fmtDates(s.date_debut, s.date_fin))}</div></div>
@@ -486,7 +493,9 @@ async function loadPublic() {
               if (!grp.length) return '';
               const n = st => grp.filter(c => (c.reponse || 'attente') === st).length;
               return `<div class="conv-grp"><div class="conv-h">${lbl} · ${grp.length} <small>(${n('present')} présence${n('present') > 1 ? 's' : ''} confirmée${n('present') > 1 ? 's' : ''}, ${n('absent')} absent${n('absent') > 1 ? 's' : ''}, ${n('attente')} en attente)</small></div>
-                <div class="convoques">${grp.map(c => `<div class="cv-${c.reponse || 'attente'}"><i class="dot ${c.reponse || 'attente'}"></i>${esc(c.prenom)} ${esc(c.nom)}${c.club ? ` <small>· ${esc(c.club)}</small>` : ''}</div>`).join('')}</div></div>`;
+                <div class="convoques">${grp.map(c => `<div class="cv-${c.reponse || 'attente'}"><i class="dot ${c.reponse || 'attente'}"></i>${esc(c.prenom)} ${esc(c.nom)}${c.club ? ` <small>· ${esc(c.club)}</small>` : ''}</div>`).join('')}</div>
+                ${att.filter(c => (c.sexe || '?') === g).length ? `<div class="conv-h wait">Liste d'attente · ${att.filter(c => (c.sexe || '?') === g).length} <small>(convocation au fur et à mesure des places libérées)</small></div>
+                <ol class="convoques wait">${att.filter(c => (c.sexe || '?') === g).map(c => `<li>${esc(c.prenom)} ${esc(c.nom)}${c.club ? ` <small>· ${esc(c.club)}</small>` : ''}</li>`).join('')}</ol>` : ''}</div>`;
             }).join('') : '<div class="muted">La liste sera publiée avec l\'envoi des convocations.</div>'}</details>` : '<span></span>'}
           <a class="btn accent" href="#parents">Répondre à la convocation</a>
         </div>
@@ -544,6 +553,13 @@ function renderChild() {
 }
 
 function renderConv(c) {
+  if (c.statut === 'attente') return `<article class="card" id="conv-${c.stage_id}">
+    <div class="stage-head">
+      <div><h2>${esc(c.titre)}</h2><div class="muted" style="margin-top:4px;font-weight:600">${esc(fmtDates(c.date_debut, c.date_fin))}${c.lieu ? ' · ' + esc(c.lieu) : ''}</div></div>
+      <span class="status warn">Liste d'attente${c.rang_attente ? ' · n°' + c.rang_attente : ''}</span>
+    </div>
+    <p class="msg info" style="margin-top:14px">${esc(PARENT.data.prenom)} est sur la liste d'attente de ce stage${c.rang_attente ? ` (position <b>${c.rang_attente}</b>)` : ''}. Si une place se libère, le Comité vous préviendra et la convocation apparaîtra ici : vous pourrez alors confirmer la présence.</p>
+  </article>`;
   const passe = parseD(c.date_fin || c.date_debut) < parseD(today());
   const docs = c.documents || [], recus = c.docs_recus || [];
   const manquants = docs.filter(x => !recus.includes(x));
@@ -688,7 +704,9 @@ async function genererRecu(r) {
 }
 
 // ======================== ADMIN ========================
-let ADMIN_PWD = '', ADMIN = { stages: [], convocations: [] }, CUR = null, FILTRE = 'tous', SEXE = 'tous', IMPORT_ROWS = [], IMPORT_SEXE = '';
+let ADMIN_PWD = '', ADMIN = { stages: [], convocations: [] }, CUR = null, FILTRE = 'tous', SEXE = 'tous', IMPORT_ROWS = [], IMPORT_SEXE = '', IMPORT_STATUT = 'convoque';
+const enAttente = c => c.statut === 'attente';
+const convoques = sid => ADMIN.convocations.filter(c => c.stage_id === sid && !enAttente(c) && (SEXE === 'tous' || (c.sexe || '?') === SEXE));
 const SEXE_LBL = { F: 'Filles', M: 'Garçons' };
 
 
@@ -721,8 +739,10 @@ function renderAdmin() {
   const box = $('a-stage');
   if (CUR === 'new') { box.innerHTML = stageForm({ documents: DOCS_DEFAUT, liste_publique: true, actif: true }); return; }
   const s = ADMIN.stages.find(x => x.id === CUR);
-  const all = ADMIN.convocations.filter(c => c.stage_id === CUR);
+  const all = ADMIN.convocations.filter(c => c.stage_id === CUR && !enAttente(c));
   const list = all.filter(c => SEXE === 'tous' || (c.sexe || '?') === SEXE);
+  const att = ADMIN.convocations.filter(c => c.stage_id === CUR && enAttente(c) && (SEXE === 'tous' || (c.sexe || '?') === SEXE))
+    .sort((a, b) => (a.rang_attente || 0) - (b.rang_attente || 0));
   const docs = s.documents || [];
   const nF = all.filter(c => c.sexe === 'F').length, nM = all.filter(c => c.sexe === 'M').length, nX = all.length - nF - nM;
   const sx = (key, lbl, n) => `<button class="stage-tab ${SEXE === key ? 'on' : ''}" onclick="SEXE='${key}';renderAdmin()">${lbl} (${n})</button>`;
@@ -747,6 +767,10 @@ function renderAdmin() {
       <button class="btn ghost" onclick="exportFamilles(${s.id})">⬇ Export par famille (publipostage)</button>
       <button class="btn ghost" onclick="exportSuivi(${s.id})">⬇ Export du suivi</button>
     </div>
+    <div class="btnrow" style="margin:0">
+      <button class="btn accent" onclick="docListe(${s.id}, 'pdf')">📄 Liste des convoqués à diffuser (PDF)</button>
+      <button class="btn ghost" onclick="docListe(${s.id}, 'png')">🖼 Image pour les réseaux</button>
+    </div>
     ${list.length ? `<div class="tablebox"><table class="suivi">
       <thead><tr><th>Stagiaire</th><th>Code</th><th>Réponse</th><th>Documents reçus <span style="text-transform:none;letter-spacing:0;font-weight:500">(valables toute la saison)</span></th><th>Paiement</th><th>Reçu</th><th></th></tr></thead>
       <tbody>${[['F', 'Filles'], ['M', 'Garçons'], ['?', 'Sexe non renseigné']].map(([g, lbl]) => {
@@ -754,8 +778,25 @@ function renderAdmin() {
         return grp.length ? `<tr class="grp grp-${g === '?' ? 'x' : g}"><td colspan="7">${lbl} · ${grp.length}</td></tr>` + grp.map(c => rowAdmin(c, s)).join('') : '';
       }).join('') || '<tr><td colspan="7" class="muted">Personne dans ce filtre.</td></tr>'}</tbody></table></div>`
       : '<div class="card msg info">Aucun convoqué pour ce stage : importez la liste ci-dessous.</div>'}
-    <details class="box" ${list.length ? '' : 'open'}><summary>Importer des convoqués depuis Excel</summary><div>
+    ${att.length ? `<div class="tablebox"><table class="suivi">
+      <thead><tr><th>Rang</th><th>Liste d'attente</th><th>Code</th><th>Ordre</th><th></th></tr></thead>
+      <tbody>${[['F', 'Filles'], ['M', 'Garçons'], ['?', 'Sexe non renseigné']].map(([g, lbl]) => {
+        const grp = att.filter(c => (c.sexe || '?') === g);
+        return grp.length ? `<tr class="grp grp-${g === '?' ? 'x' : g}"><td colspan="5">Liste d'attente ${lbl.toLowerCase()} · ${grp.length}</td></tr>` + grp.map((c, i) => `<tr class="row-wait">
+          <td><span class="rang">${i + 1}</span></td>
+          <td><b>${esc(c.nom)} ${esc(c.prenom)}</b><div class="small muted">${esc(c.club || '')}${c.annee_naissance ? ' · ' + c.annee_naissance : ''}</div>${c.email_parent ? `<div class="small"><a href="mailto:${esc(c.email_parent)}">${esc(c.email_parent)}</a></div>` : ''}</td>
+          <td><span class="code">${esc(c.code)}</span></td>
+          <td style="white-space:nowrap"><button class="linkbtn" ${i ? '' : 'disabled'} onclick="deplacer(${c.id},-1)" aria-label="Monter">▲</button> <button class="linkbtn" ${i < grp.length - 1 ? '' : 'disabled'} onclick="deplacer(${c.id},1)" aria-label="Descendre">▼</button></td>
+          <td style="white-space:nowrap"><button class="btn ok" style="padding:8px 14px;min-height:0" onclick="activer(${c.id})">✓ Convoquer</button> <button class="linkbtn red" onclick="retirer(${c.id})">Retirer</button></td>
+        </tr>`).join('') : '';
+      }).join('')}</tbody></table></div>` : ''}
+    <details class="box" ${list.length ? '' : 'open'}><summary>Importer des convoqués ou la liste d'attente depuis Excel</summary><div>
       <p class="small">Dans Excel, sélectionnez les colonnes les lignes depuis la colonne <b>Nom</b> jusqu'au <b>mail des parents</b> (ordre : Nom, Prénom, Club, Année ; les colonnes intermédiaires — documents, paiement, remarques — sont ignorées, le mail est facultatif), copiez (Ctrl+C) puis collez ici (Ctrl+V). La ligne de titres est ignorée si elle est copiée. Un enfant déjà connu garde son code. Vous pouvez aussi taper une ligne à la main : NOM Prénom Club Année mail.</p>
+      <div class="field"><label>Ils sont importés :</label>
+        <div style="display:flex;gap:18px;flex-wrap:wrap">
+          <label class="chk" style="font-size:15px"><input type="radio" name="imp-statut" ${IMPORT_STATUT === 'convoque' ? 'checked' : ''} onchange="IMPORT_STATUT='convoque';previewImport()">comme convoqués</label>
+          <label class="chk" style="font-size:15px"><input type="radio" name="imp-statut" ${IMPORT_STATUT === 'attente' ? 'checked' : ''} onchange="IMPORT_STATUT='attente';previewImport()">en liste d'attente (dans l'ordre collé)</label>
+        </div></div>
       <div class="field"><label>Ces enfants sont :</label>
         <div style="display:flex;gap:18px;flex-wrap:wrap">
           <label class="chk" style="font-size:15px"><input type="radio" name="imp-sexe" value="F" ${IMPORT_SEXE === 'F' ? 'checked' : ''} onchange="IMPORT_SEXE='F';previewImport()">des filles</label>
@@ -792,7 +833,7 @@ function rowAdmin(c, s) {
       : sansRecu(c.paiement_mode) ? '<span class="muted small">Sans reçu</span>'
       : (s.date_fin || s.date_debut) >= today() ? '<span class="muted small">Après le stage</span>'
       : `${c.recu_num ? `<b class="small">${esc(c.recu_num)}</b><br>` : ''}<button class="linkbtn" onclick="recuAdmin(${c.id})">⬇ Reçu PDF</button>`}</td>
-    <td><button class="linkbtn red" onclick="retirer(${c.id})" aria-label="Retirer du stage">Retirer</button></td>
+    <td><button class="linkbtn red" onclick="retirer(${c.id})" aria-label="Retirer du stage">Retirer</button><br><button class="linkbtn small" style="margin-top:6px" onclick="mettreEnAttente(${c.id})">En attente</button></td>
   </tr>`;
 }
 
@@ -829,6 +870,28 @@ async function retirer(cid) {
   const c = ADMIN.convocations.find(x => x.id === cid);
   if (!confirm(`Retirer ${c.prenom} ${c.nom} de ce stage ?`)) return;
   try { await rpc('stg_admin_remove_conv', { pwd: ADMIN_PWD, cid }); await loadAdmin(); } catch(e) { alert(e.message); }
+}
+async function deplacer(cid, sens) {
+  try { await rpc('stg_admin_attente_deplacer', { pwd: ADMIN_PWD, cid, sens }); await loadAdmin(); } catch(e) { alert(e.message); }
+}
+async function mettreEnAttente(cid) {
+  const c = ADMIN.convocations.find(x => x.id === cid);
+  if (!confirm(`Placer ${c.prenom} ${c.nom} en fin de liste d'attente ?`)) return;
+  try { await rpc('stg_admin_update_conv', { pwd: ADMIN_PWD, cid, p: { statut: 'attente' } }); await loadAdmin(); loadPublic(); } catch(e) { alert(e.message); }
+}
+// Activation manuelle d'une convocation depuis la liste d'attente (désistement)
+async function activer(cid) {
+  const c = ADMIN.convocations.find(x => x.id === cid), s = ADMIN.stages.find(x => x.id === c.stage_id);
+  if (!confirm(`Convoquer ${c.prenom} ${c.nom} au stage « ${s.titre} » ?`)) return;
+  try { await rpc('stg_admin_update_conv', { pwd: ADMIN_PWD, cid, p: { statut: 'convoque' } }); await loadAdmin(); loadPublic(); }
+  catch(e) { alert(e.message); return; }
+  if (c.email_parent && confirm(`${c.prenom} est convoqué(e).\n\nPréparer le mail pour prévenir la famille (${c.email_parent}) ?`)) {
+    const sujet = `Convocation – ${s.titre}`;
+    const corps = `Bonjour,\n\nUne place s'est libérée : ${c.prenom} est convoqué(e) au ${s.titre}, ${fmtDates(s.date_debut, s.date_fin)}${s.lieu ? ', ' + s.lieu : ''}.\n\n`
+      + `Merci de confirmer sa présence${s.date_limite && s.date_limite >= today() ? ' avant le ' + fmtD(s.date_limite) : ' dès que possible'} sur l'espace parents :\n${SITE_URL}#parents\n\n`
+      + `Nom : ${c.nom}\nAnnée de naissance : ${c.annee_naissance}\nCode : ${c.code}\n\nSportivement,\nLe Comité du Var de Volley-Ball`;
+    location.href = `mailto:${encodeURIComponent(c.email_parent)}?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`;
+  }
 }
 async function recuAdmin(cid) {
   const c = ADMIN.convocations.find(x => x.id === cid), s = ADMIN.stages.find(x => x.id === c.stage_id);
@@ -932,7 +995,7 @@ function previewImport() {
     if (/^nom$/i.test(c[0])) return null;
     const mail = c.find(x => /^\S+@\S+\.\S+$/.test(String(x || '').trim())) || '';   // le mail peut être dans n'importe quelle colonne
     const y = /^\d{4}$/.test(c[3] || '') ? +c[3] : (parseDate(c[3]) ? +parseDate(c[3]).slice(0, 4) : null);
-    const r = { nom: c[0] || '', prenom: c[1] || '', club: c[2] || '', annee_naissance: y && y > 1990 && y < 2100 ? y : null, email_parent: mail, sexe: IMPORT_SEXE };
+    const r = { nom: c[0] || '', prenom: c[1] || '', club: c[2] || '', annee_naissance: y && y > 1990 && y < 2100 ? y : null, email_parent: mail, sexe: IMPORT_SEXE, statut: IMPORT_STATUT };
     r.ok = !!(r.nom && r.prenom && r.annee_naissance);
     if (r.ok) IMPORT_ROWS.push(r);
     return r;
@@ -941,7 +1004,7 @@ function previewImport() {
   $('imp-preview').innerHTML = rows.length ? `<div class="preview"><table><thead><tr><th>Nom</th><th>Prénom</th><th>Club</th><th>Année</th><th>Mail</th></tr></thead><tbody>
     ${rows.map(r => `<tr class="${r.ok ? '' : 'bad'}"><td>${esc(r.nom)}</td><td>${esc(r.prenom)}</td><td>${esc(r.club)}</td><td>${r.annee_naissance || '<b>année ?</b>'}</td><td>${esc(r.email_parent)}</td></tr>`).join('')}</tbody></table></div>
     ${bad ? `<p class="small" style="color:var(--bad)">${bad} ligne(s) en rouge seront ignorées (nom, prénom ou année de naissance illisible).</p>` : ''}
-    ${IMPORT_SEXE ? `<div class="btnrow" style="margin:0"><button class="btn primary" onclick="doImport()">Importer ${IMPORT_ROWS.length} ${IMPORT_SEXE === 'F' ? 'fille(s)' : 'garçon(s)'}</button></div>` : '<p class="msg err">Indiquez au-dessus s\'il s\'agit de filles ou de garçons.</p>'}` : '';
+    ${IMPORT_SEXE ? `<div class="btnrow" style="margin:0"><button class="btn primary" onclick="doImport()">Importer ${IMPORT_ROWS.length} ${IMPORT_SEXE === 'F' ? 'fille(s)' : 'garçon(s)'}${IMPORT_STATUT === 'attente' ? ' en liste d\'attente' : ''}</button></div>` : '<p class="msg err">Indiquez au-dessus s\'il s\'agit de filles ou de garçons.</p>'}` : '';
 }
 async function doImport() {
   if (!IMPORT_ROWS.length || !IMPORT_SEXE) return;
@@ -951,6 +1014,113 @@ async function doImport() {
     await loadAdmin(); loadPublic();
     alert(`Import terminé : ${r.ajoutes_au_stage} enfant(s) ajouté(s) au stage, dont ${r.nouveaux_enfants} nouveau(x) avec un code créé.`);
   } catch(e) { alert('Import impossible : ' + e.message); }
+}
+
+// ----- Liste des convoqués à diffuser aux clubs (PDF pour le mail, image pour les réseaux) -----
+function loadImg(src) { return new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = src; }); }
+async function docListe(sid, fmt) {
+  const s = ADMIN.stages.find(x => x.id === sid);
+  const sx = SEXE === 'F' || SEXE === 'M' ? SEXE : null;
+  if (!sx) { alert('Choisissez d\'abord l\'onglet « Filles » ou « Garçons » au-dessus : une liste est créée pour chacun.'); return; }
+  const F = sx === 'F', e = F ? 'e' : '';
+  const byNom = (a, b) => (a.nom + ' ' + a.prenom).localeCompare(b.nom + ' ' + b.prenom, 'fr');
+  const conv = ADMIN.convocations.filter(c => c.stage_id === sid && !enAttente(c) && c.sexe === sx && c.reponse !== 'absent').sort(byNom);
+  const att = ADMIN.convocations.filter(c => c.stage_id === sid && enAttente(c) && c.sexe === sx).sort((a, b) => (a.rang_attente || 0) - (b.rang_attente || 0));
+  if (!conv.length) { alert('Aucun' + (F ? 'e convoquée' : ' convoqué') + ' pour ce stage.'); return; }
+  if (fmt === 'pdf' && !window.jspdf) { alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.'); return; }
+  try { await Promise.all(['800 40px "Barlow Condensed"', '600 40px "Barlow Condensed"', '400 20px Inter', '600 20px Inter', '700 20px Inter', 'italic 600 20px Inter'].map(f => document.fonts.load(f))); } catch(err) {}
+  const [lFF, lCom, lCDE, lSel] = await Promise.all(['logo-ffvolley.jpg', 'logo-comite-var.jpg', 'logo-centre-departemental.jpg', 'logo-selection-var.jpg'].map(loadImg));
+  const W = 1240, H = 1754, k = fmt === 'pdf' ? 2 : 1.5;
+  const cv = document.createElement('canvas'); cv.width = W * k; cv.height = H * k;
+  const g = cv.getContext('2d'); g.scale(k, k);
+  const COND = '"Barlow Condensed", "Arial Narrow", Arial, sans-serif', BODY = 'Inter, Arial, sans-serif';
+  const NAVY = '#0E2347', MUTED = '#5B6B82', GOLD = '#F5B800', LINE = '#D9E0EB', WAITBG = '#FDEBD3', WAIT = '#9A5B00';
+  g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
+  const txt = (s, x, y, font, color, align = 'left', maxW) => {
+    g.font = font; g.fillStyle = color; g.textAlign = align; g.textBaseline = 'middle';
+    let f = font;
+    if (maxW) { let size = parseFloat(font.match(/(\d+(\.\d+)?)px/)[1]); while (g.measureText(s).width > maxW && size > 9) { size -= 0.5; f = font.replace(/\d+(\.\d+)?px/, size + 'px'); g.font = f; } }
+    g.fillText(s, x, y);
+  };
+  const logo = (img, x, y, h, align = 'left') => { if (!img) return; const w = img.naturalWidth / img.naturalHeight * h; g.drawImage(img, align === 'right' ? x - w : align === 'center' ? x - w / 2 : x, y, w, h); };
+  // En-tête
+  g.fillStyle = NAVY; g.fillRect(0, 0, W, 12);
+  logo(lFF, 60, 44, 118); logo(lCom, W - 60, 62, 84, 'right');
+  txt('COMITÉ DÉPARTEMENTAL DU VAR', W / 2, 92, `800 50px ${COND}`, NAVY, 'center', 760);
+  txt('de la Fédération Française de Volley', W / 2, 138, `600 32px ${COND}`, '#2B4C8C', 'center', 760);
+  g.fillStyle = LINE; g.fillRect(60, 190, W - 120, 2);
+  txt('COMMISSION TECHNIQUE', W / 2, 236, `700 30px ${COND}`, MUTED, 'center');
+  const periode = String(s.titre).split(/\s[–-]\s/).slice(1).join(' – ') || s.titre;
+  txt(`Liste des convoqué${e}s – ${periode}`, W / 2, 292, `800 58px ${COND}`, NAVY, 'center', W - 140);
+  g.fillStyle = GOLD; g.fillRect(W / 2 - 70, 330, 140, 6);
+  txt(`Stage ${F ? 'féminin' : 'masculin'} · ${fmtDates(s.date_debut, s.date_fin)}${s.lieu ? ' · ' + s.lieu.split(',')[0] : ''}`, W / 2, 374, `500 26px ${BODY}`, MUTED, 'center', W - 140);
+  // Tableau : deux colonnes, remplies de haut en bas puis à droite
+  const top = 412, bottomReserve = 470, X = [60, 640], CW = 540, cols = [0, 262, 432, 540];
+  const rc = Math.ceil(conv.length / 2), ra = Math.ceil(att.length / 2);
+  const units = rc + ra + 1 + (att.length ? 2.4 : 0);
+  const rh = Math.min(50, Math.floor((H - bottomReserve - top) / units));
+  const fs = Math.max(11, Math.min(23, rh * 0.46));
+  const head = (y) => {
+    X.forEach(x => {
+      g.fillStyle = NAVY; g.fillRect(x, y, CW, rh);
+      ['Nom', 'Prénom', 'Club'].forEach((h, i) => txt(h.toUpperCase(), x + cols[i] + (i === 2 ? (cols[3] - cols[2]) / 2 : 14), y + rh / 2, `700 ${fs * 0.82}px ${BODY}`, '#fff', i === 2 ? 'center' : 'left'));
+    });
+    return y + rh;
+  };
+  const rows = (list, y, n, ranked) => {
+    for (let r = 0; r < n; r++) {
+      X.forEach((x, ci) => {
+        const i = ci * n + r, c = list[i];
+        g.fillStyle = r % 2 ? '#F4F6FA' : '#fff'; g.fillRect(x, y + r * rh, CW, rh);
+        g.fillStyle = LINE; g.fillRect(x, y + (r + 1) * rh - 1, CW, 1);
+        if (!c) return;
+        const cy = y + r * rh + rh / 2;
+        let nx = x + 14;
+        if (ranked) { txt(String(i + 1), nx + 12, cy, `800 ${fs * 0.85}px ${BODY}`, WAIT, 'center'); nx += 34; }
+        txt(String(c.nom).toUpperCase(), nx, cy, `600 ${fs}px ${BODY}`, NAVY, 'left', cols[1] - (nx - x) - 8);
+        txt(c.prenom, x + cols[1] + 14, cy, `400 ${fs}px ${BODY}`, '#1B2433', 'left', cols[2] - cols[1] - 20);
+        txt(c.club || '', x + (cols[2] + cols[3]) / 2, cy, `600 ${fs * 0.9}px ${BODY}`, MUTED, 'center', cols[3] - cols[2] - 10);
+      });
+    }
+    X.forEach(x => { g.strokeStyle = LINE; g.lineWidth = 1; g.strokeRect(x + 0.5, y - rh + 0.5, CW - 1, rh * (n + 1) - 1); });
+    return y + n * rh;
+  };
+  let y = rows(conv, head(top), rc, false);
+  if (att.length) {
+    y += rh * 0.4;
+    g.fillStyle = WAITBG; g.fillRect(60, y, W - 120, rh);
+    txt('LISTE D\'ATTENTE', W / 2, y + rh / 2, `800 ${fs * 1.25}px ${COND}`, WAIT, 'center');
+    y = rows(att, head(y + rh), ra, true);
+  }
+  // Notes
+  y += 44;
+  if (att.length) { txt(`${F ? 'Les joueuses' : 'Les joueurs'} de la liste d'attente seront convoqué${e}s, dans l'ordre, au fur et à mesure que des places se libèrent.`, W / 2, y, `italic 600 21px ${BODY}`, '#B42318', 'center', W - 140); y += 46; }
+  const rappel = `${F ? 'Les joueuses' : 'Les joueurs'} qui n'auront pas donné leur réponse (positive ou négative) avant la date limite indiquée sur la convocation ne seront plus convoqué${e}s pour les autres stages de la saison. ${F ? 'Les joueuses indisponibles' : 'Les joueurs indisponibles'} sur ces vacances seront convoqué${e}s sur un prochain stage.`;
+  g.font = `500 20px ${BODY}`;
+  const lines = [], words = ('Rappel : ' + rappel).split(' ');
+  let cur = '';
+  words.forEach(w => { const tst = cur ? cur + ' ' + w : w; if (g.measureText(tst).width > W - 200) { lines.push(cur); cur = w; } else cur = tst; });
+  lines.push(cur);
+  lines.forEach((l, i) => {
+    if (i === 0) { txt('Rappel :', 100, y, `700 20px ${BODY}`, NAVY); g.font = `700 20px ${BODY}`; const off = g.measureText('Rappel : ').width; txt(l.slice(9), 100 + off, y, `500 20px ${BODY}`, '#1B2433'); }
+    else txt(l, 100, y, `500 20px ${BODY}`, '#1B2433');
+    y += 29;
+  });
+  y += 8;
+  txt('Réponse des familles et informations pratiques : volley83.github.io/stages (espace parents)', W / 2, y, `600 19px ${BODY}`, '#2B4C8C', 'center', W - 160);
+  // Logos et pied de page
+  logo(lCDE, W / 2 - 150, H - 222, 122, 'center'); logo(lSel, W / 2 + 150, H - 212, 104, 'center');
+  g.fillStyle = LINE; g.fillRect(60, H - 82, W - 120, 2);
+  txt('Maison des sports du Var – 133, boulevard du Général Brosset – 83200 Toulon', W / 2, H - 56, `600 18px ${BODY}`, NAVY, 'center');
+  txt('06 13 30 34 25 · contact@volley83.fr · www.volley83.fr', W / 2, H - 30, `400 17px ${BODY}`, MUTED, 'center');
+  const nomFichier = `Liste-convoque${e}s-${slug(s.titre)}`;
+  if (fmt === 'pdf') {
+    const { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    doc.addImage(cv.toDataURL('image/png'), 'PNG', 0, 0, 210, 297, undefined, 'FAST');
+    doc.save(nomFichier + '.pdf');
+  } else {
+    cv.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = nomFichier + '.png'; document.body.appendChild(a); a.click(); a.remove(); }, 'image/png');
+  }
 }
 
 // ----- Exports -----
@@ -964,14 +1134,14 @@ function csvDownload(name, header, rows) {
 function slug(t) { return String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w]+/g, '-').replace(/^-|-$/g, ''); }
 function exportCodes(sid) {
   const s = ADMIN.stages.find(x => x.id === sid);
-  const list = ADMIN.convocations.filter(c => c.stage_id === sid && (SEXE === 'tous' || (c.sexe || '?') === SEXE));
+  const list = convoques(sid);
   csvDownload(`Convocations-${slug(s.titre)}.csv`, ['Nom', 'Prénom', 'Fille/Garçon', 'Club', 'Année de naissance', 'Mail parent', 'Code', 'Lien espace parents', 'Stage', 'Dates', 'Réponse avant le'],
     list.map(c => [c.nom, c.prenom, c.sexe === 'F' ? 'Fille' : c.sexe === 'M' ? 'Garçon' : '', c.club, c.annee_naissance, c.email_parent, c.code, SITE_URL + '#parents', s.titre, fmtDates(s.date_debut, s.date_fin), s.date_limite ? fmtD(s.date_limite) : '']));
 }
 // Une ligne par adresse mail : les frères et sœurs sont regroupés, la famille reçoit un seul mail avec tous les codes
 function exportFamilles(sid) {
   const s = ADMIN.stages.find(x => x.id === sid);
-  const list = ADMIN.convocations.filter(c => c.stage_id === sid && (SEXE === 'tous' || (c.sexe || '?') === SEXE));
+  const list = convoques(sid);
   const fam = new Map(), sansMail = [];
   list.forEach(c => {
     const k = (c.email_parent || '').trim().toLowerCase();
@@ -990,7 +1160,7 @@ function exportFamilles(sid) {
 }
 function exportSuivi(sid) {
   const s = ADMIN.stages.find(x => x.id === sid), docs = s.documents || [];
-  const list = ADMIN.convocations.filter(c => c.stage_id === sid && (SEXE === 'tous' || (c.sexe || '?') === SEXE));
+  const list = convoques(sid);
   const lab = { attente: 'Sans réponse', present: 'Présent', absent: 'Absent' };
   csvDownload(`Suivi-${slug(s.titre)}.csv`, ['Nom', 'Prénom', 'Fille/Garçon', 'Club', 'Réponse', 'Téléphone parent', 'Commentaire'].concat(docs).concat(['Payé', 'Mode', 'Date paiement', 'Montant', 'N° reçu']),
     list.map(c => [c.nom, c.prenom, c.sexe === 'F' ? 'Fille' : c.sexe === 'M' ? 'Garçon' : '', c.club, lab[c.reponse], c.tel_parent, c.commentaire].concat(docs.map(d => (c.docs_recus || []).includes(d) ? 'Reçu' : 'Manquant'))
