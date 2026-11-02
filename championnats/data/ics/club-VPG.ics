@@ -1347,37 +1347,4 @@ LOCATION:Collège P.E Victor
 DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/seniors/DMB
 END:VEVENT
-BEGIN:VEVENT
-UID:MFC001@volley83.github.io
-DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20260920T100000
-DTEND;TZID=Europe/Paris:20260920T120000
-SUMMARY:M15 F QUALIF. · Fréjus Var Volley – Volley Pradétan Gardéen
-  (2-0)
-DESCRIPTION:Résultat : 2-0 (25:7\, 25:6)\nPoule MFC – classement et r
- ésultats : https://volley83.github.io/championnats/#championnats/jeunes
- /MFC
-END:VEVENT
-BEGIN:VEVENT
-UID:MFC003@volley83.github.io
-DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20260920T110000
-DTEND;TZID=Europe/Paris:20260920T130000
-SUMMARY:M15 F QUALIF. · Volley Club Hyères / Pierrefeu La Londe – Vol
- ley Pradétan Gardéen (2-0)
-DESCRIPTION:Résultat : 2-0 (25:18\, 25:13)\nPoule MFC – classement et 
- résultats : https://volley83.github.io/championnats/#championnats/jeune
- s/MFC
-END:VEVENT
-BEGIN:VEVENT
-UID:MFC005@volley83.github.io
-DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20260920T120000
-DTEND;TZID=Europe/Paris:20260920T140000
-SUMMARY:M15 F QUALIF. · Volley Pradétan Gardéen – Draguignan Union C
- lub Var VB (0-2)
-DESCRIPTION:Résultat : 0-2 (8:25\, 14:25)\nPoule MFC – classement et r
- ésultats : https://volley83.github.io/championnats/#championnats/jeunes
- /MFC
-END:VEVENT
 END:VCALENDAR

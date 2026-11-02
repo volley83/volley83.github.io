@@ -603,17 +603,6 @@ DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/jeunes/CMB
 END:VEVENT
 BEGIN:VEVENT
-UID:CMC001@volley83.github.io
-DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261004T133000
-DTEND;TZID=Europe/Paris:20261004T153000
-SUMMARY:M18 M QUALIF. · Volley Club Hyères / Pierrefeu La Londe – Fr
- éjus Var Volley (1-3)
-DESCRIPTION:Résultat : 1-3 (16:25\, 25:20\, 20:25\, 23:25)\nPoule CMC 
- – classement et résultats : https://volley83.github.io/championnats/#
- championnats/jeunes/CMC
-END:VEVENT
-BEGIN:VEVENT
 UID:DFB001@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261010T203000
@@ -782,38 +771,5 @@ SUMMARY:SENIORS M · Union Athlétique Valettoise 2 – Fréjus Var Volley
 LOCATION:Santoni
 DESCRIPTION:Poule DMC – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/seniors/DMC
-END:VEVENT
-BEGIN:VEVENT
-UID:MFC001@volley83.github.io
-DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20260920T100000
-DTEND;TZID=Europe/Paris:20260920T120000
-SUMMARY:M15 F QUALIF. · Fréjus Var Volley – Volley Pradétan Gardéen
-  (2-0)
-DESCRIPTION:Résultat : 2-0 (25:7\, 25:6)\nPoule MFC – classement et r
- ésultats : https://volley83.github.io/championnats/#championnats/jeunes
- /MFC
-END:VEVENT
-BEGIN:VEVENT
-UID:MFC004@volley83.github.io
-DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20260920T110000
-DTEND;TZID=Europe/Paris:20260920T130000
-SUMMARY:M15 F QUALIF. · Draguignan Union Club Var VB – Fréjus Var Vol
- ley (0-2)
-DESCRIPTION:Résultat : 0-2 (8:25\, 10:25)\nPoule MFC – classement et r
- ésultats : https://volley83.github.io/championnats/#championnats/jeunes
- /MFC
-END:VEVENT
-BEGIN:VEVENT
-UID:MFC006@volley83.github.io
-DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20260920T120000
-DTEND;TZID=Europe/Paris:20260920T140000
-SUMMARY:M15 F QUALIF. · Fréjus Var Volley – Volley Club Hyères / Pie
- rrefeu La Londe (2-0)
-DESCRIPTION:Résultat : 2-0 (25:18\, 25:15)\nPoule MFC – classement et 
- résultats : https://volley83.github.io/championnats/#championnats/jeune
- s/MFC
 END:VEVENT
 END:VCALENDAR
