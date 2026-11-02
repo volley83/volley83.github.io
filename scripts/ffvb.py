@@ -50,11 +50,14 @@ class Lignes(HTMLParser):
     def __init__(self):
         super().__init__()
         self.rows, self.row, self.cell = [], None, None
+        self.classes, self.rcls = [], None
     def handle_starttag(self, t, a):
         if t == 'tr':
-            self.row = []
+            self.row, self.rcls = [], []
         elif t in ('td', 'th'):
             self.cell = ''
+            if self.rcls is not None:
+                self.rcls.append(dict(a).get('class') or '')
         elif t == 'br' and self.cell is not None:
             self.cell += ' '
     def handle_endtag(self, t):
@@ -64,6 +67,7 @@ class Lignes(HTMLParser):
         elif t == 'tr' and self.row is not None:
             if any(self.row):
                 self.rows.append(self.row)
+                self.classes.append(self.rcls or [])
             self.row = None
     def handle_data(self, d):
         if self.cell is not None:
@@ -122,9 +126,10 @@ def poule(code, html):
     p = Lignes()
     p.feed(html)
     classement, journees, equipes = [], [], []
-    for r in p.rows:
+    for r, cls in zip(p.rows, p.classes):
         if len(r) >= 19 and re.fullmatch(r'\d+\.', r[0]):
             classement.append({
+                'mis_en_avant': len(cls) > 1 and cls[1] == 'lienquestion_pt',   # nom en gras sur le site FFvolley (qualification)
                 'rang': int(r[0][:-1]), 'equipe': r[1], 'pts': num(r[2]), 'j': num(r[3]), 'g': num(r[4]), 'p': num(r[5]),
                 'f': num(r[6]), 'sp': num(r[13]), 'sc': num(r[14]), 'cs': num(r[15]), 'pp': num(r[16]), 'pc': num(r[17]), 'cp': num(r[18]),
             })
@@ -332,7 +337,10 @@ def main():
     s.feed(home)
     cats, vues = [], set()
     for c in s.cats:
-        if 'OPEN' in c['titre'].upper() or 'PITCHOUN' in c['titre'].upper():
+        if c['titre'].strip().upper() in ('CONTACTS', 'CONTACT'):
+            continue
+        if 'OPEN' in c['titre'].upper() or 'PITCHOUN' in c['titre'].upper() or 'QUALIFICATION' in c['titre'].upper():
+            vues.update(pl['code'] for pl in c['poules'])
             continue
         poules = []
         for pl in c['poules']:
