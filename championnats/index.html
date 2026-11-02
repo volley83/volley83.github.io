@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Championnats – Comité du Var de Volley-Ball</title>
+<title>Compétitions OPEN – Comité du Var de Volley-Ball</title>
 <meta name="description" content="Championnats M15 et M18 4x4 et tournois OPEN 2 contre 2 et 4 contre 4 du Comité du Var de Volley-Ball : calendriers, inscriptions en ligne et classements.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -39,7 +39,7 @@
   .hero.open { background: linear-gradient(120deg, #0B2149 0%, #0E4F5C 100%); }
   .hero .k { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-size: 15px; margin-bottom: 8px; }
   .hero h1 { color: #fff; font-size: 46px; font-weight: 800; line-height: 1; }
-  .hero p { color: #C9D4EA; max-width: 720px; margin-top: 12px; font-size: 16px; }
+  .hero p { color: #C9D4EA; margin-top: 12px; font-size: 16px; }
   .hero .btnrow { margin-top: 20px; }
 
   main.wrap { padding-top: 28px; padding-bottom: 64px; }
@@ -104,6 +104,7 @@
   .cal-date span { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: #C9D4EA; }
   .cal-date.past { background: #D5DBE5; } .cal-date.past span { color: #5E6A7E; } .cal-date.past b { color: #34405A; }
   .cal-t { font-weight: 800; color: var(--navy); font-size: 15px; }
+  .cal-when { color: var(--blue); }
   .cal-meta { font-size: 14px; color: var(--muted); margin-top: 2px; }
   .cal-meta b { color: var(--text); font-weight: 600; }
   .cal-act { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
@@ -229,7 +230,7 @@
   <div class="wrap head">
     <a href="https://www.volley83.fr" aria-label="Comité du Var de Volley-Ball"><img src="logo-comite-var.jpg" alt="Comité du Var Volley-Ball"></a>
     <div class="sep"></div>
-    <div class="t">Championnats jeunes</div>
+    <div class="t">Compétitions OPEN</div>
     <nav aria-label="Navigation">
       <a class="navbtn" id="nav-4x4" href="#4x4">M15 · M18 4x4</a>
       <a class="navbtn" id="nav-open" href="#open">Tournois OPEN</a>
@@ -314,7 +315,11 @@ function nomEquipe(equipe, club) {
   const k = D.clubs.find(c => c.code && (c.code === club || e.toUpperCase().startsWith(c.code.toUpperCase() + ' ') || e.toUpperCase() === c.code.toUpperCase()) && (e.toUpperCase() === c.code.toUpperCase() || e.toUpperCase().startsWith(c.code.toUpperCase() + ' ')));
   return k ? k.nom + e.slice(k.code.length) : e;
 }
-const tLabel = t => `${comp(t.competition).nom} – Tournoi ${t.numero}`;
+// Nom d'un tournoi : le dernier tournoi OPEN de la saison est le tournoi final (médailles et tee-shirts pour tous)
+const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+function estFinal(t) { const c = comp(t.competition); return c.famille === 'open' && t.numero === Math.max(...D.tournois.filter(x => x.competition === t.competition).map(x => x.numero)); }
+const tNom = t => estFinal(t) ? 'Tournoi final' : 'Tournoi ' + t.numero;
+const tLabel = t => `${comp(t.competition).nom} – ${tNom(t)}`;
 const lieuTxt = t => [t.lieu, t.ville].filter(Boolean).join(', ');
 
 function classement(code) {
@@ -418,7 +423,7 @@ function weekendHTML() {
       <span class="we-cat">${esc(c.nom)}</span>
       <b>${JOURS[d.getDay()][0].toUpperCase() + JOURS[d.getDay()].slice(1)} ${d.getDate()}${t.heure ? ' · ' + esc(fmtH(t.heure)) : ''}</b>
       <span class="we-l">${t.lieu ? '📍 ' + esc(lieuTxt(t)) : 'Lieu à confirmer'}</span>
-      <span class="we-s">Tournoi ${t.numero}${t.ouvert ? ` · <em>inscriptions jusqu'au ${esc(fmtD(t.date_limite, true, false))} ${esc(fmtH(t.heure_limite))}</em>` : t.nb_inscrits ? ` · ${t.nb_inscrits} équipe${t.nb_inscrits > 1 ? 's' : ''}` : ''}</span>
+      <span class="we-s">${tNom(t)}${t.ouvert ? ` · <em>inscriptions jusqu'au ${esc(fmtD(t.date_limite, true, false))} ${esc(fmtH(t.heure_limite))}</em>` : t.nb_inscrits ? ` · ${t.nb_inscrits} équipe${t.nb_inscrits > 1 ? 's' : ''}` : ''}</span>
     </a>`; }).join('')}</div>
   </section>`;
 }
@@ -431,13 +436,14 @@ function calRow(t, avecResultats) {
   else if (past) badge = '<span class="badge b-wait">Résultats à venir</span>';
   else if (t.ouvert) badge = `<span class="badge b-open">Inscriptions ouvertes${t.date_limite ? ' jusqu\'au ' + esc(fmtD(t.date_limite, false, false)) + (t.heure_limite ? ' ' + esc(fmtH(t.heure_limite)) : '') : ''}</span>`;
   else if (!t.date_limite && !t.lieu) badge = '<span class="badge b-tbc">Infos à venir</span>';
-  else if (t.date_limite && t.inscriptions === 'auto' && today() < ouverture(t)) badge = `<span class="badge b-tbc">Inscriptions à partir du ${esc(fmtD(ouverture(t), false, false))}</span>`;
+  else if (t.date_limite && today() < ouverture(t)) badge = `<span class="badge b-tbc">Inscriptions à partir du ${esc(fmtD(ouverture(t), false, false))}</span>`;
   else badge = '<span class="badge b-closed">Inscriptions closes</span>';
   const n = t.resultats ? t.resultats.length : 0;
   return `<div class="cal-row">
     <div class="cal-date ${past ? 'past' : ''}"><b>${d.getDate()}</b><span>${MOIS_C[d.getMonth()]} ${String(d.getFullYear()).slice(2)}</span></div>
     <div>
-      <div class="cal-t">Tournoi ${t.numero} · <span style="text-transform:capitalize">${JOURS[d.getDay()]}</span>${t.heure ? ' · ' + esc(fmtH(t.heure)) : ''}</div>
+      <div class="cal-t">${estFinal(t) ? '🏅 ' : ''}${tNom(t)} · <span class="cal-when">${esc(cap(fmtD(t.date, true, false)))}${t.heure ? ' · ' + esc(fmtH(t.heure)) : ''}</span></div>
+      ${estFinal(t) ? '<div class="cal-meta" style="color:var(--open);font-weight:700">Médaille et tee-shirt pour tous les participants !</div>' : ''}
       <div class="cal-meta">${t.lieu ? `📍 <b>${esc(lieuTxt(t))}</b>` : 'Lieu à confirmer'}${t.organisateur ? ' · ' + esc(clubNom(t.organisateur)) : ''}</div>
       ${t.remarque ? `<div class="cal-meta">${esc(t.remarque)}</div>` : ''}
       <div class="cal-act">${badge}${t.ouvert && !past ? `<a class="btn accent sm" href="#inscription/${t.id}">S'inscrire</a>` : ''}${t.nb_inscrits && !past && t.statut !== 'valide' ? `<span class="small muted">${t.nb_inscrits} équipe${t.nb_inscrits > 1 ? 's' : ''} inscrite${t.nb_inscrits > 1 ? 's' : ''}</span>` : ''}</div>
@@ -496,7 +502,7 @@ function renderInscription(tid) {
     ${open.length ? `<form class="card form" id="ins-form" autocomplete="on" novalidate>
       <div class="step"><div class="step-n">1</div><div class="step-b">
         <h3>Le tournoi</h3>
-        <select id="ins-t" required><option value="">Choisir le tournoi…</option>${groups.map(([c, l]) => `<optgroup label="${esc(c.nom)}">${l.map(t => `<option value="${t.id}" ${pre && pre.id === t.id ? 'selected' : ''}>${esc(c.nom)} · Tournoi ${t.numero} · ${esc(fmtD(t.date, true, false))}${t.ville ? ' · ' + esc(t.ville) : ''}</option>`).join('')}</optgroup>`).join('')}</select>
+        <select id="ins-t" required><option value="">Choisir le tournoi…</option>${groups.map(([c, l]) => `<optgroup label="${esc(c.nom)}">${l.map(t => `<option value="${t.id}" ${pre && pre.id === t.id ? 'selected' : ''}>${esc(c.nom)} · ${tNom(t)} · ${esc(fmtD(t.date, true, false))}${t.ville ? ' · ' + esc(t.ville) : ''}</option>`).join('')}</optgroup>`).join('')}</select>
         <div id="ins-tsum"></div>
       </div></div>
       <div class="step"><div class="step-n">2</div><div class="step-b">
@@ -749,7 +755,7 @@ async function renderAdmin(tab) {
   </main>`;
   ({ inscriptions: adminInscriptions, classements: adminClassements, tournois: adminTournois, clubs: adminClubs })[ATAB]();
 }
-const tSel = (list, cur, id = 'a-t') => `<select id="${id}" style="max-width:560px">${A.competitions.map(c => { const l = list.filter(t => t.competition === c.code); return l.length ? `<optgroup label="${esc(c.nom)}">${l.map(t => `<option value="${t.id}" ${t.id === cur ? 'selected' : ''}>${esc(c.nom)} · Tournoi ${t.numero} · ${esc(fmtShort(t.date))}${t.ville ? ' · ' + esc(t.ville) : ''}${t.statut === 'saisi' ? ' · À VALIDER' : ''}</option>`).join('')}</optgroup>` : ''; }).join('')}</select>`;
+const tSel = (list, cur, id = 'a-t') => `<select id="${id}" style="max-width:560px">${A.competitions.map(c => { const l = list.filter(t => t.competition === c.code); return l.length ? `<optgroup label="${esc(c.nom)}">${l.map(t => `<option value="${t.id}" ${t.id === cur ? 'selected' : ''}>${esc(c.nom)} · ${tNom(t)} · ${esc(fmtShort(t.date))}${t.ville ? ' · ' + esc(t.ville) : ''}${t.statut === 'saisi' ? ' · À VALIDER' : ''}</option>`).join('')}</optgroup>` : ''; }).join('')}</select>`;
 
 // ----- Inscriptions -----
 function adminInscriptions() {
