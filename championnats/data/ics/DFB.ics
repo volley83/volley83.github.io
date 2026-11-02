@@ -1,0 +1,350 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Seniors F – Départementale Senior Féminin Accession - Po
+ ule B
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:DFB001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T203000
+DTEND;TZID=Europe/Paris:20261010T223000
+SUMMARY:SENIORS F · Fréjus Var Volley (M21) – Volley Club Méditerran
+ ée (3-2)
+DESCRIPTION:Résultat : 3-2 (24:26\, 26:24\, 20:25\, 25:20\, 15:5)\nPoule
+  DFB – classement et résultats : https://volley83.github.io/championn
+ ats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T203000
+DTEND;TZID=Europe/Paris:20261010T223000
+SUMMARY:SENIORS F · Union Athlétique Valettoise – Sud Sainte-Baume Vo
+ lley Club (3-1)
+DESCRIPTION:Résultat : 3-1 (22:25\, 25:23\, 25:19\, 25:23)\nPoule DFB 
+ – classement et résultats : https://volley83.github.io/championnats/#
+ championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T130000
+DTEND;TZID=Europe/Paris:20261011T150000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen – Vidauban Volley-Ball (
+ 3-0)
+DESCRIPTION:Résultat : 3-0 (25:17\, 25:21\, 25:19)\nPoule DFB – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261018T180000
+DTEND;TZID=Europe/Paris:20261018T200000
+SUMMARY:SENIORS F · Volley Club Méditerranée – Volley Pradétan Gard
+ éen (3-2)
+DESCRIPTION:Résultat : 3-2 (25:17\, 14:25\, 25:19\, 19:25\, 15:13)\nPoul
+ e DFB – classement et résultats : https://volley83.github.io/champion
+ nats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261017T170000
+DTEND;TZID=Europe/Paris:20261017T190000
+SUMMARY:SENIORS F · Vidauban Volley-Ball – Union Athlétique Valettois
+ e (2-3)
+DESCRIPTION:Résultat : 2-3 (21:25\, 24:26\, 25:20\, 25:17\, 3:15)\nPoule
+  DFB – classement et résultats : https://volley83.github.io/championn
+ ats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261017T170000
+DTEND;TZID=Europe/Paris:20261017T190000
+SUMMARY:SENIORS F · Sud Sainte-Baume Volley Club – Fréjus Var Volley 
+ (M21) (0-3)
+DESCRIPTION:Résultat : 0-3 (25:27\, 22:25\, 7:25)\nPoule DFB – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261114T170000
+DTEND;TZID=Europe/Paris:20261114T190000
+SUMMARY:SENIORS F · Sud Sainte-Baume Volley Club – Volley Club Médite
+ rranée
+LOCATION:Gymnase du College le Vigneret
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T150000
+DTEND;TZID=Europe/Paris:20261205T170000
+SUMMARY:SENIORS F · Fréjus Var Volley (M21) – Vidauban Volley-Ball
+LOCATION:Halle St Croix
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261115T100000
+DTEND;TZID=Europe/Paris:20261115T120000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen – Union Athlétique Vale
+ ttoise
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T180000
+DTEND;TZID=Europe/Paris:20261121T200000
+SUMMARY:SENIORS F · Union Athlétique Valettoise – Volley Club Médite
+ rranée
+LOCATION:Santoni
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T160000
+DTEND;TZID=Europe/Paris:20261121T180000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen – Fréjus Var Volley (M2
+ 1)
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T170000
+DTEND;TZID=Europe/Paris:20261121T190000
+SUMMARY:SENIORS F · Vidauban Volley-Ball – Sud Sainte-Baume Volley Club
+LOCATION:Collège P.E Victor
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB013@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261129T160000
+DTEND;TZID=Europe/Paris:20261129T180000
+SUMMARY:SENIORS F · Volley Club Méditerranée – Vidauban Volley-Ball
+LOCATION:Complexe Sportif des Lices
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB014@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T170000
+DTEND;TZID=Europe/Paris:20261128T190000
+SUMMARY:SENIORS F · Sud Sainte-Baume Volley Club – Volley Pradétan Ga
+ rdéen
+LOCATION:Gymnase du College le Vigneret
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB015@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T180000
+DTEND;TZID=Europe/Paris:20261128T200000
+SUMMARY:SENIORS F · Fréjus Var Volley (M21) – Union Athlétique Valet
+ toise
+LOCATION:Pierre Clere
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB016@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261213T180000
+DTEND;TZID=Europe/Paris:20261213T200000
+SUMMARY:SENIORS F · Volley Club Méditerranée – Fréjus Var Volley (M
+ 21)
+LOCATION:Complexe Sportif des Lices
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB017@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T170000
+DTEND;TZID=Europe/Paris:20261212T190000
+SUMMARY:SENIORS F · Sud Sainte-Baume Volley Club – Union Athlétique V
+ alettoise
+LOCATION:Gymnase du College le Vigneret
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB018@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261213T140000
+DTEND;TZID=Europe/Paris:20261213T160000
+SUMMARY:SENIORS F · Vidauban Volley-Ball – Volley Pradétan Gardéen
+LOCATION:Collège P.E Victor
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB019@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270110T160000
+DTEND;TZID=Europe/Paris:20270110T180000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen – Volley Club Méditerra
+ née
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB020@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270109T183000
+DTEND;TZID=Europe/Paris:20270109T203000
+SUMMARY:SENIORS F · Union Athlétique Valettoise – Vidauban Volley-Ball
+LOCATION:Santoni
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB021@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270109T203000
+DTEND;TZID=Europe/Paris:20270109T223000
+SUMMARY:SENIORS F · Fréjus Var Volley (M21) – Sud Sainte-Baume Volley
+  Club
+LOCATION:Halle St Croix
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB022@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270117T160000
+DTEND;TZID=Europe/Paris:20270117T180000
+SUMMARY:SENIORS F · Volley Club Méditerranée – Sud Sainte-Baume Voll
+ ey Club
+LOCATION:Complexe Sportif des Lices
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB023@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270116T170000
+DTEND;TZID=Europe/Paris:20270116T190000
+SUMMARY:SENIORS F · Vidauban Volley-Ball – Fréjus Var Volley (M21)
+LOCATION:Collège P.E Victor
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB024@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270116T183000
+DTEND;TZID=Europe/Paris:20270116T203000
+SUMMARY:SENIORS F · Union Athlétique Valettoise – Volley Pradétan Ga
+ rdéen
+LOCATION:Santoni
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB025@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270131T160000
+DTEND;TZID=Europe/Paris:20270131T180000
+SUMMARY:SENIORS F · Volley Club Méditerranée – Union Athlétique Val
+ ettoise
+LOCATION:Complexe Sportif des Lices
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB026@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270130T203000
+DTEND;TZID=Europe/Paris:20270130T223000
+SUMMARY:SENIORS F · Fréjus Var Volley (M21) – Volley Pradétan Gardé
+ en
+LOCATION:Pierre Clere
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB027@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270130T170000
+DTEND;TZID=Europe/Paris:20270130T190000
+SUMMARY:SENIORS F · Sud Sainte-Baume Volley Club – Vidauban Volley-Ball
+LOCATION:Gymnase du College le Vigneret
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB028@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270213T170000
+DTEND;TZID=Europe/Paris:20270213T190000
+SUMMARY:SENIORS F · Vidauban Volley-Ball – Volley Club Méditerranée
+LOCATION:Collège P.E Victor
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB029@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270214T110000
+DTEND;TZID=Europe/Paris:20270214T130000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen – Sud Sainte-Baume Volle
+ y Club
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB030@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270213T183000
+DTEND;TZID=Europe/Paris:20270213T203000
+SUMMARY:SENIORS F · Union Athlétique Valettoise – Fréjus Var Volley 
+ (M21)
+LOCATION:Santoni
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+END:VCALENDAR

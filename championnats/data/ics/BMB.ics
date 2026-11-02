@@ -1,0 +1,119 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:M13 M – M13 Masculin Brassage - Poule B
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:BMB001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T093000
+DTEND;TZID=Europe/Paris:20261011T113000
+SUMMARY:M13 M · Fréjus Var Volley 1 – Draguignan Union Club Var VB (0
+ -2)
+DESCRIPTION:Résultat : 0-2 (9:25\, 16:25)\nPoule BMB – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T093000
+DTEND;TZID=Europe/Paris:20261011T113000
+SUMMARY:M13 M · Draguignan Union Club Var VB – Fréjus Var Volley 2 (2
+ -0)
+DESCRIPTION:Résultat : 2-0 (25:13\, 25:8)\nPoule BMB – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T093000
+DTEND;TZID=Europe/Paris:20261011T113000
+SUMMARY:M13 M · Fréjus Var Volley 2 – Fréjus Var Volley 1 (0-2)
+DESCRIPTION:Résultat : 0-2 (21:25\, 8:25)\nPoule BMB – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T100000
+DTEND;TZID=Europe/Paris:20261122T120000
+SUMMARY:M13 M · Fréjus Var Volley 2 – Draguignan Union Club Var VB
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T100000
+DTEND;TZID=Europe/Paris:20261122T120000
+SUMMARY:M13 M · Draguignan Union Club Var VB – Fréjus Var Volley 1
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T100000
+DTEND;TZID=Europe/Paris:20261122T120000
+SUMMARY:M13 M · Fréjus Var Volley 1 – Fréjus Var Volley 2
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M13 M · Fréjus Var Volley 2 – Fréjus Var Volley 1
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M13 M · Fréjus Var Volley 1 – Draguignan Union Club Var VB
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M13 M · Draguignan Union Club Var VB – Fréjus Var Volley 2
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMB
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,351 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:M11 M – M11 Masculin - 1Ere Phase
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:PMD001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Draguignan Union Club Var VB 1 – Draguignan Union Club
+  Var VB 2
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 1 – Volley Cl
+ ub Hyères / Pierrefeu La Londe 2
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Fréjus Var Volley – Volley Pradétan Gardéen
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 2 – Fréjus V
+ ar Volley
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Draguignan Union Club Var VB 2 – Volley Pradétan Gard
+ éen
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 1 – Draguigna
+ n Union Club Var VB 1
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Draguignan Union Club Var VB 1 – Fréjus Var Volley
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Draguignan Union Club Var VB 2 – Volley Club Hyères /
+  Pierrefeu La Londe 1
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Volley Pradétan Gardéen – Volley Club Hyères / Pier
+ refeu La Londe 2
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Volley Pradétan Gardéen – Draguignan Union Club Var 
+ VB 1
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Fréjus Var Volley – Draguignan Union Club Var VB 1
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 2 – Draguigna
+ n Union Club Var VB 2
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD013@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Volley Pradétan Gardéen – Volley Club Hyères / Pier
+ refeu La Londe 1
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD014@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 2 – Volley Pr
+ adétan Gardéen
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD015@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Draguignan Union Club Var VB 1 – Volley Club Hyères /
+  Pierrefeu La Londe 1
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD016@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Draguignan Union Club Var VB 2 – Fréjus Var Volley
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD017@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 1 – Fréjus V
+ ar Volley
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD018@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Draguignan Union Club Var VB 1 – Volley Club Hyères /
+  Pierrefeu La Londe 2
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD019@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Volley Pradétan Gardéen – Draguignan Union Club Var 
+ VB 2
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD020@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Fréjus Var Volley – Volley Club Hyères / Pierrefeu L
+ a Londe 2
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD021@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T140000
+DTEND;TZID=Europe/Paris:20261212T160000
+SUMMARY:M11 M · Draguignan Union Club Var VB 2 – Volley Club Hyères /
+  Pierrefeu La Londe 2
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD022@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T140000
+DTEND;TZID=Europe/Paris:20261212T160000
+SUMMARY:M11 M · Draguignan Union Club Var VB 1 – Volley Pradétan Gard
+ éen
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD023@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T140000
+DTEND;TZID=Europe/Paris:20261212T160000
+SUMMARY:M11 M · Fréjus Var Volley – Volley Club Hyères / Pierrefeu L
+ a Londe 1
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD024@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T140000
+DTEND;TZID=Europe/Paris:20261212T160000
+SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 1 – Volley Pr
+ adétan Gardéen
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD025@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T140000
+DTEND;TZID=Europe/Paris:20261212T160000
+SUMMARY:M11 M · Fréjus Var Volley – Draguignan Union Club Var VB 2
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD026@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T140000
+DTEND;TZID=Europe/Paris:20261212T160000
+SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 2 – Draguigna
+ n Union Club Var VB 1
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD027@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T140000
+DTEND;TZID=Europe/Paris:20261212T160000
+SUMMARY:M11 M · Volley Pradétan Gardéen – Fréjus Var Volley
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD028@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T140000
+DTEND;TZID=Europe/Paris:20261212T160000
+SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 2 – Volley Cl
+ ub Hyères / Pierrefeu La Londe 1
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD029@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T140000
+DTEND;TZID=Europe/Paris:20261212T160000
+SUMMARY:M11 M · Draguignan Union Club Var VB 2 – Draguignan Union Club
+  Var VB 1
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD030@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T140000
+DTEND;TZID=Europe/Paris:20261212T160000
+SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 1 – Draguigna
+ n Union Club Var VB 2
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+END:VCALENDAR

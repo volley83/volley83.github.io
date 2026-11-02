@@ -1,0 +1,819 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fréjus Var Volley – matchs
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:PMD003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Fréjus Var Volley – Volley Pradétan Gardéen
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 2 – Fréjus V
+ ar Volley
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Draguignan Union Club Var VB 1 – Fréjus Var Volley
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Fréjus Var Volley – Draguignan Union Club Var VB 1
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD016@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Draguignan Union Club Var VB 2 – Fréjus Var Volley
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD017@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 1 – Fréjus V
+ ar Volley
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD020@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Fréjus Var Volley – Volley Club Hyères / Pierrefeu L
+ a Londe 2
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD023@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T140000
+DTEND;TZID=Europe/Paris:20261212T160000
+SUMMARY:M11 M · Fréjus Var Volley – Volley Club Hyères / Pierrefeu L
+ a Londe 1
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD025@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T140000
+DTEND;TZID=Europe/Paris:20261212T160000
+SUMMARY:M11 M · Fréjus Var Volley – Draguignan Union Club Var VB 2
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD027@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T140000
+DTEND;TZID=Europe/Paris:20261212T160000
+SUMMARY:M11 M · Volley Pradétan Gardéen – Fréjus Var Volley
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:BFB001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T100000
+DTEND;TZID=Europe/Paris:20261011T120000
+SUMMARY:M13 F · Sainte-Maxime Cogolin Volley 1 – Fréjus Var Volley 2 
+ (2-0)
+DESCRIPTION:Résultat : 2-0 (25:21\, 25:15)\nPoule BFB – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/BFB
+END:VEVENT
+BEGIN:VEVENT
+UID:BFB002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T100000
+DTEND;TZID=Europe/Paris:20261011T120000
+SUMMARY:M13 F · Fréjus Var Volley 1 – Sainte-Maxime Cogolin Volley 2 
+ (2-0)
+DESCRIPTION:Résultat : 2-0 (25:13\, 25:8)\nPoule BFB – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /BFB
+END:VEVENT
+BEGIN:VEVENT
+UID:BFB003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T100000
+DTEND;TZID=Europe/Paris:20261011T120000
+SUMMARY:M13 F · Fréjus Var Volley 1 – Fréjus Var Volley 2 (2-0)
+DESCRIPTION:Résultat : 2-0 (25:10\, 25:18)\nPoule BFB – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/BFB
+END:VEVENT
+BEGIN:VEVENT
+UID:BFB005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T140000
+DTEND;TZID=Europe/Paris:20261121T160000
+SUMMARY:M13 F · Fréjus Var Volley 2 – Sainte-Maxime Cogolin Volley 2
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule BFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFB
+END:VEVENT
+BEGIN:VEVENT
+UID:BFB006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T140000
+DTEND;TZID=Europe/Paris:20261121T160000
+SUMMARY:M13 F · Sainte-Maxime Cogolin Volley 1 – Fréjus Var Volley 1
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule BFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFB
+END:VEVENT
+BEGIN:VEVENT
+UID:BFB007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T140000
+DTEND;TZID=Europe/Paris:20261121T160000
+SUMMARY:M13 F · Fréjus Var Volley 2 – Sainte-Maxime Cogolin Volley 1
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule BFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFB
+END:VEVENT
+BEGIN:VEVENT
+UID:BFB008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T140000
+DTEND;TZID=Europe/Paris:20261121T160000
+SUMMARY:M13 F · Sainte-Maxime Cogolin Volley 2 – Fréjus Var Volley 1
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule BFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFB
+END:VEVENT
+BEGIN:VEVENT
+UID:BFB009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261206T100000
+DTEND;TZID=Europe/Paris:20261206T120000
+SUMMARY:M13 F · Fréjus Var Volley 2 – Fréjus Var Volley 1
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule BFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFB
+END:VEVENT
+BEGIN:VEVENT
+UID:BFB011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261206T100000
+DTEND;TZID=Europe/Paris:20261206T120000
+SUMMARY:M13 F · Sainte-Maxime Cogolin Volley 2 – Fréjus Var Volley 2
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule BFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFB
+END:VEVENT
+BEGIN:VEVENT
+UID:BFB012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261206T100000
+DTEND;TZID=Europe/Paris:20261206T120000
+SUMMARY:M13 F · Fréjus Var Volley 1 – Sainte-Maxime Cogolin Volley 1
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule BFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T093000
+DTEND;TZID=Europe/Paris:20261011T113000
+SUMMARY:M13 M · Fréjus Var Volley 1 – Draguignan Union Club Var VB (0
+ -2)
+DESCRIPTION:Résultat : 0-2 (9:25\, 16:25)\nPoule BMB – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T093000
+DTEND;TZID=Europe/Paris:20261011T113000
+SUMMARY:M13 M · Draguignan Union Club Var VB – Fréjus Var Volley 2 (2
+ -0)
+DESCRIPTION:Résultat : 2-0 (25:13\, 25:8)\nPoule BMB – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T093000
+DTEND;TZID=Europe/Paris:20261011T113000
+SUMMARY:M13 M · Fréjus Var Volley 2 – Fréjus Var Volley 1 (0-2)
+DESCRIPTION:Résultat : 0-2 (21:25\, 8:25)\nPoule BMB – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T100000
+DTEND;TZID=Europe/Paris:20261122T120000
+SUMMARY:M13 M · Fréjus Var Volley 2 – Draguignan Union Club Var VB
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T100000
+DTEND;TZID=Europe/Paris:20261122T120000
+SUMMARY:M13 M · Draguignan Union Club Var VB – Fréjus Var Volley 1
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T100000
+DTEND;TZID=Europe/Paris:20261122T120000
+SUMMARY:M13 M · Fréjus Var Volley 1 – Fréjus Var Volley 2
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M13 M · Fréjus Var Volley 2 – Fréjus Var Volley 1
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M13 M · Fréjus Var Volley 1 – Draguignan Union Club Var VB
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:BMB009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M13 M · Draguignan Union Club Var VB – Fréjus Var Volley 2
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMB
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 F · Sainte-Maxime Cogolin Volley – Fréjus Var Volley (2-0)
+DESCRIPTION:Résultat : 2-0 (25:17\, 25:12)\nPoule MFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 F · Fréjus Var Volley – Volley-Ball Ollioulais (2-0)
+DESCRIPTION:Résultat : 2-0 (25:6\, 25:20)\nPoule MFA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261114T140000
+DTEND;TZID=Europe/Paris:20261114T160000
+SUMMARY:M15 F · Draguignan Union Club Var VB – Fréjus Var Volley
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261114T140000
+DTEND;TZID=Europe/Paris:20261114T160000
+SUMMARY:M15 F · Fréjus Var Volley – Volley Pradétan Gardéen
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 F · Fréjus Var Volley – Sainte-Maxime Cogolin Volley
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA015@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 F · Volley-Ball Ollioulais – Fréjus Var Volley
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA018@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M15 F · Fréjus Var Volley – Draguignan Union Club Var VB
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA020@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M15 F · Volley Pradétan Gardéen – Fréjus Var Volley
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 M · Fréjus Var Volley – Draguignan Union Club Var VB (2-0)
+DESCRIPTION:Résultat : 2-0 (25:18\, 25:18)\nPoule MMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 M · Fréjus Var Volley – Volley-Ball Ollioulais (2-0)
+DESCRIPTION:Résultat : 2-0 (25:7\, 25:17)\nPoule MMA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 M · Volley Pradétan Gardéen – Fréjus Var Volley
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 M · Draguignan Union Club Var VB – Fréjus Var Volley
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T160000
+DTEND;TZID=Europe/Paris:20261212T180000
+SUMMARY:M15 M · Volley-Ball Ollioulais – Fréjus Var Volley
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T160000
+DTEND;TZID=Europe/Paris:20261212T180000
+SUMMARY:M15 M · Fréjus Var Volley – Volley Pradétan Gardéen
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFB001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T160000
+DTEND;TZID=Europe/Paris:20261010T180000
+SUMMARY:M18 F · Volley Pradétan Gardéen – Fréjus Var Volley (0-2)
+DESCRIPTION:Résultat : 0-2 (15:25\, 20:25)\nPoule CFB – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CFB
+END:VEVENT
+BEGIN:VEVENT
+UID:CFB003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T160000
+DTEND;TZID=Europe/Paris:20261010T180000
+SUMMARY:M18 F · Draguignan Union Club Var VB – Fréjus Var Volley (2-1)
+DESCRIPTION:Résultat : 2-1 (19:25\, 26:24\, 16:14)\nPoule CFB – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/jeunes/CFB
+END:VEVENT
+BEGIN:VEVENT
+UID:CFB005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T133000
+DTEND;TZID=Europe/Paris:20261121T153000
+SUMMARY:M18 F · Fréjus Var Volley – Sainte-Maxime Cogolin Volley
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule CFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFB
+END:VEVENT
+BEGIN:VEVENT
+UID:CFB007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T133000
+DTEND;TZID=Europe/Paris:20261121T153000
+SUMMARY:M18 F · Fréjus Var Volley – Volley Pradétan Gardéen
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule CFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFB
+END:VEVENT
+BEGIN:VEVENT
+UID:CFB009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T133000
+DTEND;TZID=Europe/Paris:20261205T153000
+SUMMARY:M18 F · Fréjus Var Volley – Draguignan Union Club Var VB
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule CFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFB
+END:VEVENT
+BEGIN:VEVENT
+UID:CFB011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T133000
+DTEND;TZID=Europe/Paris:20261205T153000
+SUMMARY:M18 F · Sainte-Maxime Cogolin Volley – Fréjus Var Volley
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule CFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFB
+END:VEVENT
+BEGIN:VEVENT
+UID:CMB002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M18 M · Fréjus Var Volley – Draguignan Union Club Var VB (1-2)
+DESCRIPTION:Résultat : 1-2 (23:25\, 25:21\, 15:17)\nPoule CMB – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/jeunes/CMB
+END:VEVENT
+BEGIN:VEVENT
+UID:CMB004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M18 M · Le Luc Volley-Ball – Fréjus Var Volley (2-1)
+DESCRIPTION:Résultat : 2-1 (17:25\, 25:21\, 15:11)\nPoule CMB – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/jeunes/CMB
+END:VEVENT
+BEGIN:VEVENT
+UID:CMB006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M18 M · Fréjus Var Volley – Vidauban Volley-Ball
+LOCATION:College P.E Victor (Vidauban)
+DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMB
+END:VEVENT
+BEGIN:VEVENT
+UID:CMB009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M18 M · Sainte-Maxime Cogolin Volley – Fréjus Var Volley
+LOCATION:College P.E Victor (Vidauban)
+DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMB
+END:VEVENT
+BEGIN:VEVENT
+UID:CMB012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T133000
+DTEND;TZID=Europe/Paris:20261121T153000
+SUMMARY:M18 M · Draguignan Union Club Var VB – Fréjus Var Volley
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMB
+END:VEVENT
+BEGIN:VEVENT
+UID:CMB014@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T133000
+DTEND;TZID=Europe/Paris:20261121T153000
+SUMMARY:M18 M · Fréjus Var Volley – Le Luc Volley-Ball
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMB
+END:VEVENT
+BEGIN:VEVENT
+UID:CMB016@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T130000
+DTEND;TZID=Europe/Paris:20261205T150000
+SUMMARY:M18 M · Vidauban Volley-Ball – Fréjus Var Volley
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMB
+END:VEVENT
+BEGIN:VEVENT
+UID:CMB019@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T130000
+DTEND;TZID=Europe/Paris:20261205T150000
+SUMMARY:M18 M · Fréjus Var Volley – Sainte-Maxime Cogolin Volley
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMB
+END:VEVENT
+BEGIN:VEVENT
+UID:CMC001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261004T133000
+DTEND;TZID=Europe/Paris:20261004T153000
+SUMMARY:M18 M QUALIF. · Volley Club Hyères / Pierrefeu La Londe – Fr
+ éjus Var Volley (1-3)
+DESCRIPTION:Résultat : 1-3 (16:25\, 25:20\, 20:25\, 23:25)\nPoule CMC 
+ – classement et résultats : https://volley83.github.io/championnats/#
+ championnats/jeunes/CMC
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T203000
+DTEND;TZID=Europe/Paris:20261010T223000
+SUMMARY:SENIORS F · Fréjus Var Volley (M21) – Volley Club Méditerran
+ ée (3-2)
+DESCRIPTION:Résultat : 3-2 (24:26\, 26:24\, 20:25\, 25:20\, 15:5)\nPoule
+  DFB – classement et résultats : https://volley83.github.io/championn
+ ats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261017T170000
+DTEND;TZID=Europe/Paris:20261017T190000
+SUMMARY:SENIORS F · Sud Sainte-Baume Volley Club – Fréjus Var Volley 
+ (M21) (0-3)
+DESCRIPTION:Résultat : 0-3 (25:27\, 22:25\, 7:25)\nPoule DFB – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T150000
+DTEND;TZID=Europe/Paris:20261205T170000
+SUMMARY:SENIORS F · Fréjus Var Volley (M21) – Vidauban Volley-Ball
+LOCATION:Halle St Croix
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T160000
+DTEND;TZID=Europe/Paris:20261121T180000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen – Fréjus Var Volley (M2
+ 1)
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB015@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T180000
+DTEND;TZID=Europe/Paris:20261128T200000
+SUMMARY:SENIORS F · Fréjus Var Volley (M21) – Union Athlétique Valet
+ toise
+LOCATION:Pierre Clere
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB016@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261213T180000
+DTEND;TZID=Europe/Paris:20261213T200000
+SUMMARY:SENIORS F · Volley Club Méditerranée – Fréjus Var Volley (M
+ 21)
+LOCATION:Complexe Sportif des Lices
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB021@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270109T203000
+DTEND;TZID=Europe/Paris:20270109T223000
+SUMMARY:SENIORS F · Fréjus Var Volley (M21) – Sud Sainte-Baume Volley
+  Club
+LOCATION:Halle St Croix
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB023@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270116T170000
+DTEND;TZID=Europe/Paris:20270116T190000
+SUMMARY:SENIORS F · Vidauban Volley-Ball – Fréjus Var Volley (M21)
+LOCATION:Collège P.E Victor
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB026@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270130T203000
+DTEND;TZID=Europe/Paris:20270130T223000
+SUMMARY:SENIORS F · Fréjus Var Volley (M21) – Volley Pradétan Gardé
+ en
+LOCATION:Pierre Clere
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB030@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270213T183000
+DTEND;TZID=Europe/Paris:20270213T203000
+SUMMARY:SENIORS F · Union Athlétique Valettoise – Fréjus Var Volley 
+ (M21)
+LOCATION:Santoni
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMC001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T163000
+DTEND;TZID=Europe/Paris:20261010T183000
+SUMMARY:SENIORS M · Volley Club Hyères / Pierrefeu La Londe – Fréjus
+  Var Volley (1-3)
+DESCRIPTION:Résultat : 1-3 (25:19\, 24:26\, 18:25\, 21:25)\nPoule DMC 
+ – classement et résultats : https://volley83.github.io/championnats/#
+ championnats/seniors/DMC
+END:VEVENT
+BEGIN:VEVENT
+UID:DMC004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261115T150000
+DTEND;TZID=Europe/Paris:20261115T170000
+SUMMARY:SENIORS M · Fréjus Var Volley – Volley Club Seynois
+LOCATION:Halle St Croix
+DESCRIPTION:Poule DMC – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMC
+END:VEVENT
+BEGIN:VEVENT
+UID:DMC006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261129T163000
+DTEND;TZID=Europe/Paris:20261129T183000
+SUMMARY:SENIORS M · Fréjus Var Volley – Union Athlétique Valettoise 2
+LOCATION:Halle St Croix
+DESCRIPTION:Poule DMC – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMC
+END:VEVENT
+BEGIN:VEVENT
+UID:DMC008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261213T150000
+DTEND;TZID=Europe/Paris:20261213T170000
+SUMMARY:SENIORS M · Volley Club Seynois – Fréjus Var Volley
+LOCATION:Gymnase Armand Sauvat
+DESCRIPTION:Poule DMC – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMC
+END:VEVENT
+BEGIN:VEVENT
+UID:DMC009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270117T163000
+DTEND;TZID=Europe/Paris:20270117T183000
+SUMMARY:SENIORS M · Fréjus Var Volley – Volley Club Hyères / Pierref
+ eu La Londe
+LOCATION:Halle St Croix
+DESCRIPTION:Poule DMC – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMC
+END:VEVENT
+BEGIN:VEVENT
+UID:DMC012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270206T203000
+DTEND;TZID=Europe/Paris:20270206T223000
+SUMMARY:SENIORS M · Union Athlétique Valettoise 2 – Fréjus Var Volley
+LOCATION:Santoni
+DESCRIPTION:Poule DMC – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMC
+END:VEVENT
+BEGIN:VEVENT
+UID:MFC001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20260920T100000
+DTEND;TZID=Europe/Paris:20260920T120000
+SUMMARY:M15 F QUALIF. · Fréjus Var Volley – Volley Pradétan Gardéen
+  (2-0)
+DESCRIPTION:Résultat : 2-0 (25:7\, 25:6)\nPoule MFC – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MFC
+END:VEVENT
+BEGIN:VEVENT
+UID:MFC004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20260920T110000
+DTEND;TZID=Europe/Paris:20260920T130000
+SUMMARY:M15 F QUALIF. · Draguignan Union Club Var VB – Fréjus Var Vol
+ ley (0-2)
+DESCRIPTION:Résultat : 0-2 (8:25\, 10:25)\nPoule MFC – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MFC
+END:VEVENT
+BEGIN:VEVENT
+UID:MFC006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20260920T120000
+DTEND;TZID=Europe/Paris:20260920T140000
+SUMMARY:M15 F QUALIF. · Fréjus Var Volley – Volley Club Hyères / Pie
+ rrefeu La Londe (2-0)
+DESCRIPTION:Résultat : 2-0 (25:18\, 25:15)\nPoule MFC – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/MFC
+END:VEVENT
+END:VCALENDAR

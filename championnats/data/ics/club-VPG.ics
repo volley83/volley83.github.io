@@ -1,0 +1,1383 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Volley Pradétan Gardéen – matchs
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:PMD003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Fréjus Var Volley – Volley Pradétan Gardéen
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Draguignan Union Club Var VB 2 – Volley Pradétan Gard
+ éen
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Volley Pradétan Gardéen – Volley Club Hyères / Pier
+ refeu La Londe 2
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M11 M · Volley Pradétan Gardéen – Draguignan Union Club Var 
+ VB 1
+LOCATION:Salle Sainte-Croix (Frejus)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD013@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Volley Pradétan Gardéen – Volley Club Hyères / Pier
+ refeu La Londe 1
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD014@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 2 – Volley Pr
+ adétan Gardéen
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD019@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T130000
+DTEND;TZID=Europe/Paris:20261128T150000
+SUMMARY:M11 M · Volley Pradétan Gardéen – Draguignan Union Club Var 
+ VB 2
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD022@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T140000
+DTEND;TZID=Europe/Paris:20261212T160000
+SUMMARY:M11 M · Draguignan Union Club Var VB 1 – Volley Pradétan Gard
+ éen
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD024@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T140000
+DTEND;TZID=Europe/Paris:20261212T160000
+SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 1 – Volley Pr
+ adétan Gardéen
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:PMD027@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T140000
+DTEND;TZID=Europe/Paris:20261212T160000
+SUMMARY:M11 M · Volley Pradétan Gardéen – Fréjus Var Volley
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PMD
+END:VEVENT
+BEGIN:VEVENT
+UID:BFA001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T093000
+DTEND;TZID=Europe/Paris:20261011T113000
+SUMMARY:M13 F · Volley Pradétan Gardéen 1 – Volley-Ball Ollioulais (
+ 2-0)
+DESCRIPTION:Résultat : 2-0 (25:13\, 25:20)\nPoule BFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/BFA
+END:VEVENT
+BEGIN:VEVENT
+UID:BFA002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T093000
+DTEND;TZID=Europe/Paris:20261011T113000
+SUMMARY:M13 F · Volley Club Hyères / Pierrefeu La Londe – Volley Prad
+ étan Gardéen 2 (2-0)
+DESCRIPTION:Résultat : 2-0 (25:9\, 25:2)\nPoule BFA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /BFA
+END:VEVENT
+BEGIN:VEVENT
+UID:BFA004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T093000
+DTEND;TZID=Europe/Paris:20261011T113000
+SUMMARY:M13 F · Volley Pradétan Gardéen 2 – Volley Pradétan Gardée
+ n 1 (0-2)
+DESCRIPTION:Résultat : 0-2 (9:25\, 10:25)\nPoule BFA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /BFA
+END:VEVENT
+BEGIN:VEVENT
+UID:BFA005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T093000
+DTEND;TZID=Europe/Paris:20261122T113000
+SUMMARY:M13 F · Volley-Ball Ollioulais – Volley Pradétan Gardéen 2
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule BFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFA
+END:VEVENT
+BEGIN:VEVENT
+UID:BFA006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T093000
+DTEND;TZID=Europe/Paris:20261122T113000
+SUMMARY:M13 F · Volley Pradétan Gardéen 1 – Volley Club Hyères / Pi
+ errefeu La Londe
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule BFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFA
+END:VEVENT
+BEGIN:VEVENT
+UID:BFA007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T093000
+DTEND;TZID=Europe/Paris:20261122T113000
+SUMMARY:M13 F · Volley-Ball Ollioulais – Volley Pradétan Gardéen 1
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule BFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFA
+END:VEVENT
+BEGIN:VEVENT
+UID:BFA008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T093000
+DTEND;TZID=Europe/Paris:20261122T113000
+SUMMARY:M13 F · Volley Pradétan Gardéen 2 – Volley Club Hyères / Pi
+ errefeu La Londe
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule BFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFA
+END:VEVENT
+BEGIN:VEVENT
+UID:BFA010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T130000
+DTEND;TZID=Europe/Paris:20261205T150000
+SUMMARY:M13 F · Volley Pradétan Gardéen 1 – Volley Pradétan Gardée
+ n 2
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule BFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFA
+END:VEVENT
+BEGIN:VEVENT
+UID:BFA011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T130000
+DTEND;TZID=Europe/Paris:20261205T150000
+SUMMARY:M13 F · Volley Pradétan Gardéen 2 – Volley-Ball Ollioulais
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule BFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFA
+END:VEVENT
+BEGIN:VEVENT
+UID:BFA012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T130000
+DTEND;TZID=Europe/Paris:20261205T150000
+SUMMARY:M13 F · Volley Club Hyères / Pierrefeu La Londe – Volley Prad
+ étan Gardéen 1
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule BFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 F · Volley Pradétan Gardéen – Draguignan Union Club Var 
+ VB (2-1)
+DESCRIPTION:Résultat : 2-1 (25:19\, 21:25\, 15:7)\nPoule MFA – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 F · Volley Pradétan Gardéen – Volley-Ball Ollioulais (2-
+ 0)
+DESCRIPTION:Résultat : 2-0 (25:14\, 29:27)\nPoule MFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261114T140000
+DTEND;TZID=Europe/Paris:20261114T160000
+SUMMARY:M15 F · Sainte-Maxime Cogolin Volley – Volley Pradétan Gardé
+ en
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261114T140000
+DTEND;TZID=Europe/Paris:20261114T160000
+SUMMARY:M15 F · Fréjus Var Volley – Volley Pradétan Gardéen
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 F · Draguignan Union Club Var VB – Volley Pradétan Gardé
+ en
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA013@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 F · Volley-Ball Ollioulais – Volley Pradétan Gardéen
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA016@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M15 F · Volley Pradétan Gardéen – Sainte-Maxime Cogolin Voll
+ ey
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA020@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M15 F · Volley Pradétan Gardéen – Fréjus Var Volley
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 M · Volley Pradétan Gardéen – Volley-Ball Ollioulais (0-
+ 2)
+DESCRIPTION:Résultat : 0-2 (23:25\, 10:25)\nPoule MMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 M · Draguignan Union Club Var VB – Volley Pradétan Gardé
+ en (2-0)
+DESCRIPTION:Résultat : 2-0 (25:12\, 25:9)\nPoule MMA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 M · Volley Pradétan Gardéen – Fréjus Var Volley
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 M · Volley-Ball Ollioulais – Volley Pradétan Gardéen
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T160000
+DTEND;TZID=Europe/Paris:20261212T180000
+SUMMARY:M15 M · Volley Pradétan Gardéen – Draguignan Union Club Var 
+ VB
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T160000
+DTEND;TZID=Europe/Paris:20261212T180000
+SUMMARY:M15 M · Fréjus Var Volley – Volley Pradétan Gardéen
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFB001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T160000
+DTEND;TZID=Europe/Paris:20261010T180000
+SUMMARY:M18 F · Volley Pradétan Gardéen – Fréjus Var Volley (0-2)
+DESCRIPTION:Résultat : 0-2 (15:25\, 20:25)\nPoule CFB – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CFB
+END:VEVENT
+BEGIN:VEVENT
+UID:CFB004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T160000
+DTEND;TZID=Europe/Paris:20261010T180000
+SUMMARY:M18 F · Sainte-Maxime Cogolin Volley – Volley Pradétan Gardé
+ en (2-0)
+DESCRIPTION:Résultat : 2-0 (25:12\, 25:12)\nPoule CFB – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CFB
+END:VEVENT
+BEGIN:VEVENT
+UID:CFB006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T133000
+DTEND;TZID=Europe/Paris:20261121T153000
+SUMMARY:M18 F · Volley Pradétan Gardéen – Draguignan Union Club Var 
+ VB
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule CFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFB
+END:VEVENT
+BEGIN:VEVENT
+UID:CFB007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T133000
+DTEND;TZID=Europe/Paris:20261121T153000
+SUMMARY:M18 F · Fréjus Var Volley – Volley Pradétan Gardéen
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule CFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFB
+END:VEVENT
+BEGIN:VEVENT
+UID:CFB010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T133000
+DTEND;TZID=Europe/Paris:20261205T153000
+SUMMARY:M18 F · Volley Pradétan Gardéen – Sainte-Maxime Cogolin Voll
+ ey
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule CFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFB
+END:VEVENT
+BEGIN:VEVENT
+UID:CFB012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T133000
+DTEND;TZID=Europe/Paris:20261205T153000
+SUMMARY:M18 F · Draguignan Union Club Var VB – Volley Pradétan Gardé
+ en
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule CFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFB
+END:VEVENT
+BEGIN:VEVENT
+UID:CMA002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T140000
+DTEND;TZID=Europe/Paris:20261010T160000
+SUMMARY:M18 M · Union Athlétique Valettoise – Volley Pradétan Gardé
+ en (2-0)
+DESCRIPTION:Résultat : 2-0 (25:14\, 25:16)\nPoule CMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CMA005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M18 M · Volley Pradétan Gardéen – Volley-Ball Ollioulais
+LOCATION:Gymnase Santoni (La Valette)
+DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CMA008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M18 M · Volley Club Méditerranée – Volley Pradétan Gardéen
+LOCATION:Gymnase Santoni (La Valette)
+DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CMA010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M18 M · Volley Pradétan Gardéen – Volley Club Hyères / Pier
+ refeu La Londe
+LOCATION:Gymnase Santoni (La Valette)
+DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CMA012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T140000
+DTEND;TZID=Europe/Paris:20261121T160000
+SUMMARY:M18 M · Volley Pradétan Gardéen – Union Athlétique Valettoi
+ se
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CMA015@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T140000
+DTEND;TZID=Europe/Paris:20261121T160000
+SUMMARY:M18 M · Volley-Ball Ollioulais – Volley Pradétan Gardéen
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CMA018@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M18 M · Volley Pradétan Gardéen – Volley Club Méditerranée
+LOCATION:Les Lices (Toulon)
+DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CMA020@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M18 M · Volley Club Hyères / Pierrefeu La Londe – Volley Prad
+ étan Gardéen
+LOCATION:Les Lices (Toulon)
+DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261013T210000
+DTEND;TZID=Europe/Paris:20261013T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 2 – Volley Pradé
+ tan Gardéen 3 (3-0)
+DESCRIPTION:Résultat : 3-0 (25:17\, 25:16\, 25:14)\nPoule 4FA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261013T210000
+DTEND;TZID=Europe/Paris:20261013T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 1 – Six Fours Bea
+ ch Volley (0-3)
+DESCRIPTION:Résultat : 0-3 (13:25\, 7:25\, 12:25)\nPoule 4FA – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261031
+DTEND;VALUE=DATE:20261101
+SUMMARY:COMPET'LIB 4X4 F · Exempt – Volley Pradétan Gardéen 1
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261029T210000
+DTEND;TZID=Europe/Paris:20261029T230000
+SUMMARY:COMPET'LIB 4X4 F · Six Fours Beach Volley – Volley Pradétan G
+ ardéen 2 (3-0)
+DESCRIPTION:Résultat : 3-0 (25:8\, 25:14\, 25:14)\nPoule 4FA – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261027T210000
+DTEND;TZID=Europe/Paris:20261027T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 3 – Rocbaron Club
+  Volley-Ball - Rcvb (0-3)
+DESCRIPTION:Résultat : 0-3 (18:25\, 21:25\, 16:25)\nPoule 4FA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261103T210000
+DTEND;TZID=Europe/Paris:20261103T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 3 – Exempt
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261103T210000
+DTEND;TZID=Europe/Paris:20261103T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 1 – Volley Pradé
+ tan Gardéen 2
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261110T210000
+DTEND;TZID=Europe/Paris:20261110T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 2 – Exempt
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261110T210000
+DTEND;TZID=Europe/Paris:20261110T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 1 – Rocbaron Club
+  Volley-Ball - Rcvb
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261112T210000
+DTEND;TZID=Europe/Paris:20261112T230000
+SUMMARY:COMPET'LIB 4X4 F · Six Fours Beach Volley – Volley Pradétan G
+ ardéen 3
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA014@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261124T210000
+DTEND;TZID=Europe/Paris:20261124T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 3 – Volley Pradé
+ tan Gardéen 1
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA015@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261126T210000
+DTEND;TZID=Europe/Paris:20261126T230000
+SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball - Rcvb – Volley P
+ radétan Gardéen 2
+LOCATION:Gymnase Gassendi
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA017@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261201T210000
+DTEND;TZID=Europe/Paris:20261201T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 3 – Volley Pradé
+ tan Gardéen 2
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA018@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261203T210000
+DTEND;TZID=Europe/Paris:20261203T230000
+SUMMARY:COMPET'LIB 4X4 F · Six Fours Beach Volley – Volley Pradétan G
+ ardéen 1
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA019@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261208T210000
+DTEND;TZID=Europe/Paris:20261208T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 1 – Exempt
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA020@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261208T210000
+DTEND;TZID=Europe/Paris:20261208T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 2 – Six Fours Bea
+ ch Volley
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA021@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261210T210000
+DTEND;TZID=Europe/Paris:20261210T230000
+SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball - Rcvb – Volley P
+ radétan Gardéen 3
+LOCATION:Gymnase Gassendi
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA022@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261219
+DTEND;VALUE=DATE:20261220
+SUMMARY:COMPET'LIB 4X4 F · Exempt – Volley Pradétan Gardéen 3
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA024@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261215T210000
+DTEND;TZID=Europe/Paris:20261215T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 2 – Volley Pradé
+ tan Gardéen 1
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA025@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20270109
+DTEND;VALUE=DATE:20270110
+SUMMARY:COMPET'LIB 4X4 F · Exempt – Volley Pradétan Gardéen 2
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA026@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270107T210000
+DTEND;TZID=Europe/Paris:20270107T230000
+SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball - Rcvb – Volley P
+ radétan Gardéen 1
+LOCATION:Gymnase Gassendi
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA027@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270105T210000
+DTEND;TZID=Europe/Paris:20270105T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 3 – Six Fours Bea
+ ch Volley
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA029@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270112T210000
+DTEND;TZID=Europe/Paris:20270112T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 1 – Volley Pradé
+ tan Gardéen 3
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA030@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270112T210000
+DTEND;TZID=Europe/Paris:20270112T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 2 – Rocbaron Club
+  Volley-Ball - Rcvb
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261015T213000
+DTEND;TZID=Europe/Paris:20261015T233000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Sud Sainte-Baume Volley Club 1 – Volley
+  Pradétan Gardéen 2 (0-3)
+DESCRIPTION:Résultat : 0-3 (18:25\, 24:26\, 21:25)\nPoule M4A – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261103T210000
+DTEND;TZID=Europe/Paris:20261103T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 2 – Le Luc Vo
+ lley-Ball
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule M4A – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261110T210000
+DTEND;TZID=Europe/Paris:20261110T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 2 – Union Ath
+ létique Valettoise 2
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule M4A – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261127T210000
+DTEND;TZID=Europe/Paris:20261127T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Le Luc Volley-Ball – Volley Pradétan G
+ ardéen 2
+LOCATION:Pierre Gaudin
+DESCRIPTION:Poule M4A – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261201T210000
+DTEND;TZID=Europe/Paris:20261201T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 2 – Sud Saint
+ e-Baume Volley Club 1
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule M4A – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261218T211500
+DTEND;TZID=Europe/Paris:20261218T231500
+SUMMARY:COMPET'LIB 4X4 MIXTE · Union Athlétique Valettoise 2 – Volley
+  Pradétan Gardéen 2
+LOCATION:Santoni
+DESCRIPTION:Poule M4A – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261119T204500
+DTEND;TZID=Europe/Paris:20261119T224500
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 1 – Six Fours
+  Beach Volley 3
+LOCATION:Gerard Sébastia
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261102T193000
+DTEND;TZID=Europe/Paris:20261102T213000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 1 – Volley Prad
+ étan Gardéen 1
+LOCATION:La Cordeille
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261112T213000
+DTEND;TZID=Europe/Paris:20261112T233000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Sud Sainte-Baume Volley Club 2 – Volley
+  Pradétan Gardéen 1
+LOCATION:Compexe Sportif du Beausset
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261126T204500
+DTEND;TZID=Europe/Paris:20261126T224500
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 1 – Volley-Ba
+ ll Ollioulais 1
+LOCATION:Gerard Sébastia
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261130T210000
+DTEND;TZID=Europe/Paris:20261130T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six Fours Beach Volley 3 – Volley Prad
+ étan Gardéen 1
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261217T204500
+DTEND;TZID=Europe/Paris:20261217T224500
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 1 – Sud Saint
+ e-Baume Volley Club 2
+LOCATION:Gerard Sébastia
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T150000
+DTEND;TZID=Europe/Paris:20261011T170000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen (M21) – Volley Club Méd
+ iterranée (0-3)
+DESCRIPTION:Résultat : 0-3 (22:25\, 22:25\, 24:26)\nPoule DFA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270206T180000
+DTEND;TZID=Europe/Paris:20270206T200000
+SUMMARY:SENIORS F · Sainte-Maxime Cogolin Volley (M21) – Volley Pradé
+ tan Gardéen (M21)
+LOCATION:Les Bosquettes
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261115T160000
+DTEND;TZID=Europe/Paris:20261115T180000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen (M21) – Volley-Ball Olli
+ oulais
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T160000
+DTEND;TZID=Europe/Paris:20261122T180000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen (M21) – Le Luc Volley-Ba
+ ll
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA014@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T170000
+DTEND;TZID=Europe/Paris:20261128T190000
+SUMMARY:SENIORS F · Volley Club Hyères / Pierrefeu La Londe – Volley 
+ Pradétan Gardéen (M21)
+LOCATION:Gymnase de Costebelle
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA018@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261213T100000
+DTEND;TZID=Europe/Paris:20261213T120000
+SUMMARY:SENIORS F · Volley Club Méditerranée – Volley Pradétan Gard
+ éen (M21)
+LOCATION:Complexe Sportif des Lices
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA019@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270110T100000
+DTEND;TZID=Europe/Paris:20270110T120000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen (M21) – Sainte-Maxime Co
+ golin Volley (M21)
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA024@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270117T140000
+DTEND;TZID=Europe/Paris:20270117T160000
+SUMMARY:SENIORS F · Volley-Ball Ollioulais – Volley Pradétan Gardéen
+  (M21)
+LOCATION:Piemontesi
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA026@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270130T180000
+DTEND;TZID=Europe/Paris:20270130T200000
+SUMMARY:SENIORS F · Le Luc Volley-Ball – Volley Pradétan Gardéen (M2
+ 1)
+LOCATION:Jean Yves Gosse
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA029@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270214T140000
+DTEND;TZID=Europe/Paris:20270214T160000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen (M21) – Volley Club Hyè
+ res / Pierrefeu La Londe
+LOCATION:Gerard Sebastia
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T130000
+DTEND;TZID=Europe/Paris:20261011T150000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen – Vidauban Volley-Ball (
+ 3-0)
+DESCRIPTION:Résultat : 3-0 (25:17\, 25:21\, 25:19)\nPoule DFB – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261018T180000
+DTEND;TZID=Europe/Paris:20261018T200000
+SUMMARY:SENIORS F · Volley Club Méditerranée – Volley Pradétan Gard
+ éen (3-2)
+DESCRIPTION:Résultat : 3-2 (25:17\, 14:25\, 25:19\, 19:25\, 15:13)\nPoul
+ e DFB – classement et résultats : https://volley83.github.io/champion
+ nats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261115T100000
+DTEND;TZID=Europe/Paris:20261115T120000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen – Union Athlétique Vale
+ ttoise
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T160000
+DTEND;TZID=Europe/Paris:20261121T180000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen – Fréjus Var Volley (M2
+ 1)
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB014@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T170000
+DTEND;TZID=Europe/Paris:20261128T190000
+SUMMARY:SENIORS F · Sud Sainte-Baume Volley Club – Volley Pradétan Ga
+ rdéen
+LOCATION:Gymnase du College le Vigneret
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB018@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261213T140000
+DTEND;TZID=Europe/Paris:20261213T160000
+SUMMARY:SENIORS F · Vidauban Volley-Ball – Volley Pradétan Gardéen
+LOCATION:Collège P.E Victor
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB019@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270110T160000
+DTEND;TZID=Europe/Paris:20270110T180000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen – Volley Club Méditerra
+ née
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB024@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270116T183000
+DTEND;TZID=Europe/Paris:20270116T203000
+SUMMARY:SENIORS F · Union Athlétique Valettoise – Volley Pradétan Ga
+ rdéen
+LOCATION:Santoni
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB026@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270130T203000
+DTEND;TZID=Europe/Paris:20270130T223000
+SUMMARY:SENIORS F · Fréjus Var Volley (M21) – Volley Pradétan Gardé
+ en
+LOCATION:Pierre Clere
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DFB029@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270214T110000
+DTEND;TZID=Europe/Paris:20270214T130000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen – Sud Sainte-Baume Volle
+ y Club
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T140000
+DTEND;TZID=Europe/Paris:20261011T160000
+SUMMARY:SENIORS M · Union Athlétique Valettoise 1 – Volley Pradétan 
+ Gardéen 1 (3-0)
+DESCRIPTION:Résultat : 3-0 (25:19\, 25:11\, 25:22)\nPoule DMA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261017T180000
+DTEND;TZID=Europe/Paris:20261017T200000
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 1 – Volley Club Méditer
+ ranée 2 (2-3)
+DESCRIPTION:Résultat : 2-3 (25:23\, 15:25\, 20:25\, 25:23\, 13:15)\nPoul
+ e DMA – classement et résultats : https://volley83.github.io/champion
+ nats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261114T180000
+DTEND;TZID=Europe/Paris:20261114T200000
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 2 – Volley Pradétan Gardé
+ en 1
+LOCATION:Piemontesi
+DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T150000
+DTEND;TZID=Europe/Paris:20261122T170000
+SUMMARY:SENIORS M · Draguignan Union Club Var VB (M21) – Volley Pradé
+ tan Gardéen 1
+LOCATION:Gymnase Collège Rostand
+DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA013@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 1 – Exempt
+DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA016@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261213T100000
+DTEND;TZID=Europe/Paris:20261213T120000
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 1 – Union Athlétique Va
+ lettoise 1
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA019@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261206T100000
+DTEND;TZID=Europe/Paris:20261206T120000
+SUMMARY:SENIORS M · Volley Club Méditerranée 2 – Volley Pradétan Ga
+ rdéen 1
+LOCATION:Complexe Sportif des Lices
+DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA022@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270117T160000
+DTEND;TZID=Europe/Paris:20270117T180000
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 1 – Volley-Ball Ollioula
+ is 2
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA025@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270131T110000
+DTEND;TZID=Europe/Paris:20270131T130000
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 1 – Draguignan Union Clu
+ b Var VB (M21)
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA028@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20270213
+DTEND;VALUE=DATE:20270214
+SUMMARY:SENIORS M · Exempt – Volley Pradétan Gardéen 1
+DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T191500
+DTEND;TZID=Europe/Paris:20261010T211500
+SUMMARY:SENIORS M · Sud Sainte-Baume Volley Club – Volley Pradétan Ga
+ rdéen 2 (0-0)
+DESCRIPTION:Résultat : 0-0 ()\nPoule DMB – classement et résultats : 
+ https://volley83.github.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261017
+DTEND;VALUE=DATE:20261018
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 2 – Exempt
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261115T153000
+DTEND;TZID=Europe/Paris:20261115T173000
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 1 – Volley Pradétan Gardé
+ en 2
+LOCATION:Piemontesi
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261108T100000
+DTEND;TZID=Europe/Paris:20261108T120000
+SUMMARY:SENIORS M · Volley Club Méditerranée 1 – Volley Pradétan Ga
+ rdéen 2
+LOCATION:Complexe Sportif des Lices
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB013@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261129T110000
+DTEND;TZID=Europe/Paris:20261129T130000
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 2 – Vidauban Volley-Ball
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB016@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261213T140000
+DTEND;TZID=Europe/Paris:20261213T160000
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 2 – Sud Sainte-Baume Vol
+ ley Club
+LOCATION:Gerard Sebastia
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB019@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20270109
+DTEND;VALUE=DATE:20270110
+SUMMARY:SENIORS M · Exempt – Volley Pradétan Gardéen 2
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB022@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270117T100000
+DTEND;TZID=Europe/Paris:20270117T120000
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 2 – Volley-Ball Ollioula
+ is 1
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB025@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270131T160000
+DTEND;TZID=Europe/Paris:20270131T180000
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 2 – Volley Club Méditer
+ ranée 1
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB028@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270213T170000
+DTEND;TZID=Europe/Paris:20270213T190000
+SUMMARY:SENIORS M · Vidauban Volley-Ball – Volley Pradétan Gardéen 2
+LOCATION:Collège P.E Victor
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:MFC001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20260920T100000
+DTEND;TZID=Europe/Paris:20260920T120000
+SUMMARY:M15 F QUALIF. · Fréjus Var Volley – Volley Pradétan Gardéen
+  (2-0)
+DESCRIPTION:Résultat : 2-0 (25:7\, 25:6)\nPoule MFC – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MFC
+END:VEVENT
+BEGIN:VEVENT
+UID:MFC003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20260920T110000
+DTEND;TZID=Europe/Paris:20260920T130000
+SUMMARY:M15 F QUALIF. · Volley Club Hyères / Pierrefeu La Londe – Vol
+ ley Pradétan Gardéen (2-0)
+DESCRIPTION:Résultat : 2-0 (25:18\, 25:13)\nPoule MFC – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/MFC
+END:VEVENT
+BEGIN:VEVENT
+UID:MFC005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20260920T120000
+DTEND;TZID=Europe/Paris:20260920T140000
+SUMMARY:M15 F QUALIF. · Volley Pradétan Gardéen – Draguignan Union C
+ lub Var VB (0-2)
+DESCRIPTION:Résultat : 0-2 (8:25\, 14:25)\nPoule MFC – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MFC
+END:VEVENT
+END:VCALENDAR

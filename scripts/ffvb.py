@@ -15,6 +15,16 @@ BASE = 'https://www.ffvbbeach.org/ffvbapp/resu/'
 # Poules gérées autrement sur le site du Comité (Compétitions OPEN, Pitchoun')
 EXCLUES = {'M4M', 'MFM', 'C4M', 'CFM', 'O11', 'O13', 'PIT'}
 SORTIE = os.path.join(os.path.dirname(__file__), '..', 'championnats', 'data', 'ffvb.json')
+DOSSIER_ICS = os.path.join(os.path.dirname(__file__), '..', 'championnats', 'data', 'ics')
+SUPABASE_URL = 'https://nssdhgpvkdbgdewsnlgl.supabase.co'
+SUPABASE_KEY = 'sb_publishable_GeMMc45mQbDOq-ZkU5vXZw_lYJe9KXf'   # clé publique (lecture des compétitions OPEN)
+CLUBS = {   # code : nom affiché (même liste que l'admin des compétitions OPEN)
+    'CSB': 'Club Sportif Brignolais', 'DVVB': 'Draguignan Union Club Var VB', 'FVV': 'Fréjus Var Volley',
+    'LLVB': 'Le Luc Volley-Ball', 'SMCV': 'Sainte-Maxime Cogolin Volley', '2SBVC': 'Sud Sainte-Baume Volley Club',
+    'UAV': 'Union Athlétique Valettoise', 'VVB': 'Vidauban Volley-Ball', 'VBO': 'Volley-Ball Ollioulais',
+    'VCHPL': 'Volley Club Hyères / Pierrefeu La Londe', 'VCM': 'Volley Club Méditerranée', 'VCS': 'Volley Club Seynois',
+    'VPG': 'Volley Pradétan Gardéen',
+}
 UA = 'Mozilla/5.0 (compatible; Comite-Var-Volley/1.0; +https://volley83.github.io/championnats/)'
 
 
@@ -143,6 +153,175 @@ def poule(code, html):
     return {'classement': classement, 'journees': journees, 'equipes': equipes}
 
 
+# ---------------------------------------------------------------------------
+# Agendas .ics (abonnement Google Agenda, iPhone, Outlook) : une par poule, une par club
+# ---------------------------------------------------------------------------
+def normn(s):
+    import unicodedata
+    s = unicodedata.normalize('NFD', s or '')
+    return re.sub(r'[^A-Z0-9]', '', ''.join(c for c in s if not unicodedata.combining(c)).upper())
+
+
+def club_de(nom):
+    n = normn(nom)
+    for code, cnom in sorted(CLUBS.items(), key=lambda kv: -len(normn(kv[1]))):
+        if n.startswith(normn(cnom)):
+            return code
+    return None
+
+
+def equipe_jolie(nom):
+    if re.fullmatch(r'X{3,}', (nom or '').strip(), re.I):
+        return 'Exempt'
+    code = club_de(nom)
+    if not code:
+        return (nom or '').title()
+    besoin, i = len(normn(CLUBS[code])), 0
+    while i < len(nom) and besoin > 0:
+        if re.match(r'[A-Za-z0-9À-ÿ]', nom[i]):
+            besoin -= 1
+        i += 1
+    reste = nom[i:].strip()
+    return CLUBS[code] + (' ' + reste if reste else '')
+
+
+def lieu_joli(s):
+    petits = {'de', 'du', 'des', 'la', 'le', 'les', 'et', 'à', 'au', 'aux', 'sur', 'en'}
+    out = []
+    for i, w in enumerate(re.split(r'(\W+)', (s or '').lower())):
+        out.append(w[:1].upper() + w[1:] if w and w[0].isalpha() and (i == 0 or w not in petits or (out and out[-1].endswith(('(', '-'))) ) else w)
+    return ''.join(out)
+
+
+def ics_txt(s):
+    return (s or '').replace('\\', '\\\\').replace(';', '\\;').replace(',', '\\,').replace('\n', '\\n')
+
+
+def ics_plier(ligne):
+    b = ligne.encode('utf-8')
+    if len(b) <= 74:
+        return ligne
+    res, cur = [], ''
+    for ch in ligne:
+        if len((cur + ch).encode('utf-8')) > 73:
+            res.append(cur)
+            cur = ' ' + ch
+        else:
+            cur += ch
+    res.append(cur)
+    return '\r\n'.join(res)
+
+
+def evenement(uid, date, heure, titre, lieu, desc, duree_h=2):
+    l = ['BEGIN:VEVENT', f'UID:{uid}@volley83.github.io', 'DTSTAMP:20260901T000000Z']
+    d = date.replace('-', '')
+    if heure and re.fullmatch(r'\d\d:\d\d', heure):
+        h, m = int(heure[:2]), int(heure[3:])
+        fh, fm = (h + duree_h) % 24, m
+        l += [f'DTSTART;TZID=Europe/Paris:{d}T{h:02d}{m:02d}00', f'DTEND;TZID=Europe/Paris:{d}T{fh:02d}{fm:02d}00']
+    else:
+        from datetime import date as dt, timedelta
+        y, mo, da = map(int, date.split('-'))
+        l += [f'DTSTART;VALUE=DATE:{d}', 'DTEND;VALUE=DATE:' + (dt(y, mo, da) + timedelta(days=1)).strftime('%Y%m%d')]
+    l.append('SUMMARY:' + ics_txt(titre))
+    if lieu:
+        l.append('LOCATION:' + ics_txt(lieu))
+    if desc:
+        l.append('DESCRIPTION:' + ics_txt(desc))
+    l.append('END:VEVENT')
+    return l
+
+
+def calendrier(nom, evts):
+    l = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Comite du Var de Volley-Ball//Championnats//FR', 'CALSCALE:GREGORIAN',
+         'METHOD:PUBLISH', 'X-WR-CALNAME:' + ics_txt(nom), 'X-WR-TIMEZONE:Europe/Paris', 'REFRESH-INTERVAL;VALUE=DURATION:PT6H',
+         'X-PUBLISHED-TTL:PT6H',
+         'BEGIN:VTIMEZONE', 'TZID:Europe/Paris',
+         'BEGIN:DAYLIGHT', 'TZOFFSETFROM:+0100', 'TZOFFSETTO:+0200', 'TZNAME:CEST', 'DTSTART:19700329T020000', 'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU', 'END:DAYLIGHT',
+         'BEGIN:STANDARD', 'TZOFFSETFROM:+0200', 'TZOFFSETTO:+0100', 'TZNAME:CET', 'DTSTART:19701025T030000', 'RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU', 'END:STANDARD',
+         'END:VTIMEZONE']
+    for e in evts:
+        l += e
+    l.append('END:VCALENDAR')
+    return '\r\n'.join(ics_plier(x) for x in l) + '\r\n'
+
+
+def cat_courte(titre):
+    t = titre.upper()
+    t = t.replace('DÉPARTEMENTAL ACCESSION ', 'SENIORS ').replace('DEPARTEMENTAL ACCESSION ', 'SENIORS ')
+    t = re.sub(r' QUALIFICATION AU CHAMPIONNAT R[EÉ]GIONAL', ' QUALIF.', t)
+    return t.replace('FÉMININ', 'F').replace('FEMININ', 'F').replace('MASCULIN', 'M').replace('COMPETLIB', "COMPET'LIB").replace('MIXTE', 'MIXTE')
+
+
+def match_evt(cat, p, m):
+    titre = f"{cat_courte(cat)} · {equipe_jolie(m['dom'])} – {equipe_jolie(m['ext'])}"
+    if m.get('sd') is not None:
+        titre += f" ({m['sd']}-{m['se']})"
+        desc = f"Résultat : {m['sd']}-{m['se']} ({m.get('sets', '')})"
+    else:
+        desc = ''
+    desc = (desc + '\n' if desc else '') + f"Poule {p['code']} – classement et résultats : https://volley83.github.io/championnats/#championnats/{p.get('groupe', 'jeunes')}/{p['code']}"
+    return evenement(m['code'], m['date'], m.get('heure'), titre, lieu_joli(m.get('lieu') or ''), desc)
+
+
+def open_evts():
+    """Tournois des compétitions OPEN (base Supabase du Comité)."""
+    try:
+        req = urllib.request.Request(SUPABASE_URL + '/rest/v1/rpc/chp_public', data=b'{}', method='POST',
+                                     headers={'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json'})
+        d = json.load(urllib.request.urlopen(req, timeout=30))
+    except Exception as e:
+        print('Compétitions OPEN indisponibles :', e, file=sys.stderr)
+        return {}, {}
+    comps = {c['code']: c for c in d.get('competitions', [])}
+    par_comp = {}
+    for t in d.get('tournois', []):
+        if t.get('statut') == 'annule' or not t.get('date'):
+            continue
+        c = comps.get(t['competition'], {})
+        dernier = max(x['numero'] for x in d['tournois'] if x['competition'] == t['competition'])
+        nom = 'Tournoi final' if c.get('famille') == 'open' and t['numero'] == dernier else f"Tournoi {t['numero']}"
+        lieu = ', '.join(x for x in (t.get('lieu'), t.get('ville')) if x)
+        rub = 'open' if c.get('famille') == 'open' else '4x4'
+        desc = f"https://volley83.github.io/championnats/#{rub}/{t['competition']}"
+        if t.get('date_limite'):
+            desc = f"Inscriptions jusqu'au {t['date_limite'][8:10]}/{t['date_limite'][5:7]} à {t.get('heure_limite') or '12:00'}\n" + desc
+        par_comp.setdefault(t['competition'], []).append(evenement(f"chp-{t['id']}", t['date'], t.get('heure'), f"{c.get('nom', '')} · {nom}", lieu, desc, 4))
+    return par_comp, comps
+
+
+def ecrire_ics(cats):
+    os.makedirs(DOSSIER_ICS, exist_ok=True)
+    fichiers = {}
+    par_club = {}
+    for c in cats:
+        for p in c['poules']:
+            p['groupe'] = c['groupe']
+            evts = [match_evt(c['titre'], p, m) for j in p['journees'] for m in j['matchs'] if m.get('date')]
+            fichiers[f"{p['code']}.ics"] = calendrier(f"{cat_courte(c['titre'])} – {p['titre']}".title().replace("'L", "'l"), evts)
+            for j in p['journees']:
+                for m in j['matchs']:
+                    for code in {club_de(m['dom']), club_de(m['ext'])} - {None}:
+                        if m.get('date'):
+                            par_club.setdefault(code, []).append(match_evt(c['titre'], p, m))
+            del p['groupe']
+    for code, evts in par_club.items():
+        fichiers[f'club-{code}.ics'] = calendrier(f'{CLUBS[code]} – matchs', evts)
+    par_comp, comps = open_evts()
+    for code, evts in par_comp.items():
+        fichiers[f'{code}.ics'] = calendrier(comps[code]['nom'], evts)
+    for nom, contenu in fichiers.items():
+        chemin = os.path.join(DOSSIER_ICS, nom)
+        try:
+            if open(chemin, encoding='utf-8', newline='').read() == contenu:
+                continue
+        except FileNotFoundError:
+            pass
+        with open(chemin, 'w', encoding='utf-8', newline='') as fh:
+            fh.write(contenu)
+    print(f'{len(fichiers)} agendas .ics')
+
+
 def main():
     local = sys.argv[1] if len(sys.argv) > 1 else None
     home = lire(f'{BASE}vbspo_home.php?codent={CODENT}', local and os.path.join(local, 'home.html'))
@@ -172,6 +351,8 @@ def main():
         if poules:
             cats.append({'titre': c['titre'], 'groupe': groupe(c['titre']), 'poules': poules})
     data = {'saison': SAISON, 'source': f'{BASE}vbspo_home.php?codent={CODENT}', 'categories': cats}
+    if not local:
+        ecrire_ics(cats)
     empreinte = hashlib.sha1(json.dumps(data, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     try:
         ancien = json.load(open(SORTIE, encoding='utf-8'))

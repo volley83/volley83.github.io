@@ -1,0 +1,330 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Seniors M – Départementale Senior Masculin Accession - Po
+ ule B
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:DMB001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T191500
+DTEND;TZID=Europe/Paris:20261010T211500
+SUMMARY:SENIORS M · Sud Sainte-Baume Volley Club – Volley Pradétan Ga
+ rdéen 2 (0-0)
+DESCRIPTION:Résultat : 0-0 ()\nPoule DMB – classement et résultats : 
+ https://volley83.github.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T123000
+DTEND;TZID=Europe/Paris:20261011T143000
+SUMMARY:SENIORS M · Volley Club Méditerranée 1 – Volley-Ball Ollioul
+ ais 1 (3-2)
+DESCRIPTION:Résultat : 3-2 (24:26\, 25:19\, 20:25\, 25:13\, 16:14)\nPoul
+ e DMB – classement et résultats : https://volley83.github.io/champion
+ nats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261010
+DTEND;VALUE=DATE:20261011
+SUMMARY:SENIORS M · Exempt – Vidauban Volley-Ball
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261017
+DTEND;VALUE=DATE:20261018
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 2 – Exempt
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261025T140000
+DTEND;TZID=Europe/Paris:20261025T160000
+SUMMARY:SENIORS M · Volley Club Méditerranée 1 – Vidauban Volley-Bal
+ l (3-0)
+DESCRIPTION:Résultat : 3-0 (25:18\, 25:19\, 25:20)\nPoule DMB – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261017T203000
+DTEND;TZID=Europe/Paris:20261017T223000
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 1 – Sud Sainte-Baume Volley
+  Club (3-1)
+DESCRIPTION:Résultat : 3-1 (17:25\, 25:15\, 26:24\, 25:19)\nPoule DMB 
+ – classement et résultats : https://volley83.github.io/championnats/#
+ championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261115T153000
+DTEND;TZID=Europe/Paris:20261115T173000
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 1 – Volley Pradétan Gardé
+ en 2
+LOCATION:Piemontesi
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261114T191500
+DTEND;TZID=Europe/Paris:20261114T211500
+SUMMARY:SENIORS M · Sud Sainte-Baume Volley Club – Vidauban Volley-Ball
+LOCATION:Gymnase du College le Vigneret
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261114
+DTEND;VALUE=DATE:20261115
+SUMMARY:SENIORS M · Exempt – Volley Club Méditerranée 1
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261108T100000
+DTEND;TZID=Europe/Paris:20261108T120000
+SUMMARY:SENIORS M · Volley Club Méditerranée 1 – Volley Pradétan Ga
+ rdéen 2
+LOCATION:Complexe Sportif des Lices
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261121
+DTEND;VALUE=DATE:20261122
+SUMMARY:SENIORS M · Exempt – Sud Sainte-Baume Volley Club
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T170000
+DTEND;TZID=Europe/Paris:20261121T190000
+SUMMARY:SENIORS M · Vidauban Volley-Ball – Volley-Ball Ollioulais 1
+LOCATION:Collège P.E Victor
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB013@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261129T110000
+DTEND;TZID=Europe/Paris:20261129T130000
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 2 – Vidauban Volley-Ball
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB014@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 1 – Exempt
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB015@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T191500
+DTEND;TZID=Europe/Paris:20261128T211500
+SUMMARY:SENIORS M · Sud Sainte-Baume Volley Club – Volley Club Médite
+ rranée 1
+LOCATION:Gymnase du College le Vigneret
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB016@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261213T140000
+DTEND;TZID=Europe/Paris:20261213T160000
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 2 – Sud Sainte-Baume Vol
+ ley Club
+LOCATION:Gerard Sebastia
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB017@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T203000
+DTEND;TZID=Europe/Paris:20261212T223000
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 1 – Volley Club Méditerran
+ ée 1
+LOCATION:Piemontesi
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB018@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261212
+DTEND;VALUE=DATE:20261213
+SUMMARY:SENIORS M · Vidauban Volley-Ball – Exempt
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB019@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20270109
+DTEND;VALUE=DATE:20270110
+SUMMARY:SENIORS M · Exempt – Volley Pradétan Gardéen 2
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB020@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270110T170000
+DTEND;TZID=Europe/Paris:20270110T190000
+SUMMARY:SENIORS M · Vidauban Volley-Ball – Volley Club Méditerranée 1
+LOCATION:Collège P.E Victor
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB021@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270109T191500
+DTEND;TZID=Europe/Paris:20270109T211500
+SUMMARY:SENIORS M · Sud Sainte-Baume Volley Club – Volley-Ball Ollioul
+ ais 1
+LOCATION:Gymnase du College le Vigneret
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB022@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270117T100000
+DTEND;TZID=Europe/Paris:20270117T120000
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 2 – Volley-Ball Ollioula
+ is 1
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB023@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270116T170000
+DTEND;TZID=Europe/Paris:20270116T190000
+SUMMARY:SENIORS M · Vidauban Volley-Ball – Sud Sainte-Baume Volley Club
+LOCATION:Collège P.E Victor
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB024@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20270116
+DTEND;VALUE=DATE:20270117
+SUMMARY:SENIORS M · Volley Club Méditerranée 1 – Exempt
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB025@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270131T160000
+DTEND;TZID=Europe/Paris:20270131T180000
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 2 – Volley Club Méditer
+ ranée 1
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB026@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270130T191500
+DTEND;TZID=Europe/Paris:20270130T211500
+SUMMARY:SENIORS M · Sud Sainte-Baume Volley Club – Exempt
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB027@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270130T180000
+DTEND;TZID=Europe/Paris:20270130T200000
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 1 – Vidauban Volley-Ball
+LOCATION:Piemontesi
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB028@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270213T170000
+DTEND;TZID=Europe/Paris:20270213T190000
+SUMMARY:SENIORS M · Vidauban Volley-Ball – Volley Pradétan Gardéen 2
+LOCATION:Collège P.E Victor
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB029@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20270213
+DTEND;VALUE=DATE:20270214
+SUMMARY:SENIORS M · Exempt – Volley-Ball Ollioulais 1
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB030@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270214T100000
+DTEND;TZID=Europe/Paris:20270214T120000
+SUMMARY:SENIORS M · Volley Club Méditerranée 1 – Sud Sainte-Baume Vo
+ lley Club
+LOCATION:Complexe Sportif des Lices
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,159 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Compet'lib 4X4 Mixte – Competlib 4X4 Mixte - Poule A
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:M4A001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261015T213000
+DTEND;TZID=Europe/Paris:20261015T233000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Sud Sainte-Baume Volley Club 1 – Volley
+  Pradétan Gardéen 2 (0-3)
+DESCRIPTION:Résultat : 0-3 (18:25\, 24:26\, 21:25)\nPoule M4A – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261016T210000
+DTEND;TZID=Europe/Paris:20261016T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Le Luc Volley-Ball – Union Athlétique 
+ Valettoise 2 (0-3)
+DESCRIPTION:Résultat : 0-3 (11:25\, 8:25\, 9:25)\nPoule M4A – classeme
+ nt et résultats : https://volley83.github.io/championnats/#championnats
+ /competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261106T211500
+DTEND;TZID=Europe/Paris:20261106T231500
+SUMMARY:COMPET'LIB 4X4 MIXTE · Union Athlétique Valettoise 2 – Sud Sa
+ inte-Baume Volley Club 1
+LOCATION:Santoni
+DESCRIPTION:Poule M4A – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261103T210000
+DTEND;TZID=Europe/Paris:20261103T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 2 – Le Luc Vo
+ lley-Ball
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule M4A – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261113T210000
+DTEND;TZID=Europe/Paris:20261113T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Le Luc Volley-Ball – Sud Sainte-Baume V
+ olley Club 1
+LOCATION:Pierre Gaudin
+DESCRIPTION:Poule M4A – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261110T210000
+DTEND;TZID=Europe/Paris:20261110T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 2 – Union Ath
+ létique Valettoise 2
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule M4A – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261126T213000
+DTEND;TZID=Europe/Paris:20261126T233000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Sud Sainte-Baume Volley Club 1 – Union 
+ Athlétique Valettoise 2
+LOCATION:Compexe Sportif du Beausset
+DESCRIPTION:Poule M4A – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261127T210000
+DTEND;TZID=Europe/Paris:20261127T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Le Luc Volley-Ball – Volley Pradétan G
+ ardéen 2
+LOCATION:Pierre Gaudin
+DESCRIPTION:Poule M4A – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261201T210000
+DTEND;TZID=Europe/Paris:20261201T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 2 – Sud Saint
+ e-Baume Volley Club 1
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule M4A – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261204T211500
+DTEND;TZID=Europe/Paris:20261204T231500
+SUMMARY:COMPET'LIB 4X4 MIXTE · Union Athlétique Valettoise 2 – Le Luc
+  Volley-Ball
+LOCATION:Santoni
+DESCRIPTION:Poule M4A – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261217T213000
+DTEND;TZID=Europe/Paris:20261217T233000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Sud Sainte-Baume Volley Club 1 – Le Luc
+  Volley-Ball
+LOCATION:Compexe Sportif du Beausset
+DESCRIPTION:Poule M4A – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4A
+END:VEVENT
+BEGIN:VEVENT
+UID:M4A012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261218T211500
+DTEND;TZID=Europe/Paris:20261218T231500
+SUMMARY:COMPET'LIB 4X4 MIXTE · Union Athlétique Valettoise 2 – Volley
+  Pradétan Gardéen 2
+LOCATION:Santoni
+DESCRIPTION:Poule M4A – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4A
+END:VEVENT
+END:VCALENDAR

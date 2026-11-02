@@ -1,0 +1,126 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:M13 M – M13 Masculin Brassage - Poule A
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:BMA001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T140000
+DTEND;TZID=Europe/Paris:20261010T160000
+SUMMARY:M13 M · Volley Club Hyères / Pierrefeu La Londe 2 – Vidauban 
+ Volley-Ball (1-2)
+DESCRIPTION:Résultat : 1-2 (13:25\, 25:15\, 10:15)\nPoule BMA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/jeunes/BMA
+END:VEVENT
+BEGIN:VEVENT
+UID:BMA002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T140000
+DTEND;TZID=Europe/Paris:20261010T160000
+SUMMARY:M13 M · Vidauban Volley-Ball – Volley Club Hyères / Pierrefeu
+  La Londe 1 (1-2)
+DESCRIPTION:Résultat : 1-2 (19:25\, 25:19\, 7:15)\nPoule BMA – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/jeunes/BMA
+END:VEVENT
+BEGIN:VEVENT
+UID:BMA003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T140000
+DTEND;TZID=Europe/Paris:20261010T160000
+SUMMARY:M13 M · Volley Club Hyères / Pierrefeu La Londe 1 – Volley Cl
+ ub Hyères / Pierrefeu La Londe 2 (2-0)
+DESCRIPTION:Résultat : 2-0 (25:19\, 25:22)\nPoule BMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/BMA
+END:VEVENT
+BEGIN:VEVENT
+UID:BMA004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T093000
+DTEND;TZID=Europe/Paris:20261122T113000
+SUMMARY:M13 M · Volley Club Hyères / Pierrefeu La Londe 1 – Vidauban 
+ Volley-Ball
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule BMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMA
+END:VEVENT
+BEGIN:VEVENT
+UID:BMA005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T093000
+DTEND;TZID=Europe/Paris:20261122T113000
+SUMMARY:M13 M · Vidauban Volley-Ball – Volley Club Hyères / Pierrefeu
+  La Londe 2
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule BMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMA
+END:VEVENT
+BEGIN:VEVENT
+UID:BMA006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T093000
+DTEND;TZID=Europe/Paris:20261122T113000
+SUMMARY:M13 M · Volley Club Hyères / Pierrefeu La Londe 2 – Volley Cl
+ ub Hyères / Pierrefeu La Londe 1
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule BMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMA
+END:VEVENT
+BEGIN:VEVENT
+UID:BMA007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T133000
+DTEND;TZID=Europe/Paris:20261205T153000
+SUMMARY:M13 M · Volley Club Hyères / Pierrefeu La Londe 1 – Volley Cl
+ ub Hyères / Pierrefeu La Londe 2
+LOCATION:College P.E Victor (Vidauban)
+DESCRIPTION:Poule BMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMA
+END:VEVENT
+BEGIN:VEVENT
+UID:BMA008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T133000
+DTEND;TZID=Europe/Paris:20261205T153000
+SUMMARY:M13 M · Volley Club Hyères / Pierrefeu La Londe 2 – Vidauban 
+ Volley-Ball
+LOCATION:College P.E Victor (Vidauban)
+DESCRIPTION:Poule BMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMA
+END:VEVENT
+BEGIN:VEVENT
+UID:BMA009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T133000
+DTEND;TZID=Europe/Paris:20261205T153000
+SUMMARY:M13 M · Vidauban Volley-Ball – Volley Club Hyères / Pierrefeu
+  La Londe 1
+LOCATION:College P.E Victor (Vidauban)
+DESCRIPTION:Poule BMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BMA
+END:VEVENT
+END:VCALENDAR

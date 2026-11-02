@@ -1,0 +1,150 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:M15 M – M15 Masculin - 1Ere Phase
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:MMA001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 M · Volley Pradétan Gardéen – Volley-Ball Ollioulais (0-
+ 2)
+DESCRIPTION:Résultat : 0-2 (23:25\, 10:25)\nPoule MMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 M · Fréjus Var Volley – Draguignan Union Club Var VB (2-0)
+DESCRIPTION:Résultat : 2-0 (25:18\, 25:18)\nPoule MMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 M · Fréjus Var Volley – Volley-Ball Ollioulais (2-0)
+DESCRIPTION:Résultat : 2-0 (25:7\, 25:17)\nPoule MMA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 M · Draguignan Union Club Var VB – Volley Pradétan Gardé
+ en (2-0)
+DESCRIPTION:Résultat : 2-0 (25:12\, 25:9)\nPoule MMA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 M · Volley-Ball Ollioulais – Draguignan Union Club Var VB
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 M · Volley Pradétan Gardéen – Fréjus Var Volley
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 M · Volley-Ball Ollioulais – Volley Pradétan Gardéen
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 M · Draguignan Union Club Var VB – Fréjus Var Volley
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T160000
+DTEND;TZID=Europe/Paris:20261212T180000
+SUMMARY:M15 M · Volley-Ball Ollioulais – Fréjus Var Volley
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T160000
+DTEND;TZID=Europe/Paris:20261212T180000
+SUMMARY:M15 M · Volley Pradétan Gardéen – Draguignan Union Club Var 
+ VB
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T160000
+DTEND;TZID=Europe/Paris:20261212T180000
+SUMMARY:M15 M · Draguignan Union Club Var VB – Volley-Ball Ollioulais
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T160000
+DTEND;TZID=Europe/Paris:20261212T180000
+SUMMARY:M15 M · Fréjus Var Volley – Volley Pradétan Gardéen
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+END:VCALENDAR

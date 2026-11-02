@@ -1,0 +1,353 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Seniors F – Départementale Senior Féminin Accession - Po
+ ule A
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:DFA001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T180000
+DTEND;TZID=Europe/Paris:20261010T200000
+SUMMARY:SENIORS F · Sainte-Maxime Cogolin Volley (M21) – Le Luc Volley
+ -Ball (3-0)
+DESCRIPTION:Résultat : 3-0 (25:19\, 25:18\, 25:14)\nPoule DFA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T180000
+DTEND;TZID=Europe/Paris:20261010T200000
+SUMMARY:SENIORS F · Volley-Ball Ollioulais – Volley Club Hyères / Pie
+ rrefeu La Londe (3-0)
+DESCRIPTION:Résultat : 3-0 (25:15\, 25:16\, 25:17)\nPoule DFA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T150000
+DTEND;TZID=Europe/Paris:20261011T170000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen (M21) – Volley Club Méd
+ iterranée (0-3)
+DESCRIPTION:Résultat : 0-3 (22:25\, 22:25\, 24:26)\nPoule DFA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270206T180000
+DTEND;TZID=Europe/Paris:20270206T200000
+SUMMARY:SENIORS F · Sainte-Maxime Cogolin Volley (M21) – Volley Pradé
+ tan Gardéen (M21)
+LOCATION:Les Bosquettes
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261025T170000
+DTEND;TZID=Europe/Paris:20261025T190000
+SUMMARY:SENIORS F · Volley Club Méditerranée – Volley-Ball Ollioulai
+ s (0-3)
+DESCRIPTION:Résultat : 0-3 (15:25\, 22:25\, 13:25)\nPoule DFA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261017T200000
+DTEND;TZID=Europe/Paris:20261017T220000
+SUMMARY:SENIORS F · Volley Club Hyères / Pierrefeu La Londe – Le Luc 
+ Volley-Ball (3-0)
+DESCRIPTION:Résultat : 3-0 (25:21\, 25:16\, 25:23)\nPoule DFA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261114T190000
+DTEND;TZID=Europe/Paris:20261114T210000
+SUMMARY:SENIORS F · Sainte-Maxime Cogolin Volley (M21) – Volley Club H
+ yères / Pierrefeu La Londe
+LOCATION:Les Bosquettes
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T190000
+DTEND;TZID=Europe/Paris:20261107T210000
+SUMMARY:SENIORS F · Le Luc Volley-Ball – Volley Club Méditerranée
+LOCATION:Pierre Gaudin
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261115T160000
+DTEND;TZID=Europe/Paris:20261115T180000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen (M21) – Volley-Ball Olli
+ oulais
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T203000
+DTEND;TZID=Europe/Paris:20261107T223000
+SUMMARY:SENIORS F · Volley-Ball Ollioulais – Sainte-Maxime Cogolin Vol
+ ley (M21)
+LOCATION:Piemontesi
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T160000
+DTEND;TZID=Europe/Paris:20261122T180000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen (M21) – Le Luc Volley-Ba
+ ll
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T200000
+DTEND;TZID=Europe/Paris:20261121T220000
+SUMMARY:SENIORS F · Volley Club Hyères / Pierrefeu La Londe – Volley 
+ Club Méditerranée
+LOCATION:Gymnase de Costebelle
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA013@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T190000
+DTEND;TZID=Europe/Paris:20261128T210000
+SUMMARY:SENIORS F · Sainte-Maxime Cogolin Volley (M21) – Volley Club M
+ éditerranée
+LOCATION:Les Bosquettes
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA014@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T170000
+DTEND;TZID=Europe/Paris:20261128T190000
+SUMMARY:SENIORS F · Volley Club Hyères / Pierrefeu La Londe – Volley 
+ Pradétan Gardéen (M21)
+LOCATION:Gymnase de Costebelle
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA015@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T180000
+DTEND;TZID=Europe/Paris:20261205T200000
+SUMMARY:SENIORS F · Le Luc Volley-Ball – Volley-Ball Ollioulais
+LOCATION:Jean Yves Gosse
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA016@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T200000
+DTEND;TZID=Europe/Paris:20261212T220000
+SUMMARY:SENIORS F · Le Luc Volley-Ball – Sainte-Maxime Cogolin Volley 
+ (M21)
+LOCATION:Jean Yves Gosse
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA017@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T200000
+DTEND;TZID=Europe/Paris:20261212T220000
+SUMMARY:SENIORS F · Volley Club Hyères / Pierrefeu La Londe – Volley-
+ Ball Ollioulais
+LOCATION:Gymnase de Costebelle
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA018@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261213T100000
+DTEND;TZID=Europe/Paris:20261213T120000
+SUMMARY:SENIORS F · Volley Club Méditerranée – Volley Pradétan Gard
+ éen (M21)
+LOCATION:Complexe Sportif des Lices
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA019@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270110T100000
+DTEND;TZID=Europe/Paris:20270110T120000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen (M21) – Sainte-Maxime Co
+ golin Volley (M21)
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA020@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270109T180000
+DTEND;TZID=Europe/Paris:20270109T200000
+SUMMARY:SENIORS F · Volley-Ball Ollioulais – Volley Club Méditerranée
+LOCATION:Piemontesi
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA021@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270109T200000
+DTEND;TZID=Europe/Paris:20270109T220000
+SUMMARY:SENIORS F · Le Luc Volley-Ball – Volley Club Hyères / Pierref
+ eu La Londe
+LOCATION:Jean Yves Gosse
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA022@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270116T200000
+DTEND;TZID=Europe/Paris:20270116T220000
+SUMMARY:SENIORS F · Volley Club Hyères / Pierrefeu La Londe – Sainte-
+ Maxime Cogolin Volley (M21)
+LOCATION:Gymnase de Costebelle
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA023@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270117T133000
+DTEND;TZID=Europe/Paris:20270117T153000
+SUMMARY:SENIORS F · Volley Club Méditerranée – Le Luc Volley-Ball
+LOCATION:Complexe Sportif des Lices
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA024@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270117T140000
+DTEND;TZID=Europe/Paris:20270117T160000
+SUMMARY:SENIORS F · Volley-Ball Ollioulais – Volley Pradétan Gardéen
+  (M21)
+LOCATION:Piemontesi
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA025@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270130T200000
+DTEND;TZID=Europe/Paris:20270130T220000
+SUMMARY:SENIORS F · Sainte-Maxime Cogolin Volley (M21) – Volley-Ball O
+ llioulais
+LOCATION:Les Bosquettes
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA026@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270130T180000
+DTEND;TZID=Europe/Paris:20270130T200000
+SUMMARY:SENIORS F · Le Luc Volley-Ball – Volley Pradétan Gardéen (M2
+ 1)
+LOCATION:Jean Yves Gosse
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA027@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270131T133000
+DTEND;TZID=Europe/Paris:20270131T153000
+SUMMARY:SENIORS F · Volley Club Méditerranée – Volley Club Hyères /
+  Pierrefeu La Londe
+LOCATION:Complexe Sportif des Lices
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA028@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270214T123000
+DTEND;TZID=Europe/Paris:20270214T143000
+SUMMARY:SENIORS F · Volley Club Méditerranée – Sainte-Maxime Cogolin
+  Volley (M21)
+LOCATION:Complexe Sportif des Lices
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA029@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270214T140000
+DTEND;TZID=Europe/Paris:20270214T160000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen (M21) – Volley Club Hyè
+ res / Pierrefeu La Londe
+LOCATION:Gerard Sebastia
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA030@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270213T180000
+DTEND;TZID=Europe/Paris:20270213T200000
+SUMMARY:SENIORS F · Volley-Ball Ollioulais – Le Luc Volley-Ball
+LOCATION:Piemontesi
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+END:VCALENDAR

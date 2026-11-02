@@ -121,6 +121,12 @@
   @media (max-width: 420px) { .fedrank td, .fedrank th { padding-left: 5px; padding-right: 5px; } .fedrank .pos { width: 26px; height: 26px; } }
   @media (max-width: 520px) { .fedrank .hs { display: none; } .seg-b { font-size: 16px; } .monclub { width: 100%; } .monclub select { flex: 1; max-width: none; } }
 
+  .agenda-b { min-height: 44px; }
+  .ag-list { display: flex; flex-direction: column; gap: 8px; }
+  .ag { display: flex; flex-direction: column; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; text-decoration: none; color: var(--text); }
+  .ag:hover { border-color: var(--blue); background: #F4F7FD; }
+  .ag b { color: var(--navy); } .ag span { font-size: 13px; color: var(--muted); }
+
   /* Week-end */
   .we { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px; border-top: 5px solid var(--accent); }
   .we-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 6px 16px; }
@@ -402,6 +408,36 @@ window.addEventListener('hashchange', () => { route(); window.scrollTo(0, 0); })
 async function loadPublic() { D = await rpc('chp_public'); }
 
 
+// ======================== AJOUTER À MON AGENDA (abonnement .ics) ========================
+// Règlements (PDF dans championnats/docs/). Championnats fédéraux : ajouter ici les règlements par catégorie, ex. 'M11 FÉMININ': 'docs/reglement-M11.pdf'
+const REGLEMENTS = { MFM: 'docs/reglement-M15-4x4.pdf', M4M: 'docs/reglement-M15-4x4.pdf', CFM: 'docs/reglement-M18-4x4.pdf', C4M: 'docs/reglement-M18-4x4.pdf', O11: 'docs/reglement-OPEN-2x2-4x4.pdf', O13: 'docs/reglement-OPEN-2x2-4x4.pdf' };
+const reglBtn = k => REGLEMENTS[k] ? `<a class="btn ghost sm agenda-b" href="${REGLEMENTS[k]}" target="_blank" rel="noopener">📄 Règlement</a>` : '';
+const ICS_BASE = 'volley83.github.io/championnats/data/ics/';
+function agendaBtn(choix) {   // choix = [[fichier, libellé], …]
+  return `<button type="button" class="btn ghost sm agenda-b" data-agenda='${esc(JSON.stringify(choix))}'>📅 Ajouter à mon agenda</button>`;
+}
+function ouvrirAgenda(choix) {
+  const o = document.createElement('div'); o.className = 'overlay';
+  o.innerHTML = `<div class="modal" role="dialog" aria-modal="true" aria-labelledby="ag-t" style="max-width:480px">
+    <h3 class="cond" id="ag-t" style="font-size:24px">Ajouter à mon agenda</h3>
+    <p class="small muted">C'est un abonnement : les changements d'horaire, de lieu et les résultats arrivent tout seuls dans votre agenda.</p>
+    ${choix.length > 1 ? `<div class="field"><label for="ag-c">Agenda</label><select id="ag-c">${choix.map(([f, l], i) => `<option value="${i}">${esc(l)}</option>`).join('')}</select></div>` : `<p><b>${esc(choix[0][1])}</b></p>`}
+    <div class="ag-list">
+      <a class="ag" id="ag-g" target="_blank" rel="noopener"><b>Google Agenda</b><span>Android, ordinateur</span></a>
+      <a class="ag" id="ag-a"><b>iPhone, iPad, Mac, Outlook</b><span>S'abonner au calendrier</span></a>
+      <a class="ag" id="ag-d" download><b>Télécharger le fichier</b><span>.ics, sans mise à jour automatique</span></a>
+    </div>
+    <div class="btnrow" style="margin:0"><button class="btn ghost" type="button" id="ag-x">Fermer</button></div>
+  </div>`;
+  document.body.appendChild(o);
+  const maj = () => { const f = choix[$('ag-c') ? +$('ag-c').value : 0][0];
+    $('ag-g').href = 'https://calendar.google.com/calendar/render?cid=' + encodeURIComponent('webcal://' + ICS_BASE + f);
+    $('ag-a').href = 'webcal://' + ICS_BASE + f; $('ag-d').href = 'https://' + ICS_BASE + f; };
+  maj(); if ($('ag-c')) $('ag-c').onchange = maj;
+  $('ag-x').onclick = () => o.remove(); o.onclick = e => { if (e.target === o) o.remove(); };
+}
+document.addEventListener('click', e => { const b = e.target.closest('.agenda-b'); if (b) ouvrirAgenda(JSON.parse(b.dataset.agenda)); });
+
 // ======================== CHAMPIONNATS FÉDÉRAUX (données FFvolley) ========================
 let FED = null, FEDCLUB = store.get('chp_monclub', ''), FEDSEUL = false;
 const GROUPES = [['jeunes', 'Championnats jeunes'], ['seniors', 'Championnats seniors'], ['competlib', 'Compet\'Lib']];
@@ -519,10 +555,12 @@ function drawPoule(sel) {
         <div class="legend"><span>J : matchs joués · G : gagnés · P : perdus · Coef. : sets gagnés ÷ sets perdus.</span></div>`
       : `<p class="muted" style="margin-top:6px">${p.equipes.length ? 'Pas de classement dans cette catégorie : le plaisir du jeu avant tout.' : 'Le classement apparaîtra après les premiers matchs.'}</p>
         ${p.equipes.length ? `<div class="equipes">${p.equipes.map(e => `<span class="${estMien(e) ? 'mine' : ''}">${esc(equipeFed(e))}</span>`).join('')}</div>` : ''}`}
+      ${reglBtn(c.titre) ? `<div style="margin-top:12px">${reglBtn(c.titre)}</div>` : ''}
       <p class="small muted" style="margin-top:14px">Source : <a href="${esc(p.url)}" target="_blank" rel="noopener">site de la FFvolley</a>. En cas de différence, le site fédéral fait foi.</p>
     </section>
     <section class="card">
       <div class="rank-head"><h2>Calendrier et résultats</h2>${FEDCLUB ? `<label class="chk-s"><input type="checkbox" id="fed-seul" ${FEDSEUL ? 'checked' : ''}> Seulement ${esc(FEDCLUB)}</label>` : ''}</div>
+      <div style="margin-bottom:6px">${agendaBtn([[p.code + '.ics', `${catCourt(c)}${c.poules.length > 1 ? ' – ' + pouleCourt(p) : ''} (tous les matchs de la poule)`]].concat(FEDCLUB ? [['club-' + FEDCLUB + '.ics', `Tous les matchs de ${(clubsFed().find(k => k.code === FEDCLUB) || {}).nom || FEDCLUB}`]] : []).sort((a, b) => FEDCLUB ? (a[0].startsWith('club') ? -1 : 1) : 0))}</div>
       ${avenir.length ? `<h3 class="sub-h">À venir</h3>${avenir.map((j, i) => jHTML(j, i < 2)).join('')}` : ''}
       ${passees.length ? `<h3 class="sub-h">Résultats</h3>${passees.slice().reverse().map((j, i) => jHTML(j, i === 0)).join('')}` : ''}
       ${!js.length ? '<p class="muted">Calendrier à venir.</p>' : ''}
@@ -567,7 +605,7 @@ function render4x4(code) {
       <section class="card">
         <h2>Calendrier</h2>
         <div class="cal" style="margin-top:12px">${tournois.map(t => calRow(t, true)).join('')}</div>
-        <div class="btnrow"><a class="btn accent" href="#inscription">Inscrire une équipe</a></div>
+        <div class="btnrow"><a class="btn accent" href="#inscription">Inscrire une équipe</a>${agendaBtn([[c.code + '.ics', c.nom + ' (tous les tournois)']])}${reglBtn(c.code)}</div>
       </section>
     </div>
   </main>`;
@@ -649,7 +687,7 @@ function renderOpen(code) {
       <section class="card">
         <h2>Calendrier ${esc(c.nom)}</h2>
         <div class="cal" style="margin-top:12px">${tournois.map(t => calRow(t, false)).join('')}</div>
-        <div class="btnrow"><a class="btn accent" href="#inscription">Inscrire des équipes</a></div>
+        <div class="btnrow"><a class="btn accent" href="#inscription">Inscrire des équipes</a>${agendaBtn([[c.code + '.ics', c.nom + ' (tous les tournois)']])}${reglBtn(c.code)}</div>
       </section>
       <section class="card">
         <h2>Les niveaux</h2>

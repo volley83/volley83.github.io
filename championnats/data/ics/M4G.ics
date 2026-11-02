@@ -1,0 +1,159 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Compet'lib 4X4 Mixte – Competlib 4X4 Mixte - Poule G
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:M4G001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261119T204500
+DTEND;TZID=Europe/Paris:20261119T224500
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 1 – Six Fours
+  Beach Volley 3
+LOCATION:Gerard Sébastia
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261015T213000
+DTEND;TZID=Europe/Paris:20261015T233000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Sud Sainte-Baume Volley Club 2 – Volley
+ -Ball Ollioulais 1 (3-2)
+DESCRIPTION:Résultat : 3-2 (17:25\, 26:24\, 25:21\, 20:25\, 15:12)\nPoul
+ e M4G – classement et résultats : https://volley83.github.io/champion
+ nats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261102T193000
+DTEND;TZID=Europe/Paris:20261102T213000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 1 – Volley Prad
+ étan Gardéen 1
+LOCATION:La Cordeille
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261207T210000
+DTEND;TZID=Europe/Paris:20261207T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six Fours Beach Volley 3 – Sud Sainte-B
+ aume Volley Club 2
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261112T213000
+DTEND;TZID=Europe/Paris:20261112T233000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Sud Sainte-Baume Volley Club 2 – Volley
+  Pradétan Gardéen 1
+LOCATION:Compexe Sportif du Beausset
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261109T210000
+DTEND;TZID=Europe/Paris:20261109T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six Fours Beach Volley 3 – Volley-Ball 
+ Ollioulais 1
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261126T204500
+DTEND;TZID=Europe/Paris:20261126T224500
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 1 – Volley-Ba
+ ll Ollioulais 1
+LOCATION:Gerard Sébastia
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261126T213000
+DTEND;TZID=Europe/Paris:20261126T233000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Sud Sainte-Baume Volley Club 2 – Six Fo
+ urs Beach Volley 3
+LOCATION:Compexe Sportif du Beausset
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261130T210000
+DTEND;TZID=Europe/Paris:20261130T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six Fours Beach Volley 3 – Volley Prad
+ étan Gardéen 1
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261130T193000
+DTEND;TZID=Europe/Paris:20261130T213000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 1 – Sud Sainte-B
+ aume Volley Club 2
+LOCATION:La Cordeille
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261217T204500
+DTEND;TZID=Europe/Paris:20261217T224500
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 1 – Sud Saint
+ e-Baume Volley Club 2
+LOCATION:Gerard Sébastia
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261214T193000
+DTEND;TZID=Europe/Paris:20261214T213000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 1 – Six Fours Be
+ ach Volley 3
+LOCATION:La Cordeille
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+END:VCALENDAR

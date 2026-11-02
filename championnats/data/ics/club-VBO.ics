@@ -1,0 +1,846 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Volley-Ball Ollioulais – matchs
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:BFA001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T093000
+DTEND;TZID=Europe/Paris:20261011T113000
+SUMMARY:M13 F · Volley Pradétan Gardéen 1 – Volley-Ball Ollioulais (
+ 2-0)
+DESCRIPTION:Résultat : 2-0 (25:13\, 25:20)\nPoule BFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/BFA
+END:VEVENT
+BEGIN:VEVENT
+UID:BFA003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T093000
+DTEND;TZID=Europe/Paris:20261011T113000
+SUMMARY:M13 F · Volley Club Hyères / Pierrefeu La Londe – Volley-Ball
+  Ollioulais (2-0)
+DESCRIPTION:Résultat : 2-0 (25:5\, 25:17)\nPoule BFA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /BFA
+END:VEVENT
+BEGIN:VEVENT
+UID:BFA005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T093000
+DTEND;TZID=Europe/Paris:20261122T113000
+SUMMARY:M13 F · Volley-Ball Ollioulais – Volley Pradétan Gardéen 2
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule BFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFA
+END:VEVENT
+BEGIN:VEVENT
+UID:BFA007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261122T093000
+DTEND;TZID=Europe/Paris:20261122T113000
+SUMMARY:M13 F · Volley-Ball Ollioulais – Volley Pradétan Gardéen 1
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule BFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFA
+END:VEVENT
+BEGIN:VEVENT
+UID:BFA009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T130000
+DTEND;TZID=Europe/Paris:20261205T150000
+SUMMARY:M13 F · Volley-Ball Ollioulais – Volley Club Hyères / Pierref
+ eu La Londe
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule BFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFA
+END:VEVENT
+BEGIN:VEVENT
+UID:BFA011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T130000
+DTEND;TZID=Europe/Paris:20261205T150000
+SUMMARY:M13 F · Volley Pradétan Gardéen 2 – Volley-Ball Ollioulais
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule BFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/BFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 F · Volley Pradétan Gardéen – Volley-Ball Ollioulais (2-
+ 0)
+DESCRIPTION:Résultat : 2-0 (25:14\, 29:27)\nPoule MFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 F · Fréjus Var Volley – Volley-Ball Ollioulais (2-0)
+DESCRIPTION:Résultat : 2-0 (25:6\, 25:20)\nPoule MFA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261114T140000
+DTEND;TZID=Europe/Paris:20261114T160000
+SUMMARY:M15 F · Volley-Ball Ollioulais – Draguignan Union Club Var VB
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261114T140000
+DTEND;TZID=Europe/Paris:20261114T160000
+SUMMARY:M15 F · Volley-Ball Ollioulais – Sainte-Maxime Cogolin Volley
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA013@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 F · Volley-Ball Ollioulais – Volley Pradétan Gardéen
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA015@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 F · Volley-Ball Ollioulais – Fréjus Var Volley
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA017@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M15 F · Draguignan Union Club Var VB – Volley-Ball Ollioulais
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA019@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M15 F · Sainte-Maxime Cogolin Volley – Volley-Ball Ollioulais
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 M · Volley Pradétan Gardéen – Volley-Ball Ollioulais (0-
+ 2)
+DESCRIPTION:Résultat : 0-2 (23:25\, 10:25)\nPoule MMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 M · Fréjus Var Volley – Volley-Ball Ollioulais (2-0)
+DESCRIPTION:Résultat : 2-0 (25:7\, 25:17)\nPoule MMA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 M · Volley-Ball Ollioulais – Draguignan Union Club Var VB
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 M · Volley-Ball Ollioulais – Volley Pradétan Gardéen
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T160000
+DTEND;TZID=Europe/Paris:20261212T180000
+SUMMARY:M15 M · Volley-Ball Ollioulais – Fréjus Var Volley
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:MMA011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T160000
+DTEND;TZID=Europe/Paris:20261212T180000
+SUMMARY:M15 M · Draguignan Union Club Var VB – Volley-Ball Ollioulais
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T130000
+DTEND;TZID=Europe/Paris:20261010T150000
+SUMMARY:M18 F · Volley Club Méditerranée 2 – Volley-Ball Ollioulais 
+ (0-2)
+DESCRIPTION:Résultat : 0-2 (20:25\, 12:25)\nPoule CFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T130000
+DTEND;TZID=Europe/Paris:20261010T150000
+SUMMARY:M18 F · Volley-Ball Ollioulais – Volley Club Hyères / Pierref
+ eu La Londe (1-2)
+DESCRIPTION:Résultat : 1-2 (19:25\, 25:23\, 7:15)\nPoule CFA – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M18 F · Volley Club Méditerranée 1 – Volley-Ball Ollioulais
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M18 F · Volley-Ball Ollioulais – Union Athlétique Valettoise
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T133000
+DTEND;TZID=Europe/Paris:20261121T153000
+SUMMARY:M18 F · Volley-Ball Ollioulais – Volley Club Méditerranée 2
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA015@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T133000
+DTEND;TZID=Europe/Paris:20261121T153000
+SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Volley-Ball
+  Ollioulais
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA018@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M18 F · Volley-Ball Ollioulais – Volley Club Méditerranée 1
+LOCATION:Gymnase Santoni (La Valette)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA020@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M18 F · Union Athlétique Valettoise – Volley-Ball Ollioulais
+LOCATION:Gymnase Santoni (La Valette)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CMA003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T140000
+DTEND;TZID=Europe/Paris:20261010T160000
+SUMMARY:M18 M · Volley Club Hyères / Pierrefeu La Londe – Volley-Ball
+  Ollioulais (0-2)
+DESCRIPTION:Résultat : 0-2 (24:26\, 12:25)\nPoule CMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CMA005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M18 M · Volley Pradétan Gardéen – Volley-Ball Ollioulais
+LOCATION:Gymnase Santoni (La Valette)
+DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CMA007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M18 M · Volley-Ball Ollioulais – Volley Club Méditerranée
+LOCATION:Gymnase Santoni (La Valette)
+DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CMA009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M18 M · Volley-Ball Ollioulais – Union Athlétique Valettoise
+LOCATION:Gymnase Santoni (La Valette)
+DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CMA013@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T140000
+DTEND;TZID=Europe/Paris:20261121T160000
+SUMMARY:M18 M · Volley-Ball Ollioulais – Volley Club Hyères / Pierref
+ eu La Londe
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CMA015@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T140000
+DTEND;TZID=Europe/Paris:20261121T160000
+SUMMARY:M18 M · Volley-Ball Ollioulais – Volley Pradétan Gardéen
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CMA017@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M18 M · Volley Club Méditerranée – Volley-Ball Ollioulais
+LOCATION:Les Lices (Toulon)
+DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMA
+END:VEVENT
+BEGIN:VEVENT
+UID:CMA019@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M18 M · Union Athlétique Valettoise – Volley-Ball Ollioulais
+LOCATION:Les Lices (Toulon)
+DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CMA
+END:VEVENT
+BEGIN:VEVENT
+UID:M4B002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261012T193000
+DTEND;TZID=Europe/Paris:20261012T213000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 2 – Six Fours Be
+ ach Volley 2 (3-1)
+DESCRIPTION:Résultat : 3-1 (25:15\, 19:25\, 25:21\, 25:19)\nPoule M4B 
+ – classement et résultats : https://volley83.github.io/championnats/#
+ championnats/competlib/M4B
+END:VEVENT
+BEGIN:VEVENT
+UID:M4B004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261106T210000
+DTEND;TZID=Europe/Paris:20261106T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Hyères / Pierrefeu La Londe 
+ 3 – Volley-Ball Ollioulais 2
+LOCATION:Complexe du Pas de la Garenne
+DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4B
+END:VEVENT
+BEGIN:VEVENT
+UID:M4B005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261109T193000
+DTEND;TZID=Europe/Paris:20261109T213000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 2 – Rocbaron Clu
+ b Volley-Ball - Rcvb 1
+LOCATION:La Cordeille
+DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4B
+END:VEVENT
+BEGIN:VEVENT
+UID:M4B008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261123T193000
+DTEND;TZID=Europe/Paris:20261123T213000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 2 – Volley Club 
+ Hyères / Pierrefeu La Londe 3
+LOCATION:La Cordeille
+DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4B
+END:VEVENT
+BEGIN:VEVENT
+UID:M4B010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261203T210000
+DTEND;TZID=Europe/Paris:20261203T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six Fours Beach Volley 2 – Volley-Ball 
+ Ollioulais 2
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4B
+END:VEVENT
+BEGIN:VEVENT
+UID:M4B011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261215T210000
+DTEND;TZID=Europe/Paris:20261215T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball - Rcvb 1 – Vo
+ lley-Ball Ollioulais 2
+LOCATION:Gymnase Gassendi
+DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4B
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261015T213000
+DTEND;TZID=Europe/Paris:20261015T233000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Sud Sainte-Baume Volley Club 2 – Volley
+ -Ball Ollioulais 1 (3-2)
+DESCRIPTION:Résultat : 3-2 (17:25\, 26:24\, 25:21\, 20:25\, 15:12)\nPoul
+ e M4G – classement et résultats : https://volley83.github.io/champion
+ nats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261102T193000
+DTEND;TZID=Europe/Paris:20261102T213000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 1 – Volley Prad
+ étan Gardéen 1
+LOCATION:La Cordeille
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261109T210000
+DTEND;TZID=Europe/Paris:20261109T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six Fours Beach Volley 3 – Volley-Ball 
+ Ollioulais 1
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261126T204500
+DTEND;TZID=Europe/Paris:20261126T224500
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 1 – Volley-Ba
+ ll Ollioulais 1
+LOCATION:Gerard Sébastia
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261130T193000
+DTEND;TZID=Europe/Paris:20261130T213000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 1 – Sud Sainte-B
+ aume Volley Club 2
+LOCATION:La Cordeille
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261214T193000
+DTEND;TZID=Europe/Paris:20261214T213000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 1 – Six Fours Be
+ ach Volley 3
+LOCATION:La Cordeille
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T180000
+DTEND;TZID=Europe/Paris:20261010T200000
+SUMMARY:SENIORS F · Volley-Ball Ollioulais – Volley Club Hyères / Pie
+ rrefeu La Londe (3-0)
+DESCRIPTION:Résultat : 3-0 (25:15\, 25:16\, 25:17)\nPoule DFA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261025T170000
+DTEND;TZID=Europe/Paris:20261025T190000
+SUMMARY:SENIORS F · Volley Club Méditerranée – Volley-Ball Ollioulai
+ s (0-3)
+DESCRIPTION:Résultat : 0-3 (15:25\, 22:25\, 13:25)\nPoule DFA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261115T160000
+DTEND;TZID=Europe/Paris:20261115T180000
+SUMMARY:SENIORS F · Volley Pradétan Gardéen (M21) – Volley-Ball Olli
+ oulais
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T203000
+DTEND;TZID=Europe/Paris:20261107T223000
+SUMMARY:SENIORS F · Volley-Ball Ollioulais – Sainte-Maxime Cogolin Vol
+ ley (M21)
+LOCATION:Piemontesi
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA015@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T180000
+DTEND;TZID=Europe/Paris:20261205T200000
+SUMMARY:SENIORS F · Le Luc Volley-Ball – Volley-Ball Ollioulais
+LOCATION:Jean Yves Gosse
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA017@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T200000
+DTEND;TZID=Europe/Paris:20261212T220000
+SUMMARY:SENIORS F · Volley Club Hyères / Pierrefeu La Londe – Volley-
+ Ball Ollioulais
+LOCATION:Gymnase de Costebelle
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA020@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270109T180000
+DTEND;TZID=Europe/Paris:20270109T200000
+SUMMARY:SENIORS F · Volley-Ball Ollioulais – Volley Club Méditerranée
+LOCATION:Piemontesi
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA024@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270117T140000
+DTEND;TZID=Europe/Paris:20270117T160000
+SUMMARY:SENIORS F · Volley-Ball Ollioulais – Volley Pradétan Gardéen
+  (M21)
+LOCATION:Piemontesi
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA025@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270130T200000
+DTEND;TZID=Europe/Paris:20270130T220000
+SUMMARY:SENIORS F · Sainte-Maxime Cogolin Volley (M21) – Volley-Ball O
+ llioulais
+LOCATION:Les Bosquettes
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DFA030@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270213T180000
+DTEND;TZID=Europe/Paris:20270213T200000
+SUMMARY:SENIORS F · Volley-Ball Ollioulais – Le Luc Volley-Ball
+LOCATION:Piemontesi
+DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DFA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T180000
+DTEND;TZID=Europe/Paris:20261011T200000
+SUMMARY:SENIORS M · Draguignan Union Club Var VB (M21) – Volley-Ball O
+ llioulais 2 (3-0)
+DESCRIPTION:Résultat : 3-0 (26:24\, 25:23\, 25:18)\nPoule DMA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261017T180000
+DTEND;TZID=Europe/Paris:20261017T200000
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 2 – Union Athlétique Valet
+ toise 1 (2-3)
+DESCRIPTION:Résultat : 2-3 (21:25\, 25:21\, 28:26\, 22:25\, 13:15)\nPoul
+ e DMA – classement et résultats : https://volley83.github.io/champion
+ nats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261114T180000
+DTEND;TZID=Europe/Paris:20261114T200000
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 2 – Volley Pradétan Gardé
+ en 1
+LOCATION:Piemontesi
+DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261121
+DTEND;VALUE=DATE:20261122
+SUMMARY:SENIORS M · Exempt – Volley-Ball Ollioulais 2
+DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA014@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T180000
+DTEND;TZID=Europe/Paris:20261128T200000
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 2 – Volley Club Méditerran
+ ée 2
+LOCATION:Piemontesi
+DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA017@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T183000
+DTEND;TZID=Europe/Paris:20261212T203000
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 2 – Draguignan Union Club V
+ ar VB (M21)
+LOCATION:Piemontesi
+DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA021@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270110T140000
+DTEND;TZID=Europe/Paris:20270110T160000
+SUMMARY:SENIORS M · Union Athlétique Valettoise 1 – Volley-Ball Ollio
+ ulais 2
+LOCATION:Santoni
+DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA022@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270117T160000
+DTEND;TZID=Europe/Paris:20270117T180000
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 1 – Volley-Ball Ollioula
+ is 2
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA027@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20270130
+DTEND;VALUE=DATE:20270131
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 2 – Exempt
+DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMA029@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270214T150000
+DTEND;TZID=Europe/Paris:20270214T170000
+SUMMARY:SENIORS M · Volley Club Méditerranée 2 – Volley-Ball Ollioul
+ ais 2
+LOCATION:Complexe Sportif des Lices
+DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMA
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261011T123000
+DTEND;TZID=Europe/Paris:20261011T143000
+SUMMARY:SENIORS M · Volley Club Méditerranée 1 – Volley-Ball Ollioul
+ ais 1 (3-2)
+DESCRIPTION:Résultat : 3-2 (24:26\, 25:19\, 20:25\, 25:13\, 16:14)\nPoul
+ e DMB – classement et résultats : https://volley83.github.io/champion
+ nats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261017T203000
+DTEND;TZID=Europe/Paris:20261017T223000
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 1 – Sud Sainte-Baume Volley
+  Club (3-1)
+DESCRIPTION:Résultat : 3-1 (17:25\, 25:15\, 26:24\, 25:19)\nPoule DMB 
+ – classement et résultats : https://volley83.github.io/championnats/#
+ championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261115T153000
+DTEND;TZID=Europe/Paris:20261115T173000
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 1 – Volley Pradétan Gardé
+ en 2
+LOCATION:Piemontesi
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T170000
+DTEND;TZID=Europe/Paris:20261121T190000
+SUMMARY:SENIORS M · Vidauban Volley-Ball – Volley-Ball Ollioulais 1
+LOCATION:Collège P.E Victor
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB014@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 1 – Exempt
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB017@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T203000
+DTEND;TZID=Europe/Paris:20261212T223000
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 1 – Volley Club Méditerran
+ ée 1
+LOCATION:Piemontesi
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB021@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270109T191500
+DTEND;TZID=Europe/Paris:20270109T211500
+SUMMARY:SENIORS M · Sud Sainte-Baume Volley Club – Volley-Ball Ollioul
+ ais 1
+LOCATION:Gymnase du College le Vigneret
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB022@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270117T100000
+DTEND;TZID=Europe/Paris:20270117T120000
+SUMMARY:SENIORS M · Volley Pradétan Gardéen 2 – Volley-Ball Ollioula
+ is 1
+LOCATION:Jacques Troin
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB027@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270130T180000
+DTEND;TZID=Europe/Paris:20270130T200000
+SUMMARY:SENIORS M · Volley-Ball Ollioulais 1 – Vidauban Volley-Ball
+LOCATION:Piemontesi
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+BEGIN:VEVENT
+UID:DMB029@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20270213
+DTEND;VALUE=DATE:20270214
+SUMMARY:SENIORS M · Exempt – Volley-Ball Ollioulais 1
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,94 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:M15 F Qualif. – M15 Féminin - Qualification Championnat R
+ egional
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:MFC001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20260920T100000
+DTEND;TZID=Europe/Paris:20260920T120000
+SUMMARY:M15 F QUALIF. · Fréjus Var Volley – Volley Pradétan Gardéen
+  (2-0)
+DESCRIPTION:Résultat : 2-0 (25:7\, 25:6)\nPoule MFC – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MFC
+END:VEVENT
+BEGIN:VEVENT
+UID:MFC002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20260920T100000
+DTEND;TZID=Europe/Paris:20260920T120000
+SUMMARY:M15 F QUALIF. · Volley Club Hyères / Pierrefeu La Londe – Dra
+ guignan Union Club Var VB (2-1)
+DESCRIPTION:Résultat : 2-1 (25:18\, 27:29\, 16:14)\nPoule MFC – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/jeunes/MFC
+END:VEVENT
+BEGIN:VEVENT
+UID:MFC003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20260920T110000
+DTEND;TZID=Europe/Paris:20260920T130000
+SUMMARY:M15 F QUALIF. · Volley Club Hyères / Pierrefeu La Londe – Vol
+ ley Pradétan Gardéen (2-0)
+DESCRIPTION:Résultat : 2-0 (25:18\, 25:13)\nPoule MFC – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/MFC
+END:VEVENT
+BEGIN:VEVENT
+UID:MFC004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20260920T110000
+DTEND;TZID=Europe/Paris:20260920T130000
+SUMMARY:M15 F QUALIF. · Draguignan Union Club Var VB – Fréjus Var Vol
+ ley (0-2)
+DESCRIPTION:Résultat : 0-2 (8:25\, 10:25)\nPoule MFC – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MFC
+END:VEVENT
+BEGIN:VEVENT
+UID:MFC005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20260920T120000
+DTEND;TZID=Europe/Paris:20260920T140000
+SUMMARY:M15 F QUALIF. · Volley Pradétan Gardéen – Draguignan Union C
+ lub Var VB (0-2)
+DESCRIPTION:Résultat : 0-2 (8:25\, 14:25)\nPoule MFC – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MFC
+END:VEVENT
+BEGIN:VEVENT
+UID:MFC006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20260920T120000
+DTEND;TZID=Europe/Paris:20260920T140000
+SUMMARY:M15 F QUALIF. · Fréjus Var Volley – Volley Club Hyères / Pie
+ rrefeu La Londe (2-0)
+DESCRIPTION:Résultat : 2-0 (25:18\, 25:15)\nPoule MFC – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/MFC
+END:VEVENT
+END:VCALENDAR

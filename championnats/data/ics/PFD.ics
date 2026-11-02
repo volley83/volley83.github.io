@@ -1,0 +1,329 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:M11 F – M11 Feminin - 1Ere Phase
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:PFD001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T130000
+DTEND;TZID=Europe/Paris:20261107T150000
+SUMMARY:M11 F · Vidauban Volley-Ball – Sainte-Maxime Cogolin Volley 3
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T130000
+DTEND;TZID=Europe/Paris:20261107T150000
+SUMMARY:M11 F · Le Luc Volley-Ball – Sainte-Maxime Cogolin Volley 2
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T130000
+DTEND;TZID=Europe/Paris:20261107T150000
+SUMMARY:M11 F · Draguignan Union Club Var VB – Sainte-Maxime Cogolin V
+ olley 1
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T130000
+DTEND;TZID=Europe/Paris:20261107T150000
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 2 – Draguignan Union Club
+  Var VB
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T130000
+DTEND;TZID=Europe/Paris:20261107T150000
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 3 – Sainte-Maxime Cogolin
+  Volley 1
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T130000
+DTEND;TZID=Europe/Paris:20261107T150000
+SUMMARY:M11 F · Le Luc Volley-Ball – Vidauban Volley-Ball
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T130000
+DTEND;TZID=Europe/Paris:20261107T150000
+SUMMARY:M11 F · Vidauban Volley-Ball – Draguignan Union Club Var VB
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T130000
+DTEND;TZID=Europe/Paris:20261107T150000
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 3 – Le Luc Volley-Ball
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T130000
+DTEND;TZID=Europe/Paris:20261107T150000
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 1 – Sainte-Maxime Cogolin
+  Volley 2
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T130000
+DTEND;TZID=Europe/Paris:20261107T150000
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 1 – Vidauban Volley-Ball
+LOCATION:Gymnase Rostand (Draguignan)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:M11 F · Draguignan Union Club Var VB – Vidauban Volley-Ball
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 2 – Sainte-Maxime Cogolin
+  Volley 3
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD013@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 1 – Le Luc Volley-Ball
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD014@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 2 – Sainte-Maxime Cogolin
+  Volley 1
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD015@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:M11 F · Vidauban Volley-Ball – Le Luc Volley-Ball
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD016@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 3 – Draguignan Union Club
+  Var VB
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD017@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:M11 F · Le Luc Volley-Ball – Draguignan Union Club Var VB
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD018@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:M11 F · Vidauban Volley-Ball – Sainte-Maxime Cogolin Volley 2
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD019@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 1 – Sainte-Maxime Cogolin
+  Volley 3
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD020@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:M11 F · Draguignan Union Club Var VB – Sainte-Maxime Cogolin V
+ olley 2
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD021@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 3 – Sainte-Maxime Cogolin
+  Volley 2
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD022@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M11 F · Vidauban Volley-Ball – Sainte-Maxime Cogolin Volley 1
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD023@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M11 F · Draguignan Union Club Var VB – Le Luc Volley-Ball
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD024@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M11 F · Le Luc Volley-Ball – Sainte-Maxime Cogolin Volley 1
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD025@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M11 F · Draguignan Union Club Var VB – Sainte-Maxime Cogolin V
+ olley 3
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD026@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 2 – Vidauban Volley-Ball
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD027@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 1 – Draguignan Union Club
+  Var VB
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD028@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 2 – Le Luc Volley-Ball
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD029@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 3 – Vidauban Volley-Ball
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+BEGIN:VEVENT
+UID:PFD030@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M11 F · Le Luc Volley-Ball – Sainte-Maxime Cogolin Volley 3
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/PFD
+END:VEVENT
+END:VCALENDAR

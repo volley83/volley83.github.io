@@ -1,0 +1,242 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:M18 F – M18 Féminin- Première Phase - Poule A
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:CFA001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T130000
+DTEND;TZID=Europe/Paris:20261010T150000
+SUMMARY:M18 F · Union Athlétique Valettoise – Volley Club Méditerran
+ ée 1 (1-2)
+DESCRIPTION:Résultat : 1-2 (20:25\, 25:23\, 13:15)\nPoule CFA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T130000
+DTEND;TZID=Europe/Paris:20261010T150000
+SUMMARY:M18 F · Volley Club Méditerranée 2 – Volley-Ball Ollioulais 
+ (0-2)
+DESCRIPTION:Résultat : 0-2 (20:25\, 12:25)\nPoule CFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T130000
+DTEND;TZID=Europe/Paris:20261010T150000
+SUMMARY:M18 F · Union Athlétique Valettoise – Volley Club Hyères / P
+ ierrefeu La Londe (0-2)
+DESCRIPTION:Résultat : 0-2 (18:25\, 15:25)\nPoule CFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T130000
+DTEND;TZID=Europe/Paris:20261010T150000
+SUMMARY:M18 F · Volley Club Méditerranée 1 – Volley Club Méditerran
+ ée 2 (2-0)
+DESCRIPTION:Résultat : 2-0 (25:6\, 25:14)\nPoule CFA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T130000
+DTEND;TZID=Europe/Paris:20261010T150000
+SUMMARY:M18 F · Volley-Ball Ollioulais – Volley Club Hyères / Pierref
+ eu La Londe (1-2)
+DESCRIPTION:Résultat : 1-2 (19:25\, 25:23\, 7:15)\nPoule CFA – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M18 F · Volley Club Méditerranée 2 – Union Athlétique Valet
+ toise
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Volley Club
+  Méditerranée 1
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M18 F · Volley Club Méditerranée 1 – Volley-Ball Ollioulais
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Volley Club
+  Méditerranée 2
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261107T140000
+DTEND;TZID=Europe/Paris:20261107T160000
+SUMMARY:M18 F · Volley-Ball Ollioulais – Union Athlétique Valettoise
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T133000
+DTEND;TZID=Europe/Paris:20261121T153000
+SUMMARY:M18 F · Volley Club Méditerranée 1 – Union Athlétique Valet
+ toise
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T133000
+DTEND;TZID=Europe/Paris:20261121T153000
+SUMMARY:M18 F · Volley-Ball Ollioulais – Volley Club Méditerranée 2
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA013@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T133000
+DTEND;TZID=Europe/Paris:20261121T153000
+SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Union Athl
+ étique Valettoise
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA014@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T133000
+DTEND;TZID=Europe/Paris:20261121T153000
+SUMMARY:M18 F · Volley Club Méditerranée 2 – Volley Club Méditerran
+ ée 1
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA015@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261121T133000
+DTEND;TZID=Europe/Paris:20261121T153000
+SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Volley-Ball
+  Ollioulais
+LOCATION:Gymnase Costebelle (Hyeres)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA016@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M18 F · Union Athlétique Valettoise – Volley Club Méditerran
+ ée 2
+LOCATION:Gymnase Santoni (La Valette)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA017@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M18 F · Volley Club Méditerranée 1 – Volley Club Hyères / P
+ ierrefeu La Londe
+LOCATION:Gymnase Santoni (La Valette)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA018@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M18 F · Volley-Ball Ollioulais – Volley Club Méditerranée 1
+LOCATION:Gymnase Santoni (La Valette)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA019@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M18 F · Volley Club Méditerranée 2 – Volley Club Hyères / P
+ ierrefeu La Londe
+LOCATION:Gymnase Santoni (La Valette)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+BEGIN:VEVENT
+UID:CFA020@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261205T140000
+DTEND;TZID=Europe/Paris:20261205T160000
+SUMMARY:M18 F · Union Athlétique Valettoise – Volley-Ball Ollioulais
+LOCATION:Gymnase Santoni (La Valette)
+DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/CFA
+END:VEVENT
+END:VCALENDAR

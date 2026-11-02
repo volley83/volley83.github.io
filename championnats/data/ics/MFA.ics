@@ -1,0 +1,234 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:M15 F – M15 Féminin - Première Phase
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:MFA001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 F · Volley Pradétan Gardéen – Draguignan Union Club Var 
+ VB (2-1)
+DESCRIPTION:Résultat : 2-1 (25:19\, 21:25\, 15:7)\nPoule MFA – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 F · Sainte-Maxime Cogolin Volley – Fréjus Var Volley (2-0)
+DESCRIPTION:Résultat : 2-0 (25:17\, 25:12)\nPoule MFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 F · Volley Pradétan Gardéen – Volley-Ball Ollioulais (2-
+ 0)
+DESCRIPTION:Résultat : 2-0 (25:14\, 29:27)\nPoule MFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 F · Draguignan Union Club Var VB – Sainte-Maxime Cogolin V
+ olley (0-2)
+DESCRIPTION:Résultat : 0-2 (10:25\, 8:25)\nPoule MFA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261010T133000
+DTEND;TZID=Europe/Paris:20261010T153000
+SUMMARY:M15 F · Fréjus Var Volley – Volley-Ball Ollioulais (2-0)
+DESCRIPTION:Résultat : 2-0 (25:6\, 25:20)\nPoule MFA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261114T140000
+DTEND;TZID=Europe/Paris:20261114T160000
+SUMMARY:M15 F · Sainte-Maxime Cogolin Volley – Volley Pradétan Gardé
+ en
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261114T140000
+DTEND;TZID=Europe/Paris:20261114T160000
+SUMMARY:M15 F · Volley-Ball Ollioulais – Draguignan Union Club Var VB
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261114T140000
+DTEND;TZID=Europe/Paris:20261114T160000
+SUMMARY:M15 F · Draguignan Union Club Var VB – Fréjus Var Volley
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261114T140000
+DTEND;TZID=Europe/Paris:20261114T160000
+SUMMARY:M15 F · Volley-Ball Ollioulais – Sainte-Maxime Cogolin Volley
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261114T140000
+DTEND;TZID=Europe/Paris:20261114T160000
+SUMMARY:M15 F · Fréjus Var Volley – Volley Pradétan Gardéen
+LOCATION:Les Bosquettes (Sainte-Maxime)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 F · Draguignan Union Club Var VB – Volley Pradétan Gardé
+ en
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 F · Fréjus Var Volley – Sainte-Maxime Cogolin Volley
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA013@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 F · Volley-Ball Ollioulais – Volley Pradétan Gardéen
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA014@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 F · Sainte-Maxime Cogolin Volley – Draguignan Union Club V
+ ar VB
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA015@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261128T133000
+DTEND;TZID=Europe/Paris:20261128T153000
+SUMMARY:M15 F · Volley-Ball Ollioulais – Fréjus Var Volley
+LOCATION:Jacques Troin (La Garde)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA016@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M15 F · Volley Pradétan Gardéen – Sainte-Maxime Cogolin Voll
+ ey
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA017@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M15 F · Draguignan Union Club Var VB – Volley-Ball Ollioulais
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA018@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M15 F · Fréjus Var Volley – Draguignan Union Club Var VB
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA019@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M15 F · Sainte-Maxime Cogolin Volley – Volley-Ball Ollioulais
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+BEGIN:VEVENT
+UID:MFA020@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261212T133000
+DTEND;TZID=Europe/Paris:20261212T153000
+SUMMARY:M15 F · Volley Pradétan Gardéen – Fréjus Var Volley
+LOCATION:Gymnase Piemontesi (Ollioules)
+DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/jeunes/MFA
+END:VEVENT
+END:VCALENDAR
