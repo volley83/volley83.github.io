@@ -40,7 +40,7 @@ UID:M4C002@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261012T203000
 DTEND;TZID=Europe/Paris:20261012T223000
-SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club De Saint-Maximin – Exempt
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club de Saint-Maximin – Exempt
 DESCRIPTION:Poule M4C – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/M4C
 END:VEVENT
@@ -59,7 +59,7 @@ UID:M4C004@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261105T210000
 DTEND;TZID=Europe/Paris:20261105T230000
-SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Seynois 2 – Volley Club De 
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Seynois 2 – Volley Club de 
  Saint-Maximin
 LOCATION:Lycée Paul Langevin
 DESCRIPTION:Poule M4C – classement et résultats : https://volley83.git
@@ -70,7 +70,7 @@ UID:M4C005@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261109T203000
 DTEND;TZID=Europe/Paris:20261109T223000
-SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club De Saint-Maximin – Volley C
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club de Saint-Maximin – Volley C
  lub Hyères / Pierrefeu La Londe 1
 LOCATION:College Leï Garrus
 DESCRIPTION:Poule M4C – classement et résultats : https://volley83.git
@@ -100,7 +100,7 @@ UID:M4C008@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261123T203000
 DTEND;TZID=Europe/Paris:20261123T223000
-SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club De Saint-Maximin – Volley C
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club de Saint-Maximin – Volley C
  lub Seynois 2
 LOCATION:College Leï Garrus
 DESCRIPTION:Poule M4C – classement et résultats : https://volley83.git
@@ -122,7 +122,7 @@ UID:M4C010@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;VALUE=DATE:20261205
 DTEND;VALUE=DATE:20261206
-SUMMARY:COMPET'LIB 4X4 MIXTE · Exempt – Volley Club De Saint-Maximin
+SUMMARY:COMPET'LIB 4X4 MIXTE · Exempt – Volley Club de Saint-Maximin
 DESCRIPTION:Poule M4C – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/M4C
 END:VEVENT
@@ -132,7 +132,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261218T210000
 DTEND;TZID=Europe/Paris:20261218T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Hyères / Pierrefeu La Londe 
- 1 – Volley Club De Saint-Maximin
+ 1 – Volley Club de Saint-Maximin
 LOCATION:Complexe du Pas de la Garenne
 DESCRIPTION:Poule M4C – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/M4C

@@ -29,7 +29,7 @@ UID:M4G001@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261119T204500
 DTEND;TZID=Europe/Paris:20261119T224500
-SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 1 – Six Fours
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 1 – Six-Fours
   Beach Volley 3
 LOCATION:Gerard Sébastia
 DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
@@ -62,7 +62,7 @@ UID:M4G004@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261207T210000
 DTEND;TZID=Europe/Paris:20261207T230000
-SUMMARY:COMPET'LIB 4X4 MIXTE · Six Fours Beach Volley 3 – Sud Sainte-B
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 3 – Sud Sainte-B
  aume Volley Club 2
 LOCATION:Complexe Sportif du Verger
 DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
@@ -84,7 +84,7 @@ UID:M4G006@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261109T210000
 DTEND;TZID=Europe/Paris:20261109T230000
-SUMMARY:COMPET'LIB 4X4 MIXTE · Six Fours Beach Volley 3 – Volley-Ball 
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 3 – Volley-Ball 
  Ollioulais 1
 LOCATION:Complexe Sportif du Verger
 DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
@@ -106,7 +106,7 @@ UID:M4G008@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261126T213000
 DTEND;TZID=Europe/Paris:20261126T233000
-SUMMARY:COMPET'LIB 4X4 MIXTE · Sud Sainte-Baume Volley Club 2 – Six Fo
+SUMMARY:COMPET'LIB 4X4 MIXTE · Sud Sainte-Baume Volley Club 2 – Six-Fo
  urs Beach Volley 3
 LOCATION:Compexe Sportif du Beausset
 DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
@@ -117,7 +117,7 @@ UID:M4G009@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261130T210000
 DTEND;TZID=Europe/Paris:20261130T230000
-SUMMARY:COMPET'LIB 4X4 MIXTE · Six Fours Beach Volley 3 – Volley Prad
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 3 – Volley Prad
  étan Gardéen 1
 LOCATION:Complexe Sportif du Verger
 DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
@@ -150,7 +150,7 @@ UID:M4G012@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261214T193000
 DTEND;TZID=Europe/Paris:20261214T213000
-SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 1 – Six Fours Be
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 1 – Six-Fours Be
  ach Volley 3
 LOCATION:La Cordeille
 DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git

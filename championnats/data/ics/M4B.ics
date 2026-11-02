@@ -29,8 +29,8 @@ UID:M4B001@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261103T210000
 DTEND;TZID=Europe/Paris:20261103T230000
-SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball - Rcvb 1 – Vo
- lley Club Hyères / Pierrefeu La Londe 3
+SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 1 – Volley Cl
+ ub Hyères / Pierrefeu La Londe 3
 LOCATION:Gymnase Gassendi
 DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/M4B
@@ -40,7 +40,7 @@ UID:M4B002@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261012T193000
 DTEND;TZID=Europe/Paris:20261012T213000
-SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 2 – Six Fours Be
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 2 – Six-Fours Be
  ach Volley 2 (3-1)
 DESCRIPTION:Résultat : 3-1 (25:15\, 19:25\, 25:21\, 25:19)\nPoule M4B 
  – classement et résultats : https://volley83.github.io/championnats/#
@@ -51,8 +51,8 @@ UID:M4B003@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261116T210000
 DTEND;TZID=Europe/Paris:20261116T230000
-SUMMARY:COMPET'LIB 4X4 MIXTE · Six Fours Beach Volley 2 – Rocbaron Clu
- b Volley-Ball - Rcvb 1
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 2 – Rocbaron Clu
+ b Volley-Ball 1
 LOCATION:Complexe Sportif du Verger
 DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/M4B
@@ -74,7 +74,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261109T193000
 DTEND;TZID=Europe/Paris:20261109T213000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 2 – Rocbaron Clu
- b Volley-Ball - Rcvb 1
+ b Volley-Ball 1
 LOCATION:La Cordeille
 DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/M4B
@@ -85,7 +85,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261113T210000
 DTEND;TZID=Europe/Paris:20261113T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Hyères / Pierrefeu La Londe 
- 3 – Six Fours Beach Volley 2
+ 3 – Six-Fours Beach Volley 2
 LOCATION:Complexe du Pas de la Garenne
 DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/M4B
@@ -95,8 +95,8 @@ UID:M4B007@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261124T210000
 DTEND;TZID=Europe/Paris:20261124T230000
-SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball - Rcvb 1 – Si
- x Fours Beach Volley 2
+SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 1 – Six-Fours
+  Beach Volley 2
 LOCATION:Gymnase Gassendi
 DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/M4B
@@ -118,7 +118,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261204T210000
 DTEND;TZID=Europe/Paris:20261204T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Hyères / Pierrefeu La Londe 
- 3 – Rocbaron Club Volley-Ball - Rcvb 1
+ 3 – Rocbaron Club Volley-Ball 1
 LOCATION:Complexe du Pas de la Garenne
 DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/M4B
@@ -128,7 +128,7 @@ UID:M4B010@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261203T210000
 DTEND;TZID=Europe/Paris:20261203T230000
-SUMMARY:COMPET'LIB 4X4 MIXTE · Six Fours Beach Volley 2 – Volley-Ball 
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 2 – Volley-Ball 
  Ollioulais 2
 LOCATION:Complexe Sportif du Verger
 DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
@@ -139,8 +139,8 @@ UID:M4B011@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261215T210000
 DTEND;TZID=Europe/Paris:20261215T230000
-SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball - Rcvb 1 – Vo
- lley-Ball Ollioulais 2
+SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 1 – Volley-Ba
+ ll Ollioulais 2
 LOCATION:Gymnase Gassendi
 DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/M4B
@@ -150,7 +150,7 @@ UID:M4B012@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261217T210000
 DTEND;TZID=Europe/Paris:20261217T230000
-SUMMARY:COMPET'LIB 4X4 MIXTE · Six Fours Beach Volley 2 – Volley Club 
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 2 – Volley Club 
  Hyères / Pierrefeu La Londe 3
 LOCATION:Complexe Sportif du Verger
 DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git

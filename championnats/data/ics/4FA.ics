@@ -29,7 +29,7 @@ UID:4FA001@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261015T210000
 DTEND;TZID=Europe/Paris:20261015T230000
-SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball - Rcvb – Exempt
+SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball – Exempt
 DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/4FA
 END:VEVENT
@@ -49,7 +49,7 @@ UID:4FA003@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261013T210000
 DTEND;TZID=Europe/Paris:20261013T230000
-SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 1 – Six Fours Bea
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 1 – Six-Fours Bea
  ch Volley (0-3)
 DESCRIPTION:Résultat : 0-3 (13:25\, 7:25\, 12:25)\nPoule 4FA – classem
  ent et résultats : https://volley83.github.io/championnats/#championnat
@@ -69,7 +69,7 @@ UID:4FA005@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261029T210000
 DTEND;TZID=Europe/Paris:20261029T230000
-SUMMARY:COMPET'LIB 4X4 F · Six Fours Beach Volley – Volley Pradétan G
+SUMMARY:COMPET'LIB 4X4 F · Six-Fours Beach Volley – Volley Pradétan G
  ardéen 2 (3-0)
 DESCRIPTION:Résultat : 3-0 (25:8\, 25:14\, 25:14)\nPoule 4FA – classem
  ent et résultats : https://volley83.github.io/championnats/#championnat
@@ -81,7 +81,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261027T210000
 DTEND;TZID=Europe/Paris:20261027T230000
 SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 3 – Rocbaron Club
-  Volley-Ball - Rcvb (0-3)
+  Volley-Ball (0-3)
 DESCRIPTION:Résultat : 0-3 (18:25\, 21:25\, 16:25)\nPoule 4FA – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/4FA
@@ -100,8 +100,8 @@ UID:4FA008@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261105T210000
 DTEND;TZID=Europe/Paris:20261105T230000
-SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball - Rcvb – Six Four
- s Beach Volley
+SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball – Six-Fours Beach
+  Volley
 LOCATION:Gymnase Gassendi
 DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/4FA
@@ -132,7 +132,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261110T210000
 DTEND;TZID=Europe/Paris:20261110T230000
 SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 1 – Rocbaron Club
-  Volley-Ball - Rcvb
+  Volley-Ball
 LOCATION:Guy Moquet 1
 DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/4FA
@@ -142,7 +142,7 @@ UID:4FA012@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261112T210000
 DTEND;TZID=Europe/Paris:20261112T230000
-SUMMARY:COMPET'LIB 4X4 F · Six Fours Beach Volley – Volley Pradétan G
+SUMMARY:COMPET'LIB 4X4 F · Six-Fours Beach Volley – Volley Pradétan G
  ardéen 3
 LOCATION:Complexe Sportif du Verger
 DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
@@ -153,7 +153,7 @@ UID:4FA013@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;VALUE=DATE:20261128
 DTEND;VALUE=DATE:20261129
-SUMMARY:COMPET'LIB 4X4 F · Exempt – Six Fours Beach Volley
+SUMMARY:COMPET'LIB 4X4 F · Exempt – Six-Fours Beach Volley
 DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/4FA
 END:VEVENT
@@ -173,8 +173,8 @@ UID:4FA015@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261126T210000
 DTEND;TZID=Europe/Paris:20261126T230000
-SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball - Rcvb – Volley P
- radétan Gardéen 2
+SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball – Volley Pradéta
+ n Gardéen 2
 LOCATION:Gymnase Gassendi
 DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/4FA
@@ -184,7 +184,7 @@ UID:4FA016@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;VALUE=DATE:20261205
 DTEND;VALUE=DATE:20261206
-SUMMARY:COMPET'LIB 4X4 F · Exempt – Rocbaron Club Volley-Ball - Rcvb
+SUMMARY:COMPET'LIB 4X4 F · Exempt – Rocbaron Club Volley-Ball
 DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/4FA
 END:VEVENT
@@ -204,7 +204,7 @@ UID:4FA018@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261203T210000
 DTEND;TZID=Europe/Paris:20261203T230000
-SUMMARY:COMPET'LIB 4X4 F · Six Fours Beach Volley – Volley Pradétan G
+SUMMARY:COMPET'LIB 4X4 F · Six-Fours Beach Volley – Volley Pradétan G
  ardéen 1
 LOCATION:Complexe Sportif du Verger
 DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
@@ -224,7 +224,7 @@ UID:4FA020@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261208T210000
 DTEND;TZID=Europe/Paris:20261208T230000
-SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 2 – Six Fours Bea
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 2 – Six-Fours Bea
  ch Volley
 LOCATION:Guy Moquet 1
 DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
@@ -235,8 +235,8 @@ UID:4FA021@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261210T210000
 DTEND;TZID=Europe/Paris:20261210T230000
-SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball - Rcvb – Volley P
- radétan Gardéen 3
+SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball – Volley Pradéta
+ n Gardéen 3
 LOCATION:Gymnase Gassendi
 DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/4FA
@@ -255,8 +255,8 @@ UID:4FA023@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261217T210000
 DTEND;TZID=Europe/Paris:20261217T230000
-SUMMARY:COMPET'LIB 4X4 F · Six Fours Beach Volley – Rocbaron Club Voll
- ey-Ball - Rcvb
+SUMMARY:COMPET'LIB 4X4 F · Six-Fours Beach Volley – Rocbaron Club Voll
+ ey-Ball
 LOCATION:Complexe Sportif du Verger
 DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/4FA
@@ -286,8 +286,8 @@ UID:4FA026@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20270107T210000
 DTEND;TZID=Europe/Paris:20270107T230000
-SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball - Rcvb – Volley P
- radétan Gardéen 1
+SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball – Volley Pradéta
+ n Gardéen 1
 LOCATION:Gymnase Gassendi
 DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/4FA
@@ -297,7 +297,7 @@ UID:4FA027@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20270105T210000
 DTEND;TZID=Europe/Paris:20270105T230000
-SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 3 – Six Fours Bea
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 3 – Six-Fours Bea
  ch Volley
 LOCATION:Guy Moquet 1
 DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
@@ -308,7 +308,7 @@ UID:4FA028@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20270114T210000
 DTEND;TZID=Europe/Paris:20270114T230000
-SUMMARY:COMPET'LIB 4X4 F · Six Fours Beach Volley – Exempt
+SUMMARY:COMPET'LIB 4X4 F · Six-Fours Beach Volley – Exempt
 DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/4FA
 END:VEVENT
@@ -329,7 +329,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20270112T210000
 DTEND;TZID=Europe/Paris:20270112T230000
 SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 2 – Rocbaron Club
-  Volley-Ball - Rcvb
+  Volley-Ball
 LOCATION:Guy Moquet 1
 DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/4FA

@@ -1,0 +1,331 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Comite du Var de Volley-Ball//Championnats//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Six-Fours Beach Volley – matchs
+X-WR-TIMEZONE:Europe/Paris
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:4FA003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261013T210000
+DTEND;TZID=Europe/Paris:20261013T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 1 – Six-Fours Bea
+ ch Volley (0-3)
+DESCRIPTION:Résultat : 0-3 (13:25\, 7:25\, 12:25)\nPoule 4FA – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261029T210000
+DTEND;TZID=Europe/Paris:20261029T230000
+SUMMARY:COMPET'LIB 4X4 F · Six-Fours Beach Volley – Volley Pradétan G
+ ardéen 2 (3-0)
+DESCRIPTION:Résultat : 3-0 (25:8\, 25:14\, 25:14)\nPoule 4FA – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261105T210000
+DTEND;TZID=Europe/Paris:20261105T230000
+SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball – Six-Fours Beach
+  Volley
+LOCATION:Gymnase Gassendi
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261112T210000
+DTEND;TZID=Europe/Paris:20261112T230000
+SUMMARY:COMPET'LIB 4X4 F · Six-Fours Beach Volley – Volley Pradétan G
+ ardéen 3
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA013@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:COMPET'LIB 4X4 F · Exempt – Six-Fours Beach Volley
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA018@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261203T210000
+DTEND;TZID=Europe/Paris:20261203T230000
+SUMMARY:COMPET'LIB 4X4 F · Six-Fours Beach Volley – Volley Pradétan G
+ ardéen 1
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA020@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261208T210000
+DTEND;TZID=Europe/Paris:20261208T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 2 – Six-Fours Bea
+ ch Volley
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA023@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261217T210000
+DTEND;TZID=Europe/Paris:20261217T230000
+SUMMARY:COMPET'LIB 4X4 F · Six-Fours Beach Volley – Rocbaron Club Voll
+ ey-Ball
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA027@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270105T210000
+DTEND;TZID=Europe/Paris:20270105T230000
+SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 3 – Six-Fours Bea
+ ch Volley
+LOCATION:Guy Moquet 1
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:4FA028@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20270114T210000
+DTEND;TZID=Europe/Paris:20270114T230000
+SUMMARY:COMPET'LIB 4X4 F · Six-Fours Beach Volley – Exempt
+DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/4FA
+END:VEVENT
+BEGIN:VEVENT
+UID:M4B002@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261012T193000
+DTEND;TZID=Europe/Paris:20261012T213000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 2 – Six-Fours Be
+ ach Volley 2 (3-1)
+DESCRIPTION:Résultat : 3-1 (25:15\, 19:25\, 25:21\, 25:19)\nPoule M4B 
+ – classement et résultats : https://volley83.github.io/championnats/#
+ championnats/competlib/M4B
+END:VEVENT
+BEGIN:VEVENT
+UID:M4B003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261116T210000
+DTEND;TZID=Europe/Paris:20261116T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 2 – Rocbaron Clu
+ b Volley-Ball 1
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4B
+END:VEVENT
+BEGIN:VEVENT
+UID:M4B006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261113T210000
+DTEND;TZID=Europe/Paris:20261113T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Hyères / Pierrefeu La Londe 
+ 3 – Six-Fours Beach Volley 2
+LOCATION:Complexe du Pas de la Garenne
+DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4B
+END:VEVENT
+BEGIN:VEVENT
+UID:M4B007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261124T210000
+DTEND;TZID=Europe/Paris:20261124T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 1 – Six-Fours
+  Beach Volley 2
+LOCATION:Gymnase Gassendi
+DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4B
+END:VEVENT
+BEGIN:VEVENT
+UID:M4B010@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261203T210000
+DTEND;TZID=Europe/Paris:20261203T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 2 – Volley-Ball 
+ Ollioulais 2
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4B
+END:VEVENT
+BEGIN:VEVENT
+UID:M4B012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261217T210000
+DTEND;TZID=Europe/Paris:20261217T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 2 – Volley Club 
+ Hyères / Pierrefeu La Londe 3
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4B
+END:VEVENT
+BEGIN:VEVENT
+UID:M4E001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261012T210000
+DTEND;TZID=Europe/Paris:20261012T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 1 – Rocbaron Clu
+ b Volley-Ball 2 (3-0)
+DESCRIPTION:Résultat : 3-0 (25:11\, 25:10\, 25:13)\nPoule M4E – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/competlib/M4E
+END:VEVENT
+BEGIN:VEVENT
+UID:M4E003@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261106T210000
+DTEND;TZID=Europe/Paris:20261106T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Hyères / Pierrefeu La Londe 
+ 4 – Six-Fours Beach Volley 1
+LOCATION:Complexe du Pas de la Garenne
+DESCRIPTION:Poule M4E – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4E
+END:VEVENT
+BEGIN:VEVENT
+UID:M4E005@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261109T210000
+DTEND;TZID=Europe/Paris:20261109T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Vidauban Volley-Ball – Six-Fours Beach 
+ Volley 1
+LOCATION:Collège P.E Victor
+DESCRIPTION:Poule M4E – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4E
+END:VEVENT
+BEGIN:VEVENT
+UID:M4E007@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261123T210000
+DTEND;TZID=Europe/Paris:20261123T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 1 – Volley Club 
+ Hyères / Pierrefeu La Londe 4
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule M4E – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4E
+END:VEVENT
+BEGIN:VEVENT
+UID:M4E009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261201T210000
+DTEND;TZID=Europe/Paris:20261201T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 2 – Six-Fours
+  Beach Volley 1
+LOCATION:Gymnase Gassendi
+DESCRIPTION:Poule M4E – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4E
+END:VEVENT
+BEGIN:VEVENT
+UID:M4E011@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261214T210000
+DTEND;TZID=Europe/Paris:20261214T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 1 – Vidauban Vol
+ ley-Ball
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule M4E – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4E
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G001@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261119T204500
+DTEND;TZID=Europe/Paris:20261119T224500
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 1 – Six-Fours
+  Beach Volley 3
+LOCATION:Gerard Sébastia
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G004@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261207T210000
+DTEND;TZID=Europe/Paris:20261207T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 3 – Sud Sainte-B
+ aume Volley Club 2
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G006@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261109T210000
+DTEND;TZID=Europe/Paris:20261109T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 3 – Volley-Ball 
+ Ollioulais 1
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G008@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261126T213000
+DTEND;TZID=Europe/Paris:20261126T233000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Sud Sainte-Baume Volley Club 2 – Six-Fo
+ urs Beach Volley 3
+LOCATION:Compexe Sportif du Beausset
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G009@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261130T210000
+DTEND;TZID=Europe/Paris:20261130T230000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 3 – Volley Prad
+ étan Gardéen 1
+LOCATION:Complexe Sportif du Verger
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+BEGIN:VEVENT
+UID:M4G012@volley83.github.io
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=Europe/Paris:20261214T193000
+DTEND;TZID=Europe/Paris:20261214T213000
+SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 1 – Six-Fours Be
+ ach Volley 3
+LOCATION:La Cordeille
+DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4G
+END:VEVENT
+END:VCALENDAR
