@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Compétitions OPEN – Comité du Var de Volley-Ball</title>
+<title>Championnats – Comité du Var de Volley-Ball</title>
 <meta name="description" content="Championnats M15 et M18 4x4 et tournois OPEN 2 contre 2 et 4 contre 4 du Comité du Var de Volley-Ball : calendriers, inscriptions en ligne et classements.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -78,6 +78,48 @@
   .medal.none { color: #C3CAD6; }
   .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); margin-top: 12px; }
   .bareme { font-size: 13px; color: var(--muted); background: #F8FAFD; border-radius: 10px; padding: 10px 14px; margin-top: 12px; }
+
+  /* Championnats fédéraux */
+  .hero.fed { background: linear-gradient(120deg, #0B2149 0%, #1E4FA3 100%); }
+  .seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 6px; }
+  .seg-b { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 58px; border-radius: 10px; text-decoration: none; color: var(--navy); font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 20px; text-transform: uppercase; letter-spacing: .5px; text-align: center; line-height: 1.1; padding: 6px; }
+  .seg-b span { font-family: Inter, sans-serif; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: none; letter-spacing: 0; }
+  .seg-b.on { background: var(--navy); color: #fff; } .seg-b.on span { color: #C9D4EA; }
+  .fed-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+  .cats { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cat { padding: 8px 14px; border-radius: 20px; border: 1px solid var(--line); background: #fff; font-weight: 700; font-size: 14px; color: var(--text); text-decoration: none; }
+  .cat.on { background: var(--accent); border-color: var(--accent); color: var(--navy); }
+  .monclub { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--muted); }
+  .monclub select { width: auto; max-width: 240px; padding: 8px 10px; font-size: 13px; }
+  .ph { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--blue); }
+  .fedrank tr.mine td, .mt.mine, .equipes .mine { background: #FFF7DB !important; }
+  .fedrank tr.mine td:first-child { box-shadow: inset 4px 0 0 var(--accent); }
+  .equipes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .equipes span { padding: 6px 12px; border-radius: 16px; background: #F4F6FA; font-size: 14px; font-weight: 600; }
+  .sub-h { font-size: 15px; letter-spacing: 1px; color: var(--muted); margin: 14px 0 6px; }
+  .jn { border: 1px solid var(--line); border-radius: 12px; margin-top: 8px; background: #fff; }
+  .jn summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; padding: 12px 14px; }
+  .jn summary::-webkit-details-marker { display: none; }
+  .jn summary::before { content: '▸'; color: var(--muted); } .jn[open] summary::before { content: '▾'; }
+  .jn summary b { color: var(--navy); } .jn summary span { font-size: 13px; color: var(--muted); }
+  .mts { display: flex; flex-direction: column; border-top: 1px solid var(--line2); }
+  .mt { display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 12px; padding: 10px 14px; border-top: 1px solid var(--line2); }
+  .mt:first-child { border-top: 0; }
+  .mt-d { text-align: center; line-height: 1.05; align-self: center; }
+  .mt-d b { display: block; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 22px; color: var(--navy); }
+  .mt-d span { font-size: 11px; text-transform: uppercase; color: var(--muted); }
+  .mt-row { display: flex; justify-content: space-between; gap: 10px; font-size: 14.5px; }
+  .mt-e { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mt-s { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 19px; color: var(--muted); min-width: 18px; text-align: right; line-height: 1.1; }
+  .mt-row.win .mt-e { font-weight: 700; color: var(--navy); } .mt-row.win .mt-s { color: var(--navy); }
+  .mt-i { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+  .chk-s { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); }
+  .chk-s input { width: 16px; height: 16px; padding: 0; }
+  .fedrank td.eq { white-space: normal; min-width: 120px; }
+  .mt-row .mt-e:only-child { color: inherit; }
+  @media (max-width: 760px) { .fedrank .hs2 { display: none; } }
+  @media (max-width: 420px) { .fedrank td, .fedrank th { padding-left: 5px; padding-right: 5px; } .fedrank .pos { width: 26px; height: 26px; } }
+  @media (max-width: 520px) { .fedrank .hs { display: none; } .seg-b { font-size: 16px; } .monclub { width: 100%; } .monclub select { flex: 1; max-width: none; } }
 
   /* Week-end */
   .we { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px; border-top: 5px solid var(--accent); }
@@ -210,6 +252,7 @@
     .head { padding: 10px 0; flex-wrap: wrap; gap: 10px; }
     .head .sep { display: none; }
     .head nav { margin-left: 0; width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+    .head nav .navbtn.cta { grid-column: 1 / -1; }
     .navbtn { justify-content: center; padding: 0 6px; font-size: 12.5px; white-space: normal; text-align: center; line-height: 1.2; min-width: 0; }
     header { position: static; }
   }
@@ -230,9 +273,10 @@
   <div class="wrap head">
     <a href="https://www.volley83.fr" aria-label="Comité du Var de Volley-Ball"><img src="logo-comite-var.jpg" alt="Comité du Var Volley-Ball"></a>
     <div class="sep"></div>
-    <div class="t">Compétitions OPEN</div>
+    <div class="t">Championnats</div>
     <nav aria-label="Navigation">
-      <a class="navbtn" id="nav-4x4" href="#4x4">M15 · M18 4x4</a>
+      <a class="navbtn" id="nav-championnats" href="#championnats">Championnats</a>
+      <a class="navbtn" id="nav-4x4" href="#4x4">OPEN M15 · M18 4x4</a>
       <a class="navbtn" id="nav-open" href="#open">Tournois OPEN</a>
       <a class="navbtn" id="nav-club" href="#club">🔑 Club recevant</a>
       <a class="navbtn cta" id="nav-inscription" href="#inscription">Inscrire une équipe</a>
@@ -306,7 +350,8 @@ const store = { get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? 
 // Barème M15 / M18 4x4 : 1er = N+3, 2e = N+1, 3e = N, puis le dernier marque 1 point, l'avant-dernier 2…
 function points(rang, n) { return rang === 1 ? n + 3 : rang === 2 ? n + 1 : rang === 3 ? n : Math.max(1, n - rang + 1); }
 
-let D = { competitions: [], tournois: [], clubs: [] };
+let D = { competitions: [], tournois: [], clubs: [] }, PUB_ERR = false;
+const pubErr = () => { $('app').innerHTML = '<div class="wrap"><main class="wrap"><div class="card msg err">Les compétitions OPEN ne sont pas disponibles pour le moment. Réessayez dans quelques instants.</div></main></div>'; };
 const comp = code => D.competitions.find(c => c.code === code) || {};
 const kind = c => c.famille === 'open' ? 'O' : c.sexe;
 const clubNom = code => (D.clubs.find(c => c.code === code) || {}).nom || code || '';
@@ -343,16 +388,148 @@ function classement(code) {
 // ======================== ROUTEUR ========================
 let ADMIN_PWD = '';
 async function route() {
-  const h = (location.hash || '#4x4').slice(1), [v, a] = h.split('/');
-  ['4x4', 'open', 'inscription', 'club'].forEach(n => $('nav-' + n).classList.toggle('on', v === n || (n === '4x4' && !['open', 'inscription', 'club', 'admin'].includes(v))));
+  const h = (location.hash || '#championnats').slice(1), [v, a, b] = h.split('/');
+  ['championnats', '4x4', 'open', 'inscription', 'club'].forEach(n => $('nav-' + n).classList.toggle('on', v === n || (n === 'championnats' && !['4x4', 'open', 'inscription', 'club', 'admin'].includes(v))));
+  if (PUB_ERR && ['4x4', 'open', 'inscription', 'club'].includes(v)) return pubErr();
+  if (v === '4x4') return render4x4(a);
   if (v === 'open') return renderOpen(a);
   if (v === 'inscription') return renderInscription(a);
   if (v === 'club') return renderClub();
   if (v === 'admin') return renderAdmin(a);
-  return render4x4(a);
+  return renderFederal(a, b);
 }
 window.addEventListener('hashchange', () => { route(); window.scrollTo(0, 0); });
 async function loadPublic() { D = await rpc('chp_public'); }
+
+
+// ======================== CHAMPIONNATS FÉDÉRAUX (données FFvolley) ========================
+let FED = null, FEDCLUB = store.get('chp_monclub', ''), FEDSEUL = false;
+const GROUPES = [['jeunes', 'Championnats jeunes'], ['seniors', 'Championnats seniors'], ['competlib', 'Compet\'Lib']];
+const normN = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+const MOTS = { FEMININ: 'féminin', MASCULIN: 'masculin', MIXTE: 'mixte', PREMIERE: 'première', DEPARTEMENTAL: 'départemental', DEPARTEMENTALE: 'départementale', REGIONAL: 'régional', ACCESSION: 'accession', QUALIFICATION: 'qualification', CHAMPIONNAT: 'championnat', BRASSAGE: 'brassage', PHASE: 'phase', SENIOR: 'senior', AU: 'au', POULE: 'poule', '1ERE': '1re', COMPETLIB: "Compet'Lib" };
+function joli(s) {
+  return String(s || '').split(/\s+/).map((w, i) => {
+    const k = w.normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase();
+    if (/^(M\d+|\d+X\d+)$/.test(k)) return k.replace('X', 'x');
+    if (MOTS[k]) return MOTS[k];
+    return w.toLowerCase();
+  }).join(' ').replace(/^./, c => c.toUpperCase()).replace(/\s*-\s*/g, ' – ');
+}
+// Nom d'équipe FFvolley (« VOLLEY BALL OLLIOULAIS 2 ») -> nom du club de la liste du Comité (« Volley-Ball Ollioulais 2 »)
+const CLUBS_DEFAUT = [['CSB', 'Club Sportif Brignolais'], ['DVVB', 'Draguignan Union Club Var VB'], ['FVV', 'Fréjus Var Volley'], ['LLVB', 'Le Luc Volley-Ball'], ['SMCV', 'Sainte-Maxime Cogolin Volley'], ['2SBVC', 'Sud Sainte-Baume Volley Club'], ['UAV', 'Union Athlétique Valettoise'], ['VVB', 'Vidauban Volley-Ball'], ['VBO', 'Volley-Ball Ollioulais'], ['VCHPL', 'Volley Club Hyères / Pierrefeu La Londe'], ['VCM', 'Volley Club Méditerranée'], ['VCS', 'Volley Club Seynois'], ['VPG', 'Volley Pradétan Gardéen']].map(([code, nom]) => ({ code, nom }));
+const clubsFed = () => (D.clubs && D.clubs.length ? D.clubs : CLUBS_DEFAUT).slice().sort((a, b) => normN(b.nom).length - normN(a.nom).length);
+const clubTrouve = nom => { const n = normN(nom); return clubsFed().find(c => normN(c.nom) && n.startsWith(normN(c.nom))); };
+function equipeFed(nom) {
+  if (/^X{3,}$/i.test(String(nom).trim())) return 'Exempt';
+  const k = clubTrouve(nom);
+  if (!k) return String(nom).toLowerCase().replace(/(^|[\s\-/(])([a-zà-ÿ])/g, (m, a, b) => a + b.toUpperCase());
+  // on retire du nom FFvolley autant de lettres/chiffres que le nom du club en compte : il reste le n° d'équipe, (M21)…
+  let besoin = normN(k.nom).length, i = 0; const s = String(nom);
+  while (i < s.length && besoin > 0) { if (/[A-Za-z0-9À-ÿ]/.test(s[i])) besoin--; i++; }
+  const reste = s.slice(i).trim();
+  return k.nom + (reste ? ' ' + reste : '');
+}
+const clubDe = nom => { const k = clubTrouve(nom); return k ? k.code : ''; };
+const estMien = nom => FEDCLUB && clubDe(nom) === FEDCLUB;
+const pouleCourt = p => { const m = p.titre.match(/POULE\s+([A-Z0-9]+)/i); return m ? 'Poule ' + m[1].toUpperCase() : joli(p.titre.split(/\s+-\s+/).slice(1).join(' – ') || p.code); };
+const phase = p => { const t = p.titre.toUpperCase(); return /BRASSAGE/.test(t) ? 'Brassage' : /QUALIFICATION/.test(t) ? 'Qualification régionale' : /(1ERE|PREMI[EÈ]RE) PHASE/.test(t) ? '1re phase' : /(2EME|DEUXI[EÈ]ME) PHASE/.test(t) ? '2e phase' : ''; };
+function catCourt(c) { return cap(joli(c.titre).replace(/^Départemental accession /, '').replace(/ qualification au championnat régional$/, ' · qualif. régionale').replace(/^Compet'Lib /, '')); }
+
+async function loadFed() {
+  if (FED) return FED;
+  const r = await fetch('data/ffvb.json?h=' + Math.floor(Date.now() / 6e5), { cache: 'no-store' });
+  if (!r.ok) throw new Error('données indisponibles');
+  FED = await r.json();
+  return FED;
+}
+
+async function renderFederal(gr, code) {
+  $('app').innerHTML = '<div class="wrap" style="padding:40px 24px"><div class="card muted">Chargement des championnats…</div></div>';
+  try { await loadFed(); } catch(e) { $('app').innerHTML = '<div class="wrap"><main class="wrap"><div class="card msg err">Les championnats ne sont pas disponibles pour le moment. Réessayez dans quelques instants.</div></main></div>'; return; }
+  const g = GROUPES.find(x => x[0] === gr) ? gr : 'jeunes';
+  const cats = FED.categories.filter(c => c.groupe === g);
+  const all = FED.categories.flatMap(c => c.poules.map(p => ({ c, p })));
+  let sel = all.find(x => x.p.code === code && x.c.groupe === g) || (cats[0] && { c: cats[0], p: cats[0].poules[0] });
+  const maj = FED.maj ? new Date(FED.maj) : null;
+  const nb = gg => FED.categories.filter(c => c.groupe === gg).reduce((s, c) => s + c.poules.length, 0);
+  $('app').innerHTML = `
+  <div class="hero fed"><div class="wrap">
+    <div class="k">Saison ${esc(FED.saison.replace('/', '-'))} · Résultats FFvolley</div>
+    <h1>Championnats départementaux</h1>
+    <p>Calendriers, résultats et classements de toutes les poules du Comité du Var, mis à jour automatiquement depuis le site de la FFvolley${maj ? ` · dernière mise à jour le ${esc(maj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }))} à ${esc(maj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }))}` : ''}.</p>
+  </div></div>
+  <main class="wrap stack">
+    <div class="seg" role="tablist">${GROUPES.map(([k, l]) => `<a class="seg-b ${k === g ? 'on' : ''}" href="#championnats/${k}" role="tab">${l}<span>${nb(k)} poule${nb(k) > 1 ? 's' : ''}</span></a>`).join('')}</div>
+    <div class="fed-bar">
+      <div class="cats">${cats.map(c => `<a class="cat ${sel && sel.c === c ? 'on' : ''}" href="#championnats/${g}/${c.poules[0].code}">${esc(catCourt(c))}</a>`).join('')}</div>
+      <label class="monclub">⭐ Suivre un club <select id="fed-club"><option value="">—</option>${clubsFed().slice().sort((a, b) => coll.compare(a.nom, b.nom)).map(k => `<option value="${esc(k.code)}" ${FEDCLUB === k.code ? 'selected' : ''}>${esc(k.nom)}</option>`).join('')}</select></label>
+    </div>
+    <div id="fed-poule"></div>
+  </main>`;
+  $('fed-club').onchange = e => { FEDCLUB = e.target.value; store.set('chp_monclub', FEDCLUB); FEDSEUL = !!FEDCLUB && FEDSEUL; drawPoule(sel); };
+  drawPoule(sel);
+}
+
+// « GYMNASE PIEMONTESI (OLLIOULES) » -> « Gymnase Piemontesi (Ollioules) »
+const PETITS = new Set(['de', 'du', 'des', 'la', 'le', 'les', 'et', 'à', 'au', 'aux', 'sur', 'en', 'd', 'l']);
+function lieuJoli(s) {
+  return String(s || '').toLowerCase().replace(/[a-zà-ÿ]+/g, (w, i, all) => (i === 0 || !PETITS.has(w) || /[(\-]$/.test(all.slice(0, i))) ? w[0].toUpperCase() + w.slice(1) : w);
+}
+function matchHTML(m, ctx = {}) {
+  const d = parseD(m.date), joue = m.sd != null;
+  const w = joue ? (m.sd > m.se ? 'dom' : m.se > m.sd ? 'ext' : '') : '';
+  return `<div class="mt ${joue ? 'joue' : ''} ${estMien(m.dom) || estMien(m.ext) ? 'mine' : ''}">
+    <div class="mt-d">${d ? `<b>${d.getDate()}</b><span>${MOIS_C[d.getMonth()]}</span>` : '<span>date ?</span>'}</div>
+    <div class="mt-b">
+      <div class="mt-row ${w === 'dom' ? 'win' : ''}"><span class="mt-e">${esc(equipeFed(m.dom))}</span>${joue ? `<span class="mt-s">${m.sd}</span>` : ''}</div>
+      <div class="mt-row ${w === 'ext' ? 'win' : ''}"><span class="mt-e">${esc(equipeFed(m.ext))}</span>${joue ? `<span class="mt-s">${m.se}</span>` : ''}</div>
+      <div class="mt-i">${joue ? esc((m.sets || '').replace(/:/g, '-')) : [ctx.unJour ? '' : d ? cap(JOURS[d.getDay()]) : '', m.heure ? fmtH(m.heure) : '', !ctx.unLieu && m.lieu ? '📍 ' + lieuJoli(m.lieu) : ''].filter(Boolean).map(esc).join(' · ')}</div>
+    </div>
+  </div>`;
+}
+
+function drawPoule(sel) {
+  const box = $('fed-poule');
+  if (!sel) { box.innerHTML = '<div class="card muted">Aucune poule dans cette catégorie pour le moment.</div>'; return; }
+  const { c, p } = sel, g = c.groupe;
+  const auj = today();
+  const js = p.journees.map(j => {
+    const dates = j.matchs.map(m => m.date).filter(Boolean).sort();
+    const joues = j.matchs.filter(m => m.sd != null).length;
+    return { ...j, debut: dates[0], fin: dates[dates.length - 1], joues, fini: joues === j.matchs.length, lieux: [...new Set(j.matchs.map(m => m.lieu).filter(Boolean))] };
+  });
+  const passees = js.filter(j => j.joues > 0 || (j.fin && j.fin < auj));
+  const avenir = js.filter(j => !passees.includes(j));
+  const filt = j => FEDSEUL && FEDCLUB ? j.matchs.filter(m => estMien(m.dom) || estMien(m.ext)) : j.matchs;
+  const jHTML = (j, open) => { const ms = filt(j); if (!ms.length) return ''; const a = parseD(j.debut), b = parseD(j.fin); return `<details class="jn" ${open ? 'open' : ''}><summary><b>${esc(joli(j.titre) || 'Rencontres')}</b><span>${a ? esc(a.getTime() === b.getTime() ? cap(fmtD(j.debut, true, false)) : 'du ' + fmtD(j.debut, false, false) + ' au ' + fmtD(j.fin, false, false)) : ''}${j.lieux.length === 1 ? ' · 📍 ' + esc(lieuJoli(j.lieux[0])) : ''}</span></summary><div class="mts">${ms.slice().sort((a, b) => String(a.date).localeCompare(String(b.date)) || String(a.heure || '').localeCompare(String(b.heure || ''))).map(m => matchHTML(m, { unJour: j.debut === j.fin, unLieu: j.lieux.length === 1 })).join('')}</div></details>`; };
+  const cl = p.classement;
+  box.innerHTML = `
+  ${c.poules.length > 1 ? `<div class="tabs">${c.poules.map(x => `<a class="tab ${x === p ? 'on' : ''}" style="${x === p ? 'background:var(--navy);color:#fff' : ''}" href="#championnats/${g}/${x.code}">${esc(pouleCourt(x))}</a>`).join('')}</div>` : ''}
+  <div class="cols">
+    <section class="card">
+      <div class="rank-head"><div><div class="ph">${esc(phase(p))}</div><h2>${esc(joli(c.titre))}</h2></div><span class="muted small">${esc(c.poules.length > 1 ? pouleCourt(p) + ' · ' : '')}${p.code}</span></div>
+      ${cl.length ? `<div class="tablebox"><table class="rank fedrank">
+        <thead><tr><th>#</th><th class="l">Équipe</th><th>Pts</th><th title="Matchs joués">J</th><th title="Gagnés">G</th><th title="Perdus">P</th><th class="hs" title="Sets pour – contre">Sets</th><th class="hs" title="Coefficient de sets">Coef.</th><th class="hs2" title="Points pour – contre">Points</th></tr></thead>
+        <tbody>${cl.map(r => `<tr class="${estMien(r.equipe) ? 'mine' : ''}">
+          <td><span class="pos ${r.rang <= 3 ? 'p' + r.rang : ''}">${r.rang}</span></td>
+          <td class="l eq"><b>${esc(equipeFed(r.equipe))}</b>${r.f ? `<small style="color:var(--bad)">${r.f} forfait${r.f > 1 ? 's' : ''}</small>` : ''}</td>
+          <td class="pts">${r.pts}</td><td>${r.j}</td><td>${r.g || 0}</td><td>${r.p || 0}</td>
+          <td class="hs">${r.sp || 0}–${r.sc || 0}</td><td class="hs">${r.cs === 'MAX' ? 'max' : esc(String(r.cs || '–')).replace('.', ',')}</td><td class="hs2 tp">${r.pp || 0}–${r.pc || 0}</td>
+        </tr>`).join('')}</tbody></table></div>
+        <div class="legend"><span>J : matchs joués · G : gagnés · P : perdus · Coef. : sets gagnés ÷ sets perdus.</span></div>`
+      : `<p class="muted" style="margin-top:6px">${p.equipes.length ? 'Pas de classement dans cette catégorie : le plaisir du jeu avant tout.' : 'Le classement apparaîtra après les premiers matchs.'}</p>
+        ${p.equipes.length ? `<div class="equipes">${p.equipes.map(e => `<span class="${estMien(e) ? 'mine' : ''}">${esc(equipeFed(e))}</span>`).join('')}</div>` : ''}`}
+      <p class="small muted" style="margin-top:14px">Source : <a href="${esc(p.url)}" target="_blank" rel="noopener">site de la FFvolley</a>. En cas de différence, le site fédéral fait foi.</p>
+    </section>
+    <section class="card">
+      <div class="rank-head"><h2>Calendrier et résultats</h2>${FEDCLUB ? `<label class="chk-s"><input type="checkbox" id="fed-seul" ${FEDSEUL ? 'checked' : ''}> Seulement ${esc(FEDCLUB)}</label>` : ''}</div>
+      ${avenir.length ? `<h3 class="sub-h">À venir</h3>${avenir.map((j, i) => jHTML(j, i < 2)).join('')}` : ''}
+      ${passees.length ? `<h3 class="sub-h">Résultats</h3>${passees.slice().reverse().map((j, i) => jHTML(j, i === 0)).join('')}` : ''}
+      ${!js.length ? '<p class="muted">Calendrier à venir.</p>' : ''}
+    </section>
+  </div>`;
+  const s = $('fed-seul'); if (s) s.onchange = () => { FEDSEUL = s.checked; drawPoule(sel); };
+}
 
 // ======================== PUBLIC : M15 / M18 4x4 ========================
 function render4x4(code) {
@@ -915,7 +1092,7 @@ function adminClubs() {
 // ======================== DÉMARRAGE ========================
 (async function init() {
   try { await loadPublic(); }
-  catch(e) { console.error(e); $('app').innerHTML = '<div class="wrap"><main><div class="card msg err">Impossible de charger les championnats pour le moment. Réessayez dans quelques instants.</div></main></div>'; return; }
+  catch(e) { console.error(e); PUB_ERR = true; }
   try { const p = sessionStorage.getItem('chp_admin'); if (p) { A = await rpc('chp_admin_get', { pwd: p }); ADMIN_PWD = p; } } catch(e) { ADMIN_PWD = ''; }
   route();
 })();
