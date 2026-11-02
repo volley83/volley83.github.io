@@ -551,6 +551,17 @@ function coupeHTML() {
     </section>`; }).join('')}</div>`;
 }
 
+// Barème des RPE du Comité (art. 4 – Classements)
+function baremeHTML(c, p) {
+  const t = normN(c.titre), tournoi = p.journees.some(j => /^TOURNOI/i.test(j.titre));
+  const lignes = /COMPETLIB/.test(t)
+    ? [['Victoire', 5], ['Défaite 2/3', 3], ['Défaite 1/3 ou 0/3', 2], ['Défaite par pénalité', 0], ['Défaite par forfait', -2]]
+    : tournoi
+      ? [['Victoire', 5], ['Défaite 1/2', 3], ['Défaite 0/2', 2], ['Défaite par pénalité', 1], ['Défaite par forfait', 0]]
+      : [['Victoire', 5], ['Défaite 2/3', 3], ['Défaite 1/3 ou 0/3', 2], ['Défaite par pénalité', 1], ['Défaite par forfait', 0]];
+  return `<div class="bareme"><b>Barème${tournoi ? ' (tournois)' : ''}</b> : ${lignes.map(([l, n]) => `${l} <b>${n} pt${Math.abs(n) > 1 ? 's' : ''}</b>`).join(' · ')}.<br>En cas d'égalité : nombre de victoires, puis coefficient des sets, puis coefficient des points.</div>`;
+}
+
 function matchHTML(m, ctx = {}) {
   const d = parseD(m.date), joue = m.sd != null;
   const w = joue ? (m.sd > m.se ? 'dom' : m.se > m.sd ? 'ext' : '') : '';
@@ -585,14 +596,15 @@ function drawPoule(sel) {
     <section class="card">
       <div class="rank-head"><div><div class="ph">${esc(phase(p))}</div><h2>${esc(joli(c.titre))}</h2></div><span class="muted small">${esc(c.poules.length > 1 ? pouleCourt(p) + ' · ' : '')}${p.code}</span></div>
       ${cl.length ? `<div class="tablebox"><table class="rank fedrank">
-        <thead><tr><th>#</th><th class="l">Équipe</th><th>Pts</th><th title="Matchs joués">J</th><th title="Gagnés">G</th><th title="Perdus">P</th><th class="hs" title="Sets pour – contre">Sets</th><th class="hs" title="Coefficient de sets">Coef.</th><th class="hs2" title="Points pour – contre">Points</th></tr></thead>
+        <thead><tr><th>#</th><th class="l">Équipe</th><th>Pts</th><th title="Matchs joués">J</th><th title="Gagnés">G</th><th title="Perdus">P</th><th class="hs" title="Sets pour – contre">Sets</th><th class="hs" title="Coefficient de sets">Coef. sets</th><th class="hs2" title="Points pour – contre">Points</th><th class="hs" title="Coefficient de points">Coef. pts</th></tr></thead>
         <tbody>${cl.map(r => `<tr class="${estMien(r.equipe) ? 'mine' : ''}">
           <td><span class="pos ${r.rang <= 3 ? 'p' + r.rang : ''}">${r.rang}</span></td>
           <td class="l eq"><b>${esc(equipeFed(r.equipe))}</b>${r.f ? `<small style="color:var(--bad)">${r.f} forfait${r.f > 1 ? 's' : ''}</small>` : ''}</td>
           <td class="pts">${r.pts}</td><td>${r.j}</td><td>${r.g || 0}</td><td>${r.p || 0}</td>
-          <td class="hs">${r.sp || 0}–${r.sc || 0}</td><td class="hs">${r.cs === 'MAX' ? 'max' : esc(String(r.cs || '–')).replace('.', ',')}</td><td class="hs2 tp">${r.pp || 0}–${r.pc || 0}</td>
+          <td class="hs">${r.sp || 0}–${r.sc || 0}</td><td class="hs">${r.cs === 'MAX' ? 'max' : esc(String(r.cs || '–')).replace('.', ',')}</td><td class="hs2 tp">${r.pp || 0}–${r.pc || 0}</td><td class="hs">${r.cp === 'MAX' ? 'max' : esc(String(r.cp || '–')).replace('.', ',')}</td>
         </tr>`).join('')}</tbody></table></div>
-        <div class="legend"><span>J : matchs joués · G : gagnés · P : perdus · Coef. : sets gagnés ÷ sets perdus.</span></div>`
+        <div class="legend"><span>J : matchs joués · G : gagnés · P : perdus · Coef. sets : sets gagnés ÷ sets perdus · Coef. pts : points marqués ÷ points encaissés.</span></div>
+        ${baremeHTML(c, p)}`
       : `<p class="muted" style="margin-top:6px">${p.equipes.length ? 'Pas de classement dans cette catégorie : le plaisir du jeu avant tout.' : 'Le classement apparaîtra après les premiers matchs.'}</p>
         ${p.equipes.length ? `<div class="equipes">${p.equipes.map(e => `<span class="${estMien(e) ? 'mine' : ''}">${esc(equipeFed(e))}</span>`).join('')}</div>` : ''}`}
       ${reglBtnsCat(c.titre) ? `<div class="btnrow" style="margin-top:12px">${reglBtnsCat(c.titre)}</div>` : ''}
