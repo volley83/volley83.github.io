@@ -24,7 +24,10 @@ CLUBS = {   # code : nom affiché (même liste que l'admin des compétitions OPE
     'UAV': 'Union Athlétique Valettoise', 'VVB': 'Vidauban Volley-Ball', 'VBO': 'Volley-Ball Ollioulais',
     'VCHPL': 'Volley Club Hyères / Pierrefeu La Londe', 'VCM': 'Volley Club Méditerranée', 'VCS': 'Volley Club Seynois',
     'VPG': 'Volley Pradétan Gardéen',
+    # clubs qui ne jouent qu'en Compet'Lib
+    'RCVB': 'Rocbaron Club Volley-Ball', 'SFBV': 'Six-Fours Beach Volley', 'VCSM': 'Volley Club de Saint-Maximin',
 }
+NOM_FFVB = {'RCVB': 'ROCBARON CLUB VOLLEY-BALL - RCVB'}   # quand la FFvolley écrit le nom autrement
 UA = 'Mozilla/5.0 (compatible; Comite-Var-Volley/1.0; +https://volley83.github.io/championnats/)'
 
 
@@ -164,8 +167,8 @@ def normn(s):
 
 def club_de(nom):
     n = normn(nom)
-    for code, cnom in sorted(CLUBS.items(), key=lambda kv: -len(normn(kv[1]))):
-        if n.startswith(normn(cnom)):
+    for code, cnom in sorted(CLUBS.items(), key=lambda kv: -len(normn(NOM_FFVB.get(kv[0], kv[1])))):
+        if n.startswith(normn(NOM_FFVB.get(code, cnom))):
             return code
     return None
 
@@ -176,7 +179,7 @@ def equipe_jolie(nom):
     code = club_de(nom)
     if not code:
         return (nom or '').title()
-    besoin, i = len(normn(CLUBS[code])), 0
+    besoin, i = len(normn(NOM_FFVB.get(code, CLUBS[code]))), 0
     while i < len(nom) and besoin > 0:
         if re.match(r'[A-Za-z0-9À-ÿ]', nom[i]):
             besoin -= 1

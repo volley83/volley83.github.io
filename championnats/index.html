@@ -127,6 +127,10 @@
   .ag:hover { border-color: var(--blue); background: #F4F7FD; }
   .ag b { color: var(--navy); } .ag span { font-size: 13px; color: var(--muted); }
 
+  .coupe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr)); gap: 18px; }
+  .seg { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  @media (max-width: 640px) { .seg { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
   /* Week-end */
   .we { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px; border-top: 5px solid var(--accent); }
   .we-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 6px 16px; }
@@ -411,6 +415,13 @@ async function loadPublic() { D = await rpc('chp_public'); }
 // ======================== AJOUTER À MON AGENDA (abonnement .ics) ========================
 // Règlements (PDF dans championnats/docs/). Championnats fédéraux : ajouter ici les règlements par catégorie, ex. 'M11 FÉMININ': 'docs/reglement-M11.pdf'
 const REGLEMENTS = { MFM: 'docs/reglement-M15-4x4.pdf', M4M: 'docs/reglement-M15-4x4.pdf', CFM: 'docs/reglement-M18-4x4.pdf', C4M: 'docs/reglement-M18-4x4.pdf', O11: 'docs/reglement-OPEN-2x2-4x4.pdf', O13: 'docs/reglement-OPEN-2x2-4x4.pdf' };
+function reglementsCat(titre) {   // championnats fédéraux : règlements selon la catégorie
+  const t = normN(titre);
+  if (/COMPETLIB/.test(t)) return [['docs/reglement-competlib-4x4.pdf', 'Règlement (RPE)'], ['docs/regles-du-jeu-competlib-4x4.pdf', 'Règles du jeu 4x4']];
+  if (/ACCESSION|SENIOR/.test(t)) return [['docs/reglement-accession-M21.pdf', 'Règlement (RPE)']];
+  const m = t.match(/^M(11|13|15|18)/); return m ? [[`docs/reglement-M${m[1]}.pdf`, 'Règlement (RPE)']] : [];
+}
+const reglBtnsCat = titre => reglementsCat(titre).map(([h, l]) => `<a class="btn ghost sm agenda-b" href="${h}" target="_blank" rel="noopener">📄 ${l}</a>`).join(' ');
 const reglBtn = k => REGLEMENTS[k] ? `<a class="btn ghost sm agenda-b" href="${REGLEMENTS[k]}" target="_blank" rel="noopener">📄 Règlement</a>` : '';
 const ICS_BASE = 'volley83.github.io/championnats/data/ics/';
 function agendaBtn(choix) {   // choix = [[fichier, libellé], …]
@@ -440,7 +451,9 @@ document.addEventListener('click', e => { const b = e.target.closest('.agenda-b'
 
 // ======================== CHAMPIONNATS FÉDÉRAUX (données FFvolley) ========================
 let FED = null, FEDCLUB = store.get('chp_monclub', ''), FEDSEUL = false;
-const GROUPES = [['jeunes', 'Championnats jeunes'], ['seniors', 'Championnats seniors'], ['competlib', 'Compet\'Lib']];
+const GROUPES = [['jeunes', 'Championnats jeunes'], ['seniors', 'Championnats seniors'], ['competlib', 'Compet\'Lib'], ['coupe', 'Coupe de France']];
+let COUPE = null;
+async function loadCoupe() { if (!COUPE) { try { COUPE = await rpc('chp_coupe_public'); } catch(e) { COUPE = []; } } return COUPE; }
 const normN = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 const MOTS = { FEMININ: 'féminin', MASCULIN: 'masculin', MIXTE: 'mixte', PREMIERE: 'première', DEPARTEMENTAL: 'départemental', DEPARTEMENTALE: 'départementale', REGIONAL: 'régional', ACCESSION: 'accession', QUALIFICATION: 'qualification', CHAMPIONNAT: 'championnat', BRASSAGE: 'brassage', PHASE: 'phase', SENIOR: 'senior', AU: 'au', POULE: 'poule', '1ERE': '1re', COMPETLIB: "Compet'Lib" };
 function joli(s) {
@@ -453,14 +466,16 @@ function joli(s) {
 }
 // Nom d'équipe FFvolley (« VOLLEY BALL OLLIOULAIS 2 ») -> nom du club de la liste du Comité (« Volley-Ball Ollioulais 2 »)
 const CLUBS_DEFAUT = [['CSB', 'Club Sportif Brignolais'], ['DVVB', 'Draguignan Union Club Var VB'], ['FVV', 'Fréjus Var Volley'], ['LLVB', 'Le Luc Volley-Ball'], ['SMCV', 'Sainte-Maxime Cogolin Volley'], ['2SBVC', 'Sud Sainte-Baume Volley Club'], ['UAV', 'Union Athlétique Valettoise'], ['VVB', 'Vidauban Volley-Ball'], ['VBO', 'Volley-Ball Ollioulais'], ['VCHPL', 'Volley Club Hyères / Pierrefeu La Londe'], ['VCM', 'Volley Club Méditerranée'], ['VCS', 'Volley Club Seynois'], ['VPG', 'Volley Pradétan Gardéen']].map(([code, nom]) => ({ code, nom }));
-const clubsFed = () => (D.clubs && D.clubs.length ? D.clubs : CLUBS_DEFAUT).slice().sort((a, b) => normN(b.nom).length - normN(a.nom).length);
-const clubTrouve = nom => { const n = normN(nom); return clubsFed().find(c => normN(c.nom) && n.startsWith(normN(c.nom))); };
+// Clubs qui ne jouent qu'en Compet'Lib (absents de la liste des compétitions OPEN) ; ffvb = nom écrit par la FFvolley
+const CLUBS_COMPETLIB = [{ code: 'RCVB', nom: 'Rocbaron Club Volley-Ball', ffvb: 'ROCBARON CLUB VOLLEY-BALL - RCVB' }, { code: 'SFBV', nom: 'Six-Fours Beach Volley' }, { code: 'VCSM', nom: 'Volley Club de Saint-Maximin' }];
+const clubsFed = () => { const base = D.clubs && D.clubs.length ? D.clubs : CLUBS_DEFAUT; return base.concat(CLUBS_COMPETLIB.filter(k => !base.some(b => b.code === k.code))).sort((a, b) => normN(b.ffvb || b.nom).length - normN(a.ffvb || a.nom).length); };
+const clubTrouve = nom => { const n = normN(nom); return clubsFed().find(c => normN(c.ffvb || c.nom) && n.startsWith(normN(c.ffvb || c.nom))); };
 function equipeFed(nom) {
   if (/^X{3,}$/i.test(String(nom).trim())) return 'Exempt';
   const k = clubTrouve(nom);
   if (!k) return String(nom).toLowerCase().replace(/(^|[\s\-/(])([a-zà-ÿ])/g, (m, a, b) => a + b.toUpperCase());
   // on retire du nom FFvolley autant de lettres/chiffres que le nom du club en compte : il reste le n° d'équipe, (M21)…
-  let besoin = normN(k.nom).length, i = 0; const s = String(nom);
+  let besoin = normN(k.ffvb || k.nom).length, i = 0; const s = String(nom);
   while (i < s.length && besoin > 0) { if (/[A-Za-z0-9À-ÿ]/.test(s[i])) besoin--; i++; }
   const reste = s.slice(i).trim();
   return k.nom + (reste ? ' ' + reste : '');
@@ -481,8 +496,10 @@ async function loadFed() {
 
 async function renderFederal(gr, code) {
   $('app').innerHTML = '<div class="wrap" style="padding:40px 24px"><div class="card muted">Chargement des championnats…</div></div>';
+  if (gr === 'coupe') await loadCoupe();
   try { await loadFed(); } catch(e) { $('app').innerHTML = '<div class="wrap"><main class="wrap"><div class="card msg err">Les championnats ne sont pas disponibles pour le moment. Réessayez dans quelques instants.</div></main></div>'; return; }
   const g = GROUPES.find(x => x[0] === gr) ? gr : 'jeunes';
+  if (g === 'coupe') COUPE = await loadCoupe();
   const cats = FED.categories.filter(c => c.groupe === g);
   const all = FED.categories.flatMap(c => c.poules.map(p => ({ c, p })));
   let sel = all.find(x => x.p.code === code && x.c.groupe === g) || (cats[0] && { c: cats[0], p: cats[0].poules[0] });
@@ -495,13 +512,14 @@ async function renderFederal(gr, code) {
     <p>Calendriers, résultats et classements de toutes les poules du Comité du Var, mis à jour automatiquement depuis le site de la FFvolley${maj ? ` · dernière mise à jour le ${esc(maj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }))} à ${esc(maj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }))}` : ''}.</p>
   </div></div>
   <main class="wrap stack">
-    <div class="seg" role="tablist">${GROUPES.map(([k, l]) => `<a class="seg-b ${k === g ? 'on' : ''}" href="#championnats/${k}" role="tab">${l}<span>${nb(k)} poule${nb(k) > 1 ? 's' : ''}</span></a>`).join('')}</div>
-    <div class="fed-bar">
+    <div class="seg" role="tablist">${GROUPES.map(([k, l]) => `<a class="seg-b ${k === g ? 'on' : ''}" href="#championnats/${k}" role="tab">${l}<span>${k === 'coupe' ? 'calendrier des tours' : nb(k) + ' poule' + (nb(k) > 1 ? 's' : '')}</span></a>`).join('')}</div>
+    ${g === 'coupe' ? coupeHTML() : `<div class="fed-bar">
       <div class="cats">${cats.map(c => `<a class="cat ${sel && sel.c === c ? 'on' : ''}" href="#championnats/${g}/${c.poules[0].code}">${esc(catCourt(c))}</a>`).join('')}</div>
       <label class="monclub">⭐ Suivre un club <select id="fed-club"><option value="">—</option>${clubsFed().slice().sort((a, b) => coll.compare(a.nom, b.nom)).map(k => `<option value="${esc(k.code)}" ${FEDCLUB === k.code ? 'selected' : ''}>${esc(k.nom)}</option>`).join('')}</select></label>
     </div>
-    <div id="fed-poule"></div>
+    <div id="fed-poule"></div>`}
   </main>`;
+  if (g === 'coupe') return;
   $('fed-club').onchange = e => { FEDCLUB = e.target.value; store.set('chp_monclub', FEDCLUB); FEDSEUL = !!FEDCLUB && FEDSEUL; drawPoule(sel); };
   drawPoule(sel);
 }
@@ -511,6 +529,28 @@ const PETITS = new Set(['de', 'du', 'des', 'la', 'le', 'les', 'et', 'à', 'au', 
 function lieuJoli(s) {
   return String(s || '').toLowerCase().replace(/[a-zà-ÿ]+/g, (w, i, all) => (i === 0 || !PETITS.has(w) || /[(\-]$/.test(all.slice(0, i))) ? w[0].toUpperCase() + w.slice(1) : w);
 }
+// ----- Coupe de France -----
+function coupeHTML() {
+  if (!COUPE || !COUPE.length) return '<div class="card"><h2>Coupe de France</h2><p class="muted" style="margin-top:8px">Le calendrier des tours sera publié prochainement.</p></div>';
+  const cats = [...new Set(COUPE.map(x => x.categorie))];
+  const auj = today();
+  return `<div class="coupe-grid">${cats.map(cat => {
+    const ts = COUPE.filter(x => x.categorie === cat).sort((a, b) => String(a.date || '9').localeCompare(String(b.date || '9')) || a.ordre - b.ordre);
+    const lien = (ts.find(x => x.lien) || {}).lien;
+    const next = ts.find(x => (x.date_fin || x.date || '9') >= auj);
+    return `<section class="card">
+      <div class="ph">Coupe de France</div><h2>${esc(cat)}</h2>
+      <div class="cal" style="margin-top:12px">${ts.map(x => { const d = parseD(x.date), past = (x.date_fin || x.date || '9') < auj; return `<div class="cal-row">
+        <div class="cal-date ${past ? 'past' : ''}">${d ? `<b>${d.getDate()}</b><span>${MOIS_C[d.getMonth()]} ${String(d.getFullYear()).slice(2)}</span>` : '<span>date à venir</span>'}</div>
+        <div><div class="cal-t">${esc(x.tour)}${x === next ? ' <span class="badge b-open">Prochain tour</span>' : ''}</div>
+          <div class="cal-meta">${x.date ? esc(cap(x.date_fin && x.date_fin !== x.date ? 'du ' + fmtD(x.date, true, false) + ' au ' + fmtD(x.date_fin, true, false) : fmtD(x.date, true, false))) : ''}${x.lieu ? ' · 📍 ' + esc(x.lieu) : ''}</div>
+          ${x.remarque ? `<div class="cal-meta">${esc(x.remarque)}</div>` : ''}
+          ${x.lien && x.lien !== lien ? `<div class="cal-act"><a class="small" href="${esc(x.lien)}" target="_blank" rel="noopener">Résultats de ce tour ↗</a></div>` : ''}
+        </div></div>`; }).join('')}</div>
+      ${lien ? `<div class="btnrow"><a class="btn primary" href="${esc(lien)}" target="_blank" rel="noopener">Résultats sur le site FFvolley ↗</a></div>` : ''}
+    </section>`; }).join('')}</div>`;
+}
+
 function matchHTML(m, ctx = {}) {
   const d = parseD(m.date), joue = m.sd != null;
   const w = joue ? (m.sd > m.se ? 'dom' : m.se > m.sd ? 'ext' : '') : '';
@@ -555,7 +595,7 @@ function drawPoule(sel) {
         <div class="legend"><span>J : matchs joués · G : gagnés · P : perdus · Coef. : sets gagnés ÷ sets perdus.</span></div>`
       : `<p class="muted" style="margin-top:6px">${p.equipes.length ? 'Pas de classement dans cette catégorie : le plaisir du jeu avant tout.' : 'Le classement apparaîtra après les premiers matchs.'}</p>
         ${p.equipes.length ? `<div class="equipes">${p.equipes.map(e => `<span class="${estMien(e) ? 'mine' : ''}">${esc(equipeFed(e))}</span>`).join('')}</div>` : ''}`}
-      ${reglBtn(c.titre) ? `<div style="margin-top:12px">${reglBtn(c.titre)}</div>` : ''}
+      ${reglBtnsCat(c.titre) ? `<div class="btnrow" style="margin-top:12px">${reglBtnsCat(c.titre)}</div>` : ''}
       <p class="small muted" style="margin-top:14px">Source : <a href="${esc(p.url)}" target="_blank" rel="noopener">site de la FFvolley</a>. En cas de différence, le site fédéral fait foi.</p>
     </section>
     <section class="card">
@@ -960,7 +1000,7 @@ async function renderAdmin(tab) {
   if (!ADMIN_PWD) { location.hash = '4x4'; return; }
   if (tab) ATAB = tab;
   if (!A) await loadAdmin();
-  const aTitre = { inscriptions: 'Inscriptions', classements: 'Classements', tournois: 'Calendrier et codes', clubs: 'Clubs' };
+  const aTitre = { inscriptions: 'Inscriptions', classements: 'Classements', tournois: 'Calendrier et codes', clubs: 'Clubs', coupe: 'Coupe de France' };
   const aValider = A.tournois.filter(t => t.statut === 'saisi').length;
   $('app').innerHTML = `
   <div class="hero"><div class="wrap"><div class="k">Espace Comité</div><h1>Gestion des championnats</h1></div></div>
@@ -969,7 +1009,7 @@ async function renderAdmin(tab) {
       <span><span id="a-save" class="save"></span> <button class="linkbtn" onclick="ADMIN_PWD='';A=null;try{sessionStorage.removeItem('chp_admin')}catch(e){};location.hash='4x4'">Se déconnecter</button></span></div>
     <div id="a-body"></div>
   </main>`;
-  ({ inscriptions: adminInscriptions, classements: adminClassements, tournois: adminTournois, clubs: adminClubs })[ATAB]();
+  ({ inscriptions: adminInscriptions, classements: adminClassements, tournois: adminTournois, clubs: adminClubs, coupe: adminCoupe })[ATAB]();
 }
 const tSel = (list, cur, id = 'a-t') => `<select id="${id}" style="max-width:560px">${A.competitions.map(c => { const l = list.filter(t => t.competition === c.code); return l.length ? `<optgroup label="${esc(c.nom)}">${l.map(t => `<option value="${t.id}" ${t.id === cur ? 'selected' : ''}>${esc(c.nom)} · ${tNom(t)} · ${esc(fmtShort(t.date))}${t.ville ? ' · ' + esc(t.ville) : ''}${t.statut === 'saisi' ? ' · À VALIDER' : ''}</option>`).join('')}</optgroup>` : ''; }).join('')}</select>`;
 
@@ -1109,6 +1149,34 @@ function adminTournois() {
     tr.querySelector('[data-del]').onclick = async () => { if (!confirm('Supprimer ce tournoi, ses inscriptions et son classement ?')) return; await rpc('chp_admin_delete_tournoi', { pwd: ADMIN_PWD, tid: id }); await loadAdmin(); await loadPublic(); adminTournois(); };
   });
   $('a-add').onclick = async () => { const n = Math.max(0, ...ts.map(t => t.numero)) + 1, d = today(); await put(null, { competition: ACOMP, numero: n, date: d, date_limite: jeudiAvant(d), heure_limite: '12:00' }); adminTournois(); };
+}
+
+// ----- Coupe de France -----
+async function adminCoupe() {
+  COUPE = null; const rows = await loadCoupe();
+  const cats = [...new Set(rows.map(x => x.categorie))];
+  $('a-body').innerHTML = `<div class="card stack">
+    <p class="small muted">Une ligne par tour. Le lien du premier tour d'une catégorie sert de bouton « Résultats sur le site FFvolley » ; un lien différent sur un autre tour s'affiche pour ce tour seulement. Les modifications sont enregistrées dès que vous quittez un champ.</p>
+    <datalist id="dl-cat">${cats.map(c => `<option value="${esc(c)}">`).join('')}<option value="M13 féminin"><option value="M13 masculin"><option value="M15 féminin"><option value="M15 masculin"><option value="M18 féminin"><option value="M18 masculin"><option value="M21 féminin"><option value="M21 masculin"></datalist>
+    <div class="tablebox"><table class="adm"><thead><tr><th>Catégorie</th><th>Tour</th><th>Date</th><th>Jusqu'au</th><th>Lieu</th><th>Lien FFvolley</th><th>Remarque</th><th></th></tr></thead><tbody>
+      ${rows.map(x => `<tr data-id="${x.id}">
+        <td><input data-f="categorie" list="dl-cat" value="${esc(x.categorie)}" style="min-width:130px"></td>
+        <td><input data-f="tour" value="${esc(x.tour)}" style="min-width:120px"></td>
+        <td><input data-f="date" type="date" value="${esc(x.date || '')}"></td>
+        <td><input data-f="date_fin" type="date" value="${esc(x.date_fin || '')}"></td>
+        <td><input data-f="lieu" value="${esc(x.lieu || '')}" style="min-width:140px"></td>
+        <td><input data-f="lien" type="url" value="${esc(x.lien || '')}" placeholder="https://…" style="min-width:180px"></td>
+        <td><input data-f="remarque" value="${esc(x.remarque || '')}" style="min-width:140px"></td>
+        <td><button class="linkbtn red" data-del>Supprimer</button></td></tr>`).join('') || '<tr><td colspan="8" class="muted">Aucun tour pour le moment.</td></tr>'}
+    </tbody></table></div>
+    <div><button class="btn ghost" id="cp-add">+ Ajouter un tour</button></div></div>`;
+  const put = async (id, p) => { saveMark('wait', 'Enregistrement…'); try { await rpc('chp_admin_coupe', { pwd: ADMIN_PWD, cid: id, p }); COUPE = null; saveMark('ok', '✓ Enregistré'); } catch(e) { saveMark('err', '⚠ ' + e.message); } };
+  $('a-body').querySelectorAll('tr[data-id]').forEach(tr => {
+    const id = +tr.dataset.id;
+    tr.querySelectorAll('[data-f]').forEach(el => el.onchange = () => put(id, { [el.dataset.f]: el.value }));
+    tr.querySelector('[data-del]').onclick = async () => { if (!confirm('Supprimer ce tour ?')) return; await put(id, null); adminCoupe(); };
+  });
+  $('cp-add').onclick = async () => { const last = rows[rows.length - 1]; await put(null, { categorie: last ? last.categorie : 'M15 féminin', tour: 'Nouveau tour' }); adminCoupe(); };
 }
 
 // ----- Clubs -----
