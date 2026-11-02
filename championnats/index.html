@@ -31,6 +31,8 @@
   .head .sep { width: 1px; height: 36px; background: var(--line); }
   .head .t { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 24px; text-transform: uppercase; color: var(--navy); letter-spacing: .5px; }
   .head nav { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+  .head .t { white-space: nowrap; }
+  @media (max-width: 1240px) and (min-width: 761px) { .head .t { font-size: 19px; } .navbtn { padding: 0 11px; font-size: 13px; } .head img { height: 40px; } }
   .navbtn { display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--line); background: #fff; color: var(--text); font-weight: 600; font-size: 14px; text-decoration: none; white-space: nowrap; }
   .navbtn.on { background: var(--navy); border-color: var(--navy); color: #fff; }
   .navbtn.cta { background: var(--accent); border-color: var(--accent); color: var(--navy); font-weight: 700; }
