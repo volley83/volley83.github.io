@@ -209,7 +209,7 @@
   @media (max-width: 760px) {
     .head { padding: 10px 0; flex-wrap: wrap; gap: 10px; }
     .head .sep { display: none; }
-    .head nav { margin-left: 0; width: 100%; display: grid; grid-template-columns: 1fr 1fr 1fr; }
+    .head nav { margin-left: 0; width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
     .navbtn { justify-content: center; padding: 0 6px; font-size: 12.5px; white-space: normal; text-align: center; line-height: 1.2; min-width: 0; }
     header { position: static; }
   }
@@ -234,6 +234,7 @@
     <nav aria-label="Navigation">
       <a class="navbtn" id="nav-4x4" href="#4x4">M15 · M18 4x4</a>
       <a class="navbtn" id="nav-open" href="#open">Tournois OPEN</a>
+      <a class="navbtn" id="nav-club" href="#club">🔑 Club recevant</a>
       <a class="navbtn cta" id="nav-inscription" href="#inscription">Inscrire une équipe</a>
     </nav>
   </div>
@@ -244,7 +245,7 @@
 <footer>
   <div class="wrap">
     <span>Comité Départemental du Var de Volley-Ball · Maison des sports du Var, 133 bd du Général Brosset, 83200 Toulon · <a href="mailto:volley83@gmail.com">volley83@gmail.com</a> · 06 13 30 34 25</span>
-    <span class="footlinks"><a class="adminlink" href="#club">Espace club recevant</a><button class="adminlink" onclick="openAdmin()">Accès Comité</button></span>
+    <span class="footlinks"><button class="adminlink" onclick="openAdmin()">Accès Comité</button></span>
   </div>
 </footer>
 
@@ -343,7 +344,7 @@ function classement(code) {
 let ADMIN_PWD = '';
 async function route() {
   const h = (location.hash || '#4x4').slice(1), [v, a] = h.split('/');
-  ['4x4', 'open', 'inscription'].forEach(n => $('nav-' + n).classList.toggle('on', v === n || (n === '4x4' && !['open', 'inscription'].includes(v))));
+  ['4x4', 'open', 'inscription', 'club'].forEach(n => $('nav-' + n).classList.toggle('on', v === n || (n === '4x4' && !['open', 'inscription', 'club', 'admin'].includes(v))));
   if (v === 'open') return renderOpen(a);
   if (v === 'inscription') return renderInscription(a);
   if (v === 'club') return renderClub();
