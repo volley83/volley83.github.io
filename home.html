@@ -1,0 +1,439 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html> 
+<head> 
+<title>FFvolley - Gestion Sportive</title> 
+<link href="../ffvb_sportive_fond.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+        $(function() {
+          if ($.browser.msie && $.browser.version.substr(0,1)<7)
+          {
+                $('li').has('ul').mouseover(function(){
+                        $(this).children('ul').show();
+                        }).mouseout(function(){
+                        $(this).children('ul').hide();
+                        })
+          }
+        });
+</script>
+
+<style>
+.titreblanc {
+	COLOR: #FFFFFF; FONT-FAMILY: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; FONT-SIZE: 12pt; FONT-WEIGHT: bold
+}
+
+/* Principal */
+#menu
+{
+	width: 100%;
+	margin: 0;
+	padding: 10px 0 0 0;
+	list-style: none;  
+	background: #CC0000;
+	background: -moz-linear-gradient(#CC0000, #111); 
+    background: -webkit-gradient(linear,left bottom,left top,color-stop(0, #111),color-stop(1, #CC0000));	
+	background: -webkit-linear-gradient(#CC0000, #111);	
+	background: -o-linear-gradient(#CC0000, #111);
+	background: -ms-linear-gradient(#CC0000, #111);
+	background: linear-gradient(#CC0000, #111);
+	-moz-border-radius: 50px;
+	border-radius: 50px;
+	-moz-box-shadow: 0 2px 1px #9c9c9c;
+	-webkit-box-shadow: 0 2px 1px #9c9c9c;
+	box-shadow: 0 2px 1px #9c9c9c;
+}
+
+#menu li
+{
+	float: left;
+	padding: 0 0 10px 0;
+	position: relative;
+	line-height: 0;
+}
+
+#menu a 
+{
+	float: left;
+	height: 25px;
+	padding: 0 25px;
+	color: #999;
+	text-transform: uppercase;
+	font: bold 12px/25px Arial, Helvetica;
+	text-decoration: none;
+	text-shadow: 0 1px 0 #000;
+}
+
+#menu li:hover > a
+{
+	color: #fafafa;
+}
+
+*html #menu li a:hover /* IE6 */
+{
+	color: #fafafa;
+}
+
+#menu li:hover > ul
+{
+	display: block;
+}
+
+/* Sub-menu */
+
+#menu ul
+{
+    list-style: none;
+    margin: 0;
+    padding: 0;    
+    display: none;
+    position: absolute;
+    top: 35px;
+    left: 0;
+    z-index: 99999;    
+    background: #990000;
+    background: -moz-linear-gradient(#CC0000, #111);
+    background: -webkit-gradient(linear,left bottom,left top,color-stop(0, #111),color-stop(1, #CC0000));
+    background: -webkit-linear-gradient(#CC0000, #111);    
+    background: -o-linear-gradient(#CC0000, #111);	
+    background: -ms-linear-gradient(#CC0000, #111);	
+    background: linear-gradient(#CC0000, #111);
+    -moz-box-shadow: 0 0 2px rgba(255,255,255,.5);
+    -webkit-box-shadow: 0 0 2px rgba(255,255,255,.5);
+    box-shadow: 0 0 2px rgba(255,255,255,.5);	
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+#menu ul ul
+{
+  top: 0;
+  left: 100px;
+}
+
+#menu ul li
+{
+    float: none;
+    margin: 0;
+    padding: 0;
+    display: block;  
+    -moz-box-shadow: 0 1px 0 #111111, 0 2px 0 #777777;
+    -webkit-box-shadow: 0 1px 0 #111111, 0 2px 0 #777777;
+    box-shadow: 0 1px 0 #111111, 0 2px 0 #777777;
+}
+
+#menu ul li:last-child
+{   
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;    
+}
+
+#menu ul a
+{    
+    padding: 10px;
+	height: auto;
+    line-height: 1;
+    display: block;
+    white-space: nowrap;
+    float: none;
+	text-transform: none;
+}
+
+*html #menu ul a /* IE6 */
+{    
+	height: 10px;
+}
+
+*:first-child+html #menu ul a /* IE7 */
+{    
+	height: 10px;
+}
+
+#menu ul a:hover
+{
+    background: #0186ba;
+	background: -moz-linear-gradient(#04acec,  #0186ba);	
+	background: -webkit-gradient(linear, left top, left bottom, from(#04acec), to(#0186ba));
+	background: -webkit-linear-gradient(#04acec,  #0186ba);
+	background: -o-linear-gradient(#04acec,  #0186ba);
+	background: -ms-linear-gradient(#04acec,  #0186ba);
+	background: linear-gradient(#04acec,  #0186ba);
+}
+
+#menu ul li:first-child > a
+{
+    -moz-border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 0 0;
+}
+
+#menu ul li:first-child > a:after
+{
+    content: '';
+    position: absolute;
+    left: 30px;
+    top: -8px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 8px solid #CC0000;
+}
+
+#menu ul ul li:first-child a:after
+{
+    left: -8px;
+    top: 12px;
+    width: 0;
+    height: 0;
+    border-left: 0;	
+    border-bottom: 5px solid transparent;
+    border-top: 5px solid transparent;
+    border-right: 8px solid #CC0000;
+}
+
+#menu ul li:first-child a:hover:after
+{
+    border-bottom-color: #04acec; 
+}
+
+#menu ul ul li:first-child a:hover:after
+{
+    border-right-color: #04acec; 
+    border-bottom-color: transparent; 	
+}
+
+
+#menu ul li:last-child > a
+{
+    -moz-border-radius: 0 0 5px 5px;
+    border-radius: 0 0 5px 5px;
+}
+
+/* Clear floated elements */
+#menu:after 
+{
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+}
+
+* html #menu             { zoom: 1; } /* IE6 */
+*:first-child+html #menu { zoom: 1; } /* IE7 */
+</style>
+
+<!-- AdPacks -->
+<style>
+#adpacks-wrapper{font-family: Arial, Helvetica;width:280px;position: fixed;_position:absolute;bottom: 0;right: 20px;z-index: 9999;background: #eaeaea;padding: 10px;-moz-box-shadow: 0 0 15px #444;-webkit-box-shadow: 0 0 15px #444;box-shadow: 0 0 15px #444;}
+body .adpacks{background:#fff;padding:15px;margin:15px 0 0;border:3px solid #eee;}
+body .one .bsa_it_ad{background:transparent;border:none;font-family:inherit;padding:0;margin:0;}
+body .one .bsa_it_ad .bsa_it_i{display:block;padding:0;float:left;margin:0 10px 0 0;}
+body .one .bsa_it_ad .bsa_it_i img{padding:0;border:none;}
+body .one .bsa_it_ad .bsa_it_t{padding: 0 0 6px 0; font-size: 11px;}
+body .one .bsa_it_p{display:none;}
+body #bsap_aplink,body #bsap_aplink:hover{display:block;font-size:9px;margin: -15px 0 0 0;text-align:right;}
+body .one .bsa_it_ad .bsa_it_d{font-size: 11px;}
+body .one{overflow: hidden}
+</style>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-2021377-60']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G41692G2SG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-G41692G2SG');
+</script>
+
+</head> 
+<body> 
+<TABLE border='0' align='center' cellpadding='0' cellspacing='0' bordercolor='#FFFFFF' bgcolor='#E4E4E4'>
+<tr>
+<td><div align="center">
+<p align='center'>
+</p>
+</div></td>
+</tr>
+</TABLE>
+<TABLE border='0' align='center' cellpadding='3' cellspacing='0' bordercolor='#FFFFFF' bgcolor='#E4E4E4'><tr><td bgcolor='#FFFFFF'><div align='center'><IMG SRC='../images/resu_2627.jpg' WIDTH=0500 HEIGHT=0032></div></td></tr><TR><td background='../images/bkrg.gif' class='titreblanc' align='center'>Comité du Var</td></TR></TABLE><br><ul id="menu">
+<li><a href="http://www.ffvb.org/">FFvolley</a></li>
+<li>
+<a href="#">Compétitions</a>
+<ul>
+<li>
+<a href="#">M11 FÉMININ</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=PFD' target='_parent'>PFD M11 FEMININ - 1ERE PHASE</a></li>
+</ul>
+</li>
+<li>
+<a href="#">M11 MASCULIN</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=PMD' target='_parent'>PMD M11 MASCULIN - 1ERE PHASE</a></li>
+</ul>
+</li>
+<li>
+<a href="#">M13 FÉMININ</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=BFA' target='_parent'>BFA M13 FEMININ BRASSAGE - POULE A</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=BFB' target='_parent'>BFB M13 FEMININ BRASSAGE - POULE B</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=BFC' target='_parent'>BFC M13 FEMININ BRASSAGE - POULE C</a></li>
+</ul>
+</li>
+<li>
+<a href="#">M13 MASCULIN</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=BMA' target='_parent'>BMA M13 MASCULIN BRASSAGE - POULE A</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=BMB' target='_parent'>BMB M13 MASCULIN BRASSAGE - POULE B</a></li>
+</ul>
+</li>
+<li>
+<a href="#">M15 4X4</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4M' target='_parent'>M4M M15 4X4 - MASCULIN</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=MFM' target='_parent'>MFM M15 4X4 - FEMININ</a></li>
+</ul>
+</li>
+<li>
+<a href="#">M15 FÉMININ</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=MFA' target='_parent'>MFA M15 FÉMININ - PREMIÈRE PHASE</a></li>
+</ul>
+</li>
+<li>
+<a href="#">M15 MASCULIN</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=MMA' target='_parent'>MMA M15 MASCULIN - 1ERE PHASE</a></li>
+</ul>
+</li>
+<li>
+<a href="#">M18 4X4</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=C4M' target='_parent'>C4M M18 4X4 - MASCULIN</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=CFM' target='_parent'>CFM M18 4X4 - FEMININ</a></li>
+</ul>
+</li>
+<li>
+<a href="#">M18 FÉMININ</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=CFA' target='_parent'>CFA M18 FÉMININ- PREMIÈRE PHASE - POULE A</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=CFB' target='_parent'>CFB M18 FÉMININ- PREMIÈRE PHASE - POULE B</a></li>
+</ul>
+</li>
+<li>
+<a href="#">M18 MASCULIN</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=CMA' target='_parent'>CMA M18 MASCULIN - PREMIÈRE PHASE - POULE A</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=CMB' target='_parent'>CMB M18 MASCULIN - PREMIÈRE PHASE - POULE B</a></li>
+</ul>
+</li>
+<li>
+<a href="#">COMPETLIB 4X4 FÉMININ</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=4FA' target='_parent'>4FA COMPETLIB 4X4 FEMININ - 1ERE PHASE</a></li>
+</ul>
+</li>
+<li>
+<a href="#">COMPETLIB 4X4 MIXTE</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4A' target='_parent'>M4A COMPETLIB 4X4 MIXTE - POULE A</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4B' target='_parent'>M4B COMPETLIB 4X4 MIXTE - POULE B</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4C' target='_parent'>M4C COMPETLIB 4X4 MIXTE - POULE C</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4D' target='_parent'>M4D COMPETLIB 4X4 MIXTE - POULE D</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4E' target='_parent'>M4E COMPETLIB 4X4 MIXTE - POULE E</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4F' target='_parent'>M4F COMPETLIB 4X4 MIXTE - POULE F</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4G' target='_parent'>M4G COMPETLIB 4X4 MIXTE - POULE G</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4H' target='_parent'>M4H COMPETLIB 4X4 MIXTE - POULE H</a></li>
+</ul>
+</li>
+<li>
+<a href="#">M18 MASCULIN QUALIFICATION AU CHAMPIONNAT REGIONAL</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=CMC' target='_parent'>CMC M18 MASCULIN - QUALIFICATION CHAMPIONNAT RÉGIONAL</a></li>
+</ul>
+</li>
+<li>
+<a href="#">DÉPARTEMENTAL ACCESSION FÉMININ</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=DFA' target='_parent'>DFA DÉPARTEMENTALE SENIOR FÉMININ ACCESSION - POULE A</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=DFB' target='_parent'>DFB DÉPARTEMENTALE SENIOR FÉMININ ACCESSION - POULE B</a></li>
+</ul>
+</li>
+<li>
+<a href="#">DÉPARTEMENTAL ACCESSION MASCULIN</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=DMA' target='_parent'>DMA DÉPARTEMENTALE SENIOR MASCULIN ACCESSION - POULE A</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=DMB' target='_parent'>DMB DÉPARTEMENTALE SENIOR MASCULIN ACCESSION - POULE B</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=DMC' target='_parent'>DMC DÉPARTEMENTALE SENIOR MASCULIN ACCESSION - POULE C</a></li>
+</ul>
+</li>
+<li>
+<a href="#">M15 FEMININ QUALIFICATION AU CHAMPIONNAT REGIONAL</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=MFC' target='_parent'>MFC M15 FÉMININ - QUALIFICATION CHAMPIONNAT REGIONAL</a></li>
+</ul>
+</li>
+<li>
+<a href="#">TOURNOIS OPEN</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=O11' target='_parent'>O11 TOURNOIS OPEN 2 CONTRE 2</a></li>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=O13' target='_parent'>O13 TOURNOIS OPEN 4 CONTRE 4</a></li>
+</ul>
+</li>
+<li>
+<a href="#">PITCHOUN' VOLLEY</a>
+<ul>
+<li><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=PIT' target='_parent'>PIT PITCHOUN' VOLLEY</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#">Adressiers</a>
+<ul>
+<li>
+<a href='../adressier/adressier.php?codent=PTCA83' target='_blank'>Adressier PDF des équipes par poule</a>
+</li>
+<li>
+<a href='../adressier/adressier.php?codent=PTCA83&typ_edition=E' target='_blank'>Adressier Excel des équipes par poule</a>
+</li>
+<li>
+<a href='../adressier/engag_division.php?codent=PTCA83' target='_blank'>Liste des Engagements</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#">Contacts</a>
+<ul>
+<li>
+<a href='http://www.volley83.fr' target='_blank'>Site Web : http://www.volley83.fr</a>
+</li>
+<li>
+<a href='mailto:contact@volley83.fr'>Envoyer un mail : contact@volley83.fr</a>
+</li>
+</ul>
+</li>
+</ul>
+<table border="0" align="center" cellpadding="1" cellspacing="1" bordercolor="#FFFFFF" bgcolor="#FFFFFF"><tr><td align="center"><div style="text-align: center; ">&nbsp;<a target="_blank" href="https://boutique.ffvolley.org"><img border="0" align="absMiddle" alt="" src="https://www.ffvbbeach.org/ffvbapp/images/ffvolley_boutique_250919.jpg" title="La Boutique Officielle de la FFvolley" WIDTH=0260 HEIGHT=0108/></a></div></td></tr><tr></tr></table>
+<table border='0' align='center' cellpadding='0' cellspacing='1'><tr><td valign='top'><TABLE CELLSPACING=1 CELLPADDING=2 BORDER=0 ALIGN='center' style='text-align: right' bgcolor='#EEEEF8'><tr><td background='../images/bkrg.gif' class='lienblanc' align='left'><img src='../images/favorites.png' align='absmiddle' border='0'> Accès direct aux Compétitions du Comité Départemental</td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>M11 FÉMININ</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=PFD' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> PFD M11 FEMININ - 1ERE PHASE</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>M11 MASCULIN</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=PMD' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> PMD M11 MASCULIN - 1ERE PHASE</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>M13 FÉMININ</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=BFA' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> BFA M13 FEMININ BRASSAGE - POULE A</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=BFB' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> BFB M13 FEMININ BRASSAGE - POULE B</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=BFC' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> BFC M13 FEMININ BRASSAGE - POULE C</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>M13 MASCULIN</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=BMA' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> BMA M13 MASCULIN BRASSAGE - POULE A</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=BMB' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> BMB M13 MASCULIN BRASSAGE - POULE B</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>M15 4X4</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4M' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> M4M M15 4X4 - MASCULIN</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=MFM' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> MFM M15 4X4 - FEMININ</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>M15 FÉMININ</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=MFA' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> MFA M15 FÉMININ - PREMIÈRE PHASE</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>M15 MASCULIN</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=MMA' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> MMA M15 MASCULIN - 1ERE PHASE</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>M18 4X4</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=C4M' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> C4M M18 4X4 - MASCULIN</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=CFM' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> CFM M18 4X4 - FEMININ</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>M18 FÉMININ</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=CFA' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> CFA M18 FÉMININ- PREMIÈRE PHASE - POULE A</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=CFB' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> CFB M18 FÉMININ- PREMIÈRE PHASE - POULE B</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>M18 MASCULIN</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=CMA' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> CMA M18 MASCULIN - PREMIÈRE PHASE - POULE A</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=CMB' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> CMB M18 MASCULIN - PREMIÈRE PHASE - POULE B</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>COMPETLIB 4X4 FÉMININ</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=4FA' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> 4FA COMPETLIB 4X4 FEMININ - 1ERE PHASE</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>COMPETLIB 4X4 MIXTE</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4A' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> M4A COMPETLIB 4X4 MIXTE - POULE A</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4B' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> M4B COMPETLIB 4X4 MIXTE - POULE B</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4C' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> M4C COMPETLIB 4X4 MIXTE - POULE C</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4D' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> M4D COMPETLIB 4X4 MIXTE - POULE D</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4E' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> M4E COMPETLIB 4X4 MIXTE - POULE E</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4F' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> M4F COMPETLIB 4X4 MIXTE - POULE F</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4G' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> M4G COMPETLIB 4X4 MIXTE - POULE G</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=M4H' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> M4H COMPETLIB 4X4 MIXTE - POULE H</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>M18 MASCULIN QUALIFICATION AU CHAMPIONNAT REGIONAL</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=CMC' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> CMC M18 MASCULIN - QUALIFICATION CHAMPIONNAT RÉGIONAL</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>DÉPARTEMENTAL ACCESSION FÉMININ</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=DFA' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> DFA DÉPARTEMENTALE SENIOR FÉMININ ACCESSION - POULE A</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=DFB' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> DFB DÉPARTEMENTALE SENIOR FÉMININ ACCESSION - POULE B</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>DÉPARTEMENTAL ACCESSION MASCULIN</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=DMA' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> DMA DÉPARTEMENTALE SENIOR MASCULIN ACCESSION - POULE A</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=DMB' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> DMB DÉPARTEMENTALE SENIOR MASCULIN ACCESSION - POULE B</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=DMC' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> DMC DÉPARTEMENTALE SENIOR MASCULIN ACCESSION - POULE C</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>M15 FEMININ QUALIFICATION AU CHAMPIONNAT REGIONAL</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=MFC' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> MFC M15 FÉMININ - QUALIFICATION CHAMPIONNAT REGIONAL</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>TOURNOIS OPEN</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=O11' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> O11 TOURNOIS OPEN 2 CONTRE 2</a></td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=O13' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> O13 TOURNOIS OPEN 4 CONTRE 4</a></td></tr><tr><td bgcolor='#E4E4E4' class='liengris' align='left'>PITCHOUN' VOLLEY</td></tr><tr><td bgcolor='#EEEEF8' class='liengris' align='left'><a href='vbspo_calendrier.php?saison=2026/2027&codent=PTCA83&poule=PIT' target='_parent' class='liensuite4'><img src='../images/ballon_volley.jpg' align='absmiddle'> PIT PITCHOUN' VOLLEY</a></td></tr></table></td><td valign='top'><TABLE CELLSPACING=1 CELLPADDING=2 BORDER=0 ALIGN='center' style='text-align: right' bgcolor='#CCCCCC'><tr><td background='../images/bkrg.gif' class='lienblanc' align='left'><img src='../images/favorites.png' align='absmiddle' border='0'>  Les Contacts du Comité Départemental</td></tr><tr><tr><td bgcolor='#EEEEF8' align='left'><a href='http://www.volley83.fr' target='_blank' class='lienquestion'><img src='../images/http.jpg' width='17' height='11' align='absmiddle' border='0'> http://www.volley83.fr</a></td></tr><tr><td bgcolor='#EEEEF8' align='left'><a href='mailto:contact@volley83.fr' class='lienquestion'><img border='0' src='../images/composemail.gif' title='Envoyer un mél' align='absmiddle'>contact@volley83.fr</a></td></tr><tr><td background='../images/bkrg.gif' class='lienblanc' align='left'><img src='../images/favorites.png' align='absmiddle' border='0'>  Les Contacts des Equipes</td></tr><tr><tr><td bgcolor='#EEEEF8' class='rubrique1' align='left'><a href='../adressier/adressier.php?codent=PTCA83' target='_blank' class='liensuite4'><img src='../images/beachcard.gif' align='absmiddle'> Adressier PDF des équipes par poule</a></td></tr><tr><td bgcolor='#EEEEF8' class='rubrique1' align='left'><a href='../adressier/adressier.php?codent=PTCA83&typ_edition=E' target='_blank' class='liensuite4'><img src='../images/ico_spo_excel.png' width='20' height='20' align='absmiddle'> Adressier Excel des équipes par poule</a></td></tr><tr><td bgcolor='#EEEEF8' class='rubrique1' align='left'><a href='../adressier/engag_division.php?codent=PTCA83' target='_blank' class='liensuite4'><img src='../images/func.gif' align='absmiddle'> Liste des Engagements</a></td></tr></table></td></tr></td></tr></TABLE><p></p>
+</body> 
+</html> 
