@@ -344,7 +344,7 @@ function render4x4(code) {
     <div class="tabs" role="tablist">${cs.map(x => `<a class="tab ${kind(x)} ${x.code === c.code ? 'on' : ''}" href="#4x4/${x.code}" role="tab"><span class="sw ${kind(x)}"></span>${esc(x.nom.replace(' 4x4', ''))}</a>`).join('')}</div>
     <div class="cols">
       <section class="card">
-        <div class="rank-head"><h2>Classement ${esc(c.nom)}</h2><span class="muted small">${joues.length} tournoi${joues.length > 1 ? 's' : ''} joué${joues.length > 1 ? 's' : ''} sur ${tournois.length}</span></div>
+        <div class="rank-head"><h2>Classement ${esc(c.nom)}</h2><span class="muted small">${joues.length} tournoi${joues.length > 1 ? 's' : ''} joué${joues.length > 1 ? 's' : ''} sur ${tournois.filter(t => t.statut !== 'annule').length}</span></div>
         ${rows.length ? `<div class="tablebox"><table class="rank">
           <thead><tr><th>#</th><th class="l">Équipe</th><th>Pts</th><th title="Tournois joués">Joués</th><th title="Victoires">1<sup>er</sup></th><th>2<sup>e</sup></th><th>3<sup>e</sup></th>${joues.map(t => `<th title="Tournoi ${t.numero} – ${esc(fmtD(t.date, true))}">T${t.numero}</th>`).join('')}</tr></thead>
           <tbody>${rows.map(r => `<tr>
@@ -370,10 +370,13 @@ function render4x4(code) {
 // Ouverture automatique des inscriptions : 6 semaines avant le tournoi (même règle que chp_ouvert en SQL)
 const OUVERTURE_JOURS = 42;
 function ouverture(t) { const d = parseD(t.date); d.setDate(d.getDate() - OUVERTURE_JOURS); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+// Date limite d'inscription : le jeudi précédant le tournoi
+function jeudiAvant(s) { const d = parseD(s); let k = (d.getDay() + 3) % 7; if (!k) k = 7; d.setDate(d.getDate() - k); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 function calRow(t, avecResultats) {
   const d = parseD(t.date), past = t.date < today();
   let badge;
-  if (t.statut === 'valide') badge = '<span class="badge b-res">🏆 Résultats</span>';
+  if (t.statut === 'annule') badge = '<span class="badge b-closed">Tournoi annulé</span>';
+  else if (t.statut === 'valide') badge = '<span class="badge b-res">🏆 Résultats</span>';
   else if (past) badge = '<span class="badge b-wait">Résultats à venir</span>';
   else if (t.ouvert) badge = `<span class="badge b-open">Inscriptions ouvertes${t.date_limite ? ' jusqu\'au ' + esc(fmtD(t.date_limite, false, false)) + (t.heure_limite ? ' ' + esc(fmtH(t.heure_limite)) : '') : ''}</span>`;
   else if (!t.date_limite && !t.lieu) badge = '<span class="badge b-tbc">Infos à venir</span>';
@@ -597,7 +600,7 @@ function renderClub() {
   const saved = (() => { try { return JSON.parse(sessionStorage.getItem('chp_orga')); } catch(e) { return null; } })();
   if (saved && !ORG) { orgaOpen(saved.t, saved.code).catch(() => { try { sessionStorage.removeItem('chp_orga'); } catch(e) {} renderClub(); }); return; }
   if (ORG) return renderOrgaPanel();
-  const list = D.tournois.filter(t => comp(t.competition).famille === '4x4' && t.statut !== 'valide').sort((a, b) => a.date.localeCompare(b.date));
+  const list = D.tournois.filter(t => comp(t.competition).famille === '4x4' && !['valide', 'annule'].includes(t.statut)).sort((a, b) => a.date.localeCompare(b.date));
   const near = list.find(t => t.date >= new Date(Date.now() - 10 * 864e5).toISOString().slice(0, 10));
   $('app').innerHTML = `
   <div class="hero"><div class="wrap"><div class="k">Club recevant</div><h1>Saisir le classement d'un tournoi</h1>
@@ -753,7 +756,7 @@ function adminInscriptions() {
 
 // ----- Classements -----
 function adminClassements() {
-  const ts = A.tournois.filter(t => aComp(t.competition).famille === '4x4').sort((a, b) => (a.statut === 'saisi' ? 0 : 1) - (b.statut === 'saisi' ? 0 : 1) || a.date.localeCompare(b.date));
+  const ts = A.tournois.filter(t => aComp(t.competition).famille === '4x4' && t.statut !== 'annule').sort((a, b) => (a.statut === 'saisi' ? 0 : 1) - (b.statut === 'saisi' ? 0 : 1) || a.date.localeCompare(b.date));
   if (!CTID || !ts.find(t => t.id === CTID)) { const s = ts.find(t => t.statut === 'saisi') || ts.filter(t => t.date <= today()).pop() || ts[0]; CTID = s && s.id; }
   const t = ts.find(x => x.id === CTID); if (!t) return;
   const res = A.resultats.filter(r => r.tournoi_id === t.id);
@@ -801,8 +804,8 @@ function adminTournois() {
   const c = aComp(ACOMP), ts = A.tournois.filter(t => t.competition === ACOMP).sort((a, b) => a.numero - b.numero);
   $('a-body').innerHTML = `<div class="stack">
     <div class="tabs">${A.competitions.map(x => `<button class="tab ${kind(x)} ${x.code === ACOMP ? 'on' : ''}" data-c="${x.code}"><span class="sw ${kind(x)}"></span>${esc(x.nom)}</button>`).join('')}</div>
-    <p class="small muted">Les modifications sont enregistrées dès que vous quittez un champ. Inscriptions « Auto » : ouvertes 6 semaines avant le tournoi, jusqu'à la date et l'heure limites. ${c.famille === '4x4' ? 'Le code est à donner au club recevant, avec le lien de l\'espace club : <a href="' + SITE_URL + '#club" target="_blank">' + SITE_URL + '#club</a>.' : ''}</p>
-    <div class="tablebox"><table class="adm"><thead><tr><th>N°</th><th>Date</th><th>Heure</th><th>Gymnase</th><th>Ville</th><th>Club recevant</th><th>Limite inscr.</th><th>Heure lim.</th><th>Inscriptions</th>${c.famille === '4x4' ? '<th>Code club</th>' : ''}<th></th></tr></thead>
+    <p class="small muted">Les modifications sont enregistrées dès que vous quittez un champ. Inscriptions « Auto » : ouvertes 6 semaines avant le tournoi, jusqu'au jeudi précédent à 12 h (la date limite se recalcule quand vous changez la date du tournoi). ${c.famille === '4x4' ? 'Le code est à donner au club recevant, avec le lien de l\'espace club : <a href="' + SITE_URL + '#club" target="_blank">' + SITE_URL + '#club</a>.' : ''}</p>
+    <div class="tablebox"><table class="adm"><thead><tr><th>N°</th><th>Date</th><th>Heure</th><th>Gymnase</th><th>Ville</th><th>Club recevant</th><th>Limite inscr.</th><th>Heure lim.</th><th>Inscriptions</th>${c.famille === '4x4' ? '<th>Code club</th>' : ''}<th>Annulé</th><th></th></tr></thead>
       <tbody>${ts.map(t => `<tr data-id="${t.id}">
         <td><input data-f="numero" type="number" value="${t.numero}" style="width:56px"></td>
         <td><input data-f="date" type="date" value="${esc(t.date)}"></td>
@@ -814,6 +817,7 @@ function adminTournois() {
         <td><input data-f="heure_limite" value="${esc(t.heure_limite || '')}" style="width:64px"></td>
         <td><select data-f="inscriptions">${[['auto', 'Auto'], ['ouvertes', 'Forcer ouvertes'], ['fermees', 'Fermées']].map(([v, l]) => `<option value="${v}" ${t.inscriptions === v ? 'selected' : ''}>${l}</option>`).join('')}</select><div class="small ${t.ouvert ? '' : 'muted'}" style="margin-top:2px">${t.ouvert ? '● ouvertes' : 'closes'}</div></td>
         ${c.famille === '4x4' ? `<td style="white-space:nowrap"><input data-f="code_orga" class="code" value="${esc(t.code_orga || '')}" style="width:100px"> <button class="linkbtn" data-gen>Générer</button></td>` : ''}
+        <td>${['ouvert', 'annule'].includes(t.statut) ? `<input type="checkbox" data-annule ${t.statut === 'annule' ? 'checked' : ''} style="width:18px;height:18px">` : '<span class="small muted">' + (t.statut === 'valide' ? 'joué' : 'saisi') + '</span>'}</td>
         <td><button class="linkbtn red" data-del>Supprimer</button></td></tr>`).join('')}</tbody></table></div>
     <div><button class="btn ghost" id="a-add">+ Ajouter un tournoi</button></div>
   </div>`;
@@ -821,11 +825,16 @@ function adminTournois() {
   const put = async (id, p) => { saveMark('wait', 'Enregistrement…'); try { await rpc('chp_admin_save_tournoi', { pwd: ADMIN_PWD, t: { id, ...p } }); await loadAdmin(); await loadPublic(); saveMark('ok', '✓ Enregistré'); } catch(e) { saveMark('err', '⚠ ' + e.message); } };
   $('a-body').querySelectorAll('tr[data-id]').forEach(tr => {
     const id = +tr.dataset.id;
-    tr.querySelectorAll('[data-f]').forEach(el => el.onchange = async () => { await put(id, { [el.dataset.f]: el.value }); if (el.dataset.f === 'inscriptions' || el.dataset.f === 'date_limite') adminTournois(); });
+    tr.querySelectorAll('[data-f]').forEach(el => el.onchange = async () => {
+      const p = { [el.dataset.f]: el.value };
+      if (el.dataset.f === 'date' && el.value) { p.date_limite = jeudiAvant(el.value); p.heure_limite = '12:00'; }   // clôture : le jeudi d'avant à 12 h
+      await put(id, p); if (['inscriptions', 'date_limite', 'date'].includes(el.dataset.f)) adminTournois();
+    });
+    const an = tr.querySelector('[data-annule]'); if (an) an.onchange = async () => { await put(id, { statut: an.checked ? 'annule' : 'ouvert' }); adminTournois(); };
     const g = tr.querySelector('[data-gen]'); if (g) g.onclick = async () => { const inp = tr.querySelector('[data-f="code_orga"]'); inp.value = ACOMP + '-' + Math.random().toString(36).slice(2, 6).toUpperCase().replace(/[O0I1L]/g, 'X'); await put(id, { code_orga: inp.value }); };
     tr.querySelector('[data-del]').onclick = async () => { if (!confirm('Supprimer ce tournoi, ses inscriptions et son classement ?')) return; await rpc('chp_admin_delete_tournoi', { pwd: ADMIN_PWD, tid: id }); await loadAdmin(); await loadPublic(); adminTournois(); };
   });
-  $('a-add').onclick = async () => { const n = Math.max(0, ...ts.map(t => t.numero)) + 1; await put(null, { competition: ACOMP, numero: n, date: today() }); adminTournois(); };
+  $('a-add').onclick = async () => { const n = Math.max(0, ...ts.map(t => t.numero)) + 1, d = today(); await put(null, { competition: ACOMP, numero: n, date: d, date_limite: jeudiAvant(d), heure_limite: '12:00' }); adminTournois(); };
 }
 
 // ----- Clubs -----
