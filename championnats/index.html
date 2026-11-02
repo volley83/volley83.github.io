@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Championnats – Comité du Var de Volley-Ball</title>
+<meta name="description" content="Championnats M15 et M18 4x4 et tournois OPEN 2 contre 2 et 4 contre 4 du Comité du Var de Volley-Ball : calendriers, inscriptions en ligne et classements.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0B2149; --navy2: #14305f; --blue: #1E4FA3; --accent: #F6C21B;
+    --bg: #F4F6FA; --card: #FFFFFF; --line: #E2E7F0; --line2: #EDF0F5;
+    --text: #14203A; --muted: #56627A;
+    --ok: #11672F; --ok-bg: #E7F6EC; --warn: #8A5A00; --warn-bg: #FFF4D6; --bad: #A3231D; --bad-bg: #FCE9E8;
+    --fem: #9C2F6B; --fem-bg: #F8E8F1; --mas: #1E4FA3; --mas-bg: #E9EFFA; --open: #0E7C6B; --open-bg: #E3F4F1;
+    --gold: #C9A227; --silver: #8E99A8; --bronze: #A8693A;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; font-size: 15px; line-height: 1.5; min-height: 100vh; }
+  [hidden] { display: none !important; }
+  a { color: var(--blue); }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+  h1, h2, h3, .cond { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: .5px; color: var(--navy); }
+  .muted { color: var(--muted); } .small { font-size: 13px; }
+
+  header { background: #fff; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 20; }
+  .head { display: flex; align-items: center; gap: 16px; min-height: 76px; }
+  .head img { height: 48px; width: auto; display: block; }
+  .head .sep { width: 1px; height: 36px; background: var(--line); }
+  .head .t { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 24px; text-transform: uppercase; color: var(--navy); letter-spacing: .5px; }
+  .head nav { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+  .navbtn { display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--line); background: #fff; color: var(--text); font-weight: 600; font-size: 14px; text-decoration: none; white-space: nowrap; }
+  .navbtn.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .navbtn.cta { background: var(--accent); border-color: var(--accent); color: var(--navy); font-weight: 700; }
+
+  .hero { background: var(--navy); color: #fff; padding: 36px 0 40px; }
+  .hero.open { background: linear-gradient(120deg, #0B2149 0%, #0E4F5C 100%); }
+  .hero .k { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-size: 15px; margin-bottom: 8px; }
+  .hero h1 { color: #fff; font-size: 46px; font-weight: 800; line-height: 1; }
+  .hero p { color: #C9D4EA; max-width: 720px; margin-top: 12px; font-size: 16px; }
+  .hero .btnrow { margin-top: 20px; }
+
+  main.wrap { padding-top: 28px; padding-bottom: 64px; }
+  .stack { display: flex; flex-direction: column; gap: 18px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+  .card h2 { font-size: 26px; font-weight: 800; line-height: 1.05; }
+  .card h3 { font-size: 19px; font-weight: 800; }
+
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tab { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 22px; border: 1px solid var(--line); background: #fff; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; color: var(--text); min-height: 44px; text-decoration: none; }
+  .tab .sw { width: 10px; height: 10px; border-radius: 50%; }
+  .tab.on { color: #fff; border-color: transparent; }
+  .tab.F.on { background: var(--fem); } .tab.M.on { background: var(--mas); } .tab.O.on { background: var(--open); }
+  .sw.F { background: var(--fem); } .sw.M { background: var(--mas); } .sw.O { background: var(--open); }
+
+  .cols { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  @media (max-width: 980px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+
+  /* Classement */
+  .rank-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; margin-bottom: 14px; }
+  .tablebox { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+  table.rank { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .rank th { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); padding: 9px 8px; border-bottom: 1px solid var(--line); background: #F8FAFD; text-align: center; white-space: nowrap; }
+  .rank th.l, .rank td.l { text-align: left; }
+  .rank td { padding: 9px 8px; border-bottom: 1px solid var(--line2); text-align: center; white-space: nowrap; }
+  .rank tr:last-child td { border-bottom: 0; }
+  .rank td.pts { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 20px; color: var(--navy); }
+  .rank td.eq b { color: var(--navy); }
+  .rank td.eq small { display: block; color: var(--muted); font-size: 12px; }
+  .rank td.tp { color: var(--muted); font-size: 13px; }
+  .rank td.tp.zero { color: #C3CAD6; }
+  .pos { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 15px; font-weight: 800; background: #F1F4F9; color: var(--navy); }
+  .pos.p1 { background: var(--gold); color: #fff; } .pos.p2 { background: var(--silver); color: #fff; } .pos.p3 { background: var(--bronze); color: #fff; }
+  .medal { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; border-radius: 12px; font-size: 12px; font-weight: 800; }
+  .medal.m1 { background: #FBF2D3; color: #8A6A08; } .medal.m2 { background: #EEF1F5; color: #4D5866; } .medal.m3 { background: #F6E8DD; color: #7A4520; }
+  .medal.none { color: #C3CAD6; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); margin-top: 12px; }
+  .bareme { font-size: 13px; color: var(--muted); background: #F8FAFD; border-radius: 10px; padding: 10px 14px; margin-top: 12px; }
+
+  /* Calendrier */
+  .cal { display: flex; flex-direction: column; }
+  .cal-row { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 14px; padding: 14px 0; border-top: 1px solid var(--line2); }
+  .cal-row:first-child { border-top: 0; padding-top: 4px; }
+  .cal-date { text-align: center; background: var(--navy); color: #fff; border-radius: 10px; padding: 7px 4px; line-height: 1.1; align-self: start; }
+  .cal-date b { display: block; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 24px; }
+  .cal-date span { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: #C9D4EA; }
+  .cal-date.past { background: #D5DBE5; } .cal-date.past span { color: #5E6A7E; } .cal-date.past b { color: #34405A; }
+  .cal-t { font-weight: 800; color: var(--navy); font-size: 15px; }
+  .cal-meta { font-size: 14px; color: var(--muted); margin-top: 2px; }
+  .cal-meta b { color: var(--text); font-weight: 600; }
+  .cal-act { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 3px 10px; border-radius: 13px; font-size: 12px; font-weight: 700; line-height: 1.3; }
+  .b-open { background: var(--ok-bg); color: var(--ok); } .b-closed { background: #EEF1F5; color: var(--muted); }
+  .b-res { background: #FBF2D3; color: #7A5B05; } .b-wait { background: var(--warn-bg); color: var(--warn); } .b-tbc { background: #F4F6FA; color: var(--muted); }
+  .cal-res { margin-top: 10px; }
+  .cal-res summary { cursor: pointer; font-weight: 700; color: var(--blue); font-size: 14px; }
+  .cal-res ol { list-style: none; margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+  .cal-res li { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 8px; align-items: center; font-size: 14px; }
+  .cal-res li .r { font-weight: 800; color: var(--muted); text-align: right; }
+  .cal-res li .p { font-weight: 700; color: var(--navy); font-size: 13px; }
+
+  .btnrow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid transparent; font-weight: 700; font-size: 15px; font-family: inherit; cursor: pointer; text-decoration: none; }
+  .btn.sm { min-height: 34px; padding: 0 12px; font-size: 13px; border-radius: 8px; }
+  .btn.primary { background: var(--navy); color: #fff; }
+  .btn.accent { background: var(--accent); color: var(--navy); }
+  .btn.ghost { background: #fff; border-color: var(--line); color: var(--text); }
+  .btn.ok { background: var(--ok); color: #fff; }
+  .btn.danger { background: #fff; border-color: #f2c4c1; color: var(--bad); }
+  .btn[disabled] { opacity: .55; cursor: default; }
+  .linkbtn { background: none; border: 0; color: var(--blue); font-weight: 600; cursor: pointer; font-family: inherit; font-size: 13px; padding: 4px 0; text-decoration: underline; }
+  .linkbtn.red { color: var(--bad); }
+
+  /* OPEN */
+  .levels { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
+  .level { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; background: #FAFBFD; }
+  .level b { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 18px; text-transform: uppercase; color: var(--open); }
+  .level ul { margin: 6px 0 0 18px; font-size: 14px; color: var(--text); }
+  .level li { margin-top: 4px; }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px 18px; margin-top: 14px; }
+  .fact { background: #F8FAFD; border-radius: 10px; padding: 10px 14px; }
+  .fact b { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); }
+  .fact span { font-weight: 700; color: var(--navy); }
+
+  /* Formulaires */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label, .lbl { font-size: 13px; font-weight: 700; }
+  input, select, textarea { font-family: inherit; font-size: 15px; color: var(--text); background: #fff; border: 1px solid #C9D2E2; border-radius: 10px; padding: 11px 12px; outline: none; width: 100%; }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(30,79,163,.15); }
+  textarea { min-height: 80px; resize: vertical; }
+  .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .msg { border-radius: 10px; padding: 12px 14px; font-size: 14px; }
+  .msg.ok { background: var(--ok-bg); color: var(--ok); } .msg.err { background: var(--bad-bg); color: var(--bad); } .msg.info { background: #E9EFFA; color: var(--navy); }
+  .form { max-width: 760px; margin: 0 auto; }
+  .step { display: flex; gap: 14px; padding: 18px 0; border-top: 1px solid var(--line2); }
+  .step:first-of-type { border-top: 0; padding-top: 6px; }
+  .step-n { flex: none; width: 32px; height: 32px; border-radius: 16px; background: var(--navy); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .step-b { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+  .step-b h3 { font-size: 18px; }
+  .tsum { background: #F8FAFD; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 14px; }
+  .tsum b { color: var(--navy); }
+  .lines { display: flex; flex-direction: column; gap: 8px; }
+  .line { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) 110px 40px; gap: 8px; align-items: center; }
+  .line .x { height: 44px; border-radius: 10px; border: 1px solid #f2c4c1; background: #fff; color: var(--bad); cursor: pointer; font-size: 16px; }
+  .stepper { display: inline-flex; align-items: center; border: 1px solid #C9D2E2; border-radius: 10px; overflow: hidden; width: max-content; }
+  .stepper button { width: 48px; height: 48px; border: 0; background: #F4F6FA; font-size: 22px; font-weight: 700; cursor: pointer; color: var(--navy); }
+  .stepper input { width: 70px; border: 0; border-radius: 0; text-align: center; font-size: 20px; font-weight: 800; padding: 0; height: 48px; }
+  .hp { position: absolute; left: -5000px; }
+  .done { text-align: center; padding: 36px 22px; }
+  .done .big { font-size: 46px; }
+
+  /* Saisie classement */
+  .ed { display: flex; flex-direction: column; gap: 6px; }
+  .ed-row { display: grid; grid-template-columns: 40px minmax(0, 1.4fr) minmax(0, 1fr) 54px 92px; gap: 8px; align-items: center; }
+  .ed-row .n { font-weight: 800; color: var(--navy); text-align: center; }
+  .ed-row .pp { font-weight: 700; color: var(--muted); text-align: center; font-size: 13px; }
+  .ed-row .mv { display: flex; gap: 4px; }
+  .ed-row .mv button { width: 28px; height: 36px; border-radius: 8px; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 12px; }
+  .ed-row .mv button.x { color: var(--bad); border-color: #f2c4c1; }
+  .ed-row input, .ed-row select { padding: 8px 10px; font-size: 14px; }
+  .ed-h { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); font-weight: 700; }
+  @media (max-width: 640px) { .ed-row { grid-template-columns: 30px minmax(0, 1fr) 40px; } .ed-row .club, .ed-row .ed-hc { display: none; } .ed-row .mv { grid-column: 2 / 4; } .ed-row .pp { display: none; } }
+
+  /* Admin */
+  .adm-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+  table.adm { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .adm th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); padding: 9px 8px; border-bottom: 1px solid var(--line); background: #F8FAFD; white-space: nowrap; }
+  .adm td { padding: 7px 8px; border-bottom: 1px solid var(--line2); vertical-align: middle; }
+  .adm input, .adm select { padding: 6px 8px; font-size: 13px; border-radius: 8px; }
+  .adm tr.grp td { background: var(--navy); color: #fff; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 1px; text-transform: uppercase; }
+  .adm tr.grp.F td { background: var(--fem); } .adm tr.grp.M td { background: var(--mas); } .adm tr.grp.O td { background: var(--open); }
+  .code { font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 700; letter-spacing: 1px; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .kpi { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .kpi b { display: block; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 30px; line-height: 1; color: var(--navy); }
+  .kpi span { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .mx { border-collapse: collapse; font-size: 14px; }
+  .mx th, .mx td { border: 1px solid var(--line); padding: 6px 12px; text-align: center; }
+  .mx th { background: #F8FAFD; font-size: 12px; }
+  .save { font-size: 13px; font-weight: 600; } .save.ok { color: var(--ok); } .save.err { color: var(--bad); } .save.wait { color: var(--muted); }
+  .overlay { position: fixed; inset: 0; background: rgba(11,33,73,.55); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50; }
+  .modal { background: #fff; border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 14px; }
+
+  footer { border-top: 1px solid var(--line); background: #fff; padding: 22px 0; font-size: 13px; color: var(--muted); }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; align-items: center; }
+  .footlinks { display: flex; gap: 16px; }
+  .adminlink { background: none; border: 0; color: var(--muted); font-size: 13px; cursor: pointer; font-family: inherit; text-decoration: underline; }
+
+  @media (max-width: 760px) {
+    .head { padding: 10px 0; flex-wrap: wrap; gap: 10px; }
+    .head .sep { display: none; }
+    .head nav { margin-left: 0; width: 100%; display: grid; grid-template-columns: 1fr 1fr 1fr; }
+    .navbtn { justify-content: center; padding: 0 6px; font-size: 12.5px; white-space: normal; text-align: center; line-height: 1.2; min-width: 0; }
+    header { position: static; }
+  }
+  @media (max-width: 640px) {
+    .wrap { padding: 0 16px; }
+    .hero h1 { font-size: 34px; }
+    .card { padding: 18px 16px; }
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+    .line { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .line .nb { grid-column: 1; } .line .x { grid-column: 2; justify-self: end; width: 44px; }
+    .tab { padding: 8px 12px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap head">
+    <a href="https://www.volley83.fr" aria-label="Comité du Var de Volley-Ball"><img src="logo-comite-var.jpg" alt="Comité du Var Volley-Ball"></a>
+    <div class="sep"></div>
+    <div class="t">Championnats jeunes</div>
+    <nav aria-label="Navigation">
+      <a class="navbtn" id="nav-4x4" href="#4x4">M15 · M18 4x4</a>
+      <a class="navbtn" id="nav-open" href="#open">Tournois OPEN</a>
+      <a class="navbtn cta" id="nav-inscription" href="#inscription">Inscrire une équipe</a>
+    </nav>
+  </div>
+</header>
+
+<div id="app"><div class="wrap" style="padding:40px 24px"><div class="card muted">Chargement…</div></div></div>
+
+<footer>
+  <div class="wrap">
+    <span>Comité Départemental du Var de Volley-Ball · Maison des sports du Var, 133 bd du Général Brosset, 83200 Toulon · <a href="mailto:volley83@gmail.com">volley83@gmail.com</a> · 06 13 30 34 25</span>
+    <span class="footlinks"><a class="adminlink" href="#club">Espace club recevant</a><button class="adminlink" onclick="openAdmin()">Accès Comité</button></span>
+  </div>
+</footer>
+
+<script>
+// ======================== CONFIG ========================
+const SUPABASE_URL = 'https://nssdhgpvkdbgdewsnlgl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_GeMMc45mQbDOq-ZkU5vXZw_lYJe9KXf';
+const SITE_URL = 'https://volley83.github.io/championnats/';
+const SEXES_OPEN = ['Filles', 'Garçons', 'Mixte'];
+const REGLES_NIVEAUX = {
+  O11: [
+    ['Débutant', ['Pas de service : engagement par-dessous, ou en faisant rebondir le ballon (engagement du Pitchoun\' Volley), depuis la ligne des 3 m, 2e essai possible.', 'Le 2e contact est bloqué puis joué en passe vers le partenaire, sans se déplacer.', 'Construction obligatoire en 3 contacts (pas de retour direct).']],
+    ['Intermédiaire', ['Pas de service : engagement par-dessous ou en faisant rebondir le ballon.', 'Ligne à 2 m du filet : renvoi direct interdit au-delà de cette ligne.']],
+    ['Débrouillé', ['Service par-dessus interdit : service pied au sol, ballon frappé sous l\'épaule (trajectoire arrondie).']],
+  ],
+  O13: [
+    ['Débutant', ['Pas de service : engagement par-dessous ou en faisant rebondir le ballon (engagement du Pitchoun\' Volley).', 'Permutations interdites (pas de spécialisation).']],
+    ['Intermédiaire', ['Service par-dessus interdit : service pied au sol, ballon frappé sous l\'épaule.', 'Permutations interdites (pas de spécialisation).']],
+  ],
+};
+const INFOS_OPEN = {
+  O11: [['Équipes', '3 joueurs maximum'], ['Terrain', '4,5 m × 9 m (2 terrains par filet)'], ['Filet', '1,90 m'], ['Catégories', 'M7, M9, M11, M13']],
+  O13: [['Équipes', '6 joueurs maximum (possibilité de jouer à 3)'], ['Terrain', '7 m × 14 m'], ['Filet', '2,10 m'], ['Catégories', 'M9 (surclassés), M11, M13, M15 débutants']],
+};
+
+// ======================== OUTILS ========================
+const $ = id => document.getElementById(id);
+function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+async function rpc(fn, args) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, {
+    method: 'POST',
+    headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify(args || {}),
+  });
+  const txt = await res.text();
+  if (!res.ok) { let m = txt; try { m = JSON.parse(txt).message || txt; } catch(e) {} throw new Error(m); }
+  return txt ? JSON.parse(txt) : null;
+}
+const MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const MOIS_C = ['janv.','févr.','mars','avril','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+const JOURS = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+function parseD(s) { if (!s) return null; const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); }
+function fmtD(s, withDay, withYear = true) { const d = parseD(s); if (!d) return ''; return (withDay ? JOURS[d.getDay()] + ' ' : '') + d.getDate() + (d.getDate() === 1 ? 'er' : '') + ' ' + MOIS[d.getMonth()] + (withYear ? ' ' + d.getFullYear() : ''); }
+function fmtShort(s) { const d = parseD(s); return d ? String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear() : ''; }
+const fmtH = h => h ? String(h).replace(/^0/, '').replace(':00', ' h').replace(':', ' h ') : '';
+function today() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+const coll = new Intl.Collator('fr', { sensitivity: 'base', numeric: true });
+function slug(t) { return String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w]+/g, '-').replace(/^-|-$/g, ''); }
+function csvDownload(name, header, rows) {
+  const cell = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const csv = '﻿' + [header].concat(rows).map(r => r.map(cell).join(';')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = name; document.body.appendChild(a); a.click(); a.remove();
+}
+const store = { get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch(e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} } };
+
+// Barème M15 / M18 4x4 : 1er = N+3, 2e = N+1, 3e = N, puis le dernier marque 1 point, l'avant-dernier 2…
+function points(rang, n) { return rang === 1 ? n + 3 : rang === 2 ? n + 1 : rang === 3 ? n : Math.max(1, n - rang + 1); }
+
+let D = { competitions: [], tournois: [], clubs: [] };
+const comp = code => D.competitions.find(c => c.code === code) || {};
+const kind = c => c.famille === 'open' ? 'O' : c.sexe;
+const clubNom = code => (D.clubs.find(c => c.code === code) || {}).nom || code || '';
+const tLabel = t => `${comp(t.competition).nom} – Tournoi ${t.numero}`;
+const lieuTxt = t => [t.lieu, t.ville].filter(Boolean).join(', ');
+
+function classement(code) {
+  const ts = D.tournois.filter(t => t.competition === code && t.statut === 'valide' && t.resultats && t.resultats.length);
+  const map = new Map();
+  ts.forEach(t => {
+    const n = t.resultats.length;
+    t.resultats.forEach(r => {
+      const k = r.equipe;
+      if (!map.has(k)) map.set(k, { equipe: k, club: r.club, pts: 0, joues: 0, p1: 0, p2: 0, p3: 0, par: {} });
+      const e = map.get(k), p = points(r.rang, n);
+      e.pts += p; e.joues++; if (r.rang <= 3) e['p' + r.rang]++; e.par[t.numero] = { p, rang: r.rang }; if (r.club) e.club = r.club;
+    });
+  });
+  const rows = [...map.values()].sort((a, b) => b.pts - a.pts || b.p1 - a.p1 || b.p2 - a.p2 || b.p3 - a.p3 || coll.compare(a.equipe, b.equipe));
+  rows.forEach((r, i) => { const prev = rows[i - 1]; r.pos = prev && prev.pts === r.pts && prev.p1 === r.p1 && prev.p2 === r.p2 && prev.p3 === r.p3 ? prev.pos : i + 1; });
+  return { rows, tournois: D.tournois.filter(t => t.competition === code) };
+}
+
+// ======================== ROUTEUR ========================
+let ADMIN_PWD = '';
+async function route() {
+  const h = (location.hash || '#4x4').slice(1), [v, a] = h.split('/');
+  ['4x4', 'open', 'inscription'].forEach(n => $('nav-' + n).classList.toggle('on', v === n || (n === '4x4' && !['open', 'inscription'].includes(v))));
+  if (v === 'open') return renderOpen(a);
+  if (v === 'inscription') return renderInscription(a);
+  if (v === 'club') return renderClub();
+  if (v === 'admin') return renderAdmin(a);
+  return render4x4(a);
+}
+window.addEventListener('hashchange', () => { route(); window.scrollTo(0, 0); });
+async function loadPublic() { D = await rpc('chp_public'); }
+
+// ======================== PUBLIC : M15 / M18 4x4 ========================
+function render4x4(code) {
+  const cs = D.competitions.filter(c => c.famille === '4x4');
+  const c = cs.find(x => x.code === code) || cs[0];
+  if (!c) { $('app').innerHTML = '<div class="wrap"><main><div class="card">Aucun championnat.</div></main></div>'; return; }
+  const { rows, tournois } = classement(c.code);
+  const joues = tournois.filter(t => t.statut === 'valide');
+  const k = kind(c);
+  $('app').innerHTML = `
+  <div class="hero"><div class="wrap">
+    <div class="k">Championnats départementaux · Saison 2026-2027</div>
+    <h1>M15 et M18 en 4 contre 4</h1>
+    <p>Des tournois tout au long de la saison, filles et garçons. Le classement général est mis à jour après chaque tournoi.</p>
+  </div></div>
+  <main class="wrap stack">
+    <div class="tabs" role="tablist">${cs.map(x => `<a class="tab ${kind(x)} ${x.code === c.code ? 'on' : ''}" href="#4x4/${x.code}" role="tab"><span class="sw ${kind(x)}"></span>${esc(x.nom.replace(' 4x4', ''))}</a>`).join('')}</div>
+    <div class="cols">
+      <section class="card">
+        <div class="rank-head"><h2>Classement ${esc(c.nom)}</h2><span class="muted small">${joues.length} tournoi${joues.length > 1 ? 's' : ''} joué${joues.length > 1 ? 's' : ''} sur ${tournois.length}</span></div>
+        ${rows.length ? `<div class="tablebox"><table class="rank">
+          <thead><tr><th>#</th><th class="l">Équipe</th><th>Pts</th><th title="Tournois joués">Joués</th><th title="Victoires">1<sup>er</sup></th><th>2<sup>e</sup></th><th>3<sup>e</sup></th>${joues.map(t => `<th title="Tournoi ${t.numero} – ${esc(fmtD(t.date, true))}">T${t.numero}</th>`).join('')}</tr></thead>
+          <tbody>${rows.map(r => `<tr>
+            <td><span class="pos ${r.pos <= 3 ? 'p' + r.pos : ''}">${r.pos}</span></td>
+            <td class="l eq"><b>${esc(r.equipe)}</b>${r.club ? `<small>${esc(clubNom(r.club))}</small>` : ''}</td>
+            <td class="pts">${r.pts}</td><td>${r.joues}</td>
+            ${[1, 2, 3].map(i => `<td><span class="medal ${r['p' + i] ? 'm' + i : 'none'}">${r['p' + i] || '–'}</span></td>`).join('')}
+            ${joues.map(t => { const x = r.par[t.numero]; return `<td class="tp ${x ? '' : 'zero'}" ${x ? `title="${x.rang}${x.rang === 1 ? 'er' : 'e'} du tournoi ${t.numero}"` : ''}>${x ? x.p : '·'}</td>`; }).join('')}
+          </tr>`).join('')}</tbody></table></div>
+          <div class="legend"><span>En cas d'égalité de points : nombre de 1<sup>res</sup> places, puis de 2<sup>es</sup>, puis de 3<sup>es</sup> places.</span><span>T1, T2… : points marqués à chaque tournoi.</span></div>`
+        : `<p class="muted" style="margin-top:6px">Le classement apparaîtra après la validation du premier tournoi.</p>`}
+        <div class="bareme"><b>Barème par tournoi</b> (N = nombre d'équipes engagées) : vainqueur N + 3 points · 2<sup>e</sup> N + 1 · 3<sup>e</sup> N · puis le dernier marque 1 point, l'avant-dernier 2, et ainsi de suite.</div>
+      </section>
+      <section class="card">
+        <h2>Calendrier</h2>
+        <div class="cal" style="margin-top:12px">${tournois.map(t => calRow(t, true)).join('')}</div>
+        <div class="btnrow"><a class="btn accent" href="#inscription">Inscrire une équipe</a></div>
+      </section>
+    </div>
+  </main>`;
+}
+
+// Ouverture automatique des inscriptions : 6 semaines avant le tournoi (même règle que chp_ouvert en SQL)
+const OUVERTURE_JOURS = 42;
+function ouverture(t) { const d = parseD(t.date); d.setDate(d.getDate() - OUVERTURE_JOURS); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function calRow(t, avecResultats) {
+  const d = parseD(t.date), past = t.date < today();
+  let badge;
+  if (t.statut === 'valide') badge = '<span class="badge b-res">🏆 Résultats</span>';
+  else if (past) badge = '<span class="badge b-wait">Résultats à venir</span>';
+  else if (t.ouvert) badge = `<span class="badge b-open">Inscriptions ouvertes${t.date_limite ? ' jusqu\'au ' + esc(fmtD(t.date_limite, false, false)) + (t.heure_limite ? ' ' + esc(fmtH(t.heure_limite)) : '') : ''}</span>`;
+  else if (!t.date_limite && !t.lieu) badge = '<span class="badge b-tbc">Infos à venir</span>';
+  else if (t.date_limite && t.inscriptions === 'auto' && today() < ouverture(t)) badge = `<span class="badge b-tbc">Inscriptions à partir du ${esc(fmtD(ouverture(t), false, false))}</span>`;
+  else badge = '<span class="badge b-closed">Inscriptions closes</span>';
+  const n = t.resultats ? t.resultats.length : 0;
+  return `<div class="cal-row">
+    <div class="cal-date ${past ? 'past' : ''}"><b>${d.getDate()}</b><span>${MOIS_C[d.getMonth()]} ${String(d.getFullYear()).slice(2)}</span></div>
+    <div>
+      <div class="cal-t">Tournoi ${t.numero} · <span style="text-transform:capitalize">${JOURS[d.getDay()]}</span>${t.heure ? ' · ' + esc(fmtH(t.heure)) : ''}</div>
+      <div class="cal-meta">${t.lieu ? `📍 <b>${esc(lieuTxt(t))}</b>` : 'Lieu à confirmer'}${t.organisateur ? ' · ' + esc(clubNom(t.organisateur)) : ''}</div>
+      ${t.remarque ? `<div class="cal-meta">${esc(t.remarque)}</div>` : ''}
+      <div class="cal-act">${badge}${t.ouvert && !past ? `<a class="btn accent sm" href="#inscription/${t.id}">S'inscrire</a>` : ''}${t.nb_inscrits && !past && t.statut !== 'valide' ? `<span class="small muted">${t.nb_inscrits} équipe${t.nb_inscrits > 1 ? 's' : ''} inscrite${t.nb_inscrits > 1 ? 's' : ''}</span>` : ''}</div>
+      ${avecResultats && t.statut === 'valide' && n ? `<details class="cal-res"><summary>Classement du tournoi (${n} équipes)</summary><ol>${t.resultats.map(r => `<li><span class="r">${r.rang}</span><span>${esc(r.equipe)}</span><span class="p">${points(r.rang, n)} pts</span></li>`).join('')}</ol></details>` : ''}
+    </div>
+  </div>`;
+}
+
+// ======================== PUBLIC : OPEN ========================
+function renderOpen(code) {
+  const cs = D.competitions.filter(c => c.famille === 'open');
+  const c = cs.find(x => x.code === code) || cs[0];
+  if (!c) return;
+  const tournois = D.tournois.filter(t => t.competition === c.code);
+  $('app').innerHTML = `
+  <div class="hero open"><div class="wrap">
+    <div class="k">Tournois OPEN · Saison 2026-2027</div>
+    <h1>2 contre 2 et 4 contre 4</h1>
+    <p>Des tournois pour les jeunes joueurs, par niveau, sans classement : le plaisir de jouer avant tout. Lors du tournoi final, tous les enfants participants sont récompensés par une médaille et un tee-shirt.</p>
+  </div></div>
+  <main class="wrap stack">
+    <div class="tabs">${cs.map(x => `<a class="tab O ${x.code === c.code ? 'on' : ''}" href="#open/${x.code}"><span class="sw O"></span>${esc(x.nom.replace('OPEN ', ''))}</a>`).join('')}</div>
+    <div class="cols">
+      <section class="card">
+        <h2>Calendrier ${esc(c.nom)}</h2>
+        <div class="cal" style="margin-top:12px">${tournois.map(t => calRow(t, false)).join('')}</div>
+        <div class="btnrow"><a class="btn accent" href="#inscription">Inscrire des équipes</a></div>
+      </section>
+      <section class="card">
+        <h2>Les niveaux</h2>
+        <p class="muted small" style="margin-top:4px">À préciser à l'inscription, avec le sexe de chaque équipe.</p>
+        <div class="levels">${(REGLES_NIVEAUX[c.code] || []).map(([n, l]) => `<div class="level"><b>${esc(n)}</b><ul>${l.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`).join('')}</div>
+        <div class="facts">${(INFOS_OPEN[c.code] || []).map(([k, v]) => `<div class="fact"><b>${esc(k)}</b><span>${esc(v)}</span></div>`).join('')}</div>
+        <p class="small muted" style="margin-top:14px">Sur place, chaque équipe remplit sa fiche de composition. Le club recevant envoie les fiches au Comité après le tournoi.</p>
+      </section>
+    </div>
+  </main>`;
+}
+
+// ======================== INSCRIPTION ========================
+let INS = null;
+function renderInscription(tid) {
+  const open = D.tournois.filter(t => t.ouvert && t.date >= today()).sort((a, b) => a.date.localeCompare(b.date) || comp(a.competition).ordre - comp(b.competition).ordre);
+  const saved = store.get('chp_contact', {});
+  const pre = open.find(t => String(t.id) === String(tid));
+  INS = { tid: pre ? pre.id : '', lignes: [{ niveau: '', sexe: '', nb: 1 }], nb: 1 };
+  const groups = D.competitions.map(c => [c, open.filter(t => t.competition === c.code)]).filter(([, l]) => l.length);
+  $('app').innerHTML = `
+  <div class="hero"><div class="wrap">
+    <div class="k">Inscriptions en ligne</div>
+    <h1>Inscrire une équipe</h1>
+    <p>Choisissez le tournoi puis indiquez le nombre d'équipes. Vos coordonnées sont gardées sur cet appareil pour les prochaines inscriptions.</p>
+  </div></div>
+  <main class="wrap">
+    ${open.length ? `<form class="card form" id="ins-form" autocomplete="on" novalidate>
+      <div class="step"><div class="step-n">1</div><div class="step-b">
+        <h3>Le tournoi</h3>
+        <select id="ins-t" required><option value="">Choisir le tournoi…</option>${groups.map(([c, l]) => `<optgroup label="${esc(c.nom)}">${l.map(t => `<option value="${t.id}" ${pre && pre.id === t.id ? 'selected' : ''}>${esc(c.nom)} · Tournoi ${t.numero} · ${esc(fmtD(t.date, true, false))}${t.ville ? ' · ' + esc(t.ville) : ''}</option>`).join('')}</optgroup>`).join('')}</select>
+        <div id="ins-tsum"></div>
+      </div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-b">
+        <h3>Le club</h3>
+        <select id="ins-club" required><option value="">Choisir le club…</option>${D.clubs.map(c => `<option value="${esc(c.code)}" ${saved.club === c.code ? 'selected' : ''}>${esc(c.nom)}</option>`).join('')}<option value="__autre" ${saved.club && !D.clubs.some(c => c.code === saved.club) ? 'selected' : ''}>Autre club…</option></select>
+        <input id="ins-club-autre" placeholder="Nom du club" maxlength="120" value="${esc(saved.club && !D.clubs.some(c => c.code === saved.club) ? saved.club : '')}" ${saved.club && !D.clubs.some(c => c.code === saved.club) ? '' : 'hidden'}>
+      </div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-b" id="ins-eq"><h3>Les équipes</h3><p class="muted small">Choisissez d'abord le tournoi.</p></div></div>
+      <div class="step"><div class="step-n">4</div><div class="step-b">
+        <h3>La personne à contacter</h3>
+        <div class="grid3">
+          <div class="field"><label for="ins-nom">Nom et prénom</label><input id="ins-nom" required maxlength="120" autocomplete="name" value="${esc(saved.nom || '')}"></div>
+          <div class="field"><label for="ins-mail">Adresse mail</label><input id="ins-mail" type="email" required maxlength="160" autocomplete="email" value="${esc(saved.email || '')}"></div>
+          <div class="field"><label for="ins-tel">Téléphone</label><input id="ins-tel" type="tel" maxlength="40" autocomplete="tel" value="${esc(saved.tel || '')}"></div>
+        </div>
+        <div class="field"><label for="ins-com">Remarque (facultatif)</label><input id="ins-com" maxlength="500" placeholder="Arrivée tardive, équipe incomplète…"></div>
+        <label class="hp" aria-hidden="true">Ne pas remplir <input id="ins-site" tabindex="-1" autocomplete="off"></label>
+        <p class="small muted">L'adresse mail sert à vous envoyer la formule sportive et les informations du tournoi.</p>
+      </div></div>
+      <div id="ins-err" class="msg err" hidden></div>
+      <div class="btnrow" style="justify-content:flex-end"><button class="btn primary" id="ins-ok" type="submit">Valider l'inscription</button></div>
+    </form>`
+    : `<div class="card form"><h2>Aucune inscription ouverte</h2><p class="muted" style="margin-top:8px">Les inscriptions ouvrent pour chaque tournoi jusqu'à sa date limite. Consultez le calendrier des <a href="#4x4">championnats 4x4</a> et des <a href="#open">tournois OPEN</a>.</p></div>`}
+  </main>`;
+  if (!open.length) return;
+  $('ins-t').onchange = () => { INS.tid = $('ins-t').value; insTournoi(); };
+  $('ins-club').onchange = () => { $('ins-club-autre').hidden = $('ins-club').value !== '__autre'; if (!$('ins-club-autre').hidden) $('ins-club-autre').focus(); };
+  $('ins-form').onsubmit = submitInscription;
+  insTournoi();
+}
+function insTournoi() {
+  const t = D.tournois.find(x => String(x.id) === String(INS.tid));
+  if (!t) { $('ins-tsum').innerHTML = ''; $('ins-eq').innerHTML = '<h3>Les équipes</h3><p class="muted small">Choisissez d\'abord le tournoi.</p>'; return; }
+  const c = comp(t.competition);
+  $('ins-tsum').innerHTML = `<div class="tsum"><b>${esc(tLabel(t))}</b><br>📅 ${esc(fmtD(t.date, true))}${t.heure ? ' à ' + esc(fmtH(t.heure)) : ''}<br>📍 ${t.lieu ? esc(lieuTxt(t)) : 'Lieu à confirmer'}${t.date_limite ? `<br>⏳ Inscriptions jusqu'au ${esc(fmtD(t.date_limite, true, false))}${t.heure_limite ? ' à ' + esc(fmtH(t.heure_limite)) : ''}` : ''}</div>`;
+  if (c.famille === 'open') {
+    $('ins-eq').innerHTML = `<h3>Les équipes</h3><p class="muted small">Une ligne par niveau et par sexe. Exemple : 2 équipes Débutant filles, 1 équipe Intermédiaire garçons.</p>
+      <div class="lines" id="ins-lines"></div><div><button type="button" class="btn ghost sm" id="ins-add">+ Ajouter une ligne</button></div><div class="small muted" id="ins-total"></div>`;
+    $('ins-add').onclick = () => { INS.lignes.push({ niveau: '', sexe: '', nb: 1 }); insLines(); };
+    insLines();
+  } else {
+    $('ins-eq').innerHTML = `<h3>Nombre d'équipes</h3><p class="muted small">Championnat ${esc(c.nom)}.</p>
+      <div class="stepper"><button type="button" id="nb-m" aria-label="Moins">−</button><input id="ins-nb" type="number" min="1" max="20" value="${INS.nb}" inputmode="numeric" aria-label="Nombre d'équipes"><button type="button" id="nb-p" aria-label="Plus">+</button></div>`;
+    const set = v => { INS.nb = Math.max(1, Math.min(20, v || 1)); $('ins-nb').value = INS.nb; };
+    $('nb-m').onclick = () => set(INS.nb - 1); $('nb-p').onclick = () => set(INS.nb + 1);
+    $('ins-nb').oninput = () => { INS.nb = +$('ins-nb').value || 1; };
+  }
+}
+function insLines() {
+  const t = D.tournois.find(x => String(x.id) === String(INS.tid)), c = comp(t.competition);
+  $('ins-lines').innerHTML = INS.lignes.map((l, i) => `<div class="line" data-i="${i}">
+    <select data-f="niveau" aria-label="Niveau"><option value="">Niveau…</option>${(c.niveaux || []).map(n => `<option ${l.niveau === n ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select>
+    <select data-f="sexe" aria-label="Sexe"><option value="">Filles / garçons…</option>${SEXES_OPEN.map(n => `<option ${l.sexe === n ? 'selected' : ''}>${n}</option>`).join('')}</select>
+    <input class="nb" data-f="nb" type="number" min="1" max="20" value="${l.nb}" aria-label="Nombre d'équipes" inputmode="numeric">
+    <button type="button" class="x" aria-label="Retirer la ligne" ${INS.lignes.length < 2 ? 'disabled style="opacity:.3"' : ''}>✕</button>
+  </div>`).join('');
+  $('ins-lines').querySelectorAll('.line').forEach(row => {
+    const l = INS.lignes[+row.dataset.i];
+    row.querySelectorAll('[data-f]').forEach(el => el.addEventListener('input', () => { l[el.dataset.f] = el.dataset.f === 'nb' ? +el.value : el.value; insTotal(); }));
+    row.querySelector('.x').onclick = () => { if (INS.lignes.length > 1) { INS.lignes.splice(+row.dataset.i, 1); insLines(); } };
+  });
+  insTotal();
+}
+function insTotal() { const n = INS.lignes.reduce((s, l) => s + (+l.nb || 0), 0); if ($('ins-total')) $('ins-total').textContent = `Total : ${n} équipe${n > 1 ? 's' : ''}`; }
+async function submitInscription(ev) {
+  ev.preventDefault();
+  const err = m => { $('ins-err').textContent = m; $('ins-err').hidden = false; $('ins-err').scrollIntoView({ block: 'center', behavior: 'smooth' }); };
+  $('ins-err').hidden = true;
+  const t = D.tournois.find(x => String(x.id) === String(INS.tid));
+  if (!t) return err('Choisissez le tournoi.');
+  const c = comp(t.competition);
+  const clubV = $('ins-club').value, club = clubV === '__autre' ? $('ins-club-autre').value.trim() : clubV;
+  if (!club) return err('Choisissez votre club.');
+  const contact = { nom: $('ins-nom').value.trim(), email: $('ins-mail').value.trim(), tel: $('ins-tel').value.trim() };
+  if (!contact.nom) return err('Indiquez le nom de la personne à contacter.');
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contact.email)) return err('Indiquez une adresse mail valide.');
+  let lignes;
+  if (c.famille === 'open') {
+    if (INS.lignes.some(l => !l.niveau || !l.sexe || !(+l.nb > 0))) return err('Pour chaque ligne, indiquez le niveau, filles ou garçons, et le nombre d\'équipes.');
+    lignes = INS.lignes.map(l => ({ niveau: l.niveau, sexe: l.sexe, nb: +l.nb }));
+  } else lignes = [{ nb: INS.nb }];
+  store.set('chp_contact', { club, ...contact });
+  const btn = $('ins-ok'); btn.disabled = true; btn.textContent = 'Envoi…';
+  try {
+    const n = await rpc('chp_inscrire', { p_tournoi: t.id, p_club: club, p_contact: contact, p_lignes: lignes, p_commentaire: $('ins-com').value, p_piege: $('ins-site').value });
+    loadPublic().catch(() => {});
+    $('ins-form').outerHTML = `<div class="card form done">
+      <div class="big">✅</div><h2 style="margin-top:8px">Inscription enregistrée</h2>
+      <p style="margin-top:10px"><b>${n} équipe${n > 1 ? 's' : ''}</b> de ${esc(clubNom(club))} inscrite${n > 1 ? 's' : ''} au <b>${esc(tLabel(t))}</b><br>${esc(fmtD(t.date, true))}${t.lieu ? ' · ' + esc(lieuTxt(t)) : ''}.</p>
+      ${c.famille === 'open' ? `<p class="small muted" style="margin-top:6px">${lignes.map(l => `${l.nb} × ${esc(l.niveau)} ${esc(l.sexe.toLowerCase())}`).join(' · ')}</p>` : ''}
+      <p class="muted" style="margin-top:12px">La formule sportive et les informations du tournoi seront envoyées à ${esc(contact.email)} après la clôture des inscriptions. Pour toute modification : <a href="mailto:volley83@gmail.com">volley83@gmail.com</a>.</p>
+      <div class="btnrow" style="justify-content:center"><a class="btn accent" href="#inscription" onclick="setTimeout(()=>renderInscription(),0)">Inscrire à un autre tournoi</a><a class="btn ghost" href="#${c.famille === 'open' ? 'open' : '4x4'}/${c.code}">Voir le calendrier</a></div>
+    </div>`;
+    window.scrollTo(0, 0);
+  } catch(e) {
+    err(/closes/.test(e.message) ? 'Les inscriptions sont closes pour ce tournoi.' : 'L\'inscription n\'a pas pu être enregistrée : ' + e.message);
+    btn.disabled = false; btn.textContent = 'Valider l\'inscription';
+  }
+}
+
+// ======================== ÉDITEUR DE CLASSEMENT (club recevant et Comité) ========================
+// st = { rows:[{equipe, club}], connues:[noms], inscrits:[{club, nb}] }
+function suggestions(st) {
+  const s = new Set(st.connues || []);
+  (st.inscrits || []).forEach(i => { for (let k = 1; k <= i.nb; k++) s.add((i.club + (i.nb > 1 ? ' ' + k : '')).toUpperCase()); });
+  return [...s].sort(coll.compare);
+}
+function editorHTML(st, lock) {
+  const n = st.rows.filter(r => r.equipe.trim()).length;
+  return `<datalist id="dl-eq">${suggestions(st).map(x => `<option value="${esc(x)}">`).join('')}</datalist>
+  <div class="ed">
+    <div class="ed-row ed-h"><span>Rang</span><span>Équipe</span><span class="ed-hc">Club</span><span class="pp">Points</span><span></span></div>
+    ${st.rows.map((r, i) => `<div class="ed-row" data-i="${i}">
+      <span class="n">${i + 1}</span>
+      <input data-f="equipe" list="dl-eq" value="${esc(r.equipe)}" placeholder="Nom de l'équipe" ${lock ? 'disabled' : ''} aria-label="Équipe classée ${i + 1}">
+      <select class="club" data-f="club" ${lock ? 'disabled' : ''} aria-label="Club"><option value="">Club…</option>${D.clubs.map(c => `<option value="${esc(c.code)}" ${r.club === c.code ? 'selected' : ''}>${esc(c.nom)}</option>`).join('')}</select>
+      <span class="pp">${r.equipe.trim() ? points(i + 1, n) : ''}</span>
+      <span class="mv">${lock ? '' : `<button type="button" data-a="up" aria-label="Monter" ${i ? '' : 'disabled'}>▲</button><button type="button" data-a="down" aria-label="Descendre" ${i < st.rows.length - 1 ? '' : 'disabled'}>▼</button><button type="button" class="x" data-a="del" aria-label="Retirer">✕</button>`}</span>
+    </div>`).join('')}
+  </div>
+  ${lock ? '' : '<div><button type="button" class="btn ghost sm" data-a="add">+ Ajouter une équipe</button></div>'}`;
+}
+function bindEditor(box, st, rerender) {
+  box.querySelectorAll('.ed-row[data-i]').forEach(row => {
+    const r = st.rows[+row.dataset.i];
+    row.querySelectorAll('[data-f]').forEach(el => el.addEventListener('change', () => {
+      r[el.dataset.f] = el.dataset.f === 'equipe' ? el.value.trim().toUpperCase() : el.value;
+      if (el.dataset.f === 'equipe' && !r.club) { const g = D.clubs.find(c => r.equipe.startsWith(c.code.toUpperCase())); if (g) r.club = g.code; }
+      st.dirty = true; rerender();
+    }));
+    row.querySelectorAll('[data-a]').forEach(b => b.onclick = () => {
+      const i = +row.dataset.i;
+      if (b.dataset.a === 'up') [st.rows[i - 1], st.rows[i]] = [st.rows[i], st.rows[i - 1]];
+      if (b.dataset.a === 'down') [st.rows[i + 1], st.rows[i]] = [st.rows[i], st.rows[i + 1]];
+      if (b.dataset.a === 'del') st.rows.splice(i, 1);
+      st.dirty = true; rerender();
+    });
+  });
+  const add = box.querySelector('[data-a="add"]');
+  if (add) add.onclick = () => { st.rows.push({ equipe: '', club: '' }); st.dirty = true; rerender(); const ins = box.querySelectorAll('.ed-row[data-i] input'); if (ins.length) ins[ins.length - 1].focus(); };
+}
+const rowsOut = st => st.rows.filter(r => r.equipe.trim()).map((r, i) => ({ rang: i + 1, equipe: r.equipe.trim().toUpperCase(), club: r.club || null }));
+function initialRows(resultats, inscrits) {
+  if (resultats && resultats.length) return resultats.map(r => ({ equipe: r.equipe, club: r.club || '' }));
+  const rows = [];
+  (inscrits || []).forEach(i => { for (let k = 1; k <= i.nb; k++) rows.push({ equipe: (i.club + (i.nb > 1 ? ' ' + k : '')).toUpperCase(), club: D.clubs.some(c => c.code === i.club) ? i.club : '' }); });
+  return rows.length ? rows : [{ equipe: '', club: '' }];
+}
+
+// ======================== ESPACE CLUB RECEVANT ========================
+let ORG = null;
+function renderClub() {
+  const saved = (() => { try { return JSON.parse(sessionStorage.getItem('chp_orga')); } catch(e) { return null; } })();
+  if (saved && !ORG) { orgaOpen(saved.t, saved.code).catch(() => { try { sessionStorage.removeItem('chp_orga'); } catch(e) {} renderClub(); }); return; }
+  if (ORG) return renderOrgaPanel();
+  const list = D.tournois.filter(t => comp(t.competition).famille === '4x4' && t.statut !== 'valide').sort((a, b) => a.date.localeCompare(b.date));
+  const near = list.find(t => t.date >= new Date(Date.now() - 10 * 864e5).toISOString().slice(0, 10));
+  $('app').innerHTML = `
+  <div class="hero"><div class="wrap"><div class="k">Club recevant</div><h1>Saisir le classement d'un tournoi</h1>
+    <p>Pour le club qui reçoit un tournoi M15 ou M18 4x4 : liste des équipes inscrites, saisie du classement final et envoi au Comité, qui le valide.</p></div></div>
+  <main class="wrap"><form class="card form" id="orga-login">
+    <div class="field"><label for="o-t">Tournoi</label><select id="o-t" required>${list.map(t => `<option value="${t.id}" ${near && near.id === t.id ? 'selected' : ''}>${esc(comp(t.competition).nom)} · Tournoi ${t.numero} · ${esc(fmtD(t.date, true, false))}</option>`).join('')}</select></div>
+    <div class="field" style="margin-top:14px"><label for="o-code">Code du tournoi</label><input id="o-code" required autocomplete="off" placeholder="Communiqué par le Comité"></div>
+    <div id="o-err" class="msg err" hidden style="margin-top:12px"></div>
+    <div class="btnrow"><button class="btn primary" type="submit">Accéder</button></div>
+  </form></main>`;
+  $('orga-login').onsubmit = async ev => {
+    ev.preventDefault(); $('o-err').hidden = true;
+    try { await orgaOpen(+$('o-t').value, $('o-code').value.trim()); }
+    catch(e) { $('o-err').textContent = /Code/.test(e.message) ? 'Code incorrect pour ce tournoi.' : e.message; $('o-err').hidden = false; }
+  };
+}
+async function orgaOpen(t, code) {
+  const d = await rpc('chp_orga_charger', { p_tournoi: t, p_code: code });
+  try { sessionStorage.setItem('chp_orga', JSON.stringify({ t, code })); } catch(e) {}
+  const inscrits = d.inscriptions.map(i => ({ club: i.club, nb: i.nb }));
+  ORG = { t, code, data: d, st: { rows: initialRows(d.resultats, inscrits), connues: d.equipes_connues, inscrits } };
+  renderOrgaPanel();
+}
+function renderOrgaPanel() {
+  const { data } = ORG, t = data.tournoi, c = data.competition, lock = t.statut === 'valide';
+  const nInscrits = data.inscriptions.reduce((s, i) => s + i.nb, 0);
+  $('app').innerHTML = `
+  <div class="hero"><div class="wrap"><div class="k">Club recevant · ${esc(c.nom)}</div><h1>Tournoi ${t.numero} · ${esc(fmtD(t.date, true, false))}</h1>
+    <p>${t.lieu ? esc(lieuTxt(t)) : ''}</p></div></div>
+  <main class="wrap stack">
+    <section class="card">
+      <div class="rank-head"><h2>Équipes inscrites</h2><span class="muted small">${nInscrits} équipe${nInscrits > 1 ? 's' : ''}</span></div>
+      ${data.inscriptions.length ? `<div class="tablebox"><table class="adm"><thead><tr><th>Club</th><th>Équipes</th><th>Contact</th></tr></thead><tbody>${data.inscriptions.map(i => `<tr><td><b>${esc(clubNom(i.club))}</b></td><td>${i.nb}</td><td>${esc(i.contact || '')}${i.email ? ` · <a href="mailto:${esc(i.email)}">${esc(i.email)}</a>` : ''}${i.tel ? ' · ' + esc(i.tel) : ''}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">Aucune équipe inscrite en ligne.</p>'}
+    </section>
+    <section class="card stack">
+      <div class="rank-head"><h2>Classement final du tournoi</h2>${{ ouvert: '<span class="badge b-tbc">À saisir</span>', saisi: '<span class="badge b-wait">Envoyé au Comité, en attente de validation</span>', valide: '<span class="badge b-res">Validé par le Comité</span>' }[t.statut]}</div>
+      <p class="muted small">Classez les équipes de la 1<sup>re</sup> à la dernière place avec les flèches ▲ ▼. Gardez le même nom d'équipe d'un tournoi à l'autre : la liste propose les noms déjà utilisés dans le championnat.</p>
+      <div id="org-ed"></div>
+      <div id="org-msg" class="msg" hidden></div>
+      ${lock ? '' : `<div class="btnrow" style="margin:0"><button class="btn ghost" id="org-save">Enregistrer le brouillon</button><button class="btn ok" id="org-send">Envoyer le classement au Comité</button></div>`}
+    </section>
+    <div><button class="linkbtn" id="org-out">Changer de tournoi</button></div>
+  </main>`;
+  const draw = () => { $('org-ed').innerHTML = editorHTML(ORG.st, lock); if (!lock) bindEditor($('org-ed'), ORG.st, draw); };
+  draw();
+  $('org-out').onclick = () => { ORG = null; try { sessionStorage.removeItem('chp_orga'); } catch(e) {} renderClub(); };
+  if (lock) return;
+  const send = async envoyer => {
+    const rows = rowsOut(ORG.st), m = $('org-msg');
+    if (envoyer && rows.length < 2) { m.className = 'msg err'; m.textContent = 'Saisissez au moins deux équipes classées.'; m.hidden = false; return; }
+    const dup = rows.map(r => r.equipe).find((x, i, a) => a.indexOf(x) !== i);
+    if (dup) { m.className = 'msg err'; m.textContent = `L'équipe « ${dup} » apparaît deux fois.`; m.hidden = false; return; }
+    if (envoyer && !confirm(`Envoyer le classement (${rows.length} équipes) au Comité pour validation ?`)) return;
+    try {
+      const statut = await rpc('chp_orga_enregistrer', { p_tournoi: ORG.t, p_code: ORG.code, p_rows: rows, p_envoyer: envoyer });
+      ORG.data.tournoi.statut = statut; ORG.st.dirty = false;
+      if (envoyer) { renderOrgaPanel(); const m2 = $('org-msg'); m2.className = 'msg ok'; m2.textContent = '✓ Classement envoyé. Le Comité le vérifie puis le publie avec le classement général. Vous pouvez encore le corriger tant qu\'il n\'est pas validé.'; m2.hidden = false; }
+      else { m.className = 'msg ok'; m.textContent = '✓ Brouillon enregistré.'; m.hidden = false; }
+    } catch(e) { m.className = 'msg err'; m.textContent = e.message; m.hidden = false; }
+  };
+  $('org-save').onclick = () => send(false);
+  $('org-send').onclick = () => send(true);
+}
+
+// ======================== ADMIN ========================
+let A = null, ATAB = 'inscriptions', ACOMP = null, ATID = null, CTID = null, AED = null;
+function openAdmin() {
+  if (ADMIN_PWD) { location.hash = 'admin'; return; }
+  const o = document.createElement('div'); o.className = 'overlay';
+  o.innerHTML = `<form class="modal"><h3 class="cond" style="font-size:22px">Accès Comité</h3><div class="field"><label for="a-pwd">Mot de passe</label><input id="a-pwd" type="password" autocomplete="current-password" required></div><div id="a-msg" class="msg err" hidden></div><div class="btnrow" style="margin:0"><button class="btn primary" type="submit">Entrer</button><button class="btn ghost" type="button" id="a-cancel">Annuler</button></div></form>`;
+  document.body.appendChild(o); $('a-pwd').focus();
+  $('a-cancel').onclick = () => o.remove();
+  o.querySelector('form').onsubmit = async ev => {
+    ev.preventDefault();
+    try { A = await rpc('chp_admin_get', { pwd: $('a-pwd').value }); ADMIN_PWD = $('a-pwd').value; try { sessionStorage.setItem('chp_admin', ADMIN_PWD); } catch(e) {} o.remove(); location.hash = 'admin'; route(); }
+    catch(e) { $('a-msg').textContent = /refus/i.test(e.message) ? 'Mot de passe incorrect.' : e.message; $('a-msg').hidden = false; }
+  };
+}
+async function loadAdmin() { A = await rpc('chp_admin_get', { pwd: ADMIN_PWD }); D.clubs = A.clubs.map(c => ({ code: c.code, nom: c.nom })); }
+function saveMark(cls, txt) { const s = $('a-save'); if (s) { s.className = 'save ' + cls; s.textContent = txt; } }
+const aComp = code => A.competitions.find(c => c.code === code) || {};
+async function renderAdmin(tab) {
+  if (!ADMIN_PWD) { location.hash = '4x4'; return; }
+  if (tab) ATAB = tab;
+  if (!A) await loadAdmin();
+  const aTitre = { inscriptions: 'Inscriptions', classements: 'Classements', tournois: 'Calendrier et codes', clubs: 'Clubs' };
+  const aValider = A.tournois.filter(t => t.statut === 'saisi').length;
+  $('app').innerHTML = `
+  <div class="hero"><div class="wrap"><div class="k">Espace Comité</div><h1>Gestion des championnats</h1></div></div>
+  <main class="wrap stack">
+    <div class="rank-head"><div class="adm-tabs">${Object.entries(aTitre).map(([k, l]) => `<a class="tab ${k === ATAB ? 'on' : ''}" style="${k === ATAB ? 'background:var(--navy);color:#fff' : ''}" href="#admin/${k}">${l}${k === 'classements' && aValider ? ` <span class="badge b-wait">${aValider} à valider</span>` : ''}</a>`).join('')}</div>
+      <span><span id="a-save" class="save"></span> <button class="linkbtn" onclick="ADMIN_PWD='';A=null;try{sessionStorage.removeItem('chp_admin')}catch(e){};location.hash='4x4'">Se déconnecter</button></span></div>
+    <div id="a-body"></div>
+  </main>`;
+  ({ inscriptions: adminInscriptions, classements: adminClassements, tournois: adminTournois, clubs: adminClubs })[ATAB]();
+}
+const tSel = (list, cur, id = 'a-t') => `<select id="${id}" style="max-width:560px">${A.competitions.map(c => { const l = list.filter(t => t.competition === c.code); return l.length ? `<optgroup label="${esc(c.nom)}">${l.map(t => `<option value="${t.id}" ${t.id === cur ? 'selected' : ''}>${esc(c.nom)} · Tournoi ${t.numero} · ${esc(fmtShort(t.date))}${t.ville ? ' · ' + esc(t.ville) : ''}${t.statut === 'saisi' ? ' · À VALIDER' : ''}</option>`).join('')}</optgroup>` : ''; }).join('')}</select>`;
+
+// ----- Inscriptions -----
+function adminInscriptions() {
+  const ts = [...A.tournois].sort((a, b) => a.date.localeCompare(b.date));
+  if (!ATID || !ts.find(t => t.id === ATID)) { const nx = ts.find(t => t.date >= today()); ATID = nx ? nx.id : ts.length ? ts[ts.length - 1].id : null; }
+  const t = ts.find(x => x.id === ATID); if (!t) { $('a-body').innerHTML = '<div class="card">Aucun tournoi.</div>'; return; }
+  const c = aComp(t.competition), open = c.famille === 'open';
+  const ins = A.inscriptions.filter(i => i.tournoi_id === t.id);
+  const total = ins.reduce((s, i) => s + i.nb_equipes, 0), clubs = [...new Set(ins.map(i => i.club))];
+  const mails = [...new Set(ins.map(i => (i.contact_email || '').toLowerCase()).filter(Boolean))];
+  const memeWE = ts.filter(x => Math.abs(parseD(x.date) - parseD(t.date)) <= 864e5);
+  let matrice = '';
+  if (open && ins.length) {
+    const niv = c.niveaux || [], sx = SEXES_OPEN.filter(s => ins.some(i => i.sexe === s));
+    matrice = `<div style="overflow-x:auto"><table class="mx"><thead><tr><th></th>${sx.map(s => `<th>${s}</th>`).join('')}<th>Total</th></tr></thead><tbody>${niv.map(n => `<tr><th>${esc(n)}</th>${sx.map(s => `<td>${ins.filter(i => i.niveau === n && i.sexe === s).reduce((a, i) => a + i.nb_equipes, 0) || ''}</td>`).join('')}<td><b>${ins.filter(i => i.niveau === n).reduce((a, i) => a + i.nb_equipes, 0)}</b></td></tr>`).join('')}</tbody></table></div>`;
+  }
+  $('a-body').innerHTML = `<div class="stack">
+    <div class="card stack">
+      <div class="field"><label for="a-t">Tournoi</label>${tSel(ts, t.id)}</div>
+      <div class="muted small">${esc(fmtD(t.date, true))}${t.heure ? ' · ' + esc(fmtH(t.heure)) : ''} · ${t.lieu ? esc(lieuTxt(t)) : 'lieu à confirmer'} · ${t.ouvert ? `<span class="badge b-open">Inscriptions ouvertes${t.date_limite ? ' jusqu\'au ' + esc(fmtShort(t.date_limite)) + ' ' + esc(t.heure_limite || '') : ''}</span>` : '<span class="badge b-closed">Inscriptions closes</span>'}</div>
+      <div class="kpis"><div class="kpi"><b>${total}</b><span>équipes</span></div><div class="kpi"><b>${clubs.length}</b><span>clubs</span></div><div class="kpi"><b>${mails.length}</b><span>adresses mail</span></div></div>
+      ${matrice}
+      <div class="btnrow" style="margin:0">
+        <button class="btn primary" id="a-csv">⬇ Récapitulatif du tournoi (CSV)</button>
+        ${memeWE.length > 1 ? `<button class="btn ghost" id="a-csv-we">⬇ Récapitulatif du week-end (${memeWE.length} tournois)</button>` : ''}
+        <button class="btn ghost" id="a-copy" ${mails.length ? '' : 'disabled'}>📋 Copier les adresses mail</button>
+        <a class="btn ghost" ${mails.length ? `href="https://mail.google.com/mail/?view=cm&fs=1&bcc=${encodeURIComponent(mails.join(','))}&su=${encodeURIComponent(tLabel(t) + ' – ' + fmtD(t.date, true))}" target="_blank" rel="noopener"` : 'aria-disabled="true" style="opacity:.5;pointer-events:none"'}>✉ Écrire aux inscrits (Gmail, en Cci)</a>
+      </div>
+      <textarea id="a-mails" readonly style="min-height:56px;font-size:13px" placeholder="Aucune adresse">${esc(mails.join(', '))}</textarea>
+    </div>
+    <div class="tablebox"><table class="adm">
+      <thead><tr><th>Club</th>${open ? '<th>Niveau</th><th>Sexe</th>' : ''}<th>Équipes</th><th>Contact</th><th>Remarque</th><th>Reçue le</th><th></th></tr></thead>
+      <tbody>${ins.length ? ins.map(i => `<tr data-id="${i.id}">
+        <td><b>${esc(clubNom(i.club))}</b></td>
+        ${open ? `<td><select data-f="niveau">${(c.niveaux || []).map(n => `<option ${i.niveau === n ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></td><td><select data-f="sexe">${SEXES_OPEN.map(n => `<option ${i.sexe === n ? 'selected' : ''}>${n}</option>`).join('')}</select></td>` : ''}
+        <td><input data-f="nb_equipes" type="number" min="1" max="30" value="${i.nb_equipes}" style="width:70px"></td>
+        <td>${esc(i.contact_nom || '')}<br><a href="mailto:${esc(i.contact_email || '')}">${esc(i.contact_email || '')}</a>${i.contact_tel ? '<br>' + esc(i.contact_tel) : ''}</td>
+        <td class="small">${esc(i.commentaire || '')}</td>
+        <td class="small muted">${esc(new Date(i.created_at).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }))}</td>
+        <td><button class="linkbtn red" data-del>Supprimer</button></td></tr>`).join('') : `<tr><td colspan="8" class="muted">Aucune inscription pour ce tournoi.</td></tr>`}</tbody></table></div>
+    <div class="btnrow" style="margin:0"><button class="btn ghost" id="a-csv-all">⬇ Toutes les inscriptions de la saison (CSV)</button></div>
+  </div>`;
+  $('a-t').onchange = () => { ATID = +$('a-t').value; adminInscriptions(); };
+  const recap = list => list.flatMap(tt => A.inscriptions.filter(i => i.tournoi_id === tt.id).map(i => [aComp(tt.competition).nom, tt.numero, fmtShort(tt.date), lieuTxt(tt), clubNom(i.club), i.niveau || '', i.sexe || '', i.nb_equipes, i.contact_nom, i.contact_email, i.contact_tel, i.commentaire || '', new Date(i.created_at).toLocaleString('fr-FR')]));
+  const head = ['Compétition', 'Tournoi', 'Date', 'Lieu', 'Club', 'Niveau', 'Sexe', 'Équipes', 'Contact', 'Mail', 'Téléphone', 'Remarque', 'Inscription le'];
+  $('a-csv').onclick = () => csvDownload(`Inscriptions-${slug(aComp(t.competition).nom)}-T${t.numero}.csv`, head, recap([t]));
+  if ($('a-csv-we')) $('a-csv-we').onclick = () => csvDownload(`Inscriptions-week-end-${t.date}.csv`, head, recap(memeWE));
+  $('a-csv-all').onclick = () => csvDownload('Inscriptions-saison.csv', head, recap(ts));
+  $('a-copy').onclick = async () => { try { await navigator.clipboard.writeText(mails.join(', ')); saveMark('ok', '✓ ' + mails.length + ' adresses copiées'); } catch(e) { $('a-mails').select(); document.execCommand('copy'); saveMark('ok', '✓ Copié'); } };
+  $('a-body').querySelectorAll('tr[data-id]').forEach(tr => {
+    const id = +tr.dataset.id;
+    tr.querySelectorAll('[data-f]').forEach(el => el.onchange = async () => { saveMark('wait', 'Enregistrement…'); try { await rpc('chp_admin_inscription', { pwd: ADMIN_PWD, iid: id, p: { [el.dataset.f]: el.value } }); await loadAdmin(); saveMark('ok', '✓ Enregistré'); adminInscriptions(); } catch(e) { saveMark('err', '⚠ ' + e.message); } });
+    tr.querySelector('[data-del]').onclick = async () => { if (!confirm('Supprimer cette inscription ?')) return; try { await rpc('chp_admin_inscription', { pwd: ADMIN_PWD, iid: id, p: null }); await loadAdmin(); adminInscriptions(); saveMark('ok', '✓ Supprimée'); } catch(e) { saveMark('err', '⚠ ' + e.message); } };
+  });
+}
+
+// ----- Classements -----
+function adminClassements() {
+  const ts = A.tournois.filter(t => aComp(t.competition).famille === '4x4').sort((a, b) => (a.statut === 'saisi' ? 0 : 1) - (b.statut === 'saisi' ? 0 : 1) || a.date.localeCompare(b.date));
+  if (!CTID || !ts.find(t => t.id === CTID)) { const s = ts.find(t => t.statut === 'saisi') || ts.filter(t => t.date <= today()).pop() || ts[0]; CTID = s && s.id; }
+  const t = ts.find(x => x.id === CTID); if (!t) return;
+  const res = A.resultats.filter(r => r.tournoi_id === t.id);
+  const inscrits = A.inscriptions.filter(i => i.tournoi_id === t.id).map(i => ({ club: i.club, nb: i.nb_equipes }));
+  const connues = [...new Set(A.resultats.filter(r => { const tt = A.tournois.find(x => x.id === r.tournoi_id); return tt && tt.competition === t.competition && tt.id !== t.id; }).map(r => r.equipe))];
+  if (!AED || AED.tid !== t.id) AED = { tid: t.id, st: { rows: initialRows(res, inscrits), connues, inscrits } };
+  const equipes = [...new Set(A.resultats.filter(r => { const tt = A.tournois.find(x => x.id === r.tournoi_id); return tt && tt.competition === t.competition; }).map(r => r.equipe))].sort(coll.compare);
+  $('a-body').innerHTML = `<div class="stack">
+    <div class="card stack">
+      <div class="field"><label for="a-t">Tournoi</label>${tSel(ts, t.id)}</div>
+      <div class="rank-head" style="margin:0"><span class="muted small">${esc(fmtD(t.date, true))} · ${t.lieu ? esc(lieuTxt(t)) : 'lieu à confirmer'} · code club recevant : <span class="code">${esc(t.code_orga || '—')}</span></span>
+        ${{ ouvert: '<span class="badge b-tbc">Pas encore envoyé par le club</span>', saisi: '<span class="badge b-wait">Envoyé par le club : à vérifier</span>', valide: '<span class="badge b-res">Validé · compte au classement</span>' }[t.statut]}</div>
+      <div id="a-ed"></div>
+      <div class="btnrow" style="margin:0">
+        <button class="btn ok" id="a-val">${t.statut === 'valide' ? 'Enregistrer les corrections' : 'Valider et publier le classement'}</button>
+        <button class="btn ghost" id="a-brouillon">Enregistrer sans valider</button>
+        ${t.statut === 'valide' ? '<button class="btn danger" id="a-reopen">Retirer du classement général</button>' : ''}
+      </div>
+    </div>
+    ${equipes.length ? `<details class="card"><summary style="cursor:pointer;font-weight:700">Renommer ou fusionner une équipe (${esc(aComp(t.competition).nom)})</summary>
+      <p class="small muted" style="margin:10px 0">Si une équipe apparaît sous deux noms, donnez-lui le même nom : ses points sont regroupés au classement général.</p>
+      <div class="grid3"><select id="rn-old">${equipes.map(e => `<option>${esc(e)}</option>`).join('')}</select><input id="rn-new" placeholder="Nouveau nom" list="dl-rn"><datalist id="dl-rn">${equipes.map(e => `<option value="${esc(e)}">`).join('')}</datalist><button class="btn primary" id="rn-go">Renommer</button></div></details>` : ''}
+  </div>`;
+  const draw = () => { $('a-ed').innerHTML = editorHTML(AED.st, false); bindEditor($('a-ed'), AED.st, draw); };
+  draw();
+  $('a-t').onchange = () => { CTID = +$('a-t').value; AED = null; adminClassements(); };
+  const save = async valider => {
+    const rows = rowsOut(AED.st);
+    if (valider && rows.length < 2) { saveMark('err', '⚠ Saisissez au moins deux équipes classées avant de valider'); return; }
+    const dup = rows.map(r => r.equipe).find((x, i, a) => a.indexOf(x) !== i);
+    if (dup) { saveMark('err', `⚠ « ${dup} » apparaît deux fois`); return; }
+    saveMark('wait', 'Enregistrement…');
+    try { await rpc('chp_admin_resultats', { pwd: ADMIN_PWD, tid: t.id, p_rows: rows, p_valider: valider }); await loadAdmin(); await loadPublic(); AED = null; adminClassements(); saveMark('ok', valider ? '✓ Classement validé et publié' : '✓ Enregistré'); }
+    catch(e) { saveMark('err', '⚠ ' + e.message); }
+  };
+  $('a-val').onclick = () => save(true);
+  $('a-brouillon').onclick = () => save(false);
+  if ($('a-reopen')) $('a-reopen').onclick = async () => { if (!confirm('Retirer ce tournoi du classement général ? Le classement saisi est conservé.')) return; await rpc('chp_admin_save_tournoi', { pwd: ADMIN_PWD, t: { id: t.id, statut: 'saisi' } }); await loadAdmin(); await loadPublic(); AED = null; adminClassements(); };
+  if ($('rn-go')) $('rn-go').onclick = async () => { const o = $('rn-old').value, n = $('rn-new').value.trim(); if (!n) return; if (!confirm(`Renommer « ${o} » en « ${n.toUpperCase()} » dans tous les tournois ?`)) return; try { const k = await rpc('chp_admin_renommer', { pwd: ADMIN_PWD, p_comp: t.competition, p_ancien: o, p_nouveau: n }); await loadAdmin(); await loadPublic(); AED = null; adminClassements(); saveMark('ok', `✓ ${k} résultat(s) renommé(s)`); } catch(e) { saveMark('err', '⚠ ' + e.message); } };
+}
+
+// ----- Calendrier et codes -----
+function adminTournois() {
+  if (!ACOMP) ACOMP = A.competitions[0].code;
+  const c = aComp(ACOMP), ts = A.tournois.filter(t => t.competition === ACOMP).sort((a, b) => a.numero - b.numero);
+  $('a-body').innerHTML = `<div class="stack">
+    <div class="tabs">${A.competitions.map(x => `<button class="tab ${kind(x)} ${x.code === ACOMP ? 'on' : ''}" data-c="${x.code}"><span class="sw ${kind(x)}"></span>${esc(x.nom)}</button>`).join('')}</div>
+    <p class="small muted">Les modifications sont enregistrées dès que vous quittez un champ. Inscriptions « Auto » : ouvertes 6 semaines avant le tournoi, jusqu'à la date et l'heure limites. ${c.famille === '4x4' ? 'Le code est à donner au club recevant, avec le lien de l\'espace club : <a href="' + SITE_URL + '#club" target="_blank">' + SITE_URL + '#club</a>.' : ''}</p>
+    <div class="tablebox"><table class="adm"><thead><tr><th>N°</th><th>Date</th><th>Heure</th><th>Gymnase</th><th>Ville</th><th>Club recevant</th><th>Limite inscr.</th><th>Heure lim.</th><th>Inscriptions</th>${c.famille === '4x4' ? '<th>Code club</th>' : ''}<th></th></tr></thead>
+      <tbody>${ts.map(t => `<tr data-id="${t.id}">
+        <td><input data-f="numero" type="number" value="${t.numero}" style="width:56px"></td>
+        <td><input data-f="date" type="date" value="${esc(t.date)}"></td>
+        <td><input data-f="heure" value="${esc(t.heure || '')}" placeholder="13:30" style="width:70px"></td>
+        <td><input data-f="lieu" value="${esc(t.lieu || '')}" style="min-width:160px"></td>
+        <td><input data-f="ville" value="${esc(t.ville || '')}" style="width:110px"></td>
+        <td><select data-f="organisateur"><option value="">—</option>${A.clubs.map(k => `<option value="${esc(k.code)}" ${t.organisateur === k.code ? 'selected' : ''}>${esc(k.nom)}</option>`).join('')}</select></td>
+        <td><input data-f="date_limite" type="date" value="${esc(t.date_limite || '')}"></td>
+        <td><input data-f="heure_limite" value="${esc(t.heure_limite || '')}" style="width:64px"></td>
+        <td><select data-f="inscriptions">${[['auto', 'Auto'], ['ouvertes', 'Forcer ouvertes'], ['fermees', 'Fermées']].map(([v, l]) => `<option value="${v}" ${t.inscriptions === v ? 'selected' : ''}>${l}</option>`).join('')}</select><div class="small ${t.ouvert ? '' : 'muted'}" style="margin-top:2px">${t.ouvert ? '● ouvertes' : 'closes'}</div></td>
+        ${c.famille === '4x4' ? `<td style="white-space:nowrap"><input data-f="code_orga" class="code" value="${esc(t.code_orga || '')}" style="width:100px"> <button class="linkbtn" data-gen>Générer</button></td>` : ''}
+        <td><button class="linkbtn red" data-del>Supprimer</button></td></tr>`).join('')}</tbody></table></div>
+    <div><button class="btn ghost" id="a-add">+ Ajouter un tournoi</button></div>
+  </div>`;
+  $('a-body').querySelectorAll('[data-c]').forEach(b => b.onclick = () => { ACOMP = b.dataset.c; adminTournois(); });
+  const put = async (id, p) => { saveMark('wait', 'Enregistrement…'); try { await rpc('chp_admin_save_tournoi', { pwd: ADMIN_PWD, t: { id, ...p } }); await loadAdmin(); await loadPublic(); saveMark('ok', '✓ Enregistré'); } catch(e) { saveMark('err', '⚠ ' + e.message); } };
+  $('a-body').querySelectorAll('tr[data-id]').forEach(tr => {
+    const id = +tr.dataset.id;
+    tr.querySelectorAll('[data-f]').forEach(el => el.onchange = async () => { await put(id, { [el.dataset.f]: el.value }); if (el.dataset.f === 'inscriptions' || el.dataset.f === 'date_limite') adminTournois(); });
+    const g = tr.querySelector('[data-gen]'); if (g) g.onclick = async () => { const inp = tr.querySelector('[data-f="code_orga"]'); inp.value = ACOMP + '-' + Math.random().toString(36).slice(2, 6).toUpperCase().replace(/[O0I1L]/g, 'X'); await put(id, { code_orga: inp.value }); };
+    tr.querySelector('[data-del]').onclick = async () => { if (!confirm('Supprimer ce tournoi, ses inscriptions et son classement ?')) return; await rpc('chp_admin_delete_tournoi', { pwd: ADMIN_PWD, tid: id }); await loadAdmin(); await loadPublic(); adminTournois(); };
+  });
+  $('a-add').onclick = async () => { const n = Math.max(0, ...ts.map(t => t.numero)) + 1; await put(null, { competition: ACOMP, numero: n, date: today() }); adminTournois(); };
+}
+
+// ----- Clubs -----
+function adminClubs() {
+  $('a-body').innerHTML = `<div class="card stack" style="max-width:760px">
+    <p class="small muted">Liste proposée dans le formulaire d'inscription. Le code court sert aussi de nom d'équipe par défaut (ex. « VCHPL 1 »).</p>
+    <div class="tablebox"><table class="adm"><thead><tr><th>Code</th><th>Nom du club</th><th></th></tr></thead><tbody>
+      ${A.clubs.map(k => `<tr data-code="${esc(k.code)}"><td class="code">${esc(k.code)}</td><td><input value="${esc(k.nom)}" data-nom></td><td><button class="linkbtn red" data-del>Supprimer</button></td></tr>`).join('')}
+      <tr><td><input id="cl-code" placeholder="VCHPL" style="width:110px"></td><td><input id="cl-nom" placeholder="Nom du club"></td><td><button class="btn primary sm" id="cl-add">Ajouter</button></td></tr>
+    </tbody></table></div></div>`;
+  const put = async (code, nom) => { saveMark('wait', 'Enregistrement…'); try { await rpc('chp_admin_club', { pwd: ADMIN_PWD, p_code: code, p_nom: nom }); await loadAdmin(); saveMark('ok', '✓ Enregistré'); adminClubs(); } catch(e) { saveMark('err', '⚠ ' + e.message); } };
+  $('a-body').querySelectorAll('tr[data-code]').forEach(tr => {
+    tr.querySelector('[data-nom]').onchange = e => put(tr.dataset.code, e.target.value);
+    tr.querySelector('[data-del]').onclick = () => confirm('Supprimer ce club de la liste ?') && put(tr.dataset.code, '');
+  });
+  $('cl-add').onclick = () => { const c = $('cl-code').value.trim(), n = $('cl-nom').value.trim(); if (c && n) put(c, n); };
+}
+
+// ======================== DÉMARRAGE ========================
+(async function init() {
+  try { await loadPublic(); }
+  catch(e) { console.error(e); $('app').innerHTML = '<div class="wrap"><main><div class="card msg err">Impossible de charger les championnats pour le moment. Réessayez dans quelques instants.</div></main></div>'; return; }
+  try { const p = sessionStorage.getItem('chp_admin'); if (p) { A = await rpc('chp_admin_get', { pwd: p }); ADMIN_PWD = p; } } catch(e) { ADMIN_PWD = ''; }
+  route();
+})();
+</script>
+</body>
+</html>
