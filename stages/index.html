@@ -148,6 +148,36 @@
   .conv-h small { font-family: Inter, sans-serif; text-transform: none; font-weight: 500; font-size: 13px; color: var(--muted); }
   .conv-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
 
+
+  /* Beach-volley : inscription en ligne */
+  .hero.beach { background: linear-gradient(165deg, #0B2149 0%, #0F4C75 62%, #17808F 100%); position: relative; }
+  .hero.beach::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 10px; background: linear-gradient(90deg, #E9CC8E, #F6C21B, #E9CC8E); }
+  .places { display: flex; flex-wrap: wrap; gap: 10px; }
+  .pl { flex: 1 1 140px; border-radius: 12px; padding: 10px 14px; background: var(--ok-bg); color: var(--ok); line-height: 1.25; }
+  .pl b { display: block; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 24px; font-weight: 800; }
+  .pl span { font-size: 13px; font-weight: 600; }
+  .pl.low { background: var(--warn-bg); color: var(--warn); }
+  .pl.full { background: var(--bad-bg); color: var(--bad); }
+  .insc { border-top: 1px solid var(--line); padding: 24px 28px; background: #FAFBFD; }
+  .insc h3 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .insc fieldset { border: 0; display: flex; flex-direction: column; gap: 14px; margin-top: 18px; }
+  .insc legend { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 17px; text-transform: uppercase; color: var(--navy); letter-spacing: .5px; margin-bottom: 10px; padding: 0; }
+  .opts { display: flex; flex-wrap: wrap; gap: 10px; }
+  .opt { flex: 1 1 160px; display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 10px 14px; border: 2px solid var(--line); border-radius: 10px; background: #fff; cursor: pointer; font-weight: 600; }
+  .opt input { width: 20px; height: 20px; padding: 0; flex: none; accent-color: var(--navy); }
+  .opt:has(input:checked) { border-color: var(--navy); background: #EEF3FC; }
+  .opt small { display: block; font-weight: 500; color: var(--muted); font-size: 12.5px; }
+  .opt small.full { color: var(--bad); font-weight: 700; }
+  .req { color: var(--bad); }
+  .hp { position: absolute; left: -5000px; width: 1px; height: 1px; overflow: hidden; }
+  .codebox { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-top: 14px; padding: 18px 20px; border-radius: 14px; background: #fff; border: 2px dashed var(--accent); }
+  .codebox .code-big { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 46px; font-weight: 800; letter-spacing: 8px; color: var(--navy); line-height: 1; }
+  .codebox dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; font-size: 14.5px; }
+  .codebox dt { color: var(--muted); } .codebox dd { font-weight: 700; }
+  .contact-box { margin-top: 14px; font-size: 14px; color: var(--muted); }
+  .contact-box b { color: var(--navy); }
+  @media (max-width: 560px) { .insc { padding-left: 18px; padding-right: 18px; } .codebox .code-big { font-size: 38px; } }
+
   /* Formulaires */
   .field { display: flex; flex-direction: column; gap: 6px; }
   .field label { font-size: 13px; font-weight: 700; }
@@ -252,10 +282,11 @@
   <div class="wrap head">
     <a href="https://www.volley83.fr" aria-label="Comité du Var de Volley-Ball"><img src="logo-comite-var.jpg" alt="Comité du Var Volley-Ball"></a>
     <div class="sep"></div>
-    <div class="t">Centre Départemental</div>
+    <div class="t">Stages du Comité</div>
     <nav aria-label="Navigation">
       <a class="navbtn" id="nav-stages" href="#stages">Centre Départemental</a>
-      <!-- À venir : <a class="navbtn" href="…">Beach-volley</a> <a class="navbtn" href="…">Stages d'été</a> -->
+      <a class="navbtn" id="nav-beach" href="#beach">Beach-volley</a>
+      <!-- À venir : <a class="navbtn" href="…">Stages d'été</a> -->
       <a class="navbtn" id="nav-parents" href="#parents">Espace parents</a>
     </nav>
   </div>
@@ -278,6 +309,23 @@
   </main>
 </section>
 
+<!-- ===================== PUBLIC : BEACH-VOLLEY ===================== -->
+<section id="view-beach" hidden>
+  <div class="hero beach">
+    <div class="wrap">
+      <div>
+      <div class="k">Commission Beach-Volley · M15 – M18</div>
+      <h1>Les stages de beach-volley</h1>
+      <p>Stages ouverts à toutes et à tous, licenciés ou non, quel que soit le niveau. Inscription en ligne : le code de l'espace parents s'affiche dès l'inscription terminée, pour suivre le dossier et le paiement.</p>
+      </div>
+      <div class="hero-badge"><img src="logo-comite-var.jpg" alt="Comité du Var de Volley-Ball"></div>
+    </div>
+  </div>
+  <main class="wrap stack" id="beach-list">
+    <div class="card muted">Chargement des stages…</div>
+  </main>
+</section>
+
 <!-- ===================== ESPACE PARENTS ===================== -->
 <section id="view-parents" hidden>
   <div class="hero">
@@ -294,7 +342,7 @@
     <form class="card stack login" id="login-form" novalidate>
       <img class="login-logo" src="logo-centre-departemental.jpg" alt="">
       <h2 style="font-size:24px;text-align:center">Se connecter</h2>
-      <p class="muted small">Le code personnel à 4 caractères figure dans le mail de convocation. Il est le même pour tous les stages de la saison.</p>
+      <p class="muted small">Le code personnel à 4 caractères figure dans le mail de convocation, ou s'est affiché à la fin de l'inscription en ligne. Il est le même pour tous les stages de la saison.</p>
       <div class="field"><label for="l-nom">Nom de famille de l'enfant</label><input id="l-nom" autocomplete="family-name" required></div>
       <div class="field"><label for="l-naiss">Année de naissance de l'enfant</label><input id="l-naiss" type="number" inputmode="numeric" min="2000" max="2030" placeholder="ex. 2015" required></div>
       <div class="field"><label for="l-code">Code personnel</label><input id="l-code" maxlength="4" autocomplete="off" autocapitalize="characters" placeholder="ex. K7M2" style="text-transform:uppercase;letter-spacing:3px;font-weight:700" required></div>
@@ -452,6 +500,9 @@ function route() {
   const isAdmin = h === 'admin' && ADMIN_PWD;
   $('view-stages').hidden = !(h === 'stages' || (h === 'admin' && !ADMIN_PWD));
   $('view-parents').hidden = h !== 'parents';
+  $('view-beach').hidden = h !== 'beach';
+  $('nav-beach').classList.toggle('on', h === 'beach');
+  document.querySelector('.brand-band').hidden = h === 'beach';
   $('view-admin').hidden = !isAdmin;
   $('nav-stages').classList.toggle('on', h === 'stages');
   $('nav-parents').classList.toggle('on', h === 'parents');
@@ -463,7 +514,10 @@ window.addEventListener('hashchange', route);
 async function loadPublic() {
   const box = $('stages-list');
   try {
-    const stages = await rpc('stg_public_stages') || [];
+    const tous = await rpc('stg_public_stages') || [];
+    PUBLIC = tous;
+    renderBeach(tous.filter(s => s.type === 'beach'));
+    const stages = tous.filter(s => !s.type || s.type === 'cde');
     if (!stages.length) { box.innerHTML = '<div class="card"><h2 style="font-size:24px">Aucun stage annoncé pour le moment</h2><p class="muted" style="margin-top:6px">Les prochains stages apparaîtront ici dès l\'envoi des convocations.</p></div>'; return; }
     // Stages avec convocations envoyées : fiche complète ; les autres : calendrier compact de la saison
     const full = stages.filter(s => !s.liste_publique || (s.convoques && s.convoques.length));
@@ -512,7 +566,188 @@ async function loadPublic() {
   } catch(e) {
     console.error(e);
     box.innerHTML = '<div class="card msg err">Impossible de charger les stages pour le moment. Réessayez dans quelques instants.</div>';
+    $('beach-list').innerHTML = box.innerHTML;
   }
+}
+
+// ======================== INSCRIPTION EN LIGNE (beach-volley…) ========================
+let PUBLIC = [];
+const NIVEAUX = ['Débutant : jamais ou très peu joué au beach', 'Initié : quelques séances ou tournois loisir', 'Confirmé : tournois réguliers', 'Compétiteur : championnats, circuit, sélections'];
+const jourCourt = d => { const x = parseD(d); return JOURS[x.getDay()].replace(/^./, c => c.toUpperCase()) + ' ' + x.getDate() + (x.getDate() === 1 ? 'er' : '') + ' ' + MOIS[x.getMonth()]; };
+const mailDe = t => (String(t || '').match(/[\w.+-]+@[\w-]+\.[\w.-]+/) || [''])[0];
+const prixJours = (s, n) => Number(s.tarif || 0) * n;
+function placesHTML(s) {
+  if (s.places == null || !s.restantes) return '';
+  return `<div class="places">${(s.jours || []).map(d => {
+    const r = Math.max(0, s.restantes[d] ?? s.places);
+    return `<div class="pl ${r <= 0 ? 'full' : r <= 3 ? 'low' : ''}"><span>${esc(jourCourt(d))}</span><b>${r <= 0 ? 'Complet' : r + ' place' + (r > 1 ? 's' : '')}</b><span>${r <= 0 ? 'inscription en liste d\'attente' : 'restante' + (r > 1 ? 's' : '') + ' sur ' + s.places}</span></div>`;
+  }).join('')}</div>`;
+}
+function renderBeach(list) {
+  const box = $('beach-list');
+  if (!list.length) { box.innerHTML = '<div class="card"><h2 style="font-size:24px">Aucun stage de beach-volley annoncé pour le moment</h2><p class="muted" style="margin-top:6px">Les prochains stages apparaîtront ici, avec l\'inscription en ligne.</p></div>'; return; }
+  box.innerHTML = list.map(s => {
+    const ouvert = s.inscription && s.date_debut > today() && (!s.date_limite || s.date_limite >= today());
+    const nbJ = (s.jours || []).length;
+    return `<article class="card stage-card" id="beach-${s.id}">
+      <div class="stage-top">
+        <div><h2>${esc(s.titre)}</h2><div class="stage-dates">${ICO.cal}${esc(fmtDates(s.date_debut, s.date_fin))}</div></div>
+        ${s.categorie ? `<span class="tag">${esc(s.categorie)}</span>` : ''}
+      </div>
+      <div class="stage-body">
+        <div class="stage-info">
+          ${s.lieu ? infoRow('lieu', 'Lieu', esc(s.lieu)) : ''}
+          ${s.horaires ? infoRow('heure', 'Horaires', `<div class="txt one">${richText(s.horaires)}</div>`) : ''}
+          ${Number(s.tarif) ? infoRow('prix', 'Participation', `<span class="big">${euros(s.tarif)}${s.par_jour && nbJ > 1 ? ' / jour' : ''}</span>${s.par_jour && nbJ > 1 ? `<div class="small muted">${euros(prixJours(s, nbJ))} les ${nbJ} jours · inscription possible à la journée</div>` : ''}`) : ''}
+          ${s.date_limite ? infoRow('limite', 'Inscriptions jusqu\'au', `<strong>${esc(fmtD(s.date_limite, true))}</strong>`, 'alert') : ''}
+          ${s.places != null ? `<div>${infoRow('limite', 'Places', `${s.places} stagiaires maximum${s.par_jour && nbJ > 1 ? ' par jour' : ''}`)}<div style="margin-top:10px">${placesHTML(s)}</div></div>` : ''}
+        </div>
+        <div class="stage-extra">
+          ${s.infos ? `<div class="txt">${richText(s.infos)}</div>` : ''}
+          ${s.paiement_infos ? `<div class="txt one dots" style="margin-top:6px">${richText(s.paiement_infos)}</div>` : ''}
+          ${s.contact ? `<div class="contact-box"><b>Contact</b><br>${esc(s.contact).replace(/\n/g, '<br>').replace(/([\w.+-]+@[\w-]+\.[\w.-]+)/g, '<a href="mailto:$1">$1</a>')}</div>` : ''}
+        </div>
+      </div>
+      <div class="stage-foot">
+        <span class="small muted">${ouvert ? 'Inscription en 2 minutes. Le code de l\'espace parents s\'affiche à la fin.' : s.inscription ? 'Les inscriptions sont closes.' : ''}</span>
+        <div class="btnrow" style="margin:0">
+          <a class="btn ghost" href="#parents">Espace parents</a>
+          ${ouvert ? `<button class="btn accent" id="insc-btn-${s.id}" onclick="ouvrirInscription(${s.id})">S'inscrire au stage</button>` : ''}
+        </div>
+      </div>
+      <div id="insc-${s.id}" hidden></div>
+    </article>`;
+  }).join('');
+}
+
+function ouvrirInscription(sid) {
+  const s = PUBLIC.find(x => x.id === sid), box = $('insc-' + sid);
+  const jours = s.jours || [];
+  const rest = d => s.restantes ? Math.max(0, s.restantes[d] ?? s.places) : 1;
+  box.className = 'insc'; box.hidden = false;
+  $('insc-btn-' + sid).hidden = true;
+  box.innerHTML = `<form id="f-${sid}" novalidate onsubmit="envoyerInscription(event, ${sid})">
+    <h3>Inscription · ${esc(s.titre)}</h3>
+    <p class="small muted">Les champs marqués <span class="req">*</span> sont obligatoires. Les informations servent uniquement à l'organisation du stage et sont supprimées en fin de saison.</p>
+    ${s.par_jour && jours.length > 1 ? `<fieldset><legend>Journée(s) choisie(s) <span class="req">*</span></legend><div class="opts">
+      ${jours.map(d => `<label class="opt"><input type="checkbox" name="jour" value="${d}" checked onchange="majPrix(${sid})"><span>${esc(jourCourt(d))}<small class="${rest(d) <= 0 ? 'full' : ''}">${rest(d) <= 0 ? 'Complet : liste d\'attente' : rest(d) + ' place' + (rest(d) > 1 ? 's' : '') + ' restante' + (rest(d) > 1 ? 's' : '')}</small></span></label>`).join('')}
+    </div><div class="msg info" id="prix-${sid}"></div></fieldset>` : ''}
+    <fieldset><legend>Le / la stagiaire</legend>
+      <div class="grid2">
+        <div class="field"><label for="i-nom-${sid}">Nom <span class="req">*</span></label><input id="i-nom-${sid}" name="nom" autocomplete="family-name" required></div>
+        <div class="field"><label for="i-prenom-${sid}">Prénom <span class="req">*</span></label><input id="i-prenom-${sid}" name="prenom" autocomplete="given-name" required></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="i-naiss-${sid}">Date de naissance <span class="req">*</span></label><input id="i-naiss-${sid}" name="naissance" type="date" min="2000-01-01" max="${today()}" required></div>
+        <div class="field"><label>Fille ou garçon <span class="req">*</span></label><div class="opts">
+          <label class="opt" style="min-height:46px"><input type="radio" name="sexe" value="F">Fille</label>
+          <label class="opt" style="min-height:46px"><input type="radio" name="sexe" value="M">Garçon</label></div></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="i-club-${sid}">Club</label><input id="i-club-${sid}" name="club" placeholder="Laisser vide si non licencié(e)"></div>
+        <div class="field"><label for="i-lic-${sid}">N° de licence FFVolley</label><input id="i-lic-${sid}" name="licence" inputmode="numeric" placeholder="Facultatif"></div>
+      </div>
+      <div class="field"><label for="i-niv-${sid}">Niveau en beach-volley <span class="req">*</span></label><select id="i-niv-${sid}" name="niveau" required><option value="">Choisir…</option>${NIVEAUX.map(n => `<option>${esc(n)}</option>`).join('')}</select></div>
+    </fieldset>
+    <fieldset><legend>Les parents</legend>
+      <div class="grid2">
+        <div class="field"><label for="i-mail-${sid}">Mail <span class="req">*</span></label><input id="i-mail-${sid}" name="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="i-tel-${sid}">Téléphone <span class="req">*</span></label><input id="i-tel-${sid}" name="tel" type="tel" autocomplete="tel" required></div>
+      </div>
+      <div class="field"><label for="i-com-${sid}">Commentaire</label><input id="i-com-${sid}" name="commentaire" maxlength="500" placeholder="Allergie, information à signaler… (facultatif)"></div>
+      <div class="hp" aria-hidden="true"><label>Site web<input name="site" tabindex="-1" autocomplete="off"></label></div>
+      <label class="chk" style="white-space:normal;font-size:14px;align-items:flex-start"><input type="checkbox" name="accord" style="margin-top:2px">Je suis le parent ou le représentant légal et j'inscris mon enfant à ce stage.</label>
+    </fieldset>
+    <div class="msg err" id="i-msg-${sid}" hidden style="margin-top:14px"></div>
+    <div class="btnrow"><button class="btn primary" type="submit" id="i-btn-${sid}">Valider l'inscription</button><button class="btn ghost" type="button" onclick="fermerInscription(${sid})">Annuler</button></div>
+  </form>`;
+  majPrix(sid);
+  box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function fermerInscription(sid) { const b = $('insc-' + sid); b.hidden = true; b.innerHTML = ''; $('insc-btn-' + sid).hidden = false; }
+function joursChoisis(sid) { return [...document.querySelectorAll(`#f-${sid} input[name=jour]:checked`)].map(i => i.value); }
+function majPrix(sid) {
+  const s = PUBLIC.find(x => x.id === sid), el = $('prix-' + sid);
+  if (!el) return;
+  const j = joursChoisis(sid), complet = j.filter(d => s.restantes && (s.restantes[d] ?? 1) <= 0);
+  el.innerHTML = !j.length ? 'Cochez au moins une journée.'
+    : `${j.length} journée${j.length > 1 ? 's' : ''} : <b>${euros(prixJours(s, j.length))}</b> (repas du midi et tee-shirt inclus).`
+      + (complet.length ? `<br><b>${complet.map(jourCourt).join(' et ')} : complet.</b> L'inscription sera enregistrée sur la liste d'attente.` : '');
+}
+async function envoyerInscription(ev, sid) {
+  ev.preventDefault();
+  const s = PUBLIC.find(x => x.id === sid), f = ev.target, g = n => f.elements[n], msg = $('i-msg-' + sid);
+  const p = { stage_id: sid, nom: g('nom').value.trim(), prenom: g('prenom').value.trim(), naissance: g('naissance').value,
+    sexe: (f.querySelector('input[name=sexe]:checked') || {}).value || '', club: g('club').value.trim(), licence: g('licence').value.trim(),
+    niveau: g('niveau').value, email: g('email').value.trim(), tel: g('tel').value.trim(), commentaire: g('commentaire').value.trim(),
+    jours: s.par_jour ? joursChoisis(sid) : s.jours, site: g('site').value };
+  const manque = [];
+  if (s.par_jour && (s.jours || []).length > 1 && !p.jours.length) manque.push('au moins une journée');
+  if (!p.nom) manque.push('le nom'); if (!p.prenom) manque.push('le prénom');
+  if (!p.naissance) manque.push('la date de naissance'); if (!p.sexe) manque.push('fille ou garçon');
+  if (!p.niveau) manque.push('le niveau');
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email)) manque.push('un mail valide');
+  if (p.tel.replace(/\D/g, '').length < 9) manque.push('le téléphone');
+  if (!g('accord').checked) manque.push('la case de confirmation');
+  if (manque.length) { msg.textContent = 'Merci de compléter : ' + manque.join(', ') + '.'; msg.hidden = false; return; }
+  msg.hidden = true; $('i-btn-' + sid).disabled = true;
+  try {
+    const r = await rpc('stg_inscrire', { p });
+    if (!r || !r.ok) {
+      const contact = mailDe(s.contact) || 'contact@volley83.fr';
+      msg.innerHTML = ({
+        deja: `${esc(p.prenom)} est déjà inscrit(e) à ce stage. Retrouvez l'inscription dans l'<a href="#parents">espace parents</a>. Code perdu ? Écrivez à <a href="mailto:${contact}">${contact}</a>.`,
+        clos: 'Les inscriptions à ce stage sont closes.',
+        champs: 'Certaines informations ne sont pas valides : vérifiez la date de naissance, le mail et le téléphone.',
+        jours: 'Cochez au moins une journée.',
+        trop: 'Trop d\'inscriptions en peu de temps : réessayez dans une heure, ou écrivez-nous.',
+      })[r && r.erreur] || 'L\'inscription n\'a pas pu être enregistrée.';
+      msg.hidden = false; return;
+    }
+    try { await loadPublic(); } catch(e) {}             // places restantes à jour
+    afficherConfirmation(PUBLIC.find(x => x.id === sid) || s, p, r);
+  } catch(e) {
+    msg.textContent = 'L\'inscription n\'a pas pu être enregistrée pour le moment. Réessayez dans quelques instants.'; msg.hidden = false;
+  } finally { const b = $('i-btn-' + sid); if (b) b.disabled = false; }
+}
+let DERNIERE = null;
+function afficherConfirmation(s, p, r) {
+  const box = $('insc-' + s.id);
+  box.className = 'insc'; box.hidden = false;
+  const bt = $('insc-btn-' + s.id); if (bt) bt.hidden = true;
+  const contact = mailDe(s.contact) || 'contact@volley83.fr';
+  const nb = s.par_jour ? p.jours.length : (s.jours || []).length || 1;
+  DERNIERE = r.code ? { nom: r.nom, naissance: String(r.annee), code: r.code } : null;
+  const j = s.par_jour && (s.jours || []).length > 1 ? ' (' + p.jours.map(jourCourt).join(' et ') + ')' : '';
+  box.innerHTML = `<div class="stack" style="gap:14px" id="conf-${s.id}">
+    ${r.statut === 'attente'
+      ? `<p class="msg info" style="font-size:15px"><b>${esc(r.prenom)} est inscrit(e) sur la liste d'attente${r.rang ? ', en position ' + r.rang : ''}.</b><br>Le stage est complet${j ? ' pour la journée choisie' : ''}. Si une place se libère, la commission beach vous préviendra : l'inscription apparaîtra alors comme confirmée dans l'espace parents.</p>`
+      : `<p class="msg ok" style="font-size:15px"><b>✓ Inscription enregistrée pour ${esc(r.prenom)}${esc(j)}.</b><br>Elle sera <b>validée dès réception de la fiche de renseignements ou d'un paiement d'au moins ${euros(s.tarif)}</b> (${euros(prixJours(s, nb))} au total).</p>`}
+    ${r.code ? `<div>
+      <h3 style="font-size:20px">Vos identifiants de l'espace parents</h3>
+      <p class="small">Notez-les ou faites une capture d'écran : ils permettent de suivre le dossier, le paiement, de télécharger la fiche de renseignements et, après le stage, le reçu. Le même code servira pour tous les stages du Comité de la saison.</p>
+      <div class="codebox"><div><div class="small muted" style="font-weight:700">CODE PERSONNEL</div><div class="code-big">${esc(r.code)}</div></div>
+        <dl><dt>Nom</dt><dd>${esc(r.nom)}</dd><dt>Année de naissance</dt><dd>${esc(r.annee)}</dd><dt>Code</dt><dd>${esc(r.code)}</dd></dl></div>
+      <div class="btnrow"><button class="btn accent" onclick="allerEspace()">Accéder à mon espace parents →</button><button class="btn ghost" id="copy-${s.id}" onclick="copierCode(${s.id})">Copier les identifiants</button></div>
+    </div>` : `<p class="msg info">${esc(r.prenom)} a déjà un code d'espace parents (reçu pour un autre stage du Comité) : utilisez ce même code pour suivre l'inscription. Code perdu ? Écrivez à <a href="mailto:${contact}">${contact}</a>.</p>
+      <div class="btnrow" style="margin:0"><a class="btn accent" href="#parents">Accéder à l'espace parents →</a></div>`}
+    <div class="btnrow" style="margin:0"><button class="btn ghost" onclick="ouvrirInscription(${s.id})">Inscrire un autre enfant</button></div>
+  </div>`;
+  box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function copierCode(sid) {
+  if (!DERNIERE) return;
+  const t = `Espace parents : ${SITE_URL}#parents\nNom : ${DERNIERE.nom}\nAnnée de naissance : ${DERNIERE.naissance}\nCode : ${DERNIERE.code}`;
+  const ok = () => { const b = $('copy-' + sid); if (b) b.textContent = '✓ Copié'; };
+  try { navigator.clipboard.writeText(t).then(ok, () => prompt('Copiez ces identifiants :', t)); } catch(e) { prompt('Copiez ces identifiants :', t); }
+}
+async function allerEspace() {
+  if (!DERNIERE) { location.hash = 'parents'; return; }
+  try {
+    const d = await rpc('stg_parent_login', { p_nom: DERNIERE.nom, p_annee: +DERNIERE.naissance, p_code: DERNIERE.code });
+    if (d) { PARENT = { ...DERNIERE, data: d }; try { sessionStorage.setItem('stg_parent', JSON.stringify(DERNIERE)); } catch(e) {} renderChild(); }
+  } catch(e) {}
+  location.hash = 'parents';
 }
 
 // ======================== ESPACE PARENTS ========================
@@ -553,7 +788,7 @@ function renderChild() {
   const convs = d.convocations || [];
   v.innerHTML = `
     <div class="card child-head">
-      <div><div class="muted small" style="font-weight:700;text-transform:uppercase;letter-spacing:.6px">Convocations de</div>
+      <div><div class="muted small" style="font-weight:700;text-transform:uppercase;letter-spacing:.6px">Stages de</div>
       <h2>${esc(d.prenom)} ${esc(d.nom)}</h2>${d.club ? `<div class="muted">${esc(d.club)}</div>` : ''}</div>
       <div style="display:flex;align-items:center;gap:16px"><img class="logo-sm" src="logo-centre-departemental.jpg" alt=""><button class="btn ghost" onclick="parentLogout()">Se déconnecter</button></div>
     </div>
@@ -566,13 +801,21 @@ function renderConv(c) {
       <div><h2>${esc(c.titre)}</h2><div class="muted" style="margin-top:4px;font-weight:600">${esc(fmtDates(c.date_debut, c.date_fin))}${c.lieu ? ' · ' + esc(c.lieu) : ''}</div></div>
       <span class="status warn">Liste d'attente${c.rang_attente ? ' · n°' + c.rang_attente : ''}</span>
     </div>
-    <p class="msg info" style="margin-top:14px">${esc(PARENT.data.prenom)} est sur la liste d'attente de ce stage${c.rang_attente ? ` (position <b>${c.rang_attente}</b>)` : ''}. Si une place se libère, le Comité vous préviendra et la convocation apparaîtra ici : vous pourrez alors confirmer la présence.</p>
+    ${c.inscription && c.jours ? `<p style="margin-top:12px"><b>Journée${c.jours.length > 1 ? 's' : ''} demandée${c.jours.length > 1 ? 's' : ''} :</b> ${esc(c.jours.map(jourCourt).join(' et '))}</p>` : ''}
+    <p class="msg info" style="margin-top:14px">${esc(PARENT.data.prenom)} est sur la liste d'attente de ce stage${c.rang_attente ? ` (position <b>${c.rang_attente}</b>)` : ''}. Si une place se libère, ${c.inscription ? 'vous serez prévenus et l\'inscription apparaîtra ici comme confirmée' : 'le Comité vous préviendra et la convocation apparaîtra ici : vous pourrez alors confirmer la présence'}.</p>
+    ${c.inscription ? '<p class="small muted" style="margin-top:8px">Aucun paiement n\'est demandé tant que l\'inscription est sur la liste d\'attente.</p>' : ''}
   </article>`;
   const passe = parseD(c.date_fin || c.date_debut) < parseD(today());
   const docs = c.documents || [], recus = c.docs_recus || [];
   const manquants = docs.filter(x => !recus.includes(x));
   const rep = c.reponse;
-  const repTxt = rep === 'present' ? '<span class="status ok">✓ Présence confirmée</span>' : rep === 'absent' ? '<span class="status bad">Absence signalée</span>' : '<span class="status warn">En attente de votre réponse</span>';
+  const nbJ = c.jours ? c.jours.length : ((c.jours_stage || []).length || 1);
+  const du = c.inscription ? Number(c.tarif || 0) * nbJ : Number(c.tarif || 0);
+  const paid = c.paye ? Number(c.montant != null ? c.montant : du) : 0;
+  const valide = (docs.length && !manquants.length) || (Number(c.tarif) > 0 && paid >= Number(c.tarif));
+  const contactMail = mailDe(c.contact) || 'contact@volley83.fr';
+  const repTxt = c.inscription ? (rep === 'absent' ? '<span class="status bad">Désistement signalé</span>' : valide ? '<span class="status ok">✓ Inscription validée</span>' : '<span class="status warn">Inscription à valider</span>')
+    : rep === 'present' ? '<span class="status ok">✓ Présence confirmée</span>' : rep === 'absent' ? '<span class="status bad">Absence signalée</span>' : '<span class="status warn">En attente de votre réponse</span>';
   return `<article class="card" id="conv-${c.stage_id}">
     <div class="stage-head">
       <div><h2>${esc(c.titre)}</h2><div class="muted" style="margin-top:4px;font-weight:600">${esc(fmtDates(c.date_debut, c.date_fin))}${c.lieu ? ' · ' + esc(c.lieu) : ''}</div></div>
@@ -584,14 +827,17 @@ function renderConv(c) {
       <span class="conv-pdf-btn">Ouvrir la convocation ↗</span>
     </a>` : ''}
     ${c.horaires ? `<div class="txt one" style="margin-top:12px">${richText(c.horaires)}</div>` : ''}
+    ${c.inscription ? `<p style="margin-top:6px"><b>Journée${nbJ > 1 ? 's' : ''} :</b> ${esc((c.jours || c.jours_stage || []).map(jourCourt).join(' et '))} · <b>${euros(du)}</b>${c.niveau ? ` · <span class="muted">Niveau : ${esc(c.niveau.split(' :')[0])}</span>` : ''}</p>
+      ${rep !== 'absent' && !valide && !passe ? `<p class="msg info" style="margin-top:12px">L'inscription sera validée dès réception de <b>la fiche de renseignements</b> ou d'un <b>paiement d'au moins ${euros(c.tarif)}</b> (voir ci-dessous).</p>` : ''}` : ''}
     ${c.infos ? `<details style="margin-top:6px"><summary style="cursor:pointer;font-weight:700;color:var(--blue);min-height:40px;display:flex;align-items:center">Informations pratiques et matériel</summary><div class="txt" style="margin-top:8px">${richText(c.infos)}</div></details>` : ''}
 
     ${passe ? '' : `<div class="block">
-      <h3>1. Votre réponse</h3>
+      <h3>1. ${c.inscription ? 'Participation' : 'Votre réponse'}</h3>
+      ${c.inscription ? '<p class="small muted" style="margin-bottom:10px">En cas d\'empêchement, merci de signaler le désistement ici : la place sera proposée à la liste d\'attente.</p>' : ''}
       ${c.date_limite ? `<p class="small muted" style="margin-bottom:10px">À donner avant le ${esc(fmtD(c.date_limite))}. Vous pouvez la modifier jusqu'au stage.</p>` : ''}
       <div class="choice">
-        <button type="button" class="${rep === 'present' ? 'sel-present' : ''}" onclick="pick(${c.stage_id},'present')">✓ Sera présent(e)</button>
-        <button type="button" class="${rep === 'absent' ? 'sel-absent' : ''}" onclick="pick(${c.stage_id},'absent')">✗ Sera absent(e)</button>
+        <button type="button" class="${rep === 'present' ? 'sel-present' : ''}" onclick="pick(${c.stage_id},'present')">✓ ${c.inscription ? 'Participera' : 'Sera présent(e)'}</button>
+        <button type="button" class="${rep === 'absent' ? 'sel-absent' : ''}" onclick="pick(${c.stage_id},'absent')">✗ ${c.inscription ? 'Se désiste' : 'Sera absent(e)'}</button>
       </div>
       <div class="field" style="margin-top:12px"><label for="com-${c.stage_id}">Commentaire (facultatif)</label><input id="com-${c.stage_id}" value="${esc(c.commentaire || '')}" maxlength="500" placeholder="Arrivée tardive, covoiturage, information à signaler…"></div>
       <input type="hidden" id="rep-${c.stage_id}" value="${rep === 'attente' ? '' : rep}">
@@ -604,7 +850,7 @@ function renderConv(c) {
       <ul class="doclist">${docs.map(x => recus.includes(x)
         ? `<li><span class="ico ok">✓</span>${esc(x)} <span class="muted small" style="font-weight:500">· reçu</span></li>`
         : `<li><span class="ico bad">!</span>${esc(x)} <span class="small" style="font-weight:600;color:var(--bad)">· manquant</span>${(c.documents_liens || {})[x] ? ` <a class="small" style="font-weight:700;white-space:nowrap" href="${esc(c.documents_liens[x])}" target="_blank" rel="noopener">⬇ Document vierge</a>` : ''}</li>`).join('')}</ul>
-      ${manquants.length ? `<p class="msg info" style="margin-top:12px">Merci d'envoyer ${manquants.length > 1 ? 'les documents manquants' : 'le document manquant'} au Comité par mail à <a href="mailto:contact@volley83.fr?subject=${encodeURIComponent('Documents stage – ' + c.titre)}">contact@volley83.fr</a>, ou de ${manquants.length > 1 ? 'les' : 'le'} remettre au début du stage.</p>` : '<p class="msg ok" style="margin-top:12px">Dossier complet, merci !</p>'}
+      ${manquants.length ? `<p class="msg info" style="margin-top:12px">Merci de ${c.inscription ? 'télécharger, remplir et ' : ''}renvoyer ${manquants.length > 1 ? 'les documents manquants' : 'le document manquant'} par mail à <a href="mailto:${contactMail}?subject=${encodeURIComponent('Documents stage – ' + c.titre + ' – ' + PARENT.data.prenom + ' ' + PARENT.data.nom)}">${contactMail}</a>, ou de ${manquants.length > 1 ? 'les' : 'le'} remettre au début du stage.</p>` : '<p class="msg ok" style="margin-top:12px">Dossier complet, merci !</p>'}
     </div>` : ''}
 
     ${c.points_url ? `<div class="block">
@@ -616,11 +862,12 @@ function renderConv(c) {
       <h3>${passe ? '' : '3. '}Paiement</h3>
       ${c.paye
         ? `<p><span class="status ok">✓ Paiement reçu</span></p>
-           <p style="margin-top:10px">${euros(c.montant != null ? c.montant : c.tarif)}${c.paiement_mode && !sansRecu(c.paiement_mode) ? ' par ' + esc(c.paiement_mode.toLowerCase()) : ''}${c.paiement_date ? ' le ' + esc(fmtD(c.paiement_date)) : ''}.</p>
+           <p style="margin-top:10px">${euros(c.montant != null ? c.montant : (c.inscription ? du : c.tarif))}${c.paiement_mode && !sansRecu(c.paiement_mode) ? ' par ' + esc(c.paiement_mode.toLowerCase()) : ''}${c.paiement_date ? ' le ' + esc(fmtD(c.paiement_date)) : ''}.</p>
            ${sansRecu(c.paiement_mode) ? '' : passe
              ? `<div class="btnrow"><button class="btn ok" id="recu-${c.stage_id}" onclick="downloadRecuParent(${c.stage_id})">⬇ Télécharger le reçu de paiement</button></div>`
-             : '<p class="small muted" style="margin-top:6px">Le reçu sera disponible ici après le stage.</p>'}`
-        : `${c.paiement_infos ? `<div class="txt one dots">${richText(c.paiement_infos)}</div>` : (Number(c.tarif) ? `<p>Participation : <b>${euros(c.tarif)}</b>.</p>` : '')}
+             : '<p class="small muted" style="margin-top:6px">Le reçu sera disponible ici après le stage.</p>'}
+           ${c.inscription && paid < du && !passe ? `<p class="msg info" style="margin-top:10px">Reste à régler : <b>${euros(du - paid)}</b></p>${c.paiement_infos ? `<div class="txt one dots" style="margin-top:10px">${richText(c.paiement_infos)}</div>` : ''}` : ''}`
+        : `${c.inscription ? `<p style="margin-bottom:10px">Montant : <b>${euros(du)}</b>${nbJ > 1 ? ` (${nbJ} jours × ${euros(c.tarif)})` : ''}.</p>` : ''}${c.paiement_infos ? `<div class="txt one dots">${richText(c.paiement_infos)}</div>` : (Number(c.tarif) ? `<p>Participation : <b>${euros(c.tarif)}</b>.</p>` : '')}
            <p class="small muted" style="margin-top:6px">Une fois le paiement enregistré par le Comité, le reçu sera disponible ici après le stage.</p>`}
     </div>
   </article>`;
@@ -719,6 +966,10 @@ async function genererRecu(r) {
 // ======================== ADMIN ========================
 let ADMIN_PWD = '', ADMIN = { stages: [], convocations: [] }, CUR = null, FILTRE = 'tous', SEXE = 'tous', IMPORT_ROWS = [], IMPORT_SEXE = '', IMPORT_STATUT = 'convoque';
 const enAttente = c => c.statut === 'attente';
+const nbJoursConv = (c, s) => c.jours ? c.jours.length : ((s.jours || []).length || 1);
+const duConv = (c, s) => Number(s.tarif || 0) * (s.inscription ? nbJoursConv(c, s) : 1);
+const valideConv = (c, s) => { const d = s.documents || []; return (d.length && d.every(x => (c.docs_recus || []).includes(x)))
+  || (Number(s.tarif) > 0 && c.paye && Number(c.montant != null ? c.montant : duConv(c, s)) >= Number(s.tarif)); };
 const convoques = sid => ADMIN.convocations.filter(c => c.stage_id === sid && !enAttente(c) && (SEXE === 'tous' || (c.sexe || '?') === SEXE));
 const SEXE_LBL = { F: 'Filles', M: 'Garçons' };
 
@@ -766,15 +1017,22 @@ function renderAdmin() {
     attente: list.filter(c => c.reponse === 'attente').length,
     docs: list.filter(c => c.reponse !== 'absent' && docs.some(d => !(c.docs_recus || []).includes(d))).length,
     impaye: list.filter(c => c.reponse !== 'absent' && !c.paye).length,
+    valider: list.filter(c => c.reponse !== 'absent' && !valideConv(c, s)).length,
+    valide: list.filter(c => c.reponse !== 'absent' && valideConv(c, s)).length,
   };
   const shown = list.filter(c => FILTRE === 'tous' || (FILTRE === 'docs' ? c.reponse !== 'absent' && docs.some(d => !(c.docs_recus || []).includes(d))
-    : FILTRE === 'impaye' ? c.reponse !== 'absent' && !c.paye : c.reponse === FILTRE));
+    : FILTRE === 'impaye' ? c.reponse !== 'absent' && !c.paye
+    : FILTRE === 'valider' ? c.reponse !== 'absent' && !valideConv(c, s)
+    : FILTRE === 'valide' ? c.reponse !== 'absent' && valideConv(c, s) : c.reponse === FILTRE));
+  const insc = !!s.inscription, mixte = (s.type || 'cde') !== 'cde';
   const kpi = (key, lbl) => `<button class="kpi ${FILTRE === key ? 'on' : ''}" onclick="FILTRE='${key}';renderAdmin()"><b>${k[key]}</b><span>${lbl}</span></button>`;
   box.innerHTML = `<div class="stack">
     <div class="card"><div class="stage-head"><div><h2>${esc(s.titre)}</h2><div class="muted" style="font-weight:600">${esc(fmtDates(s.date_debut, s.date_fin))}${s.lieu ? ' · ' + esc(s.lieu) : ''} · ${euros(s.tarif)}</div></div>
-      ${s.date_limite ? `<span class="tag">Réponse avant le ${fmtShort(s.date_limite)}</span>` : ''}</div></div>
+      ${s.date_limite ? `<span class="tag">${insc ? 'Inscriptions jusqu\'au' : 'Réponse avant le'} ${fmtShort(s.date_limite)}</span>` : ''}</div>
+      ${insc ? `<p class="small muted" style="margin:10px 0">Inscription en ligne ouverte à tous sur <a href="${SITE_URL}#${s.type === 'beach' ? 'beach' : 'stages'}" target="_blank" rel="noopener">${SITE_URL.replace(/^https:\/\//, '')}#${s.type === 'beach' ? 'beach' : 'stages'}</a>. Validation : fiche de renseignements reçue ou paiement d'au moins ${euros(s.tarif)}.</p>${placesHTML(s)}` : ''}</div>
     <div class="stage-tabs">${sx('tous', 'Filles et garçons', all.length)}${sx('F', 'Filles', nF)}${sx('M', 'Garçons', nM)}${nX ? sx('?', 'Non renseigné', nX) : ''}</div>
-    <div class="kpis">${kpi('tous', 'convoqués')}${kpi('present', 'présents')}${kpi('absent', 'absents')}${kpi('attente', 'sans réponse')}${kpi('docs', 'dossiers incomplets')}${kpi('impaye', 'non payés')}</div>
+    <div class="kpis">${insc ? kpi('tous', 'inscrits') + kpi('valide', 'validés') + kpi('valider', 'à valider') + kpi('absent', 'désistements') + kpi('docs', 'fiches manquantes') + kpi('impaye', 'non payés')
+      : kpi('tous', 'convoqués') + kpi('present', 'présents') + kpi('absent', 'absents') + kpi('attente', 'sans réponse') + kpi('docs', 'dossiers incomplets') + kpi('impaye', 'non payés')}</div>
     <div class="btnrow" style="margin:0">
       <button class="btn primary" onclick="exportCodes(${s.id})">⬇ Export pour les convocations (codes)</button>
       <button class="btn ghost" onclick="exportFamilles(${s.id})">⬇ Export par famille (publipostage)</button>
@@ -794,14 +1052,14 @@ function renderAdmin() {
       : '<div class="card msg info">Aucun convoqué pour ce stage : importez la liste ci-dessous.</div>'}
     ${att.length ? `<div class="tablebox"><table class="suivi">
       <thead><tr><th>Rang</th><th>Liste d'attente</th><th>Code</th><th>Ordre</th><th></th></tr></thead>
-      <tbody>${[['F', 'Filles'], ['M', 'Garçons'], ['?', 'Sexe non renseigné']].map(([g, lbl]) => {
-        const grp = att.filter(c => (c.sexe || '?') === g);
-        return grp.length ? `<tr class="grp grp-${g === '?' ? 'x' : g}"><td colspan="5">Liste d'attente ${lbl.toLowerCase()} · ${grp.length}</td></tr>` + grp.map((c, i) => `<tr class="row-wait">
+      <tbody>${(mixte ? [['*', 'Liste d\'attente']] : [['F', 'Filles'], ['M', 'Garçons'], ['?', 'Sexe non renseigné']]).map(([g, lbl]) => {
+        const grp = att.filter(c => g === '*' || (c.sexe || '?') === g);
+        return grp.length ? `<tr class="grp grp-${g === '?' || g === '*' ? 'x' : g}"><td colspan="5">${g === '*' ? lbl : 'Liste d\'attente ' + lbl.toLowerCase()} · ${grp.length}</td></tr>` + grp.map((c, i) => `<tr class="row-wait">
           <td><span class="rang">${i + 1}</span></td>
-          <td><b>${esc(c.nom)} ${esc(c.prenom)}</b><div class="small muted">${esc(c.club || '')}${c.annee_naissance ? ' · ' + c.annee_naissance : ''}</div>${c.email_parent ? `<div class="small"><a href="mailto:${esc(c.email_parent)}">${esc(c.email_parent)}</a></div>` : ''}</td>
+          <td><b>${esc(c.nom)} ${esc(c.prenom)}</b><div class="small muted">${esc(c.club || '')}${c.annee_naissance ? ' · ' + c.annee_naissance : ''}${mixte && c.sexe ? ' · ' + (c.sexe === 'F' ? 'Fille' : 'Garçon') : ''}</div>${insc ? infosInsc(c, s) : ''}${c.email_parent ? `<div class="small"><a href="mailto:${esc(c.email_parent)}">${esc(c.email_parent)}</a></div>` : ''}</td>
           <td><span class="code">${esc(c.code)}</span></td>
           <td style="white-space:nowrap"><button class="linkbtn" ${i ? '' : 'disabled'} onclick="deplacer(${c.id},-1)" aria-label="Monter">▲</button> <button class="linkbtn" ${i < grp.length - 1 ? '' : 'disabled'} onclick="deplacer(${c.id},1)" aria-label="Descendre">▼</button></td>
-          <td style="white-space:nowrap"><button class="btn ok" style="padding:8px 14px;min-height:0" onclick="activer(${c.id})">✓ Convoquer</button> <button class="linkbtn red" onclick="retirer(${c.id})">Retirer</button></td>
+          <td style="white-space:nowrap"><button class="btn ok" style="padding:8px 14px;min-height:0" onclick="activer(${c.id})">✓ ${insc ? 'Inscrire' : 'Convoquer'}</button> <button class="linkbtn red" onclick="retirer(${c.id})">Retirer</button></td>
         </tr>`).join('') : '';
       }).join('')}</tbody></table></div>` : ''}
     <details class="box" ${list.length ? '' : 'open'}><summary>Importer des convoqués ou la liste d'attente depuis Excel</summary><div>
@@ -829,6 +1087,7 @@ function rowAdmin(c, s) {
     <td><b>${esc(c.nom)} ${esc(c.prenom)}</b>
       <select class="sx" aria-label="Fille ou garçon" onchange="setSexe(${c.enfant_id}, this.value)"><option value="">?</option><option value="F" ${c.sexe === 'F' ? 'selected' : ''}>Fille</option><option value="M" ${c.sexe === 'M' ? 'selected' : ''}>Garçon</option></select>
       <div class="small muted">${esc(c.club || '')}${c.annee_naissance ? ' · ' + c.annee_naissance : ''}</div>
+      ${s.inscription ? infosInsc(c, s) + (c.reponse !== 'absent' ? (valideConv(c, s) ? '<span class="status ok" style="font-size:12px;padding:3px 9px;margin-top:4px">✓ Validée</span>' : '<span class="status warn" style="font-size:12px;padding:3px 9px;margin-top:4px">À valider</span>') : '') : ''}
       ${c.email_parent ? `<div class="small"><a href="mailto:${esc(c.email_parent)}">${esc(c.email_parent)}</a> · <button class="linkbtn small" onclick="mailCode(${c.id})" title="Ouvre un brouillon Gmail avec le code, pour cette famille uniquement">✉ Envoyer le code</button></div>` : ''}
       ${c.tel_parent ? `<div class="small">📞 <a href="tel:${esc(c.tel_parent.replace(/\s/g, ''))}">${esc(c.tel_parent)}</a></div>` : ''}
       ${c.commentaire ? `<div class="small muted">« ${esc(c.commentaire)} »</div>` : ''}</td>
@@ -841,7 +1100,7 @@ function rowAdmin(c, s) {
       <input type="checkbox" style="width:18px;height:18px;padding:0;accent-color:var(--ok)" ${c.paye ? 'checked' : ''} aria-label="Payé" onchange="togglePaye(${c.id},this.checked)"><b class="small">${c.paye ? 'Payé' : 'Non payé'}</b>
       <span class="small muted">Mode</span><select aria-label="Mode de paiement" onchange="upd(${c.id},{paiement_mode:this.value})"><option value="">—</option>${MODES.map(m => `<option ${c.paiement_mode === m ? 'selected' : ''}>${m}</option>`).join('')}</select>
       <span class="small muted">Date</span><input type="date" value="${esc(c.paiement_date || '')}" aria-label="Date du paiement" onchange="upd(${c.id},{paiement_date:this.value})">
-      <span class="small muted">Montant</span><input type="number" step="0.01" min="0" value="${c.montant != null ? c.montant : ''}" placeholder="${s.tarif}" aria-label="Montant" onchange="upd(${c.id},{montant:this.value})">
+      <span class="small muted">Montant</span><input type="number" step="0.01" min="0" value="${c.montant != null ? c.montant : ''}" placeholder="${duConv(c, s)}" aria-label="Montant" onchange="upd(${c.id},{montant:this.value})">
     </div></td>
     <td>${!c.paye ? '<span class="muted small">—</span>'
       : sansRecu(c.paiement_mode) ? '<span class="muted small">Sans reçu</span>'
@@ -851,6 +1110,11 @@ function rowAdmin(c, s) {
   </tr>`;
 }
 
+function infosInsc(c, s) {
+  const jours = s.par_jour && (s.jours || []).length > 1 ? (c.jours || s.jours).map(d => jourCourt(d).split(' ')[0].slice(0, 3) + '. ' + parseD(d).getDate()).join(' + ') : '';
+  return `<div class="small">${jours ? `<b>${esc(jours)}</b> · ` : ''}${euros(duConv(c, s))}${c.niveau ? ' · ' + esc(c.niveau.split(' :')[0]) : ''}</div>
+    <div class="small muted">${c.naissance ? 'Né(e) le ' + fmtShort(c.naissance) : ''}${c.licence ? ' · Licence ' + esc(c.licence) : ''}${c.source === 'inscription' && c.inscrit_le ? ' · inscrit(e) le ' + fmtShort(String(c.inscrit_le).slice(0, 10)) : ''}</div>`;
+}
 async function upd(cid, patch) {
   try {
     const r = await rpc('stg_admin_update_conv', { pwd: ADMIN_PWD, cid, p: patch });
@@ -872,7 +1136,7 @@ function togglePaye(cid, on) {
   const c = ADMIN.convocations.find(x => x.id === cid), s = ADMIN.stages.find(x => x.id === c.stage_id);
   const p = { paye: on };
   if (on && !c.paiement_date) p.paiement_date = today();
-  if (on && c.montant == null) p.montant = String(s.tarif);
+  if (on && c.montant == null) p.montant = String(duConv(c, s));
   upd(cid, p);
 }
 async function setSexe(eid, v) {
@@ -896,16 +1160,17 @@ async function mettreEnAttente(cid) {
 // Activation manuelle d'une convocation depuis la liste d'attente (désistement)
 async function activer(cid) {
   const c = ADMIN.convocations.find(x => x.id === cid), s = ADMIN.stages.find(x => x.id === c.stage_id);
-  if (!confirm(`Convoquer ${c.prenom} ${c.nom} au stage « ${s.titre} » ?`)) return;
+  if (!confirm(`${s.inscription ? 'Inscrire' : 'Convoquer'} ${c.prenom} ${c.nom} au stage « ${s.titre} » ?`)) return;
   try { await rpc('stg_admin_update_conv', { pwd: ADMIN_PWD, cid, p: { statut: 'convoque' } }); await loadAdmin(); loadPublic(); }
   catch(e) { alert(e.message); return; }
-  if (c.email_parent && confirm(`${c.prenom} est convoqué(e).\n\nPréparer le mail pour prévenir la famille (${c.email_parent}) ?`)) mailCode(cid, true);
+  if (c.email_parent && confirm(`${c.prenom} est ${s.inscription ? 'inscrit(e)' : 'convoqué(e)'}.\n\nPréparer le mail pour prévenir la famille (${c.email_parent}) ?`)) mailCode(cid, true);
 }
 const convUrl = (s, c) => (c.sexe === 'M' && s.convocation_url_m) ? s.convocation_url_m : (s.convocation_url || '');
 // Mail individuel avec le code (remplaçant, famille qui a perdu le mail…) : ouvre un brouillon Gmail prérempli
 function mailCode(cid, remplacement) {
   const c = ADMIN.convocations.find(x => x.id === cid), s = ADMIN.stages.find(x => x.id === c.stage_id);
   if (!c.email_parent) { alert('Pas d\'adresse mail pour cette famille. Code de ' + c.prenom + ' : ' + c.code); return; }
+  if (s.inscription) return mailInscription(c, s, remplacement);
   const mail = c.email_parent.trim().toLowerCase();
   const fratrie = ADMIN.convocations.filter(x => x.stage_id === c.stage_id && !enAttente(x) && (x.email_parent || '').trim().toLowerCase() === mail);
   const enfants = fratrie.length ? fratrie : [c];
@@ -927,6 +1192,20 @@ function mailCode(cid, remplacement) {
     + `\n`;
   window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(c.email_parent.trim())}&su=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`, '_blank', 'noopener');
 }
+function mailInscription(c, s, remplacement) {
+  const j = s.par_jour && (s.jours || []).length > 1 ? (c.jours || s.jours).map(jourCourt).join(' et ') : fmtDates(s.date_debut, s.date_fin);
+  const sujet = `${remplacement ? 'Place confirmée' : 'Inscription'} – ${s.titre}`;
+  const corps = `Bonjour,\n\n`
+    + (remplacement ? `Une place s'est libérée : l'inscription de ${c.prenom} au ${s.titre} est confirmée (${j}).\n\n`
+                    : `L'inscription de ${c.prenom} au ${s.titre} est bien enregistrée (${j}).\n\n`)
+    + `${s.lieu ? 'Lieu : ' + s.lieu + '\n' : ''}${s.horaires ? 'Horaires : ' + s.horaires.replace(/\n/g, ' ') + '\n' : ''}Montant : ${euros(duConv(c, s))}\n\n`
+    + (valideConv(c, s) ? `L'inscription est validée, merci !\n\n`
+       : `L'inscription sera validée dès réception de la fiche de renseignements ou d'un paiement d'au moins ${euros(s.tarif)}.\n\n`)
+    + `Sur l'espace parents, vous pouvez suivre le dossier et le paiement, télécharger la fiche de renseignements, puis le reçu après le stage :\n${SITE_URL}#parents\n\n`
+    + `Vos identifiants :\n${c.prenom} — Nom : ${c.nom} · Année de naissance : ${c.annee_naissance} · Code : ${c.code}\n`
+    + (s.contact ? `\nContact :\n${s.contact}\n` : '');
+  window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(c.email_parent.trim())}&su=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`, '_blank', 'noopener');
+}
 async function recuAdmin(cid) {
   const c = ADMIN.convocations.find(x => x.id === cid), s = ADMIN.stages.find(x => x.id === c.stage_id);
   try {
@@ -934,7 +1213,7 @@ async function recuAdmin(cid) {
     if (!num) { alert('Reçu indisponible : il faut que le paiement soit enregistré (hors mode « Autre ») et que le stage soit terminé.'); return; }
     c.recu_num = num;
     genererRecu({ prenom: c.prenom, nom: c.nom, titre: s.titre, date_debut: s.date_debut, date_fin: s.date_fin,
-      montant: c.montant != null ? c.montant : s.tarif, mode: c.paiement_mode, date: c.paiement_date, num });
+      montant: c.montant != null ? c.montant : duConv(c, s), mode: c.paiement_mode, date: c.paiement_date, num });
     renderAdmin();
   } catch(e) { alert(e.message); }
 }
@@ -951,11 +1230,18 @@ function stageForm(s) {
     <div class="grid3">
       <div class="field"><label>Premier jour</label><input type="date" name="date_debut" required value="${v('date_debut')}"></div>
       <div class="field"><label>Dernier jour</label><input type="date" name="date_fin" value="${v('date_fin')}"></div>
-      <div class="field"><label>Réponse des familles avant le</label><input type="date" name="date_limite" value="${v('date_limite')}"></div>
+      <div class="field"><label>Réponse des familles / inscriptions avant le</label><input type="date" name="date_limite" value="${v('date_limite')}"></div>
     </div>
+    <div class="grid3">
+      <div class="field"><label>Type de stage</label><select name="type">${[['cde', 'Centre Départemental'], ['beach', 'Beach-volley'], ['ete', 'Stage d\'été']].map(([k, l]) => `<option value="${k}" ${(s.type || 'cde') === k ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
+      <div class="field"><label>Places maximum</label><input type="number" min="1" name="places" value="${v('places')}" placeholder="Illimité"><span class="small muted">Au-delà : liste d'attente.</span></div>
+      <div class="field"><label>Contact affiché</label><textarea name="contact" style="min-height:46px" placeholder="Nom, mail, téléphone">${v('contact')}</textarea></div>
+    </div>
+    <label class="chk" style="white-space:normal"><input type="checkbox" name="inscription" ${s.inscription ? 'checked' : ''}>Inscription en ligne ouverte à tous (sinon : sur convocation, avec import des convoqués)</label>
+    <label class="chk" style="white-space:normal"><input type="checkbox" name="par_jour" ${s.par_jour ? 'checked' : ''}>Inscription possible à la journée (tarif et places par jour)</label>
     <div class="grid2">
       <div class="field"><label>Lieu</label><input name="lieu" value="${v('lieu')}"></div>
-      <div class="field"><label>Tarif (€)</label><input type="number" step="0.01" min="0" name="tarif" value="${v('tarif')}"></div>
+      <div class="field"><label>Tarif (€, par jour si inscription à la journée)</label><input type="number" step="0.01" min="0" name="tarif" value="${v('tarif')}"></div>
     </div>
     <div class="field"><label>Horaires</label><textarea name="horaires" style="min-height:60px">${v('horaires')}</textarea></div>
     <div class="field"><label>Informations pour les familles (matériel, repas, programme…)</label><textarea name="infos">${v('infos')}</textarea></div>
@@ -992,7 +1278,8 @@ async function saveStage(ev, id) {
     infos: g('infos').value.trim(), paiement_infos: g('paiement_infos').value.trim(), points_url: g('points_url').value.trim(),
     convocation_url: g('convocation_url').value.trim(), convocation_url_m: g('convocation_url_m').value.trim(),
     ...parseDocs(g('documents').value),
-    liste_publique: g('liste_publique').checked, actif: g('actif').checked };
+    liste_publique: g('liste_publique').checked, actif: g('actif').checked,
+    type: g('type').value, places: g('places').value, contact: g('contact').value.trim(), inscription: g('inscription').checked, par_jour: g('par_jour').checked };
   if (!s.titre || !s.date_debut) { alert('Le titre et le premier jour sont obligatoires.'); return; }
   try { CUR = await rpc('stg_admin_save_stage', { pwd: ADMIN_PWD, s }); await loadAdmin(); loadPublic(); }
   catch(e) { alert('Enregistrement impossible : ' + e.message); }
@@ -1211,9 +1498,12 @@ function exportSuivi(sid) {
   const s = ADMIN.stages.find(x => x.id === sid), docs = s.documents || [];
   const list = convoques(sid);
   const lab = { attente: 'Sans réponse', present: 'Présent', absent: 'Absent' };
-  csvDownload(`Suivi-${slug(s.titre)}.csv`, ['Nom', 'Prénom', 'Fille/Garçon', 'Club', 'Réponse', 'Téléphone parent', 'Commentaire'].concat(docs).concat(['Payé', 'Mode', 'Date paiement', 'Montant', 'N° reçu']),
-    list.map(c => [c.nom, c.prenom, c.sexe === 'F' ? 'Fille' : c.sexe === 'M' ? 'Garçon' : '', c.club, lab[c.reponse], c.tel_parent, c.commentaire].concat(docs.map(d => (c.docs_recus || []).includes(d) ? 'Reçu' : 'Manquant'))
-      .concat([c.paye ? 'Oui' : 'Non', c.paiement_mode, c.paiement_date ? fmtShort(c.paiement_date) : '', c.paye ? String(c.montant != null ? c.montant : s.tarif).replace('.', ',') : '', c.recu_num])));
+  const ins = !!s.inscription, liste = ins ? list.concat(ADMIN.convocations.filter(c => c.stage_id === sid && enAttente(c)).sort((a, b) => a.rang_attente - b.rang_attente)) : list;
+  csvDownload(`Suivi-${slug(s.titre)}.csv`, ['Nom', 'Prénom', 'Fille/Garçon', 'Club', ...(ins ? ['Statut', 'Date de naissance', 'Licence', 'Niveau', 'Journées', 'À payer', 'Validée', 'Mail parent'] : []), 'Réponse', 'Téléphone parent', 'Commentaire'].concat(docs).concat(['Payé', 'Mode', 'Date paiement', 'Montant', 'N° reçu']),
+    liste.map(c => [c.nom, c.prenom, c.sexe === 'F' ? 'Fille' : c.sexe === 'M' ? 'Garçon' : '', c.club,
+      ...(ins ? [enAttente(c) ? 'Liste d\'attente ' + c.rang_attente : 'Inscrit', c.naissance ? fmtShort(c.naissance) : '', c.licence, c.niveau, (c.jours || s.jours || []).map(fmtShort).join(' + '), String(duConv(c, s)).replace('.', ','), valideConv(c, s) ? 'Oui' : 'Non', c.email_parent] : []),
+      lab[c.reponse], c.tel_parent, c.commentaire].concat(docs.map(d => (c.docs_recus || []).includes(d) ? 'Reçu' : 'Manquant'))
+      .concat([c.paye ? 'Oui' : 'Non', c.paiement_mode, c.paiement_date ? fmtShort(c.paiement_date) : '', c.paye ? String(c.montant != null ? c.montant : duConv(c, s)).replace('.', ',') : '', c.recu_num])));
 }
 
 // ======================== DÉMARRAGE ========================
