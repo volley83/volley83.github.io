@@ -136,10 +136,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261103T210000
 DTEND;TZID=Europe/Paris:20261103T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 1 – Volley Cl
- ub Hyères / Pierrefeu La Londe 3
-LOCATION:Gymnase Gassendi
-DESCRIPTION:Poule M4B – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/competlib/M4B
+ ub Hyères / Pierrefeu La Londe 3 (3-0)
+DESCRIPTION:Résultat : 3-0 (25:13\, 25:19\, 26:24)\nPoule M4B – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/competlib/M4B
 END:VEVENT
 BEGIN:VEVENT
 UID:M4B003@volley83.github.io
