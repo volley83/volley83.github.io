@@ -733,13 +733,14 @@ function renderReglages() {
   <h1 style="font-size:34px">Réglages</h1>
   <div class="card stack"><h3>En-tête des factures</h3>
     <div class="grid g2"><div class="field"><label>Émetteur (en haut à gauche)</label><textarea id="r-em" rows="6">${esc(reglage('emetteur', ''))}</textarea></div>
-    <div class="field"><label>Mentions en bas de facture (règlement, IBAN, SIRET…)</label><textarea id="r-me" rows="6">${esc(reglage('mentions', ''))}</textarea></div></div>
+    <div class="field"><label>Mentions en bas de facture (conditions de règlement, SIRET…)</label><textarea id="r-me" rows="6">${esc(reglage('mentions', ''))}</textarea></div></div>
+    <div class="field"><label>Coordonnées bancaires (encadré « Règlement par virement » sur chaque facture)</label><textarea id="r-bq" rows="4" placeholder="Titulaire, IBAN, BIC, banque">${esc(reglage('banque', ''))}</textarea></div>
     <div class="btnrow"><button class="btn primary" id="r-ok1">Enregistrer</button></div></div>
   <div class="card stack"><h3>Compétitions OPEN : prix par équipe</h3>
     <p class="small muted">Selon le nombre de tournois joués par chaque équipe d'un club sur la saison (finale comprise).</p>
     <div class="grid g3"><div class="field"><label>1 tournoi</label><input id="r-t1" value="${fmtN(t[0])}" inputmode="decimal"></div><div class="field"><label>2 tournois</label><input id="r-t2" value="${fmtN(t[1])}" inputmode="decimal"></div><div class="field"><label>3 tournois ou plus</label><input id="r-t3" value="${fmtN(t[2])}" inputmode="decimal"></div></div>
     <div class="btnrow"><button class="btn primary" id="r-ok2">Enregistrer</button></div></div>`);
-  $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+  $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok2').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'open_tarifs', p_valeur: [num($('r-t1').value), num($('r-t2').value), num($('r-t3').value)] }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
 }
 
@@ -804,10 +805,20 @@ function pageFacture(doc, b, code, img) {
   y += 5; doc.setFillColor(...navy); doc.rect(W - M - 70, y - 5.5, 70, 10, 'F'); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
   doc.text('TOTAL', W - M - 66, y + 1); doc.text(pdfTxt(euros(tot)), W - M - 3, y + 1, { align: 'right' }); doc.setTextColor(20, 32, 58);
   if (rg > 0) { y += 10; doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.text(pdfTxt('Déjà réglé : ' + euros(rg)), W - M - 3, y, { align: 'right' }); y += 5; doc.setFont('helvetica', 'bold'); doc.text(pdfTxt('Reste à payer : ' + euros(Math.max(0, tot - rg))), W - M - 3, y, { align: 'right' }); }
-  // pied
+  // pied : coordonnées bancaires puis mentions
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5);
+  const me = doc.splitTextToSize(pdfTxt(reglage('mentions', '')), W - 2 * M), yMe = 285 - me.length * 3.8;
+  const bq = pdfTxt(reglage('banque', '')).split('\n').map(x => x.trim()).filter(Boolean);
+  if (bq.length) {
+    const hB = 9 + bq.length * 4.4, yB = yMe - 4 - hB;
+    if (y + 6 > yB) { doc.addPage(); }
+    doc.setDrawColor(201, 210, 226); doc.setFillColor(244, 246, 250); doc.roundedRect(M, yB, 120, hB, 2, 2, 'FD');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...navy); doc.text('Règlement par virement', M + 4, yB + 5.5);
+    doc.setFont('courier', 'normal'); doc.setFontSize(8.8); doc.setTextColor(20, 32, 58);
+    bq.forEach((t, i) => { if (/^(IBAN|BIC)/i.test(t)) doc.setFont('courier', 'bold'); else doc.setFont('helvetica', 'normal'); doc.text(t, M + 4, yB + 10.5 + i * 4.4); });
+  }
   doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(86, 98, 122);
-  const me = doc.splitTextToSize(pdfTxt(reglage('mentions', '')), W - 2 * M);
-  doc.text(me, M, 285 - me.length * 3.8);
+  doc.text(me, M, yMe);
 }
 async function pdfClubs(bid, codes) {
   if (!window.jspdf) { alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.'); return; }
@@ -818,7 +829,7 @@ async function pdfClubs(bid, codes) {
 async function mailClub(bid, code) {
   const b = bord(bid), c = club(code), tot = totalDe(bid, code);
   await pdfClubs(bid, [code]);
-  const body = `Bonjour,\n\nVeuillez trouver ci-joint la facture n° ${facNum(b, code)} (bordereau n° ${b.numero} du ${fmtD(b.date)}) d'un montant de ${euros(tot)}.\n\n${reglage('mentions', '')}\n\nSportivement,\nLe Comité du Var de Volley-Ball`;
+  const body = `Bonjour,\n\nVeuillez trouver ci-joint la facture n° ${facNum(b, code)} (bordereau n° ${b.numero} du ${fmtD(b.date)}) d'un montant de ${euros(tot)}.\n\n${reglage('mentions', '')}${reglage('banque', '') ? '\n\nCoordonnées bancaires :\n' + reglage('banque', '') : ''}\n\nSportivement,\nLe Comité du Var de Volley-Ball`;
   window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(c.email || '') + '&su=' + encodeURIComponent(`Facture Comité du Var – bordereau n° ${b.numero} – ${c.nom}`) + '&body=' + encodeURIComponent(body), '_blank');
   if (!c.email) toast('Pas de mail enregistré pour ce club (onglet Clubs)', 'err');
 }
