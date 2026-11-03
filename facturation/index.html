@@ -705,14 +705,15 @@ function renderClubs() {
     <td><input data-k="code" value="${esc(c.code)}" class="code" style="width:80px"></td>
     <td><input data-k="numero" value="${esc(c.numero || '')}" style="width:96px" class="code"></td>
     <td><input data-k="nom" value="${esc(c.nom)}" style="min-width:250px"></td>
-    <td><input data-k="email" value="${esc(c.email || '')}" style="min-width:220px" placeholder="tresorier@club.fr"></td>
+    <td><input data-k="email_finances" value="${esc(c.email_finances || '')}" style="min-width:230px" placeholder="tresorier@club.fr"></td>
+    <td><input data-k="email" value="${esc(c.email || '')}" style="min-width:260px" placeholder="contact@club.fr"></td>
     <td><input data-k="adresse" value="${esc(c.adresse || '')}" style="min-width:220px"></td>
     <td><input data-k="alias" value="${esc(c.alias || '')}" style="min-width:200px"></td>
     <td class="c"><input type="checkbox" data-k="actif" ${c.actif ? 'checked' : ''}></td></tr>`;
   shell('clubs', `
-  <div class="ttl"><div><h1 style="font-size:34px">Clubs</h1><p class="muted">Le mail sert au bouton « Préparer le mail » (plusieurs adresses possibles, séparées par des virgules). Les « autres noms » aident à reconnaître le club dans les inscriptions (OPEN, stages…).</p></div>
+  <div class="ttl"><div><h1 style="font-size:34px">Clubs</h1><p class="muted">« Préparer le mail » envoie la facture aux mails finances, avec les contacts du club en copie (sans mail finances : aux contacts). Plusieurs adresses possibles, séparées par des virgules. Les « autres noms » aident à reconnaître le club dans les inscriptions (OPEN, stages…).</p></div>
     <button class="btn primary" onclick="nouveauClub()">+ Nouveau club</button></div>
-  <div class="tablebox"><table class="t" id="club-t"><thead><tr><th>Sigle</th><th>N° affiliation</th><th>Nom</th><th>Mail(s)</th><th>Adresse (facture)</th><th>Autres noms</th><th class="c">Actif</th></tr></thead>
+  <div class="tablebox"><table class="t" id="club-t"><thead><tr><th>Sigle</th><th>N° affiliation</th><th>Nom</th><th>Mail(s) finances</th><th>Mail(s) contacts</th><th>Adresse (facture)</th><th>Autres noms</th><th class="c">Actif</th></tr></thead>
     <tbody>${cs.map(row).join('')}</tbody></table></div>`);
   document.querySelectorAll('#club-t tr[data-code] input').forEach(inp => inp.onchange = async () => {
     const tr = inp.closest('tr'), c = club(tr.dataset.code), k = inp.dataset.k;
@@ -834,8 +835,9 @@ async function mailClub(bid, code) {
   const b = bord(bid), c = club(code), tot = totalDe(bid, code);
   await pdfClubs(bid, [code]);
   const body = `Bonjour,\n\nVeuillez trouver ci-joint la facture n° ${facNum(b, code)} (bordereau n° ${b.numero} du ${fmtD(b.date)}) d'un montant de ${euros(tot)}.\n\n${reglage('mentions', '')}${reglage('banque', '') ? '\n\nCoordonnées bancaires :\n' + reglage('banque', '') : ''}\n\nSportivement,\nLe Comité du Var de Volley-Ball`;
-  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(c.email || '') + '&su=' + encodeURIComponent(`Facture Comité du Var – bordereau n° ${b.numero} – ${c.nom}`) + '&body=' + encodeURIComponent(body), '_blank');
-  if (!c.email) toast('Pas de mail enregistré pour ce club (onglet Clubs)', 'err');
+  const to = c.email_finances || c.email || '', cc = c.email_finances ? (c.email || '') : '';
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to) + (cc ? '&cc=' + encodeURIComponent(cc) : '') + '&su=' + encodeURIComponent(`Facture Comité du Var – bordereau n° ${b.numero} – ${c.nom}`) + '&body=' + encodeURIComponent(body), '_blank');
+  if (!to) toast('Pas de mail enregistré pour ce club (onglet Clubs)', 'err');
 }
 
 // ======================== EXPORT EXCEL ========================

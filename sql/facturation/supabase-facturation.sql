@@ -16,7 +16,7 @@ create table if not exists fac_clubs (
   code      text primary key,                 -- sigle utilisé partout sur le site : VCHPL, FVV…
   numero    text,                             -- n° d'affiliation FFVB (0839914)
   nom       text not null,
-  email     text,                             -- adresse(s) pour l'envoi des factures
+  email     text,                             -- contact(s) général(aux), séparés par des virgules
   adresse   text,
   alias     text,                             -- autres écritures du nom (séparées par des virgules) pour les ajouts automatiques
   actif     boolean not null default true,
@@ -82,6 +82,7 @@ create table if not exists fac_reglages (
   valeur jsonb
 );
 
+alter table fac_clubs add column if not exists email_finances text;   -- trésorier(s) : destinataires des factures
 alter table fac_clubs      enable row level security;
 alter table fac_articles   enable row level security;
 alter table fac_bordereaux enable row level security;
@@ -180,7 +181,7 @@ begin
 end $$;
 
 -- ---------- Clubs ----------
--- p = {code, numero, nom, email, adresse, alias, actif, ordre, ancien_code?} ; p = {code, supprimer:true} pour supprimer
+-- p = {code, numero, nom, email, email_finances, adresse, alias, actif, ordre, ancien_code?} ; p = {code, supprimer:true} pour supprimer
 create or replace function fac_admin_club(pwd text, p jsonb) returns void
 language plpgsql security definer set search_path = public as $$
 declare k text := upper(trim(p->>'code')); old text := nullif(upper(trim(coalesce(p->>'ancien_code', ''))), '');
@@ -197,10 +198,10 @@ begin
   if old is not null and old <> k then
     update fac_clubs set code = k where code = old;          -- les lignes et paiements suivent (on update cascade)
   end if;
-  insert into fac_clubs (code, numero, nom, email, adresse, alias, actif, ordre)
-  values (k, nullif(trim(p->>'numero'), ''), trim(p->>'nom'), nullif(trim(p->>'email'), ''), nullif(trim(p->>'adresse'), ''),
+  insert into fac_clubs (code, numero, nom, email, email_finances, adresse, alias, actif, ordre)
+  values (k, nullif(trim(p->>'numero'), ''), trim(p->>'nom'), nullif(trim(p->>'email'), ''), nullif(trim(p->>'email_finances'), ''), nullif(trim(p->>'adresse'), ''),
           nullif(trim(p->>'alias'), ''), coalesce((p->>'actif')::boolean, true), coalesce(nullif(p->>'ordre', '')::int, 0))
-  on conflict (code) do update set numero = excluded.numero, nom = excluded.nom, email = excluded.email,
+  on conflict (code) do update set numero = excluded.numero, nom = excluded.nom, email = excluded.email, email_finances = excluded.email_finances,
     adresse = excluded.adresse, alias = excluded.alias, actif = excluded.actif, ordre = excluded.ordre;
 end $$;
 
