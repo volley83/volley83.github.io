@@ -67,9 +67,27 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
   - un tournoi final OPEN.
 - **Coupe de France** : table `chp_coupe`, scripts `supabase-coupe-de-france*.sql`.
 
+## Rubrique Facturation — `facturation/index.html` (admin uniquement)
+
+- **Adresse** : https://volley83.github.io/facturation/ (non indexée, aucun lien public). Mot de passe admin commun.
+- **Tables `fac_*`** (script `sql/facturation/supabase-facturation.sql`) :
+  - `fac_clubs` : sigle (clé, le même que partout sur le site), n° d'affiliation FFVB, nom, mail(s), adresse, « autres noms » pour reconnaître le club dans les inscriptions ;
+  - `fac_articles` : catalogue (code comptable, désignation, prix, unité, catégorie). Les articles avec `cle` (open_XXX, pitchoun, stage) servent aux ajouts automatiques et ne se suppriment pas ;
+  - `fac_bordereaux` (saison, numéro, date, statut brouillon/envoye, origine 'ffvb' pour l'historique) et `fac_lignes` (copie code/désignation/prix ; `source` = open:O11, pitchoun, stage:<id> pour ne pas refacturer) ;
+  - `fac_paiements` : imputés à un bordereau ou, sinon, aux plus anciens d'abord ;
+  - `fac_reglages` : `emetteur`, `mentions` (pied de facture), `open_tarifs` [1 tournoi, 2 tournois, 3 et plus] = [10, 30, 50].
+- **Vues** : `#recap` (tableau club × bordereau, export Excel), `#bordereaux`, `#b/<id>`, `#b/<id>/<CLUB>` (facture), `#b/<id>/groupe` (saisie groupée), `#b/<id>/auto` (ajouts automatiques), `#paiements`, `#articles`, `#clubs`, `#reglages`.
+- **Ajouts automatiques** (`fac_admin_sources`) :
+  - OPEN : d'après `chp_inscriptions` (tournois annulés exclus). Équipe n d'un club = présente aux tournois où le club a inscrit au moins n équipes (même logique que l'ancien Excel) ;
+  - Pitchoun' : enfants de `pitchoun_joueurs` avec au moins un plateau, 5 € ;
+  - Stages : convocations dont le mode de paiement est « Autre : facturé au club » (mode ajouté dans la gestion des stages ; commence par « Autre » donc pas de reçu aux parents).
+- **PDF** : jsPDF, une page par club ; numéro de facture `AAaa-NN-SIGLE` (ex. 2627-02-VCHPL). Bouton mail = brouillon Gmail, PDF à joindre.
+- **Historique** : bordereaux 2025-2026 (Excel) et n° 1 2026-2027 (PDF FFVB détaillé) importés par un script **hors dépôt** (`facturation-import-historique.sql`).
+- **Idée pour plus tard** : affiliation (réaffiliation GSA) à facturer ici à partir de 2027-2028.
+
 ## Scripts SQL — dossier `sql/`
 
-- `sql/stages/supabase-stages.sql` et `sql/championnats/supabase-championnats.sql` : installation complète. Ils contiennent les dernières versions des fonctions.
+- `sql/stages/supabase-stages.sql`, `sql/championnats/supabase-championnats.sql` et `sql/facturation/supabase-facturation.sql` : installation complète. Ils contiennent les dernières versions des fonctions.
 - Les autres fichiers sont des mises à jour déjà appliquées, gardées pour l'historique. Les plus récentes :
   - `supabase-stage-beach.sql` : inscription en ligne et stage beach des 2 et 3 janvier 2027 ;
   - `supabase-coupe-de-france*.sql`.

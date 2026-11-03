@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Facturation clubs – Comité du Var de Volley-Ball</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #0B2149; --blue: #1E4FA3; --accent: #F6C21B;
+    --bg: #F4F6FA; --card: #FFFFFF; --line: #E2E7F0; --line2: #EDF0F5;
+    --text: #14203A; --muted: #56627A;
+    --ok: #11672F; --ok-bg: #E7F6EC; --warn: #8A5A00; --warn-bg: #FFF4D6; --bad: #A3231D; --bad-bg: #FCE9E8;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; font-size: 15px; line-height: 1.5; min-height: 100vh; }
+  [hidden] { display: none !important; }
+  a { color: var(--blue); }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 24px; }
+  h1, h2, h3, .cond { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: .5px; color: var(--navy); }
+  .muted { color: var(--muted); } .small { font-size: 13px; } .r { text-align: right; } .c { text-align: center; } .nw { white-space: nowrap; }
+
+  header { background: #fff; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 20; }
+  .head { display: flex; align-items: center; gap: 14px; min-height: 68px; flex-wrap: wrap; padding: 8px 0; }
+  .head img { height: 44px; width: auto; display: block; }
+  .head .t { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 22px; text-transform: uppercase; color: var(--navy); letter-spacing: .5px; white-space: nowrap; }
+  .head nav { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .navbtn { display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: #fff; color: var(--text); font-weight: 600; font-size: 14px; text-decoration: none; white-space: nowrap; }
+  .navbtn.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .head select { width: auto; padding: 8px 10px; font-weight: 700; }
+
+  main.wrap { padding-top: 24px; padding-bottom: 64px; }
+  .stack { display: flex; flex-direction: column; gap: 18px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px; }
+  .card h2 { font-size: 26px; font-weight: 800; line-height: 1.05; }
+  .card h3 { font-size: 19px; font-weight: 800; }
+  .ttl { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+  .crumb { font-size: 14px; color: var(--muted); }
+  .crumb a { font-weight: 600; text-decoration: none; }
+
+  .btnrow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 0 16px; border-radius: 10px; border: 1px solid transparent; font-weight: 700; font-size: 14px; font-family: inherit; cursor: pointer; text-decoration: none; white-space: nowrap; }
+  .btn.sm { min-height: 32px; padding: 0 11px; font-size: 13px; border-radius: 8px; }
+  .btn.primary { background: var(--navy); color: #fff; }
+  .btn.accent { background: var(--accent); color: var(--navy); }
+  .btn.ghost { background: #fff; border-color: var(--line); color: var(--text); }
+  .btn.ok { background: var(--ok); color: #fff; }
+  .btn.danger { background: #fff; border-color: #f2c4c1; color: var(--bad); }
+  .btn[disabled] { opacity: .5; cursor: default; }
+  .linkbtn { background: none; border: 0; color: var(--blue); font-weight: 600; cursor: pointer; font-family: inherit; font-size: 13px; padding: 2px 0; text-decoration: underline; }
+  .linkbtn.red { color: var(--bad); }
+  .x { width: 30px; height: 30px; border-radius: 8px; border: 1px solid #f2c4c1; background: #fff; color: var(--bad); cursor: pointer; font-size: 14px; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label, .lbl { font-size: 13px; font-weight: 700; }
+  input, select, textarea { font-family: inherit; font-size: 14px; color: var(--text); background: #fff; border: 1px solid #C9D2E2; border-radius: 9px; padding: 9px 11px; outline: none; width: 100%; }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(30,79,163,.15); }
+  input[type=checkbox] { width: 18px; height: 18px; padding: 0; accent-color: var(--navy); }
+  textarea { min-height: 90px; resize: vertical; }
+  .grid { display: grid; gap: 12px; }
+  .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } .g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } .g6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .msg { border-radius: 10px; padding: 11px 14px; font-size: 14px; }
+  .msg.ok { background: var(--ok-bg); color: var(--ok); } .msg.err { background: var(--bad-bg); color: var(--bad); } .msg.info { background: #E9EFFA; color: var(--navy); } .msg.warn { background: var(--warn-bg); color: var(--warn); }
+
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+  .kpi { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .kpi b { display: block; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 32px; line-height: 1.05; color: var(--navy); }
+  .kpi span { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+  .kpi.bad b { color: var(--bad); } .kpi.ok b { color: var(--ok); }
+
+  .tablebox { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+  table.t { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .t th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); padding: 9px 10px; border-bottom: 1px solid var(--line); background: #F8FAFD; white-space: nowrap; }
+  .t td { padding: 8px 10px; border-bottom: 1px solid var(--line2); vertical-align: middle; }
+  .t tr:last-child td { border-bottom: 0; }
+  .t th.r, .t td.r { text-align: right; } .t th.c, .t td.c { text-align: center; }
+  .t tfoot td { font-weight: 800; background: #F8FAFD; border-top: 1px solid var(--line); color: var(--navy); }
+  .t td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .t tr.clk { cursor: pointer; } .t tr.clk:hover td { background: #F7F9FD; }
+  .t tr.off td { color: #A2ABBC; }
+  .t input, .t select { padding: 6px 8px; font-size: 13.5px; border-radius: 7px; }
+  .t input.n { text-align: right; font-variant-numeric: tabular-nums; }
+  .cell { display: inline-block; min-width: 86px; padding: 3px 8px; border-radius: 7px; text-align: right; font-variant-numeric: tabular-nums; text-decoration: none; color: inherit; font-weight: 600; }
+  .cell.paid { background: var(--ok-bg); color: var(--ok); }
+  .cell.part { background: var(--warn-bg); color: var(--warn); }
+  .cell.due { background: var(--bad-bg); color: var(--bad); }
+  .cell.draft { background: #EEF1F5; color: var(--muted); }
+  .cell.zero { color: #C3CAD6; font-weight: 400; }
+  .club b { color: var(--navy); } .club small { display: block; color: var(--muted); font-size: 12px; }
+  .badge { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .b-draft { background: #EEF1F5; color: var(--muted); } .b-sent { background: #E9EFFA; color: var(--blue); }
+  .b-ok { background: var(--ok-bg); color: var(--ok); } .b-warn { background: var(--warn-bg); color: var(--warn); } .b-bad { background: var(--bad-bg); color: var(--bad); }
+  .b-auto { background: #E3F4F1; color: #0E7C6B; }
+  .code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; }
+
+  .bords { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+  .bord { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 6px; }
+  .bord:hover { border-color: var(--blue); }
+  .bord .n { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 24px; color: var(--navy); text-transform: uppercase; line-height: 1; }
+  .bord .tot { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 26px; color: var(--navy); }
+  .bord.new { border-style: dashed; align-items: center; justify-content: center; color: var(--blue); font-weight: 700; cursor: pointer; min-height: 130px; background: transparent; font-family: inherit; font-size: 15px; }
+
+  /* Choix des articles */
+  .picker { position: relative; }
+  .picker-list { border: 1px solid var(--line); border-radius: 12px; background: #fff; max-height: 340px; overflow-y: auto; margin-top: 8px; }
+  .picker-cat { font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); font-weight: 700; padding: 8px 12px 4px; background: #F8FAFD; position: sticky; top: 0; }
+  .pick { display: grid; grid-template-columns: 70px minmax(0, 1fr) auto; gap: 10px; width: 100%; padding: 8px 12px; border: 0; border-top: 1px solid var(--line2); background: #fff; text-align: left; cursor: pointer; font-family: inherit; font-size: 13.5px; color: var(--text); align-items: center; }
+  .pick:hover, .pick:focus { background: #EEF3FC; outline: none; }
+  .pick .p { font-weight: 700; color: var(--navy); white-space: nowrap; }
+  .fac-total { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; margin-top: 14px; font-size: 15px; }
+  .fac-total .big { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 30px; color: var(--navy); }
+  .clubnav { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 18px; border: 1px solid var(--line); background: #fff; font-size: 13px; font-weight: 700; color: var(--text); text-decoration: none; }
+  .chip.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .chip.has::after { content: ''; width: 7px; height: 7px; border-radius: 4px; background: var(--accent); }
+  .save { font-size: 13px; font-weight: 600; } .save.ok { color: var(--ok); } .save.err { color: var(--bad); } .save.wait { color: var(--muted); }
+  details.help summary { cursor: pointer; font-weight: 700; color: var(--blue); font-size: 14px; }
+  details.help div { margin-top: 8px; font-size: 14px; color: var(--muted); }
+
+  .overlay { position: fixed; inset: 0; background: rgba(11,33,73,.55); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50; }
+  .modal { background: #fff; border-radius: 16px; padding: 24px; width: 100%; max-width: 460px; display: flex; flex-direction: column; gap: 14px; max-height: calc(100vh - 32px); overflow-y: auto; }
+  .modal.wide { max-width: 760px; }
+  .login { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; background: var(--navy); }
+  .login .modal { max-width: 380px; }
+  .login img { height: 64px; align-self: center; }
+
+  @media (max-width: 760px) {
+    .wrap { padding: 0 14px; }
+    .g2, .g3, .g4, .g6 { grid-template-columns: 1fr; }
+    header { position: static; }
+    .head nav { margin-left: 0; }
+  }
+  @media print { header, .noprint { display: none !important; } body { background: #fff; } .card { border: 0; padding: 0; } }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ======================== CONFIG ========================
+const SUPABASE_URL = 'https://nssdhgpvkdbgdewsnlgl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_GeMMc45mQbDOq-ZkU5vXZw_lYJe9KXf';
+const MODES = ['Virement', 'Chèque', 'Espèces', 'Autre'];
+const OPEN_COMP = { MFM: 'M15 4x4 féminin', M4M: 'M15 4x4 masculin', CFM: 'M18 4x4 féminin', C4M: 'M18 4x4 masculin', O11: 'OPEN 2 contre 2', O13: 'OPEN 4 contre 4' };
+
+// ======================== OUTILS ========================
+const $ = id => document.getElementById(id);
+function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+async function rpc(fn, args) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, {
+    method: 'POST',
+    headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify(args || {}),
+  });
+  const txt = await res.text();
+  if (!res.ok) { let m = txt; try { m = JSON.parse(txt).message || txt; } catch(e) {} throw new Error(m); }
+  return txt ? JSON.parse(txt) : null;
+}
+const r2 = n => Math.round((+n || 0) * 100) / 100;
+const num = v => { const n = parseFloat(String(v == null ? '' : v).replace(/\s/g, '').replace(',', '.')); return isNaN(n) ? 0 : n; };
+const fmtN = n => r2(n).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const euros = n => fmtN(n) + ' €';
+const qte = n => r2(n).toLocaleString('fr-FR', { maximumFractionDigits: 2 });
+function parseD(s) { if (!s) return null; const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); }
+function fmtD(s) { const d = parseD(s); return d ? String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear() : ''; }
+function today() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+function saisonDe(s) { const d = parseD(s) || new Date(); const y = d.getMonth() >= 6 ? d.getFullYear() : d.getFullYear() - 1; return y + '-' + (y + 1); }
+const coll = new Intl.Collator('fr', { sensitivity: 'base', numeric: true });
+const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+function slug(t) { return String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w]+/g, '-').replace(/^-|-$/g, ''); }
+function toast(txt, cls = 'ok') { const s = $('savemark'); if (s) { s.className = 'save ' + cls; s.textContent = txt; clearTimeout(toast.t); if (cls === 'ok') toast.t = setTimeout(() => { s.textContent = ''; }, 2500); } }
+function fail(e) { console.error(e); toast('⚠ ' + e.message, 'err'); alert(e.message); }
+
+// ======================== ÉTAT ========================
+let PWD = '', SAISON = saisonDe(today()), D = null, SRC = null;
+const club = code => (D.clubs.find(c => c.code === code) || { code, nom: code });
+const bord = id => D.bordereaux.find(b => String(b.id) === String(id));
+const art = id => D.articles.find(a => String(a.id) === String(id));
+const artCle = k => D.articles.find(a => a.cle === k);
+const montant = l => r2(num(l.quantite) * num(l.prix));
+const lignesDe = (bid, code) => D.lignes.filter(l => String(l.bordereau_id) === String(bid) && (!code || l.club === code));
+const totalDe = (bid, code) => r2(lignesDe(bid, code).reduce((s, l) => s + montant(l), 0));
+const bordNom = b => 'Bordereau n° ' + b.numero;
+const facNum = (b, code) => `${b.saison.slice(2, 4)}${b.saison.slice(7, 9)}-${String(b.numero).padStart(2, '0')}-${code}`;
+const reglage = (k, d) => (D.reglages && D.reglages[k] != null) ? D.reglages[k] : d;
+const bordsTries = () => [...D.bordereaux].sort((a, b) => a.numero - b.numero);
+
+// Paiements d'un club : d'abord imputés au bordereau indiqué, puis le reste sur les bordereaux les plus anciens
+function etatClub(code) {
+  const bs = bordsTries(), du = {}, regle = {};
+  bs.forEach(b => { du[b.id] = totalDe(b.id, code); regle[b.id] = 0; });
+  const pays = D.paiements.filter(p => p.club === code);
+  let libre = 0;
+  pays.forEach(p => { if (p.bordereau_id && regle[p.bordereau_id] != null) regle[p.bordereau_id] += num(p.montant); else libre += num(p.montant); });
+  bs.forEach(b => { const reste = du[b.id] - regle[b.id]; if (reste > 0 && libre > 0) { const x = Math.min(reste, libre); regle[b.id] += x; libre -= x; } });
+  const totDu = r2(Object.values(du).reduce((s, x) => s + x, 0)), totRegle = r2(pays.reduce((s, p) => s + num(p.montant), 0));
+  return { du, regle, totDu, totRegle, reste: r2(totDu - totRegle) };
+}
+function etatCell(b, e) {
+  const du = e.du[b.id] || 0, rg = r2(e.regle[b.id] || 0);
+  if (!du) return 'zero';
+  if (rg >= du - 0.005) return 'paid';
+  if (rg > 0) return 'part';
+  return b.statut === 'envoye' ? 'due' : 'draft';
+}
+const clubsVisibles = () => D.clubs.filter(c => c.actif || D.lignes.some(l => l.club === c.code) || D.paiements.some(p => p.club === c.code))
+  .sort((a, b) => coll.compare(a.code, b.code));
+
+async function load() {
+  D = await rpc('fac_admin_get', { pwd: PWD, p_saison: SAISON });
+  D.lignes.forEach(l => { l.quantite = num(l.quantite); l.prix = num(l.prix); });
+}
+
+// ======================== CONNEXION ========================
+function renderLogin(err) {
+  $('app').innerHTML = `<div class="login"><form class="modal" id="lg">
+    <img src="logo-comite-var.jpg" alt="">
+    <h2 class="cond c" style="font-size:24px">Facturation des clubs</h2>
+    <p class="small muted c" style="margin-top:-8px">Espace réservé au Comité du Var de Volley-Ball</p>
+    <div class="field"><label for="pwd">Mot de passe</label><input id="pwd" type="password" autocomplete="current-password" required></div>
+    <div id="lg-err" class="msg err" ${err ? '' : 'hidden'}>${esc(err || '')}</div>
+    <button class="btn primary" type="submit">Entrer</button></form></div>`;
+  $('pwd').focus();
+  $('lg').onsubmit = async ev => {
+    ev.preventDefault();
+    PWD = $('pwd').value;
+    try { await load(); try { sessionStorage.setItem('fac_admin', PWD); } catch(e) {} route(); }
+    catch(e) { PWD = ''; renderLogin(/refus/i.test(e.message) ? 'Mot de passe incorrect.' : e.message); }
+  };
+}
+function logout() { PWD = ''; D = null; try { sessionStorage.removeItem('fac_admin'); } catch(e) {} location.hash = ''; renderLogin(); }
+
+// ======================== MISE EN PAGE ========================
+function shell(tab, body) {
+  const saisons = [...new Set([...(D.saisons || []), saisonDe(today()), SAISON])].sort().reverse();
+  const nav = [['recap', 'Récapitulatif'], ['bordereaux', 'Bordereaux'], ['paiements', 'Paiements'], ['articles', 'Articles'], ['clubs', 'Clubs'], ['reglages', 'Réglages']];
+  $('app').innerHTML = `
+  <header><div class="wrap head">
+    <img src="logo-comite-var.jpg" alt="Comité du Var de Volley-Ball">
+    <div class="t">Facturation clubs</div>
+    <select id="saison" aria-label="Saison">${saisons.map(s => `<option ${s === SAISON ? 'selected' : ''}>${s}</option>`).join('')}</select>
+    <nav>${nav.map(([k, t]) => `<a class="navbtn ${tab === k ? 'on' : ''}" href="#${k}">${t}</a>`).join('')}
+      <button class="linkbtn" onclick="logout()">Déconnexion</button></nav>
+  </div></header>
+  <main class="wrap stack">${body}<div id="savemark" class="save" style="position:fixed;bottom:14px;right:18px;background:#fff;padding:4px 10px;border-radius:8px"></div></main>`;
+  $('saison').onchange = async e => { SAISON = e.target.value; SRC = null; try { await load(); location.hash = 'recap'; route(); } catch(err) { fail(err); } };
+}
+
+// ======================== RÉCAPITULATIF ========================
+function renderRecap() {
+  const bs = bordsTries(), clubs = clubsVisibles();
+  const etats = Object.fromEntries(clubs.map(c => [c.code, etatClub(c.code)]));
+  const totDu = r2(clubs.reduce((s, c) => s + etats[c.code].totDu, 0)), totRg = r2(clubs.reduce((s, c) => s + etats[c.code].totRegle, 0));
+  const aJour = clubs.filter(c => etats[c.code].totDu > 0 && etats[c.code].reste <= 0.005).length, factures = clubs.filter(c => etats[c.code].totDu > 0).length;
+  const rows = clubs.map(c => {
+    const e = etats[c.code];
+    return `<tr><td class="club"><b>${esc(c.code)}</b><small>${esc(c.nom)}</small></td>
+      ${bs.map(b => { const cl = etatCell(b, e); return `<td class="c"><a class="cell ${cl}" href="#b/${b.id}/${encodeURIComponent(c.code)}" title="${esc(bordNom(b))} – réglé ${euros(e.regle[b.id] || 0)}">${e.du[b.id] ? fmtN(e.du[b.id]) : '—'}</a></td>`; }).join('')}
+      <td class="num"><b>${fmtN(e.totDu)}</b></td><td class="num">${fmtN(e.totRegle)}</td>
+      <td class="num" style="color:${e.reste > 0.005 ? 'var(--bad)' : e.reste < -0.005 ? 'var(--blue)' : 'var(--ok)'};font-weight:800">${e.reste < -0.005 ? 'avoir ' + fmtN(-e.reste) : fmtN(e.reste)}</td>
+      <td class="c">${e.reste > 0.005 ? `<button class="btn sm ghost" onclick="openPaiement({club:'${esc(c.code)}'})">+ Paiement</button>` : ''}</td></tr>`;
+  }).join('');
+  const foot = `<tr><td>Total</td>${bs.map(b => `<td class="num">${fmtN(totalDe(b.id))}</td>`).join('')}<td class="num">${fmtN(totDu)}</td><td class="num">${fmtN(totRg)}</td><td class="num">${fmtN(totDu - totRg)}</td><td></td></tr>`;
+  shell('recap', `
+  <div class="ttl"><div><h1 style="font-size:34px">Saison ${esc(SAISON)}</h1><p class="muted">Ce que chaque club doit et a réglé, bordereau par bordereau. Cliquez sur un montant pour ouvrir la facture.</p></div>
+    <div class="btnrow"><button class="btn ghost" onclick="exportExcel()">⬇ Exporter en Excel</button><button class="btn primary" onclick="nouveauBordereau()">+ Nouveau bordereau</button></div></div>
+  <div class="kpis">
+    <div class="kpi"><b>${euros(totDu)}</b><span>facturés sur la saison</span></div>
+    <div class="kpi ok"><b>${euros(totRg)}</b><span>encaissés</span></div>
+    <div class="kpi ${totDu - totRg > 0.005 ? 'bad' : ''}"><b>${euros(totDu - totRg)}</b><span>restant à encaisser</span></div>
+    <div class="kpi"><b>${aJour} / ${factures}</b><span>clubs à jour de leurs paiements</span></div>
+  </div>
+  ${bs.length ? `<div class="tablebox"><table class="t"><thead><tr><th>Club</th>${bs.map(b => `<th class="c"><a href="#b/${b.id}">N° ${b.numero}</a><br><span style="font-weight:500;text-transform:none">${fmtD(b.date)}</span></th>`).join('')}<th class="r">Total dû</th><th class="r">Réglé</th><th class="r">Reste</th><th></th></tr></thead>
+    <tbody>${rows}</tbody><tfoot>${foot}</tfoot></table></div>
+    <p class="small muted"><span class="cell paid" style="min-width:0">réglé</span> <span class="cell part" style="min-width:0">réglé en partie</span> <span class="cell due" style="min-width:0">envoyé, non réglé</span> <span class="cell draft" style="min-width:0">brouillon, pas encore envoyé</span></p>`
+  : `<div class="card msg info">Aucun bordereau pour la saison ${esc(SAISON)}. Créez le premier avec « Nouveau bordereau ».</div>`}`);
+}
+
+// ======================== BORDEREAUX ========================
+function renderBordereaux() {
+  const bs = bordsTries();
+  shell('bordereaux', `
+  <div class="ttl"><div><h1 style="font-size:34px">Bordereaux ${esc(SAISON)}</h1><p class="muted">Un bordereau regroupe les factures envoyées aux clubs à une même date.</p></div></div>
+  <div class="bords">
+    ${bs.map(b => {
+      const tot = totalDe(b.id), nb = new Set(lignesDe(b.id).map(l => l.club)).size;
+      const rg = r2(clubsVisibles().reduce((s, c) => s + Math.min(etatClub(c.code).regle[b.id] || 0, totalDe(b.id, c.code)), 0));
+      return `<a class="bord" href="#b/${b.id}"><div class="ttl"><span class="n">N° ${b.numero}</span>${b.statut === 'envoye' ? '<span class="badge b-sent">Envoyé</span>' : '<span class="badge b-draft">Brouillon</span>'}</div>
+        <span class="muted small">${fmtD(b.date)}${b.titre ? ' · ' + esc(b.titre) : ''}${b.origine === 'ffvb' ? ' · site FFVB' : ''}</span>
+        <span class="tot">${euros(tot)}</span><span class="small muted">${nb} club${nb > 1 ? 's' : ''} · encaissé ${euros(rg)}</span></a>`;
+    }).join('')}
+    <button class="bord new" onclick="nouveauBordereau()">+ Nouveau bordereau</button>
+  </div>`);
+}
+function nouveauBordereau() {
+  const n = (Math.max(0, ...D.bordereaux.map(b => b.numero)) || 0) + 1;
+  const o = document.createElement('div'); o.className = 'overlay';
+  o.innerHTML = `<form class="modal"><h3 class="cond" style="font-size:22px">Nouveau bordereau – ${esc(SAISON)}</h3>
+    <div class="grid g2"><div class="field"><label>Numéro</label><input id="nb-num" type="number" min="1" value="${n}" required></div>
+    <div class="field"><label>Date</label><input id="nb-date" type="date" value="${today()}" required></div></div>
+    <div class="field"><label>Intitulé (facultatif)</label><input id="nb-titre" placeholder="Engagements, fin de saison…"></div>
+    <div class="btnrow"><button class="btn primary" type="submit">Créer</button><button class="btn ghost" type="button" id="nb-x">Annuler</button></div></form>`;
+  document.body.appendChild(o);
+  $('nb-x').onclick = () => o.remove();
+  o.querySelector('form').onsubmit = async ev => {
+    ev.preventDefault();
+    try {
+      const id = await rpc('fac_admin_bordereau', { pwd: PWD, p: { saison: SAISON, numero: $('nb-num').value, date: $('nb-date').value, titre: $('nb-titre').value } });
+      o.remove(); await load(); location.hash = 'b/' + id;
+    } catch(e) { fail(e); }
+  };
+}
+async function majBordereau(b, p) {
+  try { await rpc('fac_admin_bordereau', { pwd: PWD, p: { id: b.id, ...p } }); Object.assign(b, p); toast('✓ Enregistré'); route(); } catch(e) { fail(e); }
+}
+async function supprBordereau(b) {
+  const n = lignesDe(b.id).length;
+  if (!confirm(`Supprimer le bordereau n° ${b.numero}${n ? ` et ses ${n} lignes de facture` : ''} ? Les paiements qui lui étaient imputés seront répartis automatiquement.`)) return;
+  try { await rpc('fac_admin_bordereau', { pwd: PWD, p: { id: b.id, supprimer: true } }); await load(); location.hash = 'bordereaux'; } catch(e) { fail(e); }
+}
+
+function renderBordereau(b) {
+  const clubs = clubsVisibles(), lock = b.statut === 'envoye';
+  const rows = clubs.map(c => {
+    const t = totalDe(b.id, c.code), n = lignesDe(b.id, c.code).length, e = etatClub(c.code), cl = etatCell(b, e);
+    const st = !t ? '' : cl === 'paid' ? '<span class="badge b-ok">Réglé</span>' : cl === 'part' ? `<span class="badge b-warn">Réglé ${euros(e.regle[b.id])}</span>` : lock ? '<span class="badge b-bad">À régler</span>' : '<span class="badge b-draft">Brouillon</span>';
+    return `<tr class="clk ${t ? '' : 'off'}" onclick="location.hash='b/${b.id}/${encodeURIComponent(c.code)}'"><td class="club"><b>${esc(c.code)}</b><small>${esc(c.nom)}</small></td>
+      <td class="c">${n || ''}</td><td class="num"><b>${t ? euros(t) : '—'}</b></td><td>${st}</td>
+      <td class="r nw" onclick="event.stopPropagation()">${t ? `<button class="btn sm ghost" onclick="pdfClubs(${b.id},['${esc(c.code)}'])">PDF</button> <button class="btn sm ghost" onclick="mailClub(${b.id},'${esc(c.code)}')">✉ Mail</button>` : ''}</td></tr>`;
+  }).join('');
+  const avec = clubs.filter(c => totalDe(b.id, c.code)).map(c => c.code);
+  shell('bordereaux', `
+  <div class="crumb"><a href="#bordereaux">Bordereaux</a> › N° ${b.numero}</div>
+  <div class="card stack">
+    <div class="ttl"><div><h2>Bordereau n° ${b.numero} <span style="font-size:18px" class="muted">· ${esc(SAISON)}</span></h2>
+      <p class="muted">${b.statut === 'envoye' ? '<span class="badge b-sent">Envoyé aux clubs</span> Les factures ne sont plus modifiables.' : '<span class="badge b-draft">Brouillon</span> Préparez les factures, puis marquez le bordereau comme envoyé.'}</p></div>
+      <div class="btnrow">
+        ${lock ? `<button class="btn ghost" onclick="majBordereau(bord(${b.id}),{statut:'brouillon'})">Rouvrir pour modifier</button>` : `<button class="btn ok" onclick="if(confirm('Marquer le bordereau comme envoyé ? Les factures ne seront plus modifiables (vous pourrez le rouvrir).'))majBordereau(bord(${b.id}),{statut:'envoye'})">✓ Marquer comme envoyé</button>`}
+        <button class="btn danger" onclick="supprBordereau(bord(${b.id}))">Supprimer</button></div></div>
+    <div class="grid g3">
+      <div class="field"><label>Date du bordereau</label><input type="date" value="${esc(b.date || '')}" ${lock ? 'disabled' : ''} onchange="majBordereau(bord(${b.id}),{date:this.value})"></div>
+      <div class="field"><label>Intitulé (facultatif)</label><input value="${esc(b.titre || '')}" ${lock ? 'disabled' : ''} placeholder="Engagements, fin de saison…" onchange="majBordereau(bord(${b.id}),{titre:this.value})"></div>
+      <div class="field"><label>Total du bordereau</label><div class="cond" style="font-size:28px;font-weight:800">${euros(totalDe(b.id))}</div></div>
+    </div>
+    <div class="btnrow">
+      ${lock ? '' : `<a class="btn primary" href="#b/${b.id}/auto">⚡ Ajouts automatiques</a><a class="btn accent" href="#b/${b.id}/groupe">☰ Saisie groupée</a>`}
+      ${avec.length ? `<button class="btn ghost" onclick="pdfClubs(${b.id},${esc(JSON.stringify(avec))})">⬇ PDF de toutes les factures (${avec.length})</button>` : ''}
+    </div>
+    <details class="help"><summary>Comment ça marche ?</summary><div>
+      <b>Ajouts automatiques</b> : reprend les engagements des Compétitions OPEN, du Pitchoun' Volley et les stages réglés par les clubs, sans refacturer ce qui l'a déjà été.<br>
+      <b>Saisie groupée</b> : un même article pour plusieurs clubs d'un coup (engagements, aide à l'emploi…), en indiquant juste le nombre pour chaque club.<br>
+      Cliquez sur un club pour compléter sa facture ligne par ligne.</div></details>
+  </div>
+  <div class="tablebox"><table class="t"><thead><tr><th>Club</th><th class="c">Lignes</th><th class="r">Montant</th><th>État</th><th></th></tr></thead><tbody>${rows}</tbody>
+    <tfoot><tr><td>Total</td><td></td><td class="num">${euros(totalDe(b.id))}</td><td></td><td></td></tr></tfoot></table></div>`);
+}
+
+// ======================== FACTURE D'UN CLUB ========================
+let PICK_Q = '';
+function renderFacture(b, code) {
+  const c = club(code), lock = b.statut === 'envoye', ls = lignesDe(b.id, code), e = etatClub(code);
+  const clubs = clubsVisibles();
+  const ligne = l => `<tr data-id="${l.id}">
+      <td><input type="date" value="${esc(l.date_ligne || '')}" data-k="date_ligne" ${lock ? 'disabled' : ''} style="width:140px"></td>
+      <td><input value="${esc(l.code_compta || '')}" data-k="code_compta" ${lock ? 'disabled' : ''} style="width:86px" class="code"></td>
+      <td><input value="${esc(l.designation)}" data-k="designation" ${lock ? 'disabled' : ''} style="min-width:300px">${l.source ? `<span class="badge b-auto" title="${esc(l.source)}" style="margin-top:3px">auto</span>` : ''}</td>
+      <td><input class="n" value="${qte(l.quantite)}" data-k="quantite" ${lock ? 'disabled' : ''} style="width:70px" inputmode="decimal"></td>
+      <td><input class="n" value="${fmtN(l.prix)}" data-k="prix" ${lock ? 'disabled' : ''} style="width:96px" inputmode="decimal"></td>
+      <td class="num" data-tot><b>${fmtN(montant(l))}</b></td>
+      <td>${lock ? '' : `<button class="x" title="Supprimer la ligne" onclick="supprLigne(${l.id})">✕</button>`}</td></tr>`;
+  shell('bordereaux', `
+  <div class="crumb"><a href="#bordereaux">Bordereaux</a> › <a href="#b/${b.id}">N° ${b.numero}</a> › ${esc(code)}</div>
+  <div class="clubnav noprint">${clubs.map(k => `<a class="chip ${k.code === code ? 'on' : ''} ${totalDe(b.id, k.code) ? 'has' : ''}" href="#b/${b.id}/${encodeURIComponent(k.code)}">${esc(k.code)}</a>`).join('')}</div>
+  <div class="card stack">
+    <div class="ttl"><div><h2>${esc(c.nom)}</h2><p class="muted">${c.numero ? 'N° ' + esc(c.numero) + ' · ' : ''}Facture ${esc(facNum(b, code))} · Bordereau n° ${b.numero} du ${fmtD(b.date)}${lock ? ' · <span class="badge b-sent">Envoyé</span>' : ''}</p></div>
+      <div class="btnrow">${ls.length ? `<button class="btn ghost" onclick="pdfClubs(${b.id},['${esc(code)}'])">⬇ PDF</button><button class="btn ghost" onclick="mailClub(${b.id},'${esc(code)}')">✉ Préparer le mail</button>` : ''}
+        <button class="btn ghost" onclick="openPaiement({club:'${esc(code)}',bordereau_id:${b.id}})">+ Paiement</button></div></div>
+    ${lock ? '' : `<div class="picker"><div class="grid" style="grid-template-columns:minmax(0,1fr) auto"><input id="pk-q" placeholder="🔍 Rechercher un article : code, désignation… puis cliquez pour l'ajouter" value="${esc(PICK_Q)}" autocomplete="off">
+      <button class="btn ghost" onclick="ajoutLibre()">+ Ligne libre</button></div><div id="pk-list" class="picker-list"></div></div>`}
+    <div class="tablebox"><table class="t" id="fac-t"><thead><tr><th>Date</th><th>Compte</th><th>Désignation</th><th class="r">Qté</th><th class="r">P.U. €</th><th class="r">Total €</th><th></th></tr></thead>
+      <tbody>${ls.map(ligne).join('') || `<tr><td colspan="7" class="muted c" style="padding:22px">Aucune ligne. Choisissez un article ci-dessus.</td></tr>`}</tbody></table></div>
+    <div class="fac-total"><span>Total de la facture</span><span class="big" id="fac-tot">${euros(totalDe(b.id, code))}</span>
+      <span class="small muted" id="fac-reg">${e.regle[b.id] ? `Réglé : ${euros(e.regle[b.id])} · reste ${euros(totalDe(b.id, code) - e.regle[b.id])}` : ''}</span></div>
+  </div>`);
+  if (!lock) { $('pk-q').oninput = ev => { PICK_Q = ev.target.value; pickList(b, code); }; pickList(b, code); }
+  document.querySelectorAll('#fac-t tbody tr[data-id] input').forEach(inp => {
+    inp.onchange = () => majLigne(+inp.closest('tr').dataset.id, inp.dataset.k, inp.value);
+    inp.onkeydown = ev => { if (ev.key === 'Enter') inp.blur(); };
+  });
+}
+function pickList(b, code) {
+  const q = norm(PICK_Q).split(' ').filter(Boolean);
+  const as = D.articles.filter(a => a.actif && q.every(w => norm(`${a.code_compta} ${a.designation} ${a.categorie}`).includes(w)));
+  const cats = [...new Set(as.map(a => a.categorie || 'Autres'))];
+  $('pk-list').innerHTML = as.length ? cats.map(cat => `<div class="picker-cat">${esc(cat)}</div>` + as.filter(a => (a.categorie || 'Autres') === cat).map(a =>
+    `<button class="pick" onclick="ajoutArticle(${b.id},'${esc(code)}',${a.id})"><span class="code muted">${esc(a.code_compta || '—')}</span><span>${esc(a.designation)}</span><span class="p">${euros(a.prix)}${a.unite ? ' / ' + esc(a.unite) : ''}</span></button>`).join('')).join('')
+    : `<div class="muted small" style="padding:12px">Aucun article ne correspond. Ajoutez-le dans l'onglet <a href="#articles">Articles</a>, ou utilisez « Ligne libre ».</div>`;
+}
+async function enregistrerLignes(lignes, suppr) {
+  return rpc('fac_admin_lignes', { pwd: PWD, p_lignes: lignes, p_suppr: suppr || [] });
+}
+async function ajoutArticle(bid, code, aid) {
+  const a = art(aid), b = bord(bid);
+  const l = { bordereau_id: bid, club: code, article_id: a.id, date_ligne: b.date, code_compta: a.code_compta, designation: a.designation, quantite: 1, prix: num(a.prix), ordre: lignesDe(bid, code).length };
+  try {
+    const [id] = await enregistrerLignes([l]); D.lignes.push({ ...l, id });
+    renderFacture(b, code); toast('✓ Ligne ajoutée');
+    const inp = document.querySelector(`#fac-t tr[data-id="${id}"] input[data-k="quantite"]`); if (inp) { inp.focus(); inp.select(); }
+  } catch(e) { fail(e); }
+}
+async function ajoutLibre() {
+  const [, , bid, code] = location.hash.match(/^#(b)\/(\d+)\/(.+)$/) || [];
+  const b = bord(bid), c = decodeURIComponent(code);
+  const l = { bordereau_id: b.id, club: c, date_ligne: b.date, designation: 'NOUVELLE LIGNE', quantite: 1, prix: 0, ordre: lignesDe(b.id, c).length };
+  try {
+    const [id] = await enregistrerLignes([l]); D.lignes.push({ ...l, id }); renderFacture(b, c);
+    const inp = document.querySelector(`#fac-t tr[data-id="${id}"] input[data-k="designation"]`); if (inp) { inp.focus(); inp.select(); }
+  } catch(e) { fail(e); }
+}
+async function majLigne(id, k, v) {
+  const l = D.lignes.find(x => x.id === id); if (!l) return;
+  const avant = l[k];
+  l[k] = (k === 'quantite' || k === 'prix') ? num(v) : v;
+  toast('Enregistrement…', 'wait');
+  try {
+    await enregistrerLignes([l]);
+    const tr = document.querySelector(`#fac-t tr[data-id="${id}"]`);
+    if (tr) { tr.querySelector('[data-tot]').innerHTML = `<b>${fmtN(montant(l))}</b>`; if (k === 'prix') tr.querySelector('[data-k=prix]').value = fmtN(l.prix); }
+    const b = bord(l.bordereau_id);
+    $('fac-tot').textContent = euros(totalDe(b.id, l.club));
+    const e = etatClub(l.club); $('fac-reg').textContent = e.regle[b.id] ? `Réglé : ${euros(e.regle[b.id])} · reste ${euros(totalDe(b.id, l.club) - e.regle[b.id])}` : '';
+    toast('✓ Enregistré');
+  } catch(e) { l[k] = avant; fail(e); }
+}
+async function supprLigne(id) {
+  const l = D.lignes.find(x => x.id === id);
+  try { await enregistrerLignes([], [id]); D.lignes = D.lignes.filter(x => x.id !== id); renderFacture(bord(l.bordereau_id), l.club); toast('✓ Ligne supprimée'); } catch(e) { fail(e); }
+}
+
+// ======================== SAISIE GROUPÉE ========================
+function renderGroupe(b) {
+  const clubs = clubsVisibles().filter(c => c.actif);
+  shell('bordereaux', `
+  <div class="crumb"><a href="#bordereaux">Bordereaux</a> › <a href="#b/${b.id}">N° ${b.numero}</a> › Saisie groupée</div>
+  <div class="card stack">
+    <div><h2>Saisie groupée</h2><p class="muted">Choisissez un article, puis indiquez le nombre pour chaque club concerné. Une ligne est ajoutée à la facture de chaque club dont le nombre n'est pas vide.</p></div>
+    <div class="grid" style="grid-template-columns:minmax(0,2fr) minmax(0,1fr) 150px">
+      <div class="field"><label>Article</label><select id="g-art"><option value="">— Choisir —</option>${D.articles.filter(a => a.actif).map(a => `<option value="${a.id}">${esc((a.code_compta ? a.code_compta + ' · ' : '') + a.designation)} (${euros(a.prix)})</option>`).join('')}</select></div>
+      <div class="field"><label>Prix unitaire €</label><input id="g-prix" inputmode="decimal"></div>
+      <div class="field"><label>Date</label><input id="g-date" type="date" value="${esc(b.date || today())}"></div>
+    </div>
+    <div class="field"><label>Désignation (modifiable)</label><input id="g-des"></div>
+    <div class="tablebox"><table class="t"><thead><tr><th>Club</th><th style="width:130px">Nombre</th><th class="r">Montant</th><th>Déjà sur la facture</th></tr></thead>
+      <tbody>${clubs.map(c => `<tr><td class="club"><b>${esc(c.code)}</b><small>${esc(c.nom)}</small></td><td><input class="n g-q" data-c="${esc(c.code)}" inputmode="decimal" placeholder="0"></td><td class="num g-m" data-c="${esc(c.code)}"></td><td class="small muted">${lignesDe(b.id, c.code).length ? euros(totalDe(b.id, c.code)) : ''}</td></tr>`).join('')}</tbody>
+      <tfoot><tr><td>Total</td><td id="g-tq" class="num"></td><td id="g-tm" class="num"></td><td></td></tr></tfoot></table></div>
+    <div class="btnrow"><button class="btn primary" id="g-ok">Ajouter aux factures</button><a class="btn ghost" href="#b/${b.id}">Annuler</a></div>
+  </div>`);
+  const calc = () => {
+    const p = num($('g-prix').value); let tq = 0, tm = 0;
+    document.querySelectorAll('.g-q').forEach(i => { const q = num(i.value); const m = document.querySelector(`.g-m[data-c="${i.dataset.c}"]`); m.textContent = q ? fmtN(q * p) : ''; tq += q; tm += q * p; });
+    $('g-tq').textContent = tq ? qte(tq) : ''; $('g-tm').textContent = tm ? euros(tm) : '';
+  };
+  $('g-art').onchange = () => { const a = art($('g-art').value); $('g-prix').value = a ? fmtN(a.prix) : ''; $('g-des').value = a ? a.designation : ''; calc(); };
+  $('g-prix').oninput = calc;
+  document.querySelectorAll('.g-q').forEach(i => { i.oninput = calc; i.onkeydown = ev => { if (ev.key === 'Enter') { const all = [...document.querySelectorAll('.g-q')]; const n = all[all.indexOf(i) + 1]; if (n) n.focus(); } }; });
+  $('g-ok').onclick = async () => {
+    const a = art($('g-art').value);
+    if (!a && !$('g-des').value.trim()) return alert('Choisissez un article.');
+    const lignes = [...document.querySelectorAll('.g-q')].filter(i => num(i.value)).map(i => ({
+      bordereau_id: b.id, club: i.dataset.c, article_id: a ? a.id : null, date_ligne: $('g-date').value, code_compta: a ? a.code_compta : null,
+      designation: $('g-des').value.trim(), quantite: num(i.value), prix: num($('g-prix').value), ordre: lignesDe(b.id, i.dataset.c).length }));
+    if (!lignes.length) return alert('Indiquez le nombre pour au moins un club.');
+    try { await enregistrerLignes(lignes); await load(); toast(`✓ ${lignes.length} ligne(s) ajoutée(s)`); location.hash = 'b/' + b.id; } catch(e) { fail(e); }
+  };
+}
+
+// ======================== AJOUTS AUTOMATIQUES ========================
+// Retrouve le club du Comité à partir du texte saisi ailleurs (sigle, nom, ville…)
+function matchClub(txt) {
+  const t = norm(txt); if (!t) return null;
+  let c = D.clubs.find(k => norm(k.code) === t || norm(k.numero) === t || norm(k.nom) === t);
+  if (c) return c.code;
+  c = D.clubs.find(k => String(k.alias || '').split(',').map(norm).filter(Boolean).some(a => a === t));
+  if (c) return c.code;
+  const cands = D.clubs.filter(k => [k.nom, ...String(k.alias || '').split(',')].map(norm).filter(x => x.length >= 4).some(a => t.includes(a) || a.includes(t)));
+  return cands.length === 1 ? cands[0].code : null;
+}
+const factureSource = (src, code) => D.lignes.filter(l => l.source === src && (!code || l.club === code));
+
+function propositions() {
+  const P = [], inconnus = new Map(), tarifs = reglage('open_tarifs', [10, 30, 50]).map(num);
+  const noter = (txt, ou) => { if (!inconnus.has(txt)) inconnus.set(txt, new Set()); inconnus.get(txt).add(ou); };
+  // --- Compétitions OPEN : par équipe, 1 tournoi / 2 tournois / 3 tournois ou plus
+  const parComp = {};
+  (SRC.open || []).forEach(r => {
+    const code = matchClub(r.club); if (!code) { noter(r.club, OPEN_COMP[r.competition] || r.competition); return; }
+    const k = r.competition + '|' + code; (parComp[k] = parComp[k] || { comp: r.competition, club: code, tournois: {} });
+    parComp[k].tournois[r.numero] = (parComp[k].tournois[r.numero] || 0) + num(r.nb);
+  });
+  Object.values(parComp).forEach(x => {
+    const nbs = Object.values(x.tournois), max = Math.max(0, ...nbs), tiers = [0, 0, 0];
+    for (let j = 1; j <= max; j++) { const n = nbs.filter(v => v >= j).length; if (n) tiers[Math.min(n, 3) - 1]++; }
+    const du = r2(tiers[0] * tarifs[0] + tiers[1] * tarifs[1] + tiers[2] * tarifs[2]);
+    const src = 'open:' + x.comp, deja = r2(factureSource(src, x.club).reduce((s, l) => s + montant(l), 0));
+    if (Math.abs(du - deja) < 0.005) return;
+    const a = artCle('open_' + x.comp) || {}, des = a.designation || ('ENGAGEMENT ' + (OPEN_COMP[x.comp] || x.comp).toUpperCase());
+    const detail = `${max} équipe${max > 1 ? 's' : ''} : ` + ['1 tournoi', '2 tournois', '3 tournois ou plus'].map((t, i) => tiers[i] ? `${tiers[i]} × ${t}` : '').filter(Boolean).join(', ');
+    const base = { groupe: 'open', titre: OPEN_COMP[x.comp] || x.comp, club: x.club, source: src, article_id: a.id || null, code_compta: a.code_compta || '756010', info: detail + (deja ? ` · déjà facturé ${euros(deja)}` : '') };
+    if (deja) P.push({ ...base, designation: `${des} – ${du > deja ? 'COMPLÉMENT' : 'RÉGULARISATION'}`, quantite: 1, prix: r2(du - deja) });
+    else ['1 TOURNOI', '2 TOURNOIS', '3 TOURNOIS ET PLUS'].forEach((t, i) => { if (tiers[i]) P.push({ ...base, designation: `${des} – ${t} (${tarifs[i]} € / ÉQUIPE)`, quantite: tiers[i], prix: tarifs[i] }); });
+  });
+  // --- Pitchoun' Volley : enfants ayant participé à au moins un plateau
+  const ap = artCle('pitchoun') || { designation: "ENGAGEMENT PITCHOUN' VOLLEY (5 € / ENFANT / SAISON)", prix: 5, code_compta: '756020' };
+  const pit = {};
+  (SRC.pitchoun || []).forEach(r => { const code = matchClub(r.club); if (!code) { noter(r.club, "Pitchoun' Volley"); return; } pit[code] = (pit[code] || 0) + num(r.nb); });
+  Object.entries(pit).forEach(([code, n]) => {
+    const deja = factureSource('pitchoun', code).reduce((s, l) => s + num(l.quantite), 0);
+    if (n - deja > 0) P.push({ groupe: 'pitchoun', titre: "Pitchoun' Volley", club: code, source: 'pitchoun', article_id: ap.id || null, code_compta: ap.code_compta, designation: ap.designation, quantite: n - deja, prix: num(ap.prix), info: `${n} enfant${n > 1 ? 's' : ''} ayant joué au moins un plateau${deja ? ` · ${qte(deja)} déjà facturé(s)` : ''}` });
+  });
+  // --- Stages réglés par le club
+  const as = artCle('stage') || {};
+  (SRC.stages || []).forEach(r => {
+    const src = 'stage:' + r.id; if (factureSource(src).length) return;
+    const code = matchClub(r.club); if (!code) { noter(r.club || '(club non renseigné)', 'Stages'); return; }
+    P.push({ groupe: 'stages', titre: 'Stages', club: code, source: src, article_id: as.id || null, code_compta: as.code_compta || null, date_ligne: r.date,
+      designation: `${(as.designation || 'PARTICIPATION STAGE')} – ${String(r.stage).toUpperCase()} – ${r.prenom} ${String(r.nom).toUpperCase()}`, quantite: 1, prix: num(r.montant), info: fmtD(r.date) });
+  });
+  return { P, inconnus };
+}
+async function renderAuto(b) {
+  shell('bordereaux', `<div class="crumb"><a href="#bordereaux">Bordereaux</a> › <a href="#b/${b.id}">N° ${b.numero}</a> › Ajouts automatiques</div><div class="card muted">Chargement des inscriptions…</div>`);
+  try { SRC = await rpc('fac_admin_sources', { pwd: PWD }); } catch(e) { fail(e); return; }
+  const { P, inconnus } = propositions();
+  const groupes = [['open', 'Compétitions OPEN', 'Engagements par équipe selon le nombre de tournois joués : ' + reglage('open_tarifs', [10, 30, 50]).map((t, i) => `${t} € pour ${['1 tournoi', '2 tournois', '3 tournois ou plus'][i]}`).join(', ') + '. Calcul d\'après les inscriptions en ligne (les tournois annulés ne comptent pas).'],
+    ['pitchoun', "Pitchoun' Volley", 'Enfants ayant participé à au moins un plateau, moins ceux déjà facturés.' + (SRC.pitchoun_saison && SRC.pitchoun_saison.replace(/"/g, '') !== SAISON ? ` <b>Attention : le Pitchoun' Volley est réglé sur la saison ${esc(SRC.pitchoun_saison.replace(/"/g, ''))}.</b>` : '')],
+    ['stages', 'Stages', 'Participations dont le mode de paiement est « Autre : facturé au club » dans la gestion des stages.']];
+  const inc = [...inconnus.entries()];
+  shell('bordereaux', `
+  <div class="crumb"><a href="#bordereaux">Bordereaux</a> › <a href="#b/${b.id}">N° ${b.numero}</a> › Ajouts automatiques</div>
+  <div class="card stack">
+    <div><h2>Ajouts automatiques</h2><p class="muted">Ce qui reste à facturer d'après les autres rubriques du site, sur toute la saison ${esc(SAISON)}. Ce qui a déjà été facturé sur un bordereau n'est pas repris. Décochez ce que vous ne voulez pas ajouter au bordereau n° ${b.numero}.</p></div>
+    ${inc.length ? `<div class="msg warn"><b>Club${inc.length > 1 ? 's' : ''} non reconnu${inc.length > 1 ? 's' : ''}</b> — indiquez à quel club cela correspond (c'est retenu pour la suite) :
+      <div class="grid" style="margin-top:8px;gap:6px">${inc.map(([t, ou], i) => `<div class="grid" style="grid-template-columns:minmax(0,1fr) 260px;align-items:center;gap:8px"><span>« ${esc(t)} » <span class="small">(${esc([...ou].join(', '))})</span></span>
+        <select data-alias="${esc(t)}"><option value="">— Choisir le club —</option>${D.clubs.filter(c => c.actif).map(c => `<option value="${esc(c.code)}">${esc(c.code)} – ${esc(c.nom)}</option>`).join('')}</select></div>`).join('')}</div></div>` : ''}
+    ${groupes.map(([g, t, h]) => { const ps = P.map((p, i) => ({ ...p, i })).filter(p => p.groupe === g); return `<div class="stack" style="gap:8px"><h3>${t} <span class="muted" style="font-size:15px">· ${ps.length ? euros(ps.reduce((s, p) => s + p.quantite * p.prix, 0)) : 'rien à ajouter'}</span></h3><p class="small muted">${h}</p>
+      ${ps.length ? `<div class="tablebox"><table class="t"><thead><tr><th class="c"><input type="checkbox" checked data-all="${g}"></th><th>Club</th><th>Désignation</th><th class="r">Qté</th><th class="r">P.U.</th><th class="r">Total</th><th>Détail</th></tr></thead><tbody>
+        ${ps.map(p => `<tr><td class="c"><input type="checkbox" checked data-p="${p.i}" data-g="${g}"></td><td><b>${esc(p.club)}</b></td><td class="small">${esc(p.designation)}</td><td class="num">${qte(p.quantite)}</td><td class="num">${fmtN(p.prix)}</td><td class="num"><b>${fmtN(p.quantite * p.prix)}</b></td><td class="small muted">${esc(p.info || '')}</td></tr>`).join('')}</tbody></table></div>` : ''}</div>`; }).join('')}
+    <div class="btnrow"><button class="btn primary" id="au-ok" ${P.length ? '' : 'disabled'}>Ajouter la sélection au bordereau n° ${b.numero}</button><a class="btn ghost" href="#b/${b.id}">Retour</a></div>
+  </div>`);
+  document.querySelectorAll('[data-all]').forEach(x => x.onchange = () => document.querySelectorAll(`[data-g="${x.dataset.all}"]`).forEach(y => y.checked = x.checked));
+  document.querySelectorAll('[data-alias]').forEach(s => s.onchange = async () => {
+    const c = club(s.value); if (!c.nom) return;
+    const alias = [c.alias, s.dataset.alias].filter(Boolean).join(', ');
+    try { await rpc('fac_admin_club', { pwd: PWD, p: { ...c, alias } }); c.alias = alias; renderAuto(b); } catch(e) { fail(e); }
+  });
+  $('au-ok').onclick = async () => {
+    const sel = [...document.querySelectorAll('[data-p]:checked')].map(x => P[+x.dataset.p]);
+    if (!sel.length) return alert('Rien de coché.');
+    const lignes = sel.map((p, k) => ({ bordereau_id: b.id, club: p.club, article_id: p.article_id, date_ligne: p.date_ligne || b.date, code_compta: p.code_compta, designation: p.designation, quantite: p.quantite, prix: p.prix, source: p.source, ordre: lignesDe(b.id, p.club).length + k }));
+    try { await enregistrerLignes(lignes); await load(); toast(`✓ ${lignes.length} ligne(s) ajoutée(s)`); location.hash = 'b/' + b.id; } catch(e) { fail(e); }
+  };
+}
+
+// ======================== PAIEMENTS ========================
+function renderPaiements() {
+  const ps = [...D.paiements].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || b.id - a.id);
+  const tot = r2(ps.reduce((s, p) => s + num(p.montant), 0));
+  shell('paiements', `
+  <div class="ttl"><div><h1 style="font-size:34px">Paiements ${esc(SAISON)}</h1><p class="muted">${ps.length} paiement${ps.length > 1 ? 's' : ''} enregistré${ps.length > 1 ? 's' : ''} · ${euros(tot)}</p></div>
+    <button class="btn primary" onclick="openPaiement({})">+ Enregistrer un paiement</button></div>
+  <div class="tablebox"><table class="t"><thead><tr><th>Date</th><th>Club</th><th class="r">Montant</th><th>Mode</th><th>Référence</th><th>Imputé sur</th><th>Remarque</th><th></th></tr></thead><tbody>
+    ${ps.map(p => { const b = bord(p.bordereau_id); return `<tr><td class="nw">${fmtD(p.date) || '<span class="muted">—</span>'}</td><td class="club"><b>${esc(p.club)}</b><small>${esc(club(p.club).nom)}</small></td><td class="num"><b>${fmtN(p.montant)}</b></td><td>${esc(p.mode || '')}</td><td>${esc(p.reference || '')}</td>
+      <td>${b ? 'N° ' + b.numero : '<span class="muted small">automatique</span>'}</td><td class="small">${esc(p.remarque || '')}</td>
+      <td class="r nw"><button class="btn sm ghost" onclick="openPaiement(D.paiements.find(x=>x.id===${p.id}))">Modifier</button> <button class="x" onclick="supprPaiement(${p.id})">✕</button></td></tr>`; }).join('') || '<tr><td colspan="8" class="c muted" style="padding:22px">Aucun paiement enregistré.</td></tr>'}
+  </tbody></table></div>`);
+}
+function openPaiement(p) {
+  p = p || {};
+  const clubs = clubsVisibles(), bs = bordsTries();
+  const o = document.createElement('div'); o.className = 'overlay';
+  o.innerHTML = `<form class="modal"><h3 class="cond" style="font-size:22px">${p.id ? 'Modifier le' : 'Enregistrer un'} paiement</h3>
+    <div class="field"><label>Club</label><select id="p-club" required><option value="">— Choisir —</option>${clubs.map(c => `<option value="${esc(c.code)}" ${c.code === p.club ? 'selected' : ''}>${esc(c.code)} – ${esc(c.nom)}</option>`).join('')}</select></div>
+    <div id="p-du" class="small muted"></div>
+    <div class="grid g2"><div class="field"><label>Montant €</label><input id="p-mt" inputmode="decimal" required value="${p.montant != null ? fmtN(p.montant) : ''}"></div>
+      <div class="field"><label>Date</label><input id="p-date" type="date" value="${esc(p.id ? (p.date || '') : today())}"></div></div>
+    <div class="grid g2"><div class="field"><label>Mode</label><select id="p-mode">${MODES.map(m => `<option ${m === (p.mode || 'Virement') ? 'selected' : ''}>${m}</option>`).join('')}</select></div>
+      <div class="field"><label>Référence (n° de chèque…)</label><input id="p-ref" value="${esc(p.reference || '')}"></div></div>
+    <div class="field"><label>Imputer sur</label><select id="p-b"><option value="">Automatique (bordereaux les plus anciens d'abord)</option>${bs.map(b => `<option value="${b.id}" ${String(b.id) === String(p.bordereau_id) ? 'selected' : ''}>Bordereau n° ${b.numero} du ${fmtD(b.date)}</option>`).join('')}</select></div>
+    <div class="field"><label>Remarque</label><input id="p-rem" value="${esc(p.remarque || '')}"></div>
+    <div class="btnrow"><button class="btn primary" type="submit">Enregistrer</button><button class="btn ghost" type="button" id="p-x">Annuler</button></div></form>`;
+  document.body.appendChild(o);
+  const info = () => {
+    const c = $('p-club').value; if (!c) { $('p-du').textContent = ''; return; }
+    const e = etatClub(c), bid = $('p-b').value;
+    const reste = bid ? r2(totalDe(bid, c) - (e.regle[bid] || 0)) : e.reste;
+    $('p-du').innerHTML = `Dû sur la saison : <b>${euros(e.totDu)}</b> · déjà réglé : ${euros(e.totRegle)} · reste : <b>${euros(e.reste)}</b>${bid ? ` (bordereau : ${euros(reste)})` : ''}`;
+    if (!p.id && !$('p-mt').dataset.touched) $('p-mt').value = reste > 0 ? fmtN(reste) : '';
+  };
+  $('p-club').onchange = info; $('p-b').onchange = info; $('p-mt').oninput = () => { $('p-mt').dataset.touched = 1; }; info();
+  $('p-x').onclick = () => o.remove();
+  o.querySelector('form').onsubmit = async ev => {
+    ev.preventDefault();
+    try {
+      await rpc('fac_admin_paiement', { pwd: PWD, p: { id: p.id, club: $('p-club').value, saison: SAISON, bordereau_id: $('p-b').value, date: $('p-date').value, montant: String(num($('p-mt').value)), mode: $('p-mode').value, reference: $('p-ref').value, remarque: $('p-rem').value } });
+      o.remove(); await load(); toast('✓ Paiement enregistré'); route();
+    } catch(e) { fail(e); }
+  };
+}
+async function supprPaiement(id) {
+  if (!confirm('Supprimer ce paiement ?')) return;
+  try { await rpc('fac_admin_paiement', { pwd: PWD, p: { id, supprimer: true } }); await load(); route(); } catch(e) { fail(e); }
+}
+
+// ======================== ARTICLES ========================
+function renderArticles() {
+  const as = [...D.articles].sort((a, b) => (a.ordre - b.ordre) || coll.compare(a.designation, b.designation));
+  const cats = [...new Set(D.articles.map(a => a.categorie).filter(Boolean))].sort(coll.compare);
+  const row = a => `<tr data-id="${a.id}" class="${a.actif ? '' : 'off'}">
+    <td><input data-k="code_compta" value="${esc(a.code_compta || '')}" class="code" style="width:86px"></td>
+    <td><input data-k="designation" value="${esc(a.designation)}" style="min-width:340px">${a.cle ? ' <span class="badge b-auto" title="Utilisé par les ajouts automatiques">auto</span>' : ''}</td>
+    <td><input data-k="prix" class="n" value="${fmtN(a.prix)}" style="width:90px" inputmode="decimal"></td>
+    <td><input data-k="unite" value="${esc(a.unite || '')}" style="width:100px" placeholder="équipe…"></td>
+    <td><input data-k="categorie" value="${esc(a.categorie || '')}" list="cats" style="width:150px"></td>
+    <td class="c"><input type="checkbox" data-k="actif" ${a.actif ? 'checked' : ''}></td>
+    <td><input data-k="ordre" value="${a.ordre}" style="width:56px" class="n"></td>
+    <td>${a.cle ? '' : `<button class="x" onclick="supprArticle(${a.id})">✕</button>`}</td></tr>`;
+  shell('articles', `
+  <div class="ttl"><div><h1 style="font-size:34px">Articles</h1><p class="muted">Les éléments que vous facturez régulièrement. Modifiez directement dans le tableau : c'est enregistré dès que vous quittez la case. Changer un prix ne modifie pas les factures déjà faites.</p></div>
+    <button class="btn primary" onclick="nouvelArticle()">+ Nouvel article</button></div>
+  <datalist id="cats">${cats.map(c => `<option value="${esc(c)}">`).join('')}</datalist>
+  <div class="tablebox"><table class="t" id="art-t"><thead><tr><th>Compte</th><th>Désignation</th><th class="r">Prix €</th><th>Unité</th><th>Catégorie</th><th class="c">Actif</th><th>Ordre</th><th></th></tr></thead>
+    <tbody>${as.map(row).join('')}</tbody></table></div>
+  <p class="small muted">Les articles marqués <span class="badge b-auto">auto</span> servent aux ajouts automatiques (OPEN, Pitchoun', stages) : leur compte et leur désignation sont repris sur les factures. Pour l'OPEN, le prix par équipe se règle dans <a href="#reglages">Réglages</a>.</p>`);
+  document.querySelectorAll('#art-t tr[data-id] input').forEach(inp => inp.onchange = async () => {
+    const a = art(inp.closest('tr').dataset.id);
+    const k = inp.dataset.k; a[k] = inp.type === 'checkbox' ? inp.checked : (k === 'prix' ? num(inp.value) : inp.value);
+    try { await rpc('fac_admin_article', { pwd: PWD, p: { ...a, prix: String(a.prix) } }); toast('✓ Enregistré'); if (k === 'designation') inp.value = a.designation = a.designation.toUpperCase().trim(); if (k === 'actif') inp.closest('tr').className = a.actif ? '' : 'off'; } catch(e) { fail(e); }
+  });
+}
+async function nouvelArticle() {
+  try { await rpc('fac_admin_article', { pwd: PWD, p: { designation: 'NOUVEL ARTICLE', prix: '0', ordre: 999 } }); await load(); renderArticles();
+    const i = [...document.querySelectorAll('#art-t input[data-k=designation]')].find(x => x.value === 'NOUVEL ARTICLE'); if (i) { i.focus(); i.select(); } } catch(e) { fail(e); }
+}
+async function supprArticle(id) {
+  if (!confirm('Supprimer cet article du catalogue ? Les factures déjà faites ne changent pas.')) return;
+  try { await rpc('fac_admin_article', { pwd: PWD, p: { id, supprimer: true } }); await load(); renderArticles(); } catch(e) { fail(e); }
+}
+
+// ======================== CLUBS ========================
+function renderClubs() {
+  const cs = [...D.clubs].sort((a, b) => coll.compare(a.nom, b.nom));
+  const row = c => `<tr data-code="${esc(c.code)}" class="${c.actif ? '' : 'off'}">
+    <td><input data-k="code" value="${esc(c.code)}" class="code" style="width:80px"></td>
+    <td><input data-k="numero" value="${esc(c.numero || '')}" style="width:96px" class="code"></td>
+    <td><input data-k="nom" value="${esc(c.nom)}" style="min-width:250px"></td>
+    <td><input data-k="email" value="${esc(c.email || '')}" style="min-width:220px" placeholder="tresorier@club.fr"></td>
+    <td><input data-k="adresse" value="${esc(c.adresse || '')}" style="min-width:220px"></td>
+    <td><input data-k="alias" value="${esc(c.alias || '')}" style="min-width:200px"></td>
+    <td class="c"><input type="checkbox" data-k="actif" ${c.actif ? 'checked' : ''}></td></tr>`;
+  shell('clubs', `
+  <div class="ttl"><div><h1 style="font-size:34px">Clubs</h1><p class="muted">Le mail sert au bouton « Préparer le mail » (plusieurs adresses possibles, séparées par des virgules). Les « autres noms » aident à reconnaître le club dans les inscriptions (OPEN, stages…).</p></div>
+    <button class="btn primary" onclick="nouveauClub()">+ Nouveau club</button></div>
+  <div class="tablebox"><table class="t" id="club-t"><thead><tr><th>Sigle</th><th>N° affiliation</th><th>Nom</th><th>Mail(s)</th><th>Adresse (facture)</th><th>Autres noms</th><th class="c">Actif</th></tr></thead>
+    <tbody>${cs.map(row).join('')}</tbody></table></div>`);
+  document.querySelectorAll('#club-t tr[data-code] input').forEach(inp => inp.onchange = async () => {
+    const tr = inp.closest('tr'), c = club(tr.dataset.code), k = inp.dataset.k;
+    const p = { ...c, ancien_code: c.code }; p[k] = inp.type === 'checkbox' ? inp.checked : inp.value;
+    try { await rpc('fac_admin_club', { pwd: PWD, p }); toast('✓ Enregistré'); await load(); if (k === 'code' || k === 'actif') renderClubs(); } catch(e) { fail(e); }
+  });
+}
+async function nouveauClub() {
+  const code = (prompt('Sigle du nouveau club (ex. : VCX) :') || '').trim().toUpperCase(); if (!code) return;
+  const nom = (prompt('Nom complet du club :') || '').trim(); if (!nom) return;
+  try { await rpc('fac_admin_club', { pwd: PWD, p: { code, nom, actif: true } }); await load(); renderClubs(); } catch(e) { fail(e); }
+}
+
+// ======================== RÉGLAGES ========================
+function renderReglages() {
+  const t = reglage('open_tarifs', [10, 30, 50]);
+  shell('reglages', `
+  <h1 style="font-size:34px">Réglages</h1>
+  <div class="card stack"><h3>En-tête des factures</h3>
+    <div class="grid g2"><div class="field"><label>Émetteur (en haut à gauche)</label><textarea id="r-em" rows="6">${esc(reglage('emetteur', ''))}</textarea></div>
+    <div class="field"><label>Mentions en bas de facture (règlement, IBAN, SIRET…)</label><textarea id="r-me" rows="6">${esc(reglage('mentions', ''))}</textarea></div></div>
+    <div class="btnrow"><button class="btn primary" id="r-ok1">Enregistrer</button></div></div>
+  <div class="card stack"><h3>Compétitions OPEN : prix par équipe</h3>
+    <p class="small muted">Selon le nombre de tournois joués par chaque équipe d'un club sur la saison (finale comprise).</p>
+    <div class="grid g3"><div class="field"><label>1 tournoi</label><input id="r-t1" value="${fmtN(t[0])}" inputmode="decimal"></div><div class="field"><label>2 tournois</label><input id="r-t2" value="${fmtN(t[1])}" inputmode="decimal"></div><div class="field"><label>3 tournois ou plus</label><input id="r-t3" value="${fmtN(t[2])}" inputmode="decimal"></div></div>
+    <div class="btnrow"><button class="btn primary" id="r-ok2">Enregistrer</button></div></div>`);
+  $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+  $('r-ok2').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'open_tarifs', p_valeur: [num($('r-t1').value), num($('r-t2').value), num($('r-t3').value)] }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+}
+
+// ======================== PDF ========================
+let LOGO = null;
+async function logo() {
+  if (LOGO !== null) return LOGO;
+  try { const bl = await (await fetch('logo-comite-var.jpg')).blob(); LOGO = await new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(bl); }); } catch(e) { LOGO = ''; }
+  return LOGO;
+}
+const pdfTxt = s => String(s == null ? '' : s).replace(/[  ]/g, ' ').replace(/[’]/g, "'");
+const pdfN = n => pdfTxt(fmtN(n));
+function pageFacture(doc, b, code, img) {
+  const c = club(code), ls = lignesDe(b.id, code), W = 210, M = 16, navy = [11, 33, 73];
+  doc.setTextColor(20, 32, 58);
+  let lw = 0;
+  if (img) { try { const ip = doc.getImageProperties(img), h = 22; lw = Math.min(40, h * ip.width / ip.height); doc.addImage(img, 'JPEG', M, 12, lw, lw * ip.height / ip.width); } catch(e) { lw = 0; } }
+  const X = M + (lw ? lw + 5 : 0);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5);
+  const em = pdfTxt(reglage('emetteur', 'Comité du Var de Volley-Ball')).split('\n');
+  doc.text(em[0] || '', X, 17); doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+  em.slice(1).forEach((t, i) => doc.text(t, X, 21.5 + i * 4.2));
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(24); doc.setTextColor(...navy); doc.text('FACTURE', W - M, 20, { align: 'right' });
+  doc.setFontSize(10); doc.setTextColor(20, 32, 58); doc.text('N° ' + facNum(b, code), W - M, 27, { align: 'right' });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+  doc.text(pdfTxt(`Bordereau n° ${b.numero} du ${fmtD(b.date)}`), W - M, 32, { align: 'right' });
+  doc.text('Saison ' + b.saison.replace('-', '/'), W - M, 36.5, { align: 'right' });
+  // destinataire
+  const y0 = 46; doc.setDrawColor(201, 210, 226); doc.setFillColor(244, 246, 250); doc.roundedRect(W - M - 92, y0, 92, 26, 2, 2, 'FD');
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5);
+  const nomL = doc.splitTextToSize(pdfTxt(c.nom), 84); doc.text(nomL, W - M - 88, y0 + 6.5);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+  let yy = y0 + 6.5 + nomL.length * 4.6;
+  if (c.numero) { doc.text('N° d\'affiliation ' + c.numero, W - M - 88, yy); yy += 4.2; }
+  if (c.adresse) doc.text(doc.splitTextToSize(pdfTxt(c.adresse), 84).slice(0, 2), W - M - 88, yy);
+  if (b.titre) { doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.text(pdfTxt(b.titre), M, y0 + 8); }
+  // tableau
+  const cols = [{ t: 'Date', x: M, w: 19 }, { t: 'Compte', x: M + 19, w: 16 }, { t: 'Désignation', x: M + 35, w: 89 }, { t: 'Qté', x: M + 124, w: 14, r: 1 }, { t: 'P.U. €', x: M + 138, w: 20, r: 1 }, { t: 'Total €', x: M + 158, w: 20, r: 1 }];
+  let y = 82;
+  const head = () => {
+    doc.setFillColor(...navy); doc.rect(M, y - 5, W - 2 * M, 7.5, 'F'); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5);
+    cols.forEach(k => doc.text(pdfTxt(k.t), k.r ? k.x + k.w - 1.5 : k.x + 1.5, y, k.r ? { align: 'right' } : {}));
+    doc.setTextColor(20, 32, 58); doc.setFont('helvetica', 'normal'); y += 7;
+  };
+  head();
+  ls.forEach((l, i) => {
+    doc.setFontSize(8.5);
+    const des = doc.splitTextToSize(pdfTxt(l.designation), cols[2].w - 3), h = Math.max(1, des.length) * 3.8 + 2.4;
+    if (y + h > 262) { doc.addPage(); y = 20; head(); }
+    if (i % 2) { doc.setFillColor(248, 250, 253); doc.rect(M, y - 4, W - 2 * M, h, 'F'); }
+    doc.text(fmtD(l.date_ligne), cols[0].x + 1.5, y); doc.text(pdfTxt(l.code_compta || ''), cols[1].x + 1.5, y); doc.text(des, cols[2].x + 1.5, y);
+    doc.text(pdfTxt(qte(l.quantite)), cols[3].x + cols[3].w - 1.5, y, { align: 'right' }); doc.text(pdfN(l.prix), cols[4].x + cols[4].w - 1.5, y, { align: 'right' });
+    doc.setFont('helvetica', 'bold'); doc.text(pdfN(montant(l)), cols[5].x + cols[5].w - 1.5, y, { align: 'right' }); doc.setFont('helvetica', 'normal');
+    y += h;
+  });
+  doc.setDrawColor(...navy); doc.setLineWidth(0.4); doc.line(M, y - 2.5, W - M, y - 2.5);
+  if (y > 240) { doc.addPage(); y = 24; }
+  const tot = totalDe(b.id, code), e = etatClub(code), rg = r2(e.regle[b.id] || 0);
+  y += 5; doc.setFillColor(...navy); doc.rect(W - M - 70, y - 5.5, 70, 10, 'F'); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+  doc.text('TOTAL', W - M - 66, y + 1); doc.text(pdfTxt(euros(tot)), W - M - 3, y + 1, { align: 'right' }); doc.setTextColor(20, 32, 58);
+  if (rg > 0) { y += 10; doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.text(pdfTxt('Déjà réglé : ' + euros(rg)), W - M - 3, y, { align: 'right' }); y += 5; doc.setFont('helvetica', 'bold'); doc.text(pdfTxt('Reste à payer : ' + euros(Math.max(0, tot - rg))), W - M - 3, y, { align: 'right' }); }
+  // pied
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(86, 98, 122);
+  const me = doc.splitTextToSize(pdfTxt(reglage('mentions', '')), W - 2 * M);
+  doc.text(me, M, 285 - me.length * 3.8);
+}
+async function pdfClubs(bid, codes) {
+  if (!window.jspdf) { alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.'); return; }
+  const b = bord(bid), img = await logo(), { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  codes.forEach((code, i) => { if (i) doc.addPage(); pageFacture(doc, b, code, img); });
+  doc.save(codes.length === 1 ? `Facture-${facNum(b, codes[0])}.pdf` : `Bordereau-${b.numero}-${b.saison}.pdf`);
+}
+async function mailClub(bid, code) {
+  const b = bord(bid), c = club(code), tot = totalDe(bid, code);
+  await pdfClubs(bid, [code]);
+  const body = `Bonjour,\n\nVeuillez trouver ci-joint la facture n° ${facNum(b, code)} (bordereau n° ${b.numero} du ${fmtD(b.date)}) d'un montant de ${euros(tot)}.\n\n${reglage('mentions', '')}\n\nSportivement,\nLe Comité du Var de Volley-Ball`;
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(c.email || '') + '&su=' + encodeURIComponent(`Facture Comité du Var – bordereau n° ${b.numero} – ${c.nom}`) + '&body=' + encodeURIComponent(body), '_blank');
+  if (!c.email) toast('Pas de mail enregistré pour ce club (onglet Clubs)', 'err');
+}
+
+// ======================== EXPORT EXCEL ========================
+function loadScript(src) { return new Promise((ok, ko) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => ko(new Error('Module Excel indisponible')); document.head.appendChild(s); }); }
+async function exportExcel() {
+  try { if (!window.XLSX) await loadScript('https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js'); } catch(e) { return fail(e); }
+  const bs = bordsTries(), clubs = clubsVisibles();
+  const recap = [['Club', 'Nom', ...bs.map(b => `Bordereau N°${b.numero}`), 'Total dû', 'Réglé', 'Reste']];
+  clubs.forEach(c => { const e = etatClub(c.code); recap.push([c.code, c.nom, ...bs.map(b => e.du[b.id] || 0), e.totDu, e.totRegle, e.reste]); });
+  recap.push(['TOTAL', '', ...bs.map(b => totalDe(b.id)), ...['totDu', 'totRegle', 'reste'].map(k => r2(clubs.reduce((s, c) => s + etatClub(c.code)[k], 0)))]);
+  const det = [['Bordereau', 'Date bordereau', 'Facture', 'Club', 'Date', 'Compte', 'Désignation', 'Quantité', 'Prix unitaire', 'Montant']];
+  bs.forEach(b => D.lignes.filter(l => l.bordereau_id === b.id).sort((x, y) => coll.compare(x.club, y.club) || x.ordre - y.ordre).forEach(l =>
+    det.push([b.numero, fmtD(b.date), facNum(b, l.club), l.club, fmtD(l.date_ligne), l.code_compta || '', l.designation, l.quantite, l.prix, montant(l)])));
+  const pay = [['Date', 'Club', 'Montant', 'Mode', 'Référence', 'Imputé sur', 'Remarque']];
+  D.paiements.forEach(p => pay.push([fmtD(p.date), p.club, num(p.montant), p.mode || '', p.reference || '', p.bordereau_id ? 'N°' + (bord(p.bordereau_id) || {}).numero : 'auto', p.remarque || '']));
+  const parCompte = {}; D.lignes.forEach(l => { const k = l.code_compta || '(sans compte)'; parCompte[k] = r2((parCompte[k] || 0) + montant(l)); });
+  const cpt = [['Compte', 'Montant'], ...Object.entries(parCompte).sort()];
+  const wb = XLSX.utils.book_new();
+  const ws = (rows, w) => { const s = XLSX.utils.aoa_to_sheet(rows, { cellDates: true, dateNF: 'dd/mm/yyyy' }); s['!cols'] = w.map(x => ({ wch: x })); return s; };
+  XLSX.utils.book_append_sheet(wb, ws(recap, [9, 34, ...bs.map(() => 14), 12, 12, 12]), 'Récapitulatif');
+  XLSX.utils.book_append_sheet(wb, ws(det, [10, 12, 18, 8, 11, 9, 60, 9, 11, 11]), 'Détail des factures');
+  XLSX.utils.book_append_sheet(wb, ws(pay, [11, 8, 11, 10, 16, 11, 30]), 'Paiements');
+  XLSX.utils.book_append_sheet(wb, ws(cpt, [16, 12]), 'Par compte');
+  XLSX.writeFile(wb, `Facturation-clubs-${SAISON}.xlsx`);
+}
+
+// ======================== ROUTAGE ========================
+async function route() {
+  if (!PWD || !D) return renderLogin();
+  const h = decodeURIComponent(location.hash.slice(1)) || 'recap';
+  let m;
+  try {
+    if ((m = h.match(/^b\/(\d+)(?:\/(.+))?$/))) {
+      const b = bord(m[1]); if (!b) { location.hash = 'bordereaux'; return; }
+      if (!m[2]) renderBordereau(b);
+      else if (m[2] === 'groupe') renderGroupe(b);
+      else if (m[2] === 'auto') await renderAuto(b);
+      else renderFacture(b, m[2]);
+    }
+    else if (h === 'bordereaux') renderBordereaux();
+    else if (h === 'paiements') renderPaiements();
+    else if (h === 'articles') renderArticles();
+    else if (h === 'clubs') renderClubs();
+    else if (h === 'reglages') renderReglages();
+    else renderRecap();
+  } catch(e) { fail(e); }
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', () => { PICK_Q = ''; route(); });
+(async () => {
+  try { const p = sessionStorage.getItem('fac_admin'); if (p) { PWD = p; await load(); } } catch(e) { PWD = ''; D = null; }
+  route();
+})();
+</script>
+</body>
+</html>

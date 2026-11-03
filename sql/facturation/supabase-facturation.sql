@@ -1,0 +1,407 @@
+-- =====================================================================
+--  Facturation aux clubs du Comité du Var de Volley-Ball
+--  Catalogue d'articles (code comptable, désignation, prix), bordereaux
+--  de facturation par club, paiements reçus et récapitulatif.
+--  Ajouts automatiques : engagements des Compétitions OPEN, Pitchoun' Volley,
+--  stages réglés par le club.
+--
+--  À lancer dans Supabase › SQL Editor (coller tout › Run).
+--  Relançable sans risque : rien n'est supprimé, le catalogue et les clubs
+--  ne sont ajoutés que s'ils n'existent pas encore.
+--  Accès : mot de passe admin commun (table private_config).
+-- =====================================================================
+
+-- ---------- Tables ----------
+create table if not exists fac_clubs (
+  code      text primary key,                 -- sigle utilisé partout sur le site : VCHPL, FVV…
+  numero    text,                             -- n° d'affiliation FFVB (0839914)
+  nom       text not null,
+  email     text,                             -- adresse(s) pour l'envoi des factures
+  adresse   text,
+  alias     text,                             -- autres écritures du nom (séparées par des virgules) pour les ajouts automatiques
+  actif     boolean not null default true,
+  ordre     int not null default 0
+);
+
+create table if not exists fac_articles (
+  id           bigint generated always as identity primary key,
+  code_compta  text,
+  designation  text not null,
+  prix         numeric(10,2) not null default 0,
+  unite        text,                          -- équipe, match, licence… (affiché dans le choix)
+  categorie    text,
+  cle          text unique,                   -- article utilisé par les ajouts automatiques (open_O11, pitchoun, stage…)
+  actif        boolean not null default true,
+  ordre        int not null default 0
+);
+
+create table if not exists fac_bordereaux (
+  id        bigint generated always as identity primary key,
+  saison    text not null,                    -- 2026-2027
+  numero    int not null,
+  date      date,
+  titre     text,                             -- facultatif : « Engagements », « Fin de saison »…
+  statut    text not null default 'brouillon' check (statut in ('brouillon','envoye')),
+  origine   text,                             -- 'ffvb' = bordereau établi sur le site fédéral (historique)
+  created_at timestamptz not null default now(),
+  unique (saison, numero)
+);
+
+create table if not exists fac_lignes (
+  id            bigint generated always as identity primary key,
+  bordereau_id  bigint not null references fac_bordereaux(id) on delete cascade,
+  club          text not null references fac_clubs(code) on update cascade,
+  article_id    bigint references fac_articles(id) on delete set null,
+  date_ligne    date,
+  code_compta   text,
+  designation   text not null,
+  quantite      numeric(10,2) not null default 1,
+  prix          numeric(10,2) not null default 0,
+  source        text,                         -- open:O11, pitchoun, stage:123 … (évite de facturer deux fois)
+  ordre         int not null default 0,
+  created_at    timestamptz not null default now()
+);
+create index if not exists fac_lignes_bord on fac_lignes(bordereau_id, club);
+
+create table if not exists fac_paiements (
+  id            bigint generated always as identity primary key,
+  club          text not null references fac_clubs(code) on update cascade,
+  saison        text not null,
+  bordereau_id  bigint references fac_bordereaux(id) on delete set null,   -- null = à imputer sur les bordereaux les plus anciens
+  date          date,
+  montant       numeric(10,2) not null,
+  mode          text,
+  reference     text,
+  remarque      text,
+  created_at    timestamptz not null default now()
+);
+
+create table if not exists fac_reglages (
+  cle    text primary key,
+  valeur jsonb
+);
+
+alter table fac_clubs      enable row level security;
+alter table fac_articles   enable row level security;
+alter table fac_bordereaux enable row level security;
+alter table fac_lignes     enable row level security;
+alter table fac_paiements  enable row level security;
+alter table fac_reglages   enable row level security;
+revoke all on fac_clubs, fac_articles, fac_bordereaux, fac_lignes, fac_paiements, fac_reglages from anon, authenticated;
+
+-- ---------- Outils ----------
+create or replace function fac_is_admin(pwd text) returns boolean
+language sql security definer set search_path = public as $$
+  select exists (select 1 from private_config where key = 'admin_password' and value = pwd);
+$$;
+
+-- ---------- Lecture ----------
+create or replace function fac_admin_get(pwd text, p_saison text) returns jsonb
+language plpgsql security definer set search_path = public as $$
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  return jsonb_build_object(
+    'clubs',      (select coalesce(jsonb_agg(to_jsonb(c) order by c.ordre, c.nom), '[]') from fac_clubs c),
+    'articles',   (select coalesce(jsonb_agg(to_jsonb(a) order by a.ordre, a.code_compta, a.designation), '[]') from fac_articles a),
+    'reglages',   (select coalesce(jsonb_object_agg(r.cle, r.valeur), '{}') from fac_reglages r),
+    'saisons',    (select coalesce(jsonb_agg(distinct b.saison), '[]') from fac_bordereaux b),
+    'bordereaux', (select coalesce(jsonb_agg(to_jsonb(b) order by b.numero), '[]') from fac_bordereaux b where b.saison = p_saison),
+    'lignes',     (select coalesce(jsonb_agg(to_jsonb(l) order by l.bordereau_id, l.club, l.ordre, l.id), '[]')
+                   from fac_lignes l join fac_bordereaux b on b.id = l.bordereau_id where b.saison = p_saison),
+    'paiements',  (select coalesce(jsonb_agg(to_jsonb(p) order by p.date nulls first, p.id), '[]') from fac_paiements p where p.saison = p_saison)
+  );
+end $$;
+
+-- Données des autres rubriques pour les ajouts automatiques
+create or replace function fac_admin_sources(pwd text) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare v_open jsonb := '[]'; v_pit jsonb := '[]'; v_pit_saison text; v_stg jsonb := '[]';
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  -- Compétitions OPEN : équipes inscrites par club et par tournoi (tournois annulés exclus)
+  if to_regclass('public.chp_inscriptions') is not null then
+    execute $q$
+      select coalesce(jsonb_agg(x order by x->>'competition', x->>'club', (x->>'numero')::int), '[]') from (
+        select jsonb_build_object('competition', t.competition, 'competition_nom', c.nom, 'numero', t.numero, 'date', t.date,
+                                  'club', i.club, 'nb', sum(i.nb_equipes)) x
+        from chp_inscriptions i join chp_tournois t on t.id = i.tournoi_id join chp_competitions c on c.code = t.competition
+        where t.statut <> 'annule'
+        group by t.competition, c.nom, t.numero, t.date, i.club) s $q$ into v_open;
+  end if;
+  -- Pitchoun' Volley : enfants ayant participé à au moins un plateau, par club
+  if to_regclass('public.pitchoun_joueurs') is not null then
+    execute $q$
+      select coalesce(jsonb_agg(jsonb_build_object('club', j.club, 'nb', j.n) order by j.club), '[]')
+      from (select club, count(*) n from pitchoun_joueurs where coalesce(plateaux, 0) > 0 group by club) j $q$ into v_pit;
+    if to_regclass('public.pitchoun_reglages') is not null then
+      execute $q$ select valeur::text from pitchoun_reglages where cle = 'saison' $q$ into v_pit_saison;
+    end if;
+  end if;
+  -- Stages : participations marquées « facturé au club » dans la gestion des stages
+  if to_regclass('public.stg_convocations') is not null then
+    execute $q$
+      select coalesce(jsonb_agg(jsonb_build_object(
+          'id', c.id, 'stage', s.titre, 'date', s.date_debut, 'prenom', e.prenom, 'nom', e.nom, 'club', e.club,
+          'montant', coalesce(c.montant, s.tarif * case when s.par_jour then greatest(coalesce(array_length(c.jours, 1), array_length(s.jours, 1), 1), 1) else 1 end, 0)
+        ) order by s.date_debut, e.club, e.nom), '[]')
+      from stg_convocations c join stg_stages s on s.id = c.stage_id join stg_enfants e on e.id = c.enfant_id
+      where c.paiement_mode ilike '%factur%club%' $q$ into v_stg;
+  end if;
+  return jsonb_build_object('open', v_open, 'pitchoun', v_pit, 'pitchoun_saison', v_pit_saison, 'stages', v_stg);
+end $$;
+
+-- ---------- Clubs ----------
+-- p = {code, numero, nom, email, adresse, alias, actif, ordre, ancien_code?} ; p = {code, supprimer:true} pour supprimer
+create or replace function fac_admin_club(pwd text, p jsonb) returns void
+language plpgsql security definer set search_path = public as $$
+declare k text := upper(trim(p->>'code')); old text := nullif(upper(trim(coalesce(p->>'ancien_code', ''))), '');
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  if coalesce(k, '') = '' then raise exception 'Indiquez le sigle du club'; end if;
+  if (p->>'supprimer')::boolean then
+    if exists (select 1 from fac_lignes where club = k) or exists (select 1 from fac_paiements where club = k) then
+      update fac_clubs set actif = false where code = k;   -- déjà facturé : on le masque seulement
+    else delete from fac_clubs where code = k; end if;
+    return;
+  end if;
+  if coalesce(trim(p->>'nom'), '') = '' then raise exception 'Indiquez le nom du club'; end if;
+  if old is not null and old <> k then
+    update fac_clubs set code = k where code = old;          -- les lignes et paiements suivent (on update cascade)
+  end if;
+  insert into fac_clubs (code, numero, nom, email, adresse, alias, actif, ordre)
+  values (k, nullif(trim(p->>'numero'), ''), trim(p->>'nom'), nullif(trim(p->>'email'), ''), nullif(trim(p->>'adresse'), ''),
+          nullif(trim(p->>'alias'), ''), coalesce((p->>'actif')::boolean, true), coalesce(nullif(p->>'ordre', '')::int, 0))
+  on conflict (code) do update set numero = excluded.numero, nom = excluded.nom, email = excluded.email,
+    adresse = excluded.adresse, alias = excluded.alias, actif = excluded.actif, ordre = excluded.ordre;
+end $$;
+
+-- ---------- Articles ----------
+-- p = {id?, code_compta, designation, prix, unite, categorie, actif, ordre} ; {id, supprimer:true}
+create or replace function fac_admin_article(pwd text, p jsonb) returns bigint
+language plpgsql security definer set search_path = public as $$
+declare aid bigint := nullif(p->>'id', '')::bigint;
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  if (p->>'supprimer')::boolean then
+    if exists (select 1 from fac_articles where id = aid and cle is not null) then
+      raise exception 'Cet article sert aux ajouts automatiques : modifiez-le ou désactivez-le plutôt';
+    end if;
+    delete from fac_articles where id = aid; return aid;
+  end if;
+  if coalesce(trim(p->>'designation'), '') = '' then raise exception 'Indiquez la désignation'; end if;
+  if aid is null then
+    insert into fac_articles (designation) values (trim(p->>'designation')) returning id into aid;
+  end if;
+  update fac_articles set
+    code_compta = nullif(trim(p->>'code_compta'), ''),
+    designation = upper(trim(p->>'designation')),
+    prix        = coalesce(nullif(replace(p->>'prix', ',', '.'), '')::numeric, 0),
+    unite       = nullif(trim(p->>'unite'), ''),
+    categorie   = nullif(trim(p->>'categorie'), ''),
+    actif       = coalesce((p->>'actif')::boolean, true),
+    ordre       = coalesce(nullif(p->>'ordre', '')::int, ordre)
+  where id = aid;
+  return aid;
+end $$;
+
+-- ---------- Bordereaux ----------
+-- p = {id?, saison, numero, date, titre, statut} ; {id, supprimer:true}
+create or replace function fac_admin_bordereau(pwd text, p jsonb) returns bigint
+language plpgsql security definer set search_path = public as $$
+declare bid bigint := nullif(p->>'id', '')::bigint; v_num int;
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  if (p->>'supprimer')::boolean then delete from fac_bordereaux where id = bid; return bid; end if;
+  if bid is null then
+    v_num := coalesce(nullif(p->>'numero', '')::int,
+                      (select coalesce(max(numero), 0) + 1 from fac_bordereaux where saison = p->>'saison'));
+    if exists (select 1 from fac_bordereaux where saison = p->>'saison' and numero = v_num) then
+      raise exception 'Le bordereau n° % existe déjà pour cette saison', v_num;
+    end if;
+    insert into fac_bordereaux (saison, numero, date) values (p->>'saison', v_num, coalesce(nullif(p->>'date', '')::date, current_date))
+    returning id into bid;
+  end if;
+  update fac_bordereaux set
+    numero = coalesce(nullif(p->>'numero', '')::int, numero),
+    date   = case when p ? 'date' then nullif(p->>'date', '')::date else date end,
+    titre  = case when p ? 'titre' then nullif(trim(p->>'titre'), '') else titre end,
+    statut = case when p->>'statut' in ('brouillon','envoye') then p->>'statut' else statut end
+  where id = bid;
+  return bid;
+end $$;
+
+-- ---------- Lignes ----------
+-- p_lignes = [{id?, bordereau_id, club, article_id, date_ligne, code_compta, designation, quantite, prix, source, ordre}]
+-- p_suppr  = identifiants des lignes à supprimer
+-- Renvoie les identifiants des lignes enregistrées, dans l'ordre reçu
+drop function if exists fac_admin_lignes(text, jsonb, bigint[]);
+create or replace function fac_admin_lignes(pwd text, p_lignes jsonb, p_suppr bigint[]) returns bigint[]
+language plpgsql security definer set search_path = public as $$
+declare l jsonb; ids bigint[] := '{}'; lid bigint; st text;
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  if exists (select 1 from fac_lignes x join fac_bordereaux b on b.id = x.bordereau_id where x.id = any(coalesce(p_suppr, '{}')) and b.statut = 'envoye') then
+    raise exception 'Ce bordereau est marqué « envoyé » : rouvrez-le pour le modifier';
+  end if;
+  delete from fac_lignes where id = any(coalesce(p_suppr, '{}'));
+  for l in select * from jsonb_array_elements(coalesce(p_lignes, '[]')) loop
+    select statut into st from fac_bordereaux where id = (l->>'bordereau_id')::bigint;
+    if st is null then raise exception 'Bordereau introuvable'; end if;
+    if st = 'envoye' then raise exception 'Ce bordereau est marqué « envoyé » : rouvrez-le pour le modifier'; end if;
+    if coalesce(trim(l->>'designation'), '') = '' then raise exception 'Une ligne n''a pas de désignation'; end if;
+    lid := nullif(l->>'id', '')::bigint;
+    if lid is null then
+      insert into fac_lignes (bordereau_id, club, designation) values ((l->>'bordereau_id')::bigint, upper(l->>'club'), trim(l->>'designation'))
+      returning id into lid;
+    end if;
+    update fac_lignes set
+      club        = upper(l->>'club'),
+      article_id  = nullif(l->>'article_id', '')::bigint,
+      date_ligne  = nullif(l->>'date_ligne', '')::date,
+      code_compta = nullif(trim(l->>'code_compta'), ''),
+      designation = left(trim(l->>'designation'), 300),
+      quantite    = coalesce(nullif(replace(l->>'quantite', ',', '.'), '')::numeric, 1),
+      prix        = coalesce(nullif(replace(l->>'prix', ',', '.'), '')::numeric, 0),
+      source      = case when l ? 'source' then nullif(l->>'source', '') else source end,
+      ordre       = coalesce(nullif(l->>'ordre', '')::int, ordre)
+    where id = lid;
+    ids := ids || lid;
+  end loop;
+  return ids;
+end $$;
+
+-- ---------- Paiements ----------
+-- p = {id?, club, saison, bordereau_id, date, montant, mode, reference, remarque} ; {id, supprimer:true}
+create or replace function fac_admin_paiement(pwd text, p jsonb) returns bigint
+language plpgsql security definer set search_path = public as $$
+declare pid bigint := nullif(p->>'id', '')::bigint;
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  if (p->>'supprimer')::boolean then delete from fac_paiements where id = pid; return pid; end if;
+  if coalesce(nullif(replace(p->>'montant', ',', '.'), '')::numeric, 0) = 0 then raise exception 'Indiquez le montant'; end if;
+  if pid is null then
+    insert into fac_paiements (club, saison, montant) values (upper(p->>'club'), p->>'saison', 0) returning id into pid;
+  end if;
+  update fac_paiements set
+    club         = upper(p->>'club'),
+    saison       = p->>'saison',
+    bordereau_id = nullif(p->>'bordereau_id', '')::bigint,
+    date         = nullif(p->>'date', '')::date,
+    montant      = replace(p->>'montant', ',', '.')::numeric,
+    mode         = nullif(trim(p->>'mode'), ''),
+    reference    = nullif(trim(p->>'reference'), ''),
+    remarque     = nullif(trim(p->>'remarque'), '')
+  where id = pid;
+  return pid;
+end $$;
+
+create or replace function fac_admin_reglage(pwd text, p_cle text, p_valeur jsonb) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  insert into fac_reglages (cle, valeur) values (p_cle, p_valeur) on conflict (cle) do update set valeur = excluded.valeur;
+end $$;
+
+-- ---------- Droits ----------
+revoke execute on function fac_is_admin(text) from public, anon, authenticated;
+grant execute on function
+  fac_admin_get(text, text),
+  fac_admin_sources(text),
+  fac_admin_club(text, jsonb),
+  fac_admin_article(text, jsonb),
+  fac_admin_bordereau(text, jsonb),
+  fac_admin_lignes(text, jsonb, bigint[]),
+  fac_admin_paiement(text, jsonb),
+  fac_admin_reglage(text, text, jsonb)
+to anon;
+
+-- ---------- Clubs du Comité (n° d'affiliation des bordereaux FFVB) ----------
+insert into fac_clubs (code, numero, nom, ordre) values
+  ('CSB',   '0836712', 'Club Sportif Brignolais', 0),
+  ('DVVB',  '0836296', 'Draguignan Union Club Var VB', 0),
+  ('ESCS',  '0837939', 'ES Canton des Solliès', 0),
+  ('FVV',   '0839557', 'Fréjus Var Volley', 0),
+  ('GSD',   '0833304', 'GSD du Var de Volley-Ball', 0),
+  ('LLVB',  '0834743', 'Le Luc Volley-Ball', 0),
+  ('RCVB',  '0833352', 'Rocbaron Club Volley-Ball', 0),
+  ('SRV',   '0833355', 'Saint-Raphaël Volley', 0),
+  ('SMCV',  '0836446', 'Sainte-Maxime Cogolin Volley', 0),
+  ('SFBV',  '0833308', 'Six-Fours Beach Volley', 0),
+  ('2SBVC', '0833309', 'Sud Sainte-Baume Volley Club', 0),
+  ('UAV',   '0837903', 'Union Athlétique Valettoise', 0),
+  ('VVB',   '0833351', 'Vidauban Volley-Ball', 0),
+  ('VBO',   '0837251', 'Volley-Ball Ollioulais', 0),
+  ('VCHPL', '0839914', 'Volley Club Hyères / Pierrefeu La Londe', 0),
+  ('VCSM',  '0833353', 'Volley Club de Saint-Maximin', 0),
+  ('VCM',   '0833310', 'Volley Club Méditerranée', 0),
+  ('VCS',   '0833356', 'Volley Club Seynois', 0),
+  ('VPG',   '0833350', 'Volley Pradétan Gardéen', 0)
+on conflict (code) do nothing;
+update fac_clubs set alias = 'Hyères, Pierrefeu, La Londe, VC Hyères' where code = 'VCHPL' and alias is null;
+update fac_clubs set alias = 'Draguignan, Draguignan Var Volley-Ball' where code = 'DVVB' and alias is null;
+update fac_clubs set alias = 'Sainte-Maxime, Ste-Maxime, Cogolin' where code = 'SMCV' and alias is null;
+update fac_clubs set alias = 'Saint-Raphaël, St-Raphaël' where code = 'SRV' and alias is null;
+update fac_clubs set alias = 'Ollioules' where code = 'VBO' and alias is null;
+update fac_clubs set alias = 'La Valette, UA Valettoise' where code = 'UAV' and alias is null;
+update fac_clubs set alias = 'Fréjus' where code = 'FVV' and alias is null;
+update fac_clubs set alias = 'Vidauban' where code = 'VVB' and alias is null;
+update fac_clubs set alias = 'Le Luc' where code = 'LLVB' and alias is null;
+update fac_clubs set alias = 'Brignoles' where code = 'CSB' and alias is null;
+update fac_clubs set alias = 'Six-Fours, Six Fours' where code = 'SFBV' and alias is null;
+update fac_clubs set alias = 'La Seyne' where code = 'VCS' and alias is null;
+update fac_clubs set alias = 'Le Pradet, La Garde, Pradétan' where code = 'VPG' and alias is null;
+update fac_clubs set alias = 'Toulon, VCM' where code = 'VCM' and alias is null;
+update fac_clubs set alias = 'Saint-Maximin' where code = 'VCSM' and alias is null;
+update fac_clubs set alias = 'Rocbaron' where code = 'RCVB' and alias is null;
+update fac_clubs set alias = 'Sainte-Baume, Sud Sainte Baume' where code = '2SBVC' and alias is null;
+update fac_clubs set alias = 'Solliès, Sollies' where code = 'ESCS' and alias is null;
+
+-- ---------- Catalogue (repris des bordereaux FFVB 2025-2026 et 2026-2027) ----------
+do $$ begin
+  if not exists (select 1 from fac_articles) then
+    insert into fac_articles (code_compta, designation, prix, unite, categorie, cle, ordre) values
+      (null,     'RÉAFFILIATION GSA FÉDÉRAL',                               140, 'club',     'Affiliation', null, 10),
+      (null,     'RÉAFFILIATION GSA RÉGIONAL',                              125, 'club',     'Affiliation', null, 11),
+      (null,     'RÉAFFILIATION AUTRE GSA',                                 125, 'club',     'Affiliation', null, 12),
+      ('756000', 'ENGAGEMENTS SENIOR ACCESSION / M21 (100 € / ÉQUIPE)',     100, 'équipe',   'Engagements', null, 20),
+      ('756000', 'ENGAGEMENTS M18 ET M15 (70 € / ÉQUIPE)',                   70, 'équipe',   'Engagements', null, 21),
+      ('756000', 'ENGAGEMENTS M13 (100 € / ÉQUIPE)',                        100, 'équipe',   'Engagements', null, 22),
+      ('756000', 'ENGAGEMENTS M11 (80 € / ÉQUIPE)',                          80, 'équipe',   'Engagements', null, 23),
+      ('756000', 'ENGAGEMENTS COMPET''LIB (90 € / ÉQUIPE)',                  90, 'équipe',   'Engagements', null, 24),
+      ('756010', 'ENGAGEMENT OPEN M15 4X4 FÉMININ',                          10, 'équipe',   'Compétitions OPEN', 'open_MFM', 30),
+      ('756010', 'ENGAGEMENT OPEN M15 4X4 MASCULIN',                         10, 'équipe',   'Compétitions OPEN', 'open_M4M', 31),
+      ('756010', 'ENGAGEMENT OPEN M18 4X4 FÉMININ',                          10, 'équipe',   'Compétitions OPEN', 'open_CFM', 32),
+      ('756010', 'ENGAGEMENT OPEN M18 4X4 MASCULIN',                         10, 'équipe',   'Compétitions OPEN', 'open_C4M', 33),
+      ('756010', 'ENGAGEMENT OPEN 2 CONTRE 2',                               10, 'équipe',   'Compétitions OPEN', 'open_O11', 34),
+      ('756010', 'ENGAGEMENT OPEN 4 CONTRE 4',                               10, 'équipe',   'Compétitions OPEN', 'open_O13', 35),
+      ('756020', 'ENGAGEMENT PITCHOUN'' VOLLEY (5 € / ENFANT / SAISON)',      5, 'enfant',   'Pitchoun'' Volley', 'pitchoun', 40),
+      ('756030', 'ENGAGEMENTS BEACH VAR TOUR (10 € / JOUEUR)',               10, 'joueur',   'Beach', null, 50),
+      (null,     'PARTICIPATION STAGE',                                       0, 'stagiaire','Stages', 'stage', 55),
+      ('706003', 'INSCRIPTION TOURNOI INTERNATIONAL (160 € / ÉQUIPE)',      160, 'équipe',   'Tournoi International', null, 60),
+      ('706009', 'INSCRIPTION FORMATION MARQUEUR (40 € / STAGIAIRE)',        40, 'stagiaire','Formations', null, 70),
+      ('706100', 'INDEMNITÉS ARBITRAGE SENIOR ACCESSION (30 € / MATCH)',     30, 'match',    'Arbitrage', null, 80),
+      ('706100', 'FRAIS DÉPLACEMENT ARBITRAGE SENIOR ACCESSION (16 € / MATCH)', 16, 'match', 'Arbitrage', null, 81),
+      ('708800', 'ADHÉSIF POUR TRAÇAGE DE TERRAIN (4 € / ROULEAU)',           4, 'rouleau',  'Matériel', null, 90),
+      ('756300', 'AIDE À L''EMPLOI (3 € / LICENCE)',                          3, 'licence',  'Aide à l''emploi', null, 100),
+      ('771001', 'PÉNALITÉ RIS N°4 - RÉSULTAT NON SAISI',                    25, 'pénalité', 'Pénalités', null, 110),
+      ('771001', 'PÉNALITÉ RIS N°4 - FEUILLE NON PARVENUE',                  50, 'pénalité', 'Pénalités', null, 111),
+      ('771001', 'PÉNALITÉ RIS N°4 - FEUILLE MAL TENUE',                     15, 'pénalité', 'Pénalités', null, 112),
+      ('771001', 'PÉNALITÉ RIS N°4 - DEMANDE DE MODIFICATION HORS DÉLAI',    20, 'pénalité', 'Pénalités', null, 113),
+      ('771001', 'PÉNALITÉ RIS N°4 - DEMANDE DE REPORT DE RENCONTRE',        20, 'pénalité', 'Pénalités', null, 114),
+      ('771001', 'PÉNALITÉ RIS N°4 - ÉQUIPE ABSENTE',                        50, 'pénalité', 'Pénalités', null, 115),
+      ('771001', 'PÉNALITÉ RIS N°4 - ÉQUIPE ABSENTE TOURNOI FINAL',          95, 'pénalité', 'Pénalités', null, 116),
+      ('771001', 'PÉNALITÉ RIS N°4 - AVERTISSEMENT ENTRAÎNEUR',              50, 'pénalité', 'Pénalités', null, 117),
+      ('771001', 'PÉNALITÉ RIS N°4 - AVERTISSEMENT JOUEUR',                  50, 'pénalité', 'Pénalités', null, 118),
+      ('771001', 'PÉNALITÉ RIS N°4 - LICENCE NON PRÉSENTÉE',                  5, 'pénalité', 'Pénalités', null, 119),
+      ('771001', 'PÉNALITÉ RIS N°4 - ENGAGEMENT NON CONFORME',               30, 'équipe',   'Pénalités', null, 120);
+  end if;
+end $$;
+
+-- ---------- Réglages par défaut ----------
+insert into fac_reglages (cle, valeur) values
+  ('open_tarifs', '[10, 30, 50]'),   -- par équipe : 1 tournoi, 2 tournois, 3 tournois ou plus
+  ('emetteur', '"Comité du Var de Volley-Ball\nMaison des Sports du Var\n133, boulevard Général Brosset\n83200 Toulon\ncontact@volley83.fr"'),
+  ('mentions', '"Règlement à réception, par virement ou par chèque à l''ordre du Comité du Var de Volley-Ball, en rappelant le numéro de la facture."')
+on conflict (cle) do nothing;
+
+-- Message attendu : « Success. No rows returned »
