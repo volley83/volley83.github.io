@@ -77,6 +77,29 @@ create table if not exists fac_paiements (
   created_at    timestamptz not null default now()
 );
 
+-- Relevés des Infractions Sportives (RIS) : les infractions sont facturées sur le prochain bordereau du club
+create table if not exists fac_ris (
+  id        bigint generated always as identity primary key,
+  saison    text not null,
+  numero    int not null,
+  date      date not null default current_date,    -- « au 08 juin 2026 »
+  remarque  text,
+  created_at timestamptz not null default now(),
+  unique (saison, numero)
+);
+create table if not exists fac_ris_items (
+  id          bigint generated always as identity primary key,
+  ris_id      bigint not null references fac_ris(id) on delete cascade,
+  rubrique    int not null default 5 check (rubrique between 1 and 5),   -- 1 Dossiers … 5 Divers
+  match       text,                                  -- n° de match ou tournoi
+  club        text not null references fac_clubs(code) on update cascade,
+  article_id  bigint references fac_articles(id) on delete set null,
+  intitule    text not null,                         -- infraction relevée (texte du RIS et de la facture)
+  montant     numeric(10,2) not null default 0,
+  ordre       int not null default 0,
+  created_at  timestamptz not null default now()
+);
+
 create table if not exists fac_reglages (
   cle    text primary key,
   valeur jsonb
@@ -89,7 +112,9 @@ alter table fac_bordereaux enable row level security;
 alter table fac_lignes     enable row level security;
 alter table fac_paiements  enable row level security;
 alter table fac_reglages   enable row level security;
-revoke all on fac_clubs, fac_articles, fac_bordereaux, fac_lignes, fac_paiements, fac_reglages from anon, authenticated;
+alter table fac_ris        enable row level security;
+alter table fac_ris_items  enable row level security;
+revoke all on fac_clubs, fac_articles, fac_bordereaux, fac_lignes, fac_paiements, fac_reglages, fac_ris, fac_ris_items from anon, authenticated;
 
 -- ---------- Outils ----------
 create or replace function fac_is_admin(pwd text) returns boolean
@@ -110,7 +135,10 @@ begin
     'bordereaux', (select coalesce(jsonb_agg(to_jsonb(b) order by b.numero), '[]') from fac_bordereaux b where b.saison = p_saison),
     'lignes',     (select coalesce(jsonb_agg(to_jsonb(l) order by l.bordereau_id, l.club, l.ordre, l.id), '[]')
                    from fac_lignes l join fac_bordereaux b on b.id = l.bordereau_id where b.saison = p_saison),
-    'paiements',  (select coalesce(jsonb_agg(to_jsonb(p) order by p.date nulls first, p.id), '[]') from fac_paiements p where p.saison = p_saison)
+    'paiements',  (select coalesce(jsonb_agg(to_jsonb(p) order by p.date nulls first, p.id), '[]') from fac_paiements p where p.saison = p_saison),
+    'ris',        (select coalesce(jsonb_agg(to_jsonb(r) order by r.numero), '[]') from fac_ris r where r.saison = p_saison),
+    'ris_items',  (select coalesce(jsonb_agg(to_jsonb(i) order by i.ris_id, i.rubrique, i.ordre, i.id), '[]')
+                   from fac_ris_items i join fac_ris r on r.id = i.ris_id where r.saison = p_saison)
   );
 end $$;
 
@@ -326,6 +354,50 @@ begin
   return pid;
 end $$;
 
+-- RIS : p = {id?, saison, numero?, date, remarque} ; {id, supprimer:true}
+create or replace function fac_admin_ris(pwd text, p jsonb) returns bigint
+language plpgsql security definer set search_path = public as $$
+declare rid bigint := nullif(p->>'id', '')::bigint; v_num int;
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  if (p->>'supprimer')::boolean then delete from fac_ris where id = rid; return rid; end if;
+  if rid is null then
+    v_num := coalesce(nullif(p->>'numero', '')::int, (select coalesce(max(numero), 0) + 1 from fac_ris where saison = p->>'saison'));
+    if exists (select 1 from fac_ris where saison = p->>'saison' and numero = v_num) then raise exception 'Le RIS n° % existe déjà', v_num; end if;
+    insert into fac_ris (saison, numero, date) values (p->>'saison', v_num, coalesce(nullif(p->>'date', '')::date, current_date)) returning id into rid;
+  end if;
+  update fac_ris set
+    numero   = coalesce(nullif(p->>'numero', '')::int, numero),
+    date     = coalesce(nullif(p->>'date', '')::date, date),
+    remarque = case when p ? 'remarque' then nullif(trim(p->>'remarque'), '') else remarque end
+  where id = rid;
+  return rid;
+end $$;
+
+-- Infraction : p = {id?, ris_id, rubrique, match, club, article_id, intitule, montant, ordre} ; {id, supprimer:true}
+create or replace function fac_admin_ris_item(pwd text, p jsonb) returns bigint
+language plpgsql security definer set search_path = public as $$
+declare iid bigint := nullif(p->>'id', '')::bigint;
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  if (p->>'supprimer')::boolean then delete from fac_ris_items where id = iid; return iid; end if;
+  if coalesce(trim(p->>'intitule'), '') = '' then raise exception 'Indiquez l''infraction relevée'; end if;
+  if coalesce(trim(p->>'club'), '') = '' then raise exception 'Indiquez le club'; end if;
+  if iid is null then
+    insert into fac_ris_items (ris_id, club, intitule) values ((p->>'ris_id')::bigint, upper(p->>'club'), trim(p->>'intitule')) returning id into iid;
+  end if;
+  update fac_ris_items set
+    rubrique   = coalesce(nullif(p->>'rubrique', '')::int, rubrique),
+    match      = nullif(trim(p->>'match'), ''),
+    club       = upper(p->>'club'),
+    article_id = nullif(p->>'article_id', '')::bigint,
+    intitule   = left(trim(p->>'intitule'), 200),
+    montant    = coalesce(nullif(replace(p->>'montant', ',', '.'), '')::numeric, 0),
+    ordre      = coalesce(nullif(p->>'ordre', '')::int, ordre)
+  where id = iid;
+  return iid;
+end $$;
+
 create or replace function fac_admin_reglage(pwd text, p_cle text, p_valeur jsonb) returns void
 language plpgsql security definer set search_path = public as $$
 begin
@@ -344,7 +416,9 @@ grant execute on function
   fac_admin_bordereau(text, jsonb),
   fac_admin_lignes(text, jsonb, bigint[]),
   fac_admin_paiement(text, jsonb),
-  fac_admin_reglage(text, text, jsonb)
+  fac_admin_reglage(text, text, jsonb),
+  fac_admin_ris(text, jsonb),
+  fac_admin_ris_item(text, jsonb)
 to anon;
 
 -- ---------- Clubs du Comité (n° d'affiliation des bordereaux FFVB) ----------
@@ -432,6 +506,7 @@ end $$;
 insert into fac_reglages (cle, valeur) values
   ('open_tarifs', '[10, 35, 60]'),   -- par équipe : 1 tournoi, 2 tournois, 3 tournois ou plus
   ('emetteur', '"Comité du Var de Volley-Ball\nMaison des Sports du Var\n133, boulevard Général Brosset\n83200 Toulon\ncontact@volley83.fr"'),
+  ('ris_pied', '"Maison des sports du Var – 133, Boulevard du Général Brosset - 83200 TOULON\nTéléphone : 06-13-30-34-25 / e-mail : contact@volley83.fr / www.volley83.fr\nN° Siret : 42463014300024 / Code APE : 9312 Z"'),
   ('mentions', '"Règlement à réception, par virement ou par chèque à l''ordre du Comité du Var de Volley-Ball, en rappelant le numéro de la facture."')
 on conflict (cle) do nothing;
 

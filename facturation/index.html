@@ -236,7 +236,7 @@ function logout() { PWD = ''; D = null; try { sessionStorage.removeItem('fac_adm
 // ======================== MISE EN PAGE ========================
 function shell(tab, body) {
   const saisons = [...new Set([...(D.saisons || []), saisonDe(today()), SAISON])].sort().reverse();
-  const nav = [['recap', 'Récapitulatif'], ['bordereaux', 'Bordereaux'], ['paiements', 'Paiements'], ['articles', 'Articles'], ['clubs', 'Clubs'], ['reglages', 'Réglages']];
+  const nav = [['recap', 'Récapitulatif'], ['bordereaux', 'Bordereaux'], ['ris', 'RIS'], ['paiements', 'Paiements'], ['articles', 'Articles'], ['clubs', 'Clubs'], ['reglages', 'Réglages']];
   $('app').innerHTML = `
   <header><div class="wrap head">
     <img src="logo-comite-var.jpg" alt="Comité du Var de Volley-Ball">
@@ -736,13 +736,174 @@ function renderReglages() {
     <div class="grid g2"><div class="field"><label>Émetteur (en haut à gauche)</label><textarea id="r-em" rows="6">${esc(reglage('emetteur', ''))}</textarea></div>
     <div class="field"><label>Mentions en bas de facture (conditions de règlement, SIRET…)</label><textarea id="r-me" rows="6">${esc(reglage('mentions', ''))}</textarea></div></div>
     <div class="field"><label>Coordonnées bancaires (encadré « Règlement par virement » sur chaque facture)</label><textarea id="r-bq" rows="4" placeholder="Titulaire, IBAN, BIC, banque">${esc(reglage('banque', ''))}</textarea></div>
+    <div class="field"><label>Pied de page des RIS</label><textarea id="r-rp" rows="3">${esc(reglage('ris_pied', ''))}</textarea></div>
     <div class="btnrow"><button class="btn primary" id="r-ok1">Enregistrer</button></div></div>
   <div class="card stack"><h3>Compétitions OPEN : prix par équipe</h3>
     <p class="small muted">Selon le nombre de tournois joués par chaque équipe d'un club sur la saison (finale comprise).</p>
     <div class="grid g3"><div class="field"><label>1 tournoi</label><input id="r-t1" value="${fmtN(t[0])}" inputmode="decimal"></div><div class="field"><label>2 tournois</label><input id="r-t2" value="${fmtN(t[1])}" inputmode="decimal"></div><div class="field"><label>3 tournois ou plus</label><input id="r-t3" value="${fmtN(t[2])}" inputmode="decimal"></div></div>
     <div class="btnrow"><button class="btn primary" id="r-ok2">Enregistrer</button></div></div>`);
-  $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+  $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_pied', p_valeur: $('r-rp').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok2').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'open_tarifs', p_valeur: [num($('r-t1').value), num($('r-t2').value), num($('r-t3').value)] }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+}
+
+// ======================== RIS (Relevé des Infractions Sportives) ========================
+const RUBRIQUES = ['Dossiers', 'Licences', 'Saisie des résultats et envoi des feuilles de match', 'Feuille de match', 'Divers'];
+const MOIS_L = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const fmtLong = s => { const d = parseD(s); return d ? `${String(d.getDate()).padStart(2, '0')} ${MOIS_L[d.getMonth()]} ${d.getFullYear()}` : ''; };
+const risDe = id => (D.ris || []).find(r => String(r.id) === String(id));
+const itemsDe = rid => (D.ris_items || []).filter(i => String(i.ris_id) === String(rid));
+const ligneRis = it => D.lignes.find(l => l.source === 'ris:' + it.id);
+// Intitulé lisible à partir d'un article : « PÉNALITÉ RIS N°4 - LICENCE NON PRÉSENTÉE » → « Licence non présentée »
+function intituleArticle(a) {
+  const t = String(a.designation || '').replace(/^PÉNALITÉ RIS N°\s*\d+\s*-\s*/i, '').replace(/\s*\([^)]*€[^)]*\)\s*$/, '').toLowerCase();
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+function rubriqueArticle(a) {
+  const t = norm(a.designation);
+  if (/licence|licencie|qualifie/.test(t)) return 2;
+  if (/resultat|non parvenue|hors delai|adresse|affranchi/.test(t) && !/calendrier|implantation/.test(t)) return 3;
+  if (/mal tenue|mauvaise feuille/.test(t)) return 4;
+  if (/forfait|absente|retrait/.test(t)) return 1;
+  return 5;
+}
+const articlesRis = () => D.articles.filter(a => a.actif && ['Pénalités', 'Forfaits', 'Arbitrage'].includes(a.categorie));
+
+function renderRisListe() {
+  const rs = [...(D.ris || [])].sort((a, b) => a.numero - b.numero);
+  shell('ris', `
+  <div class="ttl"><div><h1 style="font-size:34px">RIS ${esc(SAISON)}</h1><p class="muted">Relevés des Infractions Sportives. Les infractions sont envoyées sur le prochain bordereau de chaque club, avec le n° du RIS en précision.</p></div></div>
+  <div class="bords">
+    ${rs.map(r => { const its = itemsDe(r.id), tot = its.reduce((x, i) => x + num(i.montant), 0), afact = its.filter(i => num(i.montant) && !ligneRis(i)).length;
+      return `<a class="bord" href="#ris/${r.id}"><div class="ttl"><span class="n">RIS N° ${r.numero}</span>${afact ? `<span class="badge b-warn">${afact} à facturer</span>` : its.length ? '<span class="badge b-ok">Facturé</span>' : '<span class="badge b-draft">Vide</span>'}</div>
+        <span class="muted small">au ${fmtLong(r.date)}</span><span class="tot">${euros(tot)}</span><span class="small muted">${its.length} infraction${its.length > 1 ? 's' : ''} · ${new Set(its.map(i => i.club)).size} club(s)</span></a>`; }).join('')}
+    <button class="bord new" onclick="nouveauRis()">+ Nouveau RIS</button>
+  </div>`);
+}
+async function nouveauRis() {
+  try { const id = await rpc('fac_admin_ris', { pwd: PWD, p: { saison: SAISON, date: today() } }); await load(); location.hash = 'ris/' + id; } catch(e) { fail(e); }
+}
+let RIS_SAISIE = { rubrique: 5, match: '', club: '' };
+function renderRis(r) {
+  const its = itemsDe(r.id), as = articlesRis(), clubs = D.clubs.filter(c => c.actif).sort((a, b) => coll.compare(a.code, b.code));
+  const afact = its.filter(i => num(i.montant) && !ligneRis(i));
+  const cible = bordsTries().find(b => b.statut === 'brouillon');
+  const ligne = i => { const l = ligneRis(i), b = l && bord(l.bordereau_id), lock = !!l;
+    return `<tr data-id="${i.id}">
+      <td><select data-k="rubrique" ${lock ? 'disabled' : ''} style="width:64px" title="Rubrique">${RUBRIQUES.map((t, k) => `<option value="${k + 1}" ${i.rubrique === k + 1 ? 'selected' : ''} title="${esc(t)}">${k + 1}</option>`).join('')}</select></td>
+      <td><input data-k="match" value="${esc(i.match || '')}" ${lock ? 'disabled' : ''} style="width:150px"></td>
+      <td><select data-k="club" ${lock ? 'disabled' : ''} style="width:100px">${clubs.map(c => `<option ${c.code === i.club ? 'selected' : ''}>${esc(c.code)}</option>`).join('')}</select></td>
+      <td><input data-k="intitule" value="${esc(i.intitule)}" ${lock ? 'disabled' : ''} style="min-width:320px"></td>
+      <td><input data-k="montant" class="n" value="${fmtN(i.montant)}" ${lock ? 'disabled' : ''} style="width:80px" inputmode="decimal"></td>
+      <td>${l ? `<a class="badge b-ok" href="#b/${b.id}/${encodeURIComponent(i.club)}">✓ Bordereau n° ${b.numero}</a>` : num(i.montant) ? '<span class="badge b-warn">À facturer</span>' : '<span class="badge b-draft">Sans montant</span>'}</td>
+      <td>${lock ? '' : `<button class="x" onclick="supprItem(${i.id})">✕</button>`}</td></tr>`; };
+  shell('ris', `
+  <div class="crumb"><a href="#ris">RIS</a> › N° ${r.numero}</div>
+  <div class="card stack">
+    <div class="ttl"><div><h2>Relevé des Infractions Sportives n° ${r.numero}</h2><p class="muted">${its.length} infraction${its.length > 1 ? 's' : ''} · ${euros(its.reduce((x, i) => x + num(i.montant), 0))}${afact.length ? ` · <b>${afact.length} à facturer</b>` : ''}</p></div>
+      <div class="btnrow"><button class="btn ghost" onclick="pdfRis(${r.id})" ${its.length ? '' : 'disabled'}>⬇ PDF du RIS</button>
+        <button class="btn primary" onclick="genererRis(${r.id})" ${its.length ? '' : 'disabled'}>✓ Générer le RIS et facturer</button>
+        <button class="btn danger" onclick="supprRis(${r.id})">Supprimer</button></div></div>
+    <div class="grid g3"><div class="field"><label>Arrêté au</label><input type="date" value="${esc(r.date)}" onchange="majRis(${r.id},{date:this.value})"></div>
+      <div class="field" style="grid-column:span 2"><label>Facturation</label><div class="small muted" style="padding-top:8px">${afact.length ? `Les ${afact.length} infraction(s) avec un montant iront sur ${cible ? `le <b>bordereau n° ${cible.numero}</b> (brouillon)` : 'un <b>nouveau bordereau</b>, créé automatiquement'}.` : 'Rien à facturer.'}</div></div></div>
+  </div>
+  <div class="card stack"><h3>Ajouter une infraction</h3>
+    <div class="grid" style="grid-template-columns:1.2fr 1fr 110px 2fr;gap:10px">
+      <div class="field"><label>Rubrique</label><select id="ri-rub">${RUBRIQUES.map((t, k) => `<option value="${k + 1}" ${RIS_SAISIE.rubrique === k + 1 ? 'selected' : ''}>${k + 1}- ${t}</option>`).join('')}</select></div>
+      <div class="field"><label>N° de match ou tournoi</label><input id="ri-match" value="${esc(RIS_SAISIE.match)}" placeholder="DFB007, OPEN 2x2 – T1…"></div>
+      <div class="field"><label>Club</label><select id="ri-club"><option value="">—</option>${clubs.map(c => `<option ${c.code === RIS_SAISIE.club ? 'selected' : ''}>${esc(c.code)}</option>`).join('')}</select></div>
+      <div class="field"><label>Infraction</label><select id="ri-art"><option value="">— Choisir dans les tarifs —</option>${['Pénalités', 'Forfaits', 'Arbitrage'].map(cat => `<optgroup label="${cat}">${as.filter(a => a.categorie === cat).map(a => `<option value="${a.id}">${esc(intituleArticle(a))} (${euros(a.prix)})</option>`).join('')}</optgroup>`).join('')}<option value="libre">Autre (saisie libre)</option></select></div>
+    </div>
+    <div class="grid" style="grid-template-columns:minmax(0,1fr) 120px auto;gap:10px;align-items:end">
+      <div class="field"><label>Infraction relevée (texte du RIS et de la facture, modifiable)</label><input id="ri-int" placeholder="Licence non présentée – 1 joueuse"></div>
+      <div class="field"><label>Montant €</label><input id="ri-mt" class="n" inputmode="decimal"></div>
+      <button class="btn primary" id="ri-ok">+ Ajouter</button></div>
+  </div>
+  ${RUBRIQUES.map((t, k) => { const li = its.filter(i => i.rubrique === k + 1); return `<div class="stack" style="gap:6px"><h3>${k + 1}- ${t} <span class="muted" style="font-size:14px">· ${li.length}</span></h3>
+    ${li.length ? `<div class="tablebox"><table class="t ri-t"><thead><tr><th>Rub.</th><th>N° de match ou tournoi</th><th>Club</th><th>Infraction relevée</th><th class="r">Montant</th><th>Facturation</th><th></th></tr></thead><tbody>${li.map(ligne).join('')}</tbody></table></div>` : ''}</div>`; }).join('')}`);
+  $('ri-art').onchange = () => { const a = art($('ri-art').value); if (a) { $('ri-int').value = intituleArticle(a); $('ri-mt').value = fmtN(a.prix); $('ri-rub').value = rubriqueArticle(a); } else if ($('ri-art').value === 'libre') { $('ri-int').value = ''; $('ri-mt').value = ''; $('ri-int').focus(); } };
+  $('ri-ok').onclick = async () => {
+    const it = { ris_id: r.id, rubrique: +$('ri-rub').value, match: $('ri-match').value.trim(), club: $('ri-club').value, article_id: art($('ri-art').value) ? $('ri-art').value : null,
+      intitule: $('ri-int').value.trim(), montant: String(num($('ri-mt').value)), ordre: its.length };
+    if (!it.club) return alert('Choisissez le club.');
+    if (!it.intitule) return alert('Indiquez l\'infraction relevée.');
+    try { await rpc('fac_admin_ris_item', { pwd: PWD, p: it }); RIS_SAISIE = { rubrique: it.rubrique, match: it.match, club: it.club }; await load(); renderRis(risDe(r.id)); toast('✓ Infraction ajoutée'); $('ri-art').focus(); } catch(e) { fail(e); }
+  };
+  document.querySelectorAll('.ri-t tr[data-id] input, .ri-t tr[data-id] select').forEach(inp => inp.onchange = async () => {
+    const it = (D.ris_items || []).find(x => x.id === +inp.closest('tr').dataset.id), k = inp.dataset.k; it[k] = k === 'montant' ? num(inp.value) : k === 'rubrique' ? +inp.value : inp.value;
+    try { await rpc('fac_admin_ris_item', { pwd: PWD, p: { ...it, montant: String(num(it.montant)) } }); toast('✓ Enregistré'); if (k === 'montant' || k === 'rubrique') renderRis(risDe(r.id)); } catch(e) { fail(e); }
+  });
+}
+async function majRis(id, p) { try { await rpc('fac_admin_ris', { pwd: PWD, p: { id, ...p } }); Object.assign(risDe(id), p); toast('✓ Enregistré'); } catch(e) { fail(e); } }
+async function supprItem(id) { try { await rpc('fac_admin_ris_item', { pwd: PWD, p: { id, supprimer: true } }); await load(); route(); } catch(e) { fail(e); } }
+async function supprRis(id) {
+  const r = risDe(id), n = itemsDe(id).filter(ligneRis).length;
+  if (!confirm(`Supprimer le RIS n° ${r.numero} ?${n ? ` Les ${n} infraction(s) déjà facturée(s) restent sur les bordereaux.` : ''}`)) return;
+  try { await rpc('fac_admin_ris', { pwd: PWD, p: { id, supprimer: true } }); await load(); location.hash = 'ris'; } catch(e) { fail(e); }
+}
+async function genererRis(id) {
+  const r = risDe(id), afact = itemsDe(id).filter(i => num(i.montant) && !ligneRis(i));
+  let cible = bordsTries().find(b => b.statut === 'brouillon');
+  if (afact.length && !confirm(`Générer le RIS n° ${r.numero} et ajouter ${afact.length} infraction(s) (${euros(afact.reduce((x, i) => x + num(i.montant), 0))}) ${cible ? `au bordereau n° ${cible.numero}` : 'à un nouveau bordereau'} ?`)) return;
+  try {
+    if (afact.length) {
+      if (!cible) { const bid = await rpc('fac_admin_bordereau', { pwd: PWD, p: { saison: SAISON, date: today() } }); await load(); cible = bord(bid); }
+      const n = {};
+      const lignes = afact.map(i => { const a = art(i.article_id) || {}; n[i.club] = n[i.club] == null ? lignesDe(cible.id, i.club).length : n[i.club] + 1;
+        return { bordereau_id: cible.id, club: i.club, article_id: a.id || null, date_ligne: r.date, code_compta: a.code_compta || '771001',
+          designation: String(i.intitule).toUpperCase(), precisions: `RIS n° ${r.numero} du ${fmtD(r.date)}${i.match ? ' – ' + i.match : ''}`, quantite: 1, prix: num(i.montant), source: 'ris:' + i.id, ordre: n[i.club] }; });
+      await enregistrerLignes(lignes); await load();
+      toast(`✓ ${lignes.length} infraction(s) ajoutée(s) au bordereau n° ${cible.numero}`);
+    }
+    await pdfRis(id); route();
+  } catch(e) { fail(e); }
+}
+let LOGO_FF = null;
+async function logoFF() {
+  if (LOGO_FF !== null) return LOGO_FF;
+  try { const bl = await (await fetch('logo-ffvolley.jpg')).blob(); LOGO_FF = await new Promise(res => { const f = new FileReader(); f.onload = () => res(f.result); f.readAsDataURL(bl); }); } catch(e) { LOGO_FF = ''; }
+  return LOGO_FF;
+}
+async function pdfRis(id) {
+  if (!window.jspdf) { alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.'); return; }
+  const r = risDe(id), its = itemsDe(id), { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, M = 22, bleu = [31, 95, 168], img1 = await logoFF(), img2 = await logo();
+  const pied = pdfTxt(reglage('ris_pied', '')).split('\n').filter(Boolean);
+  const entete = () => {
+    const put = (img, x, h, maxW, right) => { if (!img) return; try { const ip = doc.getImageProperties(img); let w = h * ip.width / ip.height; if (w > maxW) { h = h * maxW / w; w = maxW; } doc.addImage(img, 'JPEG', right ? x - w : x, 10 + (20 - h) / 2, w, h); } catch(e) {} };
+    put(img1, 14, 20, 28); put(img2, W - 14, 20, 38, true);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.setTextColor(...bleu);
+    doc.text('Comité Départemental du Var', W / 2, 17, { align: 'center' }); doc.text('de la Fédération Française de Volley', W / 2, 24, { align: 'center' });
+    doc.setDrawColor(...bleu); doc.setLineWidth(0.5); doc.line(14, 280, W - 14, 280);
+    doc.setTextColor(20, 32, 58); doc.setFontSize(7.5);
+    pied.forEach((t, k) => { doc.setFont('helvetica', k ? 'normal' : 'bold'); doc.text(t, W / 2, 284 + k * 3.4, { align: 'center' }); });
+  };
+  entete();
+  doc.setFont('helvetica', 'normal'); doc.setTextColor(20, 32, 58); doc.setFontSize(18); doc.text('Relevé des Infractions Sportives', W / 2, 42, { align: 'center' });
+  doc.setFont('helvetica', 'italic'); doc.setFontSize(12); doc.text(pdfTxt(`N°${r.numero} – au ${fmtLong(r.date)}`), W / 2, 50, { align: 'center' });
+  let y = 62;
+  const cols = [{ t: 'N° de match ou tournoi', w: 45 }, { t: 'Club', w: 25 }, { t: 'Infraction relevée', w: W - 2 * M - 70 }];
+  const row = (vals, head) => {
+    doc.setFontSize(9); doc.setFont('helvetica', 'normal');
+    const lines = vals.map((v, k) => doc.splitTextToSize(pdfTxt(v), cols[k].w - 3)), h = Math.max(...lines.map(l => l.length)) * 4 + 3;
+    let x = M;
+    cols.forEach((c, k) => { if (head) { doc.setFillColor(220, 234, 247); doc.rect(x, y, c.w, h, 'FD'); } else doc.rect(x, y, c.w, h);
+      doc.text(lines[k], x + c.w / 2, y + 4.6, { align: 'center' }); x += c.w; });
+    y += h;
+  };
+  RUBRIQUES.forEach((t, k) => {
+    const li = its.filter(i => i.rubrique === k + 1).sort((a, b) => a.ordre - b.ordre || a.id - b.id);
+    const besoin = 16 + Math.max(1, li.length) * 7;
+    if (y + Math.min(besoin, 40) > 272) { doc.addPage(); entete(); y = 36; }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(20, 32, 58); doc.text(`${k + 1}-  ${t}`, M - 4, y); y += 4;
+    doc.setDrawColor(150, 160, 175); doc.setLineWidth(0.2);
+    row(cols.map(c => c.t), true);
+    (li.length ? li : [{ match: '', club: '', intitule: 'Néant' }]).forEach(i => { if (y > 268) { doc.addPage(); entete(); y = 36; row(cols.map(c => c.t), true); } row([i.match || '', i.club, i.intitule]); });
+    y += 9;
+  });
+  if (y > 262) { doc.addPage(); entete(); y = 40; }
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(20, 32, 58);
+  doc.text(doc.splitTextToSize('Conformément à l\'article 4.2 du RGISA, les GSA disposent d\'un délai de 5 jours pour transmettre leurs observations par courrier électronique.', 150), W / 2, y + 4, { align: 'center' });
+  doc.save(`RIS-${r.numero}-${SAISON}.pdf`);
 }
 
 // ======================== PDF ========================
@@ -877,6 +1038,8 @@ async function route() {
       else if (m[2] === 'auto') await renderAuto(b);
       else renderFacture(b, m[2]);
     }
+    else if ((m = h.match(/^ris\/(\d+)$/))) { const r = risDe(m[1]); if (!r) { location.hash = 'ris'; return; } renderRis(r); }
+    else if (h === 'ris') renderRisListe();
     else if (h === 'bordereaux') renderBordereaux();
     else if (h === 'paiements') renderPaiements();
     else if (h === 'articles') renderArticles();
