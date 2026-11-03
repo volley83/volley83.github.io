@@ -82,7 +82,7 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
   - Pitchoun' : enfants de `pitchoun_joueurs` avec au moins un plateau, 5 € ;
   - Stages : convocations dont le mode de paiement est « Autre : facturé au club » (mode ajouté dans la gestion des stages ; commence par « Autre » donc pas de reçu aux parents).
 - **PDF** : jsPDF, une page par club ; numéro de facture `AAaa-NN-SIGLE` (ex. 2627-02-VCHPL). Bouton mail = brouillon Gmail, PDF à joindre.
-- **Historique** : bordereaux 2025-2026 (Excel) et n° 1 2026-2027 (PDF FFVB détaillé) importés par un script **hors dépôt** (`facturation-import-historique.sql`).
+- **Reprise** : seul le bordereau FFVB n° 1 2026-2027 (détaillé depuis le PDF) est importé, par un script **hors dépôt** (`facturation-import-2026-2027.sql`). Pas d'historique 2025-2026 : tout était réglé.
 - **Idée pour plus tard** : affiliation (réaffiliation GSA) à facturer ici à partir de 2027-2028.
 
 ## Scripts SQL — dossier `sql/`
