@@ -352,7 +352,6 @@ insert into fac_clubs (code, numero, nom, ordre) values
   ('DVVB',  '0836296', 'Draguignan Union Club Var VB', 0),
   ('ESCS',  '0837939', 'ES Canton des Solliès', 0),
   ('FVV',   '0839557', 'Fréjus Var Volley', 0),
-  ('GSD',   '0833304', 'GSD du Var de Volley-Ball', 0),
   ('LLVB',  '0834743', 'Le Luc Volley-Ball', 0),
   ('MVA',   '0833315', 'Mourillon Volley Asso', 0),
   ('RCVB',  '0833352', 'Rocbaron Club Volley-Ball', 0),
