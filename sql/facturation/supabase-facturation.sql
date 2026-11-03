@@ -445,7 +445,7 @@ do $$ begin
       (null,     'AFFILIATION CLUB DÉPARTEMENTAL / RÉGIONAL',                 125, 'club',      'Affiliation', null, 10),
       (null,     'AFFILIATION CLUB NATIONAL',                                 140, 'club',      'Affiliation', null, 11),
       ('756000', 'ENGAGEMENT SENIORS ET M21 (100 € / ÉQUIPE)',                100, 'équipe',    'Engagements', null, 20),
-      ('756000', 'ENGAGEMENT COMPET''LIB (80 € / ÉQUIPE)',                     80, 'équipe',    'Engagements', null, 21),
+      ('756000', 'ENGAGEMENT COMPET''LIB (90 € / ÉQUIPE)',                     90, 'équipe',    'Engagements', null, 21),
       ('756000', 'ENGAGEMENT M18 ET M15 (70 € / ÉQUIPE)',                      70, 'équipe',    'Engagements', null, 22),
       ('756000', 'ENGAGEMENT M13 (100 € / ÉQUIPE)',                           100, 'équipe',    'Engagements', null, 23),
       ('756000', 'ENGAGEMENT M11 (80 € / ÉQUIPE)',                             80, 'équipe',    'Engagements', null, 24),
@@ -484,14 +484,14 @@ do $$ begin
       ('706100', 'INDEMNITÉS MARQUEUR DÉPARTEMENTALE ACCESSION (25 € / MATCH)',  25, 'match',   'Arbitrage', null, 152),
       ('706100', 'FRAIS DÉPLACEMENT ARBITRAGE DÉPARTEMENTALE ACCESSION (16 € / MATCH)', 16, 'match', 'Arbitrage', null, 153),
       ('706009', 'INSCRIPTION FORMATION MARQUEUR (40 € / STAGIAIRE)',          40, 'stagiaire', 'Formations', null, 160),
+      ('706603', 'INSCRIPTION TOURNOI INTERNATIONAL (160 € / ÉQUIPE)',        160, 'équipe',    'Tournoi International', null, 165),
       ('756300', 'AIDE À L''EMPLOI (4 € / LICENCE)',                            4, 'licence',   'Divers', null, 170),
       ('708800', 'ADHÉSIF BLANC POUR TRAÇAGE DE TERRAIN (4 € / ROULEAU)',       4, 'rouleau',   'Divers', null, 171),
       ('708800', 'ADHÉSIF BLEU POUR TRAÇAGE DE TERRAIN (5 € / ROULEAU)',        5, 'rouleau',   'Divers', null, 172);
     insert into fac_articles (code_compta, designation, prix, unite, categorie, cle, ordre) values
       ('706001', 'PARTICIPATION STAGE CENTRE DÉPARTEMENTAL',                    0, 'stagiaire', 'Stages', 'stage_cde', 60),
       ('706002', 'PARTICIPATION STAGE BEACH',                                   0, 'stagiaire', 'Stages', 'stage_beach', 61),
-      ('706003', 'PARTICIPATION DES CLUBS AUX STAGES DU CENTRE DÉPARTEMENTAL (12 € / JOUR)', 12, 'jour', 'Stages', 'cde_club', 62),
-      (null,     'PARTICIPATION DES CLUBS AU STAGE PERFECTIONNEMENT BEACH (15 € / JOUR)', 15, 'jour', 'Stages', null, 63)
+      ('706003', 'PARTICIPATION DES CLUBS AUX STAGES DU CENTRE DÉPARTEMENTAL (12 € / JOUR)', 12, 'jour', 'Stages', 'cde_club', 62)
     on conflict (cle) do nothing;
     update fac_articles set code_compta = '706001', designation = 'PARTICIPATION STAGE CENTRE DÉPARTEMENTAL' where cle = 'stage_cde';
     update fac_articles set prix = 7, designation = 'ENGAGEMENT PITCHOUN'' VOLLEY (7 € / ENFANT / SAISON)' where cle = 'pitchoun';

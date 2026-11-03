@@ -85,7 +85,7 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
   - Stage réglé par le club à la place de la famille (mode « Autre : facturé au club ») : 706001 CDE, 706002 beach ;
   - Case « les facturer quand même maintenant » pour forcer la fin de saison.
 - **Lignes** : désignation modifiable + champ **précisions** (affiché en italique sous la désignation sur le PDF).
-- **Catalogue** : refait d'après le document « Tarifs saison 2026 / 2027 » (`catalogue_version` = 2). Le bordereau FFVB n° 1 a facturé le Compet'Lib 90 € alors que le document dit 80 €.
+- **Catalogue** : refait d'après le document « Tarifs saison 2026 / 2027 » (`catalogue_version` = 2). Compet'Lib : 90 € (le document des tarifs indique 80 € par erreur). Tournoi International : compte 706603. Pas de participation des clubs au stage Perfectionnement Beach cette saison.
 - **PDF** : jsPDF, une page par club ; numéro de facture `AAaa-NN-SIGLE` (ex. 2627-02-VCHPL). Bouton mail = brouillon Gmail, PDF à joindre.
 - **Reprise** : seul le bordereau FFVB n° 1 2026-2027 (détaillé depuis le PDF) est importé, par un script **hors dépôt** (`facturation-import-2026-2027.sql`). Pas d'historique 2025-2026 : tout était réglé.
 - **Idée pour plus tard** : affiliation (réaffiliation GSA) à facturer ici à partir de 2027-2028.
