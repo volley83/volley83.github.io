@@ -1,0 +1,43 @@
+-- Coupe de France Jeunes 2026-2027 : calendrier des tours par catégorie (pages FFvolley de chaque catégorie)
+-- À lancer APRÈS supabase-coupe-de-france.sql. ATTENTION : remplace tout le calendrier de la Coupe de France déjà saisi.
+delete from chp_coupe;
+insert into chp_coupe (categorie, tour, date, date_fin, lien, remarque, ordre) values
+  ('M11 filles et garçons', 'Finales', '2027-06-11', '2027-06-13', 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1303', 'Tours qualificatifs : voir le site FFvolley', 1),
+  ('M13 filles et garçons', '1er tour', '2026-09-26', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1304', null, 1),
+  ('M13 filles et garçons', '2e tour', '2026-10-18', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1304', null, 2),
+  ('M13 filles et garçons', '3e tour', '2026-11-15', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1304', null, 3),
+  ('M13 filles et garçons', '4e tour', '2026-12-13', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1304', null, 4),
+  ('M13 filles et garçons', '5e tour', '2027-01-24', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1304', null, 5),
+  ('M13 filles et garçons', '6e tour', '2027-02-07', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1304', null, 6),
+  ('M13 filles et garçons', '7e tour', '2027-03-14', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1304', null, 7),
+  ('M13 filles et garçons', '8e tour', '2027-04-11', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1304', null, 8),
+  ('M13 filles et garçons', 'Finales', '2027-04-30', '2027-05-02', 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1304', null, 9),
+  ('M15 filles et garçons', '1er tour', '2026-10-04', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1305', null, 1),
+  ('M15 filles et garçons', '2e tour', '2026-10-25', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1305', null, 2),
+  ('M15 filles et garçons', '3e tour', '2026-11-08', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1305', null, 3),
+  ('M15 filles et garçons', '4e tour', '2026-12-06', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1305', null, 4),
+  ('M15 filles et garçons', '5e tour', '2027-01-31', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1305', null, 5),
+  ('M15 filles et garçons', '6e tour', '2027-02-21', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1305', null, 6),
+  ('M15 filles et garçons', '7e tour', '2027-03-07', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1305', null, 7),
+  ('M15 filles et garçons', '8e tour', '2027-03-28', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1305', null, 8),
+  ('M15 filles et garçons', 'Finales', '2027-05-28', '2027-05-30', 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1305', null, 9),
+  ('M18 filles et garçons', '1er tour', '2026-09-26', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1306', null, 1),
+  ('M18 filles et garçons', '2e tour', '2026-10-18', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1306', null, 2),
+  ('M18 filles et garçons', '3e tour', '2026-11-15', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1306', null, 3),
+  ('M18 filles et garçons', '4e tour', '2026-12-13', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1306', null, 4),
+  ('M18 filles et garçons', '5e tour', '2027-01-24', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1306', null, 5),
+  ('M18 filles et garçons', '6e tour', '2027-02-07', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1306', null, 6),
+  ('M18 filles et garçons', '7e tour', '2027-03-14', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1306', null, 7),
+  ('M18 filles et garçons', '8e tour', '2027-04-11', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1306', null, 8),
+  ('M18 filles et garçons', '9e tour', '2027-05-02', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1306', null, 9),
+  ('M18 filles et garçons', 'Finales', '2027-06-04', '2027-06-06', 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1306', null, 10),
+  ('M21 filles et garçons', '1er tour', '2026-10-18', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1307', null, 1),
+  ('M21 filles et garçons', '2e tour', '2026-11-15', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1307', null, 2),
+  ('M21 filles et garçons', '3e tour', '2026-12-13', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1307', null, 3),
+  ('M21 filles et garçons', '4e tour', '2027-01-24', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1307', 'Tour supprimé pour les filles', 4),
+  ('M21 filles et garçons', '5e tour', '2027-02-07', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1307', null, 5),
+  ('M21 filles et garçons', '6e tour', '2027-03-14', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1307', null, 6),
+  ('M21 filles et garçons', '7e tour', '2027-04-11', null, 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1307', null, 7),
+  ('M21 filles et garçons', 'Finales', '2027-05-28', '2027-05-30', 'https://www.ffvolley.org/index.php?lvlid=124&dsgtypid=37&artid=1307', null, 8);
+
+select categorie, count(*) as tours from chp_coupe group by categorie order by categorie;
