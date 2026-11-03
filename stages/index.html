@@ -722,6 +722,7 @@ function afficherConfirmation(s, p, r) {
   box.innerHTML = `<div class="stack" style="gap:14px" id="conf-${s.id}">
     ${r.statut === 'attente'
       ? `<p class="msg info" style="font-size:15px"><b>${esc(r.prenom)} est inscrit(e) sur la liste d'attente${r.rang ? ', en position ' + r.rang : ''}.</b><br>Le stage est complet${j ? ' pour la journée choisie' : ''}. Si une place se libère, la commission beach vous préviendra : l'inscription apparaîtra alors comme confirmée dans l'espace parents.</p>`
+      : r.fiche ? `<p class="msg ok" style="font-size:15px"><b>✓ Inscription validée pour ${esc(r.prenom)}${esc(j)}.</b><br>La fiche de renseignements a déjà été fournie, merci ! Montant à régler : <b>${euros(prixJours(s, nb))}</b>.</p>`
       : `<p class="msg ok" style="font-size:15px"><b>✓ Inscription enregistrée pour ${esc(r.prenom)}${esc(j)}.</b><br>Elle sera <b>validée dès réception de la fiche de renseignements ou d'un paiement d'au moins ${euros(s.tarif)}</b> (${euros(prixJours(s, nb))} au total).</p>`}
     ${r.code ? `<div>
       <h3 style="font-size:20px">Vos identifiants de l'espace parents</h3>
@@ -1113,7 +1114,8 @@ function rowAdmin(c, s) {
 function infosInsc(c, s) {
   const jours = s.par_jour && (s.jours || []).length > 1 ? (c.jours || s.jours).map(d => jourCourt(d).split(' ')[0].slice(0, 3) + '. ' + parseD(d).getDate()).join(' + ') : '';
   return `<div class="small">${jours ? `<b>${esc(jours)}</b> · ` : ''}${euros(duConv(c, s))}${c.niveau ? ' · ' + esc(c.niveau.split(' :')[0]) : ''}</div>
-    <div class="small muted">${c.naissance ? 'Né(e) le ' + fmtShort(c.naissance) : ''}${c.licence ? ' · Licence ' + esc(c.licence) : ''}${c.source === 'inscription' && c.inscrit_le ? ' · inscrit(e) le ' + fmtShort(String(c.inscrit_le).slice(0, 10)) : ''}</div>`;
+    <div class="small muted">${c.naissance ? 'Né(e) le ' + fmtShort(c.naissance) : ''}${c.licence ? ' · Licence ' + esc(c.licence) : ''}${c.source === 'inscription' && c.inscrit_le ? ' · inscrit(e) le ' + fmtShort(String(c.inscrit_le).slice(0, 10)) : ''}</div>
+    ${c.fiche_origine ? `<div class="small" style="color:var(--ok)">Fiche déjà fournie : ${esc(c.fiche_origine)}</div>` : ''}`;
 }
 async function upd(cid, patch) {
   try {
