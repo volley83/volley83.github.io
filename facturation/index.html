@@ -364,9 +364,10 @@ function renderFacture(b, code) {
   const c = club(code), lock = b.statut === 'envoye', ls = lignesDe(b.id, code), e = etatClub(code);
   const clubs = clubsVisibles();
   const ligne = l => `<tr data-id="${l.id}">
-      <td><input type="date" value="${esc(l.date_ligne || '')}" data-k="date_ligne" ${lock ? 'disabled' : ''} style="width:140px"></td>
+      <td><input type="date" value="${esc(l.date_ligne || '')}" data-k="date_ligne" ${lock ? 'disabled' : ''} style="width:132px"></td>
       <td><input value="${esc(l.code_compta || '')}" data-k="code_compta" ${lock ? 'disabled' : ''} style="width:86px" class="code"></td>
-      <td><input value="${esc(l.designation)}" data-k="designation" ${lock ? 'disabled' : ''} style="min-width:300px">${l.source ? `<span class="badge b-auto" title="${esc(l.source)}" style="margin-top:3px">auto</span>` : ''}</td>
+      <td style="width:50%"><textarea data-k="designation" ${lock ? 'disabled' : ''} rows="${Math.max(1, Math.ceil(String(l.designation).length / 60))}" style="min-width:380px;min-height:0;font-weight:600;resize:none;padding:6px 8px;font-size:13.5px;border-radius:7px">${esc(l.designation)}</textarea>
+        <div style="display:flex;gap:6px;align-items:center;margin-top:4px"><input value="${esc(l.precisions || '')}" data-k="precisions" ${lock ? 'disabled' : ''} placeholder="Précisions (facultatif) : noms, n° de match…" style="font-size:12.5px;padding:5px 8px;color:var(--muted)">${l.source ? `<span class="badge b-auto" title="${esc(l.source)}">auto</span>` : ''}</div></td>
       <td><input class="n" value="${qte(l.quantite)}" data-k="quantite" ${lock ? 'disabled' : ''} style="width:70px" inputmode="decimal"></td>
       <td><input class="n" value="${fmtN(l.prix)}" data-k="prix" ${lock ? 'disabled' : ''} style="width:96px" inputmode="decimal"></td>
       <td class="num" data-tot><b>${fmtN(montant(l))}</b></td>
@@ -386,9 +387,9 @@ function renderFacture(b, code) {
       <span class="small muted" id="fac-reg">${e.regle[b.id] ? `Réglé : ${euros(e.regle[b.id])} · reste ${euros(totalDe(b.id, code) - e.regle[b.id])}` : ''}</span></div>
   </div>`);
   if (!lock) { $('pk-q').oninput = ev => { PICK_Q = ev.target.value; pickList(b, code); }; pickList(b, code); }
-  document.querySelectorAll('#fac-t tbody tr[data-id] input').forEach(inp => {
-    inp.onchange = () => majLigne(+inp.closest('tr').dataset.id, inp.dataset.k, inp.value);
-    inp.onkeydown = ev => { if (ev.key === 'Enter') inp.blur(); };
+  document.querySelectorAll('#fac-t tbody tr[data-id] input, #fac-t tbody tr[data-id] textarea').forEach(inp => {
+    inp.onchange = () => majLigne(+inp.closest('tr').dataset.id, inp.dataset.k, inp.value.replace(/\s*\n\s*/g, ' '));
+    inp.onkeydown = ev => { if (ev.key === 'Enter') { ev.preventDefault(); inp.blur(); } };
   });
 }
 function pickList(b, code) {
@@ -417,7 +418,7 @@ async function ajoutLibre() {
   const l = { bordereau_id: b.id, club: c, date_ligne: b.date, designation: 'NOUVELLE LIGNE', quantite: 1, prix: 0, ordre: lignesDe(b.id, c).length };
   try {
     const [id] = await enregistrerLignes([l]); D.lignes.push({ ...l, id }); renderFacture(b, c);
-    const inp = document.querySelector(`#fac-t tr[data-id="${id}"] input[data-k="designation"]`); if (inp) { inp.focus(); inp.select(); }
+    const inp = document.querySelector(`#fac-t tr[data-id="${id}"] [data-k="designation"]`); if (inp) { inp.focus(); inp.select(); }
   } catch(e) { fail(e); }
 }
 async function majLigne(id, k, v) {
@@ -452,7 +453,7 @@ function renderGroupe(b) {
       <div class="field"><label>Prix unitaire €</label><input id="g-prix" inputmode="decimal"></div>
       <div class="field"><label>Date</label><input id="g-date" type="date" value="${esc(b.date || today())}"></div>
     </div>
-    <div class="field"><label>Désignation (modifiable)</label><input id="g-des"></div>
+    <div class="grid g2"><div class="field"><label>Désignation (modifiable)</label><input id="g-des"></div><div class="field"><label>Précisions (facultatif, pour tous les clubs)</label><input id="g-pre" placeholder="Ex. : 1re phase, tournoi du 21/11…"></div></div>
     <div class="tablebox"><table class="t"><thead><tr><th>Club</th><th style="width:130px">Nombre</th><th class="r">Montant</th><th>Déjà sur la facture</th></tr></thead>
       <tbody>${clubs.map(c => `<tr><td class="club"><b>${esc(c.code)}</b><small>${esc(c.nom)}</small></td><td><input class="n g-q" data-c="${esc(c.code)}" inputmode="decimal" placeholder="0"></td><td class="num g-m" data-c="${esc(c.code)}"></td><td class="small muted">${lignesDe(b.id, c.code).length ? euros(totalDe(b.id, c.code)) : ''}</td></tr>`).join('')}</tbody>
       <tfoot><tr><td>Total</td><td id="g-tq" class="num"></td><td id="g-tm" class="num"></td><td></td></tr></tfoot></table></div>
@@ -471,7 +472,7 @@ function renderGroupe(b) {
     if (!a && !$('g-des').value.trim()) return alert('Choisissez un article.');
     const lignes = [...document.querySelectorAll('.g-q')].filter(i => num(i.value)).map(i => ({
       bordereau_id: b.id, club: i.dataset.c, article_id: a ? a.id : null, date_ligne: $('g-date').value, code_compta: a ? a.code_compta : null,
-      designation: $('g-des').value.trim(), quantite: num(i.value), prix: num($('g-prix').value), ordre: lignesDe(b.id, i.dataset.c).length }));
+      designation: $('g-des').value.trim(), precisions: $('g-pre').value.trim(), quantite: num(i.value), prix: num($('g-prix').value), ordre: lignesDe(b.id, i.dataset.c).length }));
     if (!lignes.length) return alert('Indiquez le nombre pour au moins un club.');
     try { await enregistrerLignes(lignes); await load(); toast(`✓ ${lignes.length} ligne(s) ajoutée(s)`); location.hash = 'b/' + b.id; } catch(e) { fail(e); }
   };
@@ -489,77 +490,125 @@ function matchClub(txt) {
   return cands.length === 1 ? cands[0].code : null;
 }
 const factureSource = (src, code) => D.lignes.filter(l => l.source === src && (!code || l.club === code));
+let FORCE_FIN = false;   // facturer aussi ce qui n'est dû qu'en fin de saison, avant le dernier tournoi
+const TIERS = ['1 TOURNOI', '2 TOURNOIS', '3 TOURNOIS ET PLUS'];
+// Équipes d'un club dans une compétition : l'équipe n joue chaque tournoi où le club a inscrit au moins n équipes
+function equipesOpen(parTournoi) {
+  const nums = Object.keys(parTournoi).map(Number).sort((a, b) => a - b), max = Math.max(0, ...Object.values(parTournoi));
+  const eq = [];
+  for (let j = 1; j <= max; j++) eq.push({ n: j, tournois: nums.filter(t => parTournoi[t] >= j) });
+  return eq;
+}
+// Équipes déjà facturées : la source d'une ligne OPEN est « open:O11#1,3 » (numéros d'équipes)
+function equipesFacturees(comp, code) {
+  const s = new Set();
+  D.lignes.filter(l => l.club === code && String(l.source || '').startsWith('open:' + comp + '#')).forEach(l => l.source.split('#')[1].split(',').forEach(n => s.add(+n)));
+  return s;
+}
+const sansTarif = d => String(d || '').replace(/\s*\([^)]*€[^)]*\)\s*$/, '');
 
 function propositions() {
-  const P = [], inconnus = new Map(), tarifs = reglage('open_tarifs', [10, 30, 50]).map(num);
+  const P = [], inconnus = new Map(), attente = [], tarifs = reglage('open_tarifs', [10, 35, 60]).map(num), auj = SRC.aujourdhui || today();
   const noter = (txt, ou) => { if (!inconnus.has(txt)) inconnus.set(txt, new Set()); inconnus.get(txt).add(ou); };
-  // --- Compétitions OPEN : par équipe, 1 tournoi / 2 tournois / 3 tournois ou plus
+  // --- Compétitions OPEN et M15/M18 4x4 : 3 tournois et plus dès qu'ils sont atteints, 1 ou 2 tournois après le dernier tournoi
+  const finComp = {};
+  (SRC.open_tournois || []).forEach(t => { finComp[t.competition] = finComp[t.competition] && finComp[t.competition] > t.date ? finComp[t.competition] : t.date; });
   const parComp = {};
   (SRC.open || []).forEach(r => {
+    if (r.date > auj) return;   // seuls les tournois déjà joués comptent
     const code = matchClub(r.club); if (!code) { noter(r.club, OPEN_COMP[r.competition] || r.competition); return; }
-    const k = r.competition + '|' + code; (parComp[k] = parComp[k] || { comp: r.competition, club: code, tournois: {} });
-    parComp[k].tournois[r.numero] = (parComp[k].tournois[r.numero] || 0) + num(r.nb);
+    const k = r.competition + '|' + code; (parComp[k] = parComp[k] || { comp: r.competition, club: code, t: {} });
+    parComp[k].t[r.numero] = (parComp[k].t[r.numero] || 0) + num(r.nb);
   });
-  Object.values(parComp).forEach(x => {
-    const nbs = Object.values(x.tournois), max = Math.max(0, ...nbs), tiers = [0, 0, 0];
-    for (let j = 1; j <= max; j++) { const n = nbs.filter(v => v >= j).length; if (n) tiers[Math.min(n, 3) - 1]++; }
-    const du = r2(tiers[0] * tarifs[0] + tiers[1] * tarifs[1] + tiers[2] * tarifs[2]);
-    const src = 'open:' + x.comp, deja = r2(factureSource(src, x.club).reduce((s, l) => s + montant(l), 0));
-    if (Math.abs(du - deja) < 0.005) return;
+  Object.values(parComp).sort((x, y) => coll.compare(x.comp, y.comp) || coll.compare(x.club, y.club)).forEach(x => {
+    const fini = finComp[x.comp] && finComp[x.comp] < auj, deja = equipesFacturees(x.comp, x.club);
     const a = artCle('open_' + x.comp) || {}, des = a.designation || ('ENGAGEMENT ' + (OPEN_COMP[x.comp] || x.comp).toUpperCase());
-    const detail = `${max} équipe${max > 1 ? 's' : ''} : ` + ['1 tournoi', '2 tournois', '3 tournois ou plus'].map((t, i) => tiers[i] ? `${tiers[i]} × ${t}` : '').filter(Boolean).join(', ');
-    const base = { groupe: 'open', titre: OPEN_COMP[x.comp] || x.comp, club: x.club, source: src, article_id: a.id || null, code_compta: a.code_compta || '756010', info: detail + (deja ? ` · déjà facturé ${euros(deja)}` : '') };
-    if (deja) P.push({ ...base, designation: `${des} – ${du > deja ? 'COMPLÉMENT' : 'RÉGULARISATION'}`, quantite: 1, prix: r2(du - deja) });
-    else ['1 TOURNOI', '2 TOURNOIS', '3 TOURNOIS ET PLUS'].forEach((t, i) => { if (tiers[i]) P.push({ ...base, designation: `${des} – ${t} (${tarifs[i]} € / ÉQUIPE)`, quantite: tiers[i], prix: tarifs[i] }); });
+    const groupes = [[], [], []];
+    equipesOpen(x.t).filter(e => !deja.has(e.n) && e.tournois.length).forEach(e => {
+      const nb = e.tournois.length;
+      if (nb >= 3) groupes[2].push(e);
+      else if (fini || FORCE_FIN) groupes[nb - 1].push(e);
+      else attente.push({ quoi: OPEN_COMP[x.comp] || x.comp, club: x.club, txt: `équipe ${e.n} : ${nb} tournoi${nb > 1 ? 's' : ''} pour l'instant` , fin: finComp[x.comp] });
+    });
+    groupes.forEach((g, i) => { if (!g.length) return;
+      P.push({ groupe: 'open', club: x.club, source: `open:${x.comp}#${g.map(e => e.n).join(',')}`, article_id: a.id || null, code_compta: a.code_compta || '756010',
+        designation: `${des} – ${TIERS[i]} (${tarifs[i]} € / ÉQUIPE)`, precisions: g.map(e => `Équipe ${e.n} : tournoi${e.tournois.length > 1 ? 's' : ''} ${e.tournois.join(', ')}`).join(' · '),
+        quantite: g.length, prix: tarifs[i], info: i < 2 ? 'après le dernier tournoi' : '' }); });
   });
-  // --- Pitchoun' Volley : enfants ayant participé à au moins un plateau
-  const ap = artCle('pitchoun') || { designation: "ENGAGEMENT PITCHOUN' VOLLEY (5 € / ENFANT / SAISON)", prix: 5, code_compta: '756020' };
-  const pit = {};
+  // --- Pitchoun' Volley : tous les enfants ayant joué au moins un plateau, après le dernier plateau
+  const ap = artCle('pitchoun') || { designation: "ENGAGEMENT PITCHOUN' VOLLEY (7 € / ENFANT / SAISON)", prix: 7, code_compta: '756020' };
+  const pitFini = SRC.pitchoun_fin && SRC.pitchoun_fin < auj, pit = {};
   (SRC.pitchoun || []).forEach(r => { const code = matchClub(r.club); if (!code) { noter(r.club, "Pitchoun' Volley"); return; } pit[code] = (pit[code] || 0) + num(r.nb); });
-  Object.entries(pit).forEach(([code, n]) => {
+  Object.entries(pit).sort().forEach(([code, n]) => {
     const deja = factureSource('pitchoun', code).reduce((s, l) => s + num(l.quantite), 0);
-    if (n - deja > 0) P.push({ groupe: 'pitchoun', titre: "Pitchoun' Volley", club: code, source: 'pitchoun', article_id: ap.id || null, code_compta: ap.code_compta, designation: ap.designation, quantite: n - deja, prix: num(ap.prix), info: `${n} enfant${n > 1 ? 's' : ''} ayant joué au moins un plateau${deja ? ` · ${qte(deja)} déjà facturé(s)` : ''}` });
+    if (n - deja <= 0) return;
+    if (!pitFini && !FORCE_FIN) { attente.push({ quoi: "Pitchoun' Volley", club: code, txt: `${n} enfant${n > 1 ? 's' : ''} pour l'instant`, fin: SRC.pitchoun_fin }); return; }
+    P.push({ groupe: 'pitchoun', club: code, source: 'pitchoun', article_id: ap.id || null, code_compta: ap.code_compta, designation: ap.designation, quantite: n - deja, prix: num(ap.prix),
+      info: `${n} enfant${n > 1 ? 's' : ''} ayant joué au moins un plateau${deja ? ` · ${qte(deja)} déjà facturé(s)` : ''}` });
   });
-  // --- Stages réglés par le club
-  const as = artCle('stage') || {};
+  // --- Participation des clubs aux stages du Centre Départemental (stages terminés, enfants convoqués non absents)
+  const ac = artCle('cde_club') || { designation: 'PARTICIPATION DES CLUBS AUX STAGES DU CENTRE DÉPARTEMENTAL (12 € / JOUR)', prix: 12, code_compta: '706003' };
+  (SRC.cde || []).forEach(st => {
+    const parClub = {};
+    (st.enfants || []).forEach(e => { const code = matchClub(e.club); if (!code) { noter(e.club || '(club non renseigné)', 'Centre Départemental'); return; } (parClub[code] = parClub[code] || []).push(e); });
+    Object.entries(parClub).sort().forEach(([code, es]) => {
+      const src = 'cde:' + st.stage_id; if (factureSource(src, code).length) return;
+      const j = num(st.jours) || 1;
+      P.push({ groupe: 'cde', club: code, source: src, article_id: ac.id || null, code_compta: ac.code_compta, date_ligne: st.debut,
+        designation: `${sansTarif(ac.designation)} – ${String(st.stage).toUpperCase()} (${j} JOUR${j > 1 ? 'S' : ''} × ${fmtN(ac.prix).replace(',00', '')} €)`,
+        precisions: es.map(e => `${e.prenom} ${String(e.nom).toUpperCase()}${e.reponse === 'attente' ? ' (présence non confirmée)' : ''}`).join(', '),
+        quantite: es.length, prix: r2(num(ac.prix) * j), info: `${fmtD(st.debut)} – ${fmtD(st.fin)}` });
+    });
+  });
+  // --- Stages réglés par le club à la place de la famille
   (SRC.stages || []).forEach(r => {
     const src = 'stage:' + r.id; if (factureSource(src).length) return;
     const code = matchClub(r.club); if (!code) { noter(r.club || '(club non renseigné)', 'Stages'); return; }
-    P.push({ groupe: 'stages', titre: 'Stages', club: code, source: src, article_id: as.id || null, code_compta: as.code_compta || null, date_ligne: r.date,
-      designation: `${(as.designation || 'PARTICIPATION STAGE')} – ${String(r.stage).toUpperCase()} – ${r.prenom} ${String(r.nom).toUpperCase()}`, quantite: 1, prix: num(r.montant), info: fmtD(r.date) });
+    const as = artCle(r.type === 'beach' ? 'stage_beach' : 'stage_cde') || {};
+    P.push({ groupe: 'stages', club: code, source: src, article_id: as.id || null, code_compta: as.code_compta || (r.type === 'beach' ? '706002' : '706001'), date_ligne: r.date,
+      designation: `${as.designation || 'PARTICIPATION STAGE'} – ${String(r.stage).toUpperCase()}`, precisions: `${r.prenom} ${String(r.nom).toUpperCase()}`, quantite: 1, prix: num(r.montant), info: fmtD(r.date) });
   });
-  return { P, inconnus };
+  return { P, inconnus, attente };
 }
-async function renderAuto(b) {
-  shell('bordereaux', `<div class="crumb"><a href="#bordereaux">Bordereaux</a> › <a href="#b/${b.id}">N° ${b.numero}</a> › Ajouts automatiques</div><div class="card muted">Chargement des inscriptions…</div>`);
-  try { SRC = await rpc('fac_admin_sources', { pwd: PWD }); } catch(e) { fail(e); return; }
-  const { P, inconnus } = propositions();
-  const groupes = [['open', 'Compétitions OPEN', 'Engagements par équipe selon le nombre de tournois joués : ' + reglage('open_tarifs', [10, 30, 50]).map((t, i) => `${t} € pour ${['1 tournoi', '2 tournois', '3 tournois ou plus'][i]}`).join(', ') + '. Calcul d\'après les inscriptions en ligne (les tournois annulés ne comptent pas).'],
-    ['pitchoun', "Pitchoun' Volley", 'Enfants ayant participé à au moins un plateau, moins ceux déjà facturés.' + (SRC.pitchoun_saison && SRC.pitchoun_saison.replace(/"/g, '') !== SAISON ? ` <b>Attention : le Pitchoun' Volley est réglé sur la saison ${esc(SRC.pitchoun_saison.replace(/"/g, ''))}.</b>` : '')],
-    ['stages', 'Stages', 'Participations dont le mode de paiement est « Autre : facturé au club » dans la gestion des stages.']];
+async function renderAuto(b, recharger = true) {
+  if (recharger || !SRC) {
+    shell('bordereaux', `<div class="crumb"><a href="#bordereaux">Bordereaux</a> › <a href="#b/${b.id}">N° ${b.numero}</a> › Ajouts automatiques</div><div class="card muted">Chargement des inscriptions…</div>`);
+    try { SRC = await rpc('fac_admin_sources', { pwd: PWD }); } catch(e) { fail(e); return; }
+  }
+  const { P, inconnus, attente } = propositions(), t = reglage('open_tarifs', [10, 35, 60]);
+  const groupes = [
+    ['open', 'Compétitions OPEN et M15 / M18 4x4', `Par équipe : ${t[2]} € dès qu'elle a joué 3 tournois ; ${t[0]} € (1 tournoi) ou ${t[1]} € (2 tournois) après le dernier tournoi de la compétition. D'après les inscriptions en ligne aux tournois déjà joués (tournois annulés exclus) ; le détail est dans l'onglet « Participations » de la gestion des championnats.`],
+    ['pitchoun', "Pitchoun' Volley", 'Après le dernier plateau : tous les enfants du club ayant joué au moins un plateau.' + (SRC.pitchoun_saison && SRC.pitchoun_saison.replace(/"/g, '') !== SAISON ? ` <b>Attention : le Pitchoun' Volley est réglé sur la saison ${esc(SRC.pitchoun_saison.replace(/"/g, ''))}.</b>` : '')],
+    ['cde', 'Participation des clubs – Centre Départemental', 'Après chaque stage sur convocation : enfants convoqués et non absents, par club. Le prix par jour se règle dans l\'article « Participation des clubs aux stages du Centre Départemental ».'],
+    ['stages', 'Stages réglés par le club', 'Participations dont le mode de paiement est « Autre : facturé au club » dans la gestion des stages (706001 Centre Départemental, 706002 beach).']];
   const inc = [...inconnus.entries()];
   shell('bordereaux', `
   <div class="crumb"><a href="#bordereaux">Bordereaux</a> › <a href="#b/${b.id}">N° ${b.numero}</a> › Ajouts automatiques</div>
   <div class="card stack">
-    <div><h2>Ajouts automatiques</h2><p class="muted">Ce qui reste à facturer d'après les autres rubriques du site, sur toute la saison ${esc(SAISON)}. Ce qui a déjà été facturé sur un bordereau n'est pas repris. Décochez ce que vous ne voulez pas ajouter au bordereau n° ${b.numero}.</p></div>
+    <div><h2>Ajouts automatiques</h2><p class="muted">Ce qui est à facturer d'après les autres rubriques du site, sur la saison ${esc(SAISON)}. Ce qui a déjà été facturé n'est jamais repris. Décochez ce que vous ne voulez pas ajouter au bordereau n° ${b.numero}.</p></div>
     ${inc.length ? `<div class="msg warn"><b>Club${inc.length > 1 ? 's' : ''} non reconnu${inc.length > 1 ? 's' : ''}</b> — indiquez à quel club cela correspond (c'est retenu pour la suite) :
-      <div class="grid" style="margin-top:8px;gap:6px">${inc.map(([t, ou], i) => `<div class="grid" style="grid-template-columns:minmax(0,1fr) 260px;align-items:center;gap:8px"><span>« ${esc(t)} » <span class="small">(${esc([...ou].join(', '))})</span></span>
-        <select data-alias="${esc(t)}"><option value="">— Choisir le club —</option>${D.clubs.filter(c => c.actif).map(c => `<option value="${esc(c.code)}">${esc(c.code)} – ${esc(c.nom)}</option>`).join('')}</select></div>`).join('')}</div></div>` : ''}
-    ${groupes.map(([g, t, h]) => { const ps = P.map((p, i) => ({ ...p, i })).filter(p => p.groupe === g); return `<div class="stack" style="gap:8px"><h3>${t} <span class="muted" style="font-size:15px">· ${ps.length ? euros(ps.reduce((s, p) => s + p.quantite * p.prix, 0)) : 'rien à ajouter'}</span></h3><p class="small muted">${h}</p>
-      ${ps.length ? `<div class="tablebox"><table class="t"><thead><tr><th class="c"><input type="checkbox" checked data-all="${g}"></th><th>Club</th><th>Désignation</th><th class="r">Qté</th><th class="r">P.U.</th><th class="r">Total</th><th>Détail</th></tr></thead><tbody>
-        ${ps.map(p => `<tr><td class="c"><input type="checkbox" checked data-p="${p.i}" data-g="${g}"></td><td><b>${esc(p.club)}</b></td><td class="small">${esc(p.designation)}</td><td class="num">${qte(p.quantite)}</td><td class="num">${fmtN(p.prix)}</td><td class="num"><b>${fmtN(p.quantite * p.prix)}</b></td><td class="small muted">${esc(p.info || '')}</td></tr>`).join('')}</tbody></table></div>` : ''}</div>`; }).join('')}
+      <div class="grid" style="margin-top:8px;gap:6px">${inc.map(([tx, ou]) => `<div class="grid" style="grid-template-columns:minmax(0,1fr) 260px;align-items:center;gap:8px"><span>« ${esc(tx)} » <span class="small">(${esc([...ou].join(', '))})</span></span>
+        <select data-alias="${esc(tx)}"><option value="">— Choisir le club —</option>${D.clubs.filter(c => c.actif).map(c => `<option value="${esc(c.code)}">${esc(c.code)} – ${esc(c.nom)}</option>`).join('')}</select></div>`).join('')}</div></div>` : ''}
+    ${groupes.map(([g, tt, h]) => { const ps = P.map((p, i) => ({ ...p, i })).filter(p => p.groupe === g); return `<div class="stack" style="gap:8px"><h3>${tt} <span class="muted" style="font-size:15px">· ${ps.length ? euros(ps.reduce((s, p) => s + p.quantite * p.prix, 0)) : 'rien à ajouter'}</span></h3><p class="small muted">${h}</p>
+      ${ps.length ? `<div class="tablebox"><table class="t"><thead><tr><th class="c"><input type="checkbox" checked data-all="${g}"></th><th>Club</th><th>Désignation et précisions</th><th class="r">Qté</th><th class="r">P.U.</th><th class="r">Total</th><th></th></tr></thead><tbody>
+        ${ps.map(p => `<tr><td class="c"><input type="checkbox" checked data-p="${p.i}" data-g="${g}"></td><td><b>${esc(p.club)}</b></td><td class="small">${esc(p.designation)}${p.precisions ? `<br><span class="muted">${esc(p.precisions)}</span>` : ''}</td><td class="num">${qte(p.quantite)}</td><td class="num">${fmtN(p.prix)}</td><td class="num"><b>${fmtN(p.quantite * p.prix)}</b></td><td class="small muted">${esc(p.info || '')}</td></tr>`).join('')}</tbody></table></div>` : ''}</div>`; }).join('')}
+    ${attente.length ? `<details class="help"><summary>${attente.length} élément${attente.length > 1 ? 's' : ''} à facturer en fin de saison (après le dernier tournoi / plateau)</summary><div><ul style="margin-left:18px">${attente.map(a => `<li><b>${esc(a.club)}</b> · ${esc(a.quoi)} : ${esc(a.txt)}${a.fin ? ` (dernier tournoi le ${fmtD(a.fin)})` : ''}</li>`).join('')}</ul>
+      <label style="display:flex;gap:8px;align-items:center;margin-top:8px;color:var(--text)"><input type="checkbox" id="au-force" ${FORCE_FIN ? 'checked' : ''}> Les facturer quand même maintenant</label></div></details>` : ''}
     <div class="btnrow"><button class="btn primary" id="au-ok" ${P.length ? '' : 'disabled'}>Ajouter la sélection au bordereau n° ${b.numero}</button><a class="btn ghost" href="#b/${b.id}">Retour</a></div>
   </div>`);
+  if ($('au-force')) $('au-force').onchange = e => { FORCE_FIN = e.target.checked; renderAuto(b, false); };
   document.querySelectorAll('[data-all]').forEach(x => x.onchange = () => document.querySelectorAll(`[data-g="${x.dataset.all}"]`).forEach(y => y.checked = x.checked));
-  document.querySelectorAll('[data-alias]').forEach(s => s.onchange = async () => {
-    const c = club(s.value); if (!c.nom) return;
-    const alias = [c.alias, s.dataset.alias].filter(Boolean).join(', ');
-    try { await rpc('fac_admin_club', { pwd: PWD, p: { ...c, alias } }); c.alias = alias; renderAuto(b); } catch(e) { fail(e); }
+  document.querySelectorAll('[data-alias]').forEach(sl => sl.onchange = async () => {
+    const c = club(sl.value); if (!c.nom) return;
+    const alias = [c.alias, sl.dataset.alias].filter(Boolean).join(', ');
+    try { await rpc('fac_admin_club', { pwd: PWD, p: { ...c, alias } }); c.alias = alias; renderAuto(b, false); } catch(e) { fail(e); }
   });
   $('au-ok').onclick = async () => {
     const sel = [...document.querySelectorAll('[data-p]:checked')].map(x => P[+x.dataset.p]);
     if (!sel.length) return alert('Rien de coché.');
-    const lignes = sel.map((p, k) => ({ bordereau_id: b.id, club: p.club, article_id: p.article_id, date_ligne: p.date_ligne || b.date, code_compta: p.code_compta, designation: p.designation, quantite: p.quantite, prix: p.prix, source: p.source, ordre: lignesDe(b.id, p.club).length + k }));
+    const n = {};
+    const lignes = sel.map(p => { n[p.club] = n[p.club] == null ? lignesDe(b.id, p.club).length : n[p.club] + 1;
+      return { bordereau_id: b.id, club: p.club, article_id: p.article_id, date_ligne: p.date_ligne || b.date, code_compta: p.code_compta, designation: p.designation, precisions: p.precisions || '', quantite: p.quantite, prix: p.prix, source: p.source, ordre: n[p.club] }; });
     try { await enregistrerLignes(lignes); await load(); toast(`✓ ${lignes.length} ligne(s) ajoutée(s)`); location.hash = 'b/' + b.id; } catch(e) { fail(e); }
   };
 }
@@ -679,7 +728,7 @@ async function nouveauClub() {
 
 // ======================== RÉGLAGES ========================
 function renderReglages() {
-  const t = reglage('open_tarifs', [10, 30, 50]);
+  const t = reglage('open_tarifs', [10, 35, 60]);
   shell('reglages', `
   <h1 style="font-size:34px">Réglages</h1>
   <div class="card stack"><h3>En-tête des factures</h3>
@@ -738,10 +787,13 @@ function pageFacture(doc, b, code, img) {
   head();
   ls.forEach((l, i) => {
     doc.setFontSize(8.5);
-    const des = doc.splitTextToSize(pdfTxt(l.designation), cols[2].w - 3), h = Math.max(1, des.length) * 3.8 + 2.4;
+    const des = doc.splitTextToSize(pdfTxt(l.designation), cols[2].w - 3);
+    doc.setFontSize(7.5); const pre = l.precisions ? doc.splitTextToSize(pdfTxt(l.precisions), cols[2].w - 3) : []; doc.setFontSize(8.5);
+    const h = Math.max(1, des.length) * 3.8 + pre.length * 3.3 + 2.4;
     if (y + h > 262) { doc.addPage(); y = 20; head(); }
     if (i % 2) { doc.setFillColor(248, 250, 253); doc.rect(M, y - 4, W - 2 * M, h, 'F'); }
     doc.text(fmtD(l.date_ligne), cols[0].x + 1.5, y); doc.text(pdfTxt(l.code_compta || ''), cols[1].x + 1.5, y); doc.text(des, cols[2].x + 1.5, y);
+    if (pre.length) { doc.setFontSize(7.5); doc.setFont('helvetica', 'italic'); doc.setTextColor(86, 98, 122); doc.text(pre, cols[2].x + 1.5, y + des.length * 3.8 - 0.4); doc.setTextColor(20, 32, 58); doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); }
     doc.text(pdfTxt(qte(l.quantite)), cols[3].x + cols[3].w - 1.5, y, { align: 'right' }); doc.text(pdfN(l.prix), cols[4].x + cols[4].w - 1.5, y, { align: 'right' });
     doc.setFont('helvetica', 'bold'); doc.text(pdfN(montant(l)), cols[5].x + cols[5].w - 1.5, y, { align: 'right' }); doc.setFont('helvetica', 'normal');
     y += h;
@@ -779,9 +831,9 @@ async function exportExcel() {
   const recap = [['Club', 'Nom', ...bs.map(b => `Bordereau N°${b.numero}`), 'Total dû', 'Réglé', 'Reste']];
   clubs.forEach(c => { const e = etatClub(c.code); recap.push([c.code, c.nom, ...bs.map(b => e.du[b.id] || 0), e.totDu, e.totRegle, e.reste]); });
   recap.push(['TOTAL', '', ...bs.map(b => totalDe(b.id)), ...['totDu', 'totRegle', 'reste'].map(k => r2(clubs.reduce((s, c) => s + etatClub(c.code)[k], 0)))]);
-  const det = [['Bordereau', 'Date bordereau', 'Facture', 'Club', 'Date', 'Compte', 'Désignation', 'Quantité', 'Prix unitaire', 'Montant']];
+  const det = [['Bordereau', 'Date bordereau', 'Facture', 'Club', 'Date', 'Compte', 'Désignation', 'Précisions', 'Quantité', 'Prix unitaire', 'Montant']];
   bs.forEach(b => D.lignes.filter(l => l.bordereau_id === b.id).sort((x, y) => coll.compare(x.club, y.club) || x.ordre - y.ordre).forEach(l =>
-    det.push([b.numero, fmtD(b.date), facNum(b, l.club), l.club, fmtD(l.date_ligne), l.code_compta || '', l.designation, l.quantite, l.prix, montant(l)])));
+    det.push([b.numero, fmtD(b.date), facNum(b, l.club), l.club, fmtD(l.date_ligne), l.code_compta || '', l.designation, l.precisions || '', l.quantite, l.prix, montant(l)])));
   const pay = [['Date', 'Club', 'Montant', 'Mode', 'Référence', 'Imputé sur', 'Remarque']];
   D.paiements.forEach(p => pay.push([fmtD(p.date), p.club, num(p.montant), p.mode || '', p.reference || '', p.bordereau_id ? 'N°' + (bord(p.bordereau_id) || {}).numero : 'auto', p.remarque || '']));
   const parCompte = {}; D.lignes.forEach(l => { const k = l.code_compta || '(sans compte)'; parCompte[k] = r2((parCompte[k] || 0) + montant(l)); });
@@ -789,7 +841,7 @@ async function exportExcel() {
   const wb = XLSX.utils.book_new();
   const ws = (rows, w) => { const s = XLSX.utils.aoa_to_sheet(rows, { cellDates: true, dateNF: 'dd/mm/yyyy' }); s['!cols'] = w.map(x => ({ wch: x })); return s; };
   XLSX.utils.book_append_sheet(wb, ws(recap, [9, 34, ...bs.map(() => 14), 12, 12, 12]), 'Récapitulatif');
-  XLSX.utils.book_append_sheet(wb, ws(det, [10, 12, 18, 8, 11, 9, 60, 9, 11, 11]), 'Détail des factures');
+  XLSX.utils.book_append_sheet(wb, ws(det, [10, 12, 18, 8, 11, 9, 60, 40, 9, 11, 11]), 'Détail des factures');
   XLSX.utils.book_append_sheet(wb, ws(pay, [11, 8, 11, 10, 16, 11, 30]), 'Paiements');
   XLSX.utils.book_append_sheet(wb, ws(cpt, [16, 12]), 'Par compte');
   XLSX.writeFile(wb, `Facturation-clubs-${SAISON}.xlsx`);

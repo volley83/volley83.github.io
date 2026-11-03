@@ -61,6 +61,7 @@ create table if not exists fac_lignes (
   ordre         int not null default 0,
   created_at    timestamptz not null default now()
 );
+alter table fac_lignes add column if not exists precisions text;   -- précisions sous la désignation (noms des enfants…)
 create index if not exists fac_lignes_bord on fac_lignes(bordereau_id, club);
 
 create table if not exists fac_paiements (
@@ -115,20 +116,23 @@ end $$;
 -- Données des autres rubriques pour les ajouts automatiques
 create or replace function fac_admin_sources(pwd text) returns jsonb
 language plpgsql security definer set search_path = public as $$
-declare v_open jsonb := '[]'; v_pit jsonb := '[]'; v_pit_saison text; v_stg jsonb := '[]';
+declare v_open jsonb := '[]'; v_open_t jsonb := '[]'; v_pit jsonb := '[]'; v_pit_saison text; v_pit_fin date;
+        v_stg jsonb := '[]'; v_cde jsonb := '[]';
 begin
   if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
-  -- Compétitions OPEN : équipes inscrites par club et par tournoi (tournois annulés exclus)
+  -- Compétitions OPEN et M15/M18 4x4 : équipes inscrites par club et par tournoi (tournois annulés exclus)
   if to_regclass('public.chp_inscriptions') is not null then
     execute $q$
       select coalesce(jsonb_agg(x order by x->>'competition', x->>'club', (x->>'numero')::int), '[]') from (
-        select jsonb_build_object('competition', t.competition, 'competition_nom', c.nom, 'numero', t.numero, 'date', t.date,
-                                  'club', i.club, 'nb', sum(i.nb_equipes)) x
-        from chp_inscriptions i join chp_tournois t on t.id = i.tournoi_id join chp_competitions c on c.code = t.competition
+        select jsonb_build_object('competition', t.competition, 'numero', t.numero, 'date', t.date, 'club', i.club, 'nb', sum(i.nb_equipes)) x
+        from chp_inscriptions i join chp_tournois t on t.id = i.tournoi_id
         where t.statut <> 'annule'
-        group by t.competition, c.nom, t.numero, t.date, i.club) s $q$ into v_open;
+        group by t.competition, t.numero, t.date, i.club) s $q$ into v_open;
+    execute $q$
+      select coalesce(jsonb_agg(jsonb_build_object('competition', t.competition, 'nom', c.nom, 'numero', t.numero, 'date', t.date) order by c.ordre, t.numero), '[]')
+      from chp_tournois t join chp_competitions c on c.code = t.competition where t.statut <> 'annule' $q$ into v_open_t;
   end if;
-  -- Pitchoun' Volley : enfants ayant participé à au moins un plateau, par club
+  -- Pitchoun' Volley : enfants ayant participé à au moins un plateau, par club ; date du dernier plateau
   if to_regclass('public.pitchoun_joueurs') is not null then
     execute $q$
       select coalesce(jsonb_agg(jsonb_build_object('club', j.club, 'nb', j.n) order by j.club), '[]')
@@ -136,18 +140,43 @@ begin
     if to_regclass('public.pitchoun_reglages') is not null then
       execute $q$ select valeur::text from pitchoun_reglages where cle = 'saison' $q$ into v_pit_saison;
     end if;
+    if to_regclass('public.pitchoun_plateaux') is not null then
+      execute $q$ select max(date) from pitchoun_plateaux $q$ into v_pit_fin;
+    end if;
   end if;
-  -- Stages : participations marquées « facturé au club » dans la gestion des stages
   if to_regclass('public.stg_convocations') is not null then
+    -- Participations réglées par le club (mode « Autre : facturé au club » dans la gestion des stages)
     execute $q$
       select coalesce(jsonb_agg(jsonb_build_object(
-          'id', c.id, 'stage', s.titre, 'date', s.date_debut, 'prenom', e.prenom, 'nom', e.nom, 'club', e.club,
+          'id', c.id, 'stage', s.titre, 'type', s.type, 'date', s.date_debut, 'prenom', e.prenom, 'nom', e.nom, 'club', e.club,
           'montant', coalesce(c.montant, s.tarif * case when s.par_jour then greatest(coalesce(array_length(c.jours, 1), array_length(s.jours, 1), 1), 1) else 1 end, 0)
         ) order by s.date_debut, e.club, e.nom), '[]')
       from stg_convocations c join stg_stages s on s.id = c.stage_id join stg_enfants e on e.id = c.enfant_id
       where c.paiement_mode ilike '%factur%club%' $q$ into v_stg;
+    -- Participation des clubs aux stages du Centre Départemental : stages terminés, enfants convoqués non absents
+    execute $q$
+      select coalesce(jsonb_agg(jsonb_build_object('stage_id', s.id, 'stage', s.titre, 'debut', s.date_debut, 'fin', coalesce(s.date_fin, s.date_debut),
+          'jours', coalesce(s.date_fin, s.date_debut) - s.date_debut + 1,
+          'enfants', (select coalesce(jsonb_agg(jsonb_build_object('prenom', e.prenom, 'nom', e.nom, 'club', e.club, 'reponse', c.reponse) order by e.nom, e.prenom), '[]')
+                      from stg_convocations c join stg_enfants e on e.id = c.enfant_id
+                      where c.stage_id = s.id and c.statut = 'convoque' and c.reponse <> 'absent')
+        ) order by s.date_debut), '[]')
+      from stg_stages s where coalesce(s.type, 'cde') = 'cde' and coalesce(s.date_fin, s.date_debut) < current_date $q$ into v_cde;
   end if;
-  return jsonb_build_object('open', v_open, 'pitchoun', v_pit, 'pitchoun_saison', v_pit_saison, 'stages', v_stg);
+  return jsonb_build_object('open', v_open, 'open_tournois', v_open_t, 'pitchoun', v_pit, 'pitchoun_saison', v_pit_saison,
+                            'pitchoun_fin', v_pit_fin, 'stages', v_stg, 'cde', v_cde, 'aujourdhui', current_date);
+end $$;
+
+-- Pour la page des championnats : ce qui a déjà été facturé en OPEN et M15/M18 4x4, et les tarifs
+create or replace function fac_admin_open_facture(pwd text) returns jsonb
+language plpgsql security definer set search_path = public as $$
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  return jsonb_build_object(
+    'tarifs', (select valeur from fac_reglages where cle = 'open_tarifs'),
+    'lignes', (select coalesce(jsonb_agg(jsonb_build_object('club', l.club, 'source', l.source, 'montant', l.quantite * l.prix,
+                 'bordereau', b.numero, 'saison', b.saison, 'statut', b.statut) order by b.numero), '[]')
+               from fac_lignes l join fac_bordereaux b on b.id = l.bordereau_id where l.source like 'open:%'));
 end $$;
 
 -- ---------- Clubs ----------
@@ -231,7 +260,7 @@ begin
 end $$;
 
 -- ---------- Lignes ----------
--- p_lignes = [{id?, bordereau_id, club, article_id, date_ligne, code_compta, designation, quantite, prix, source, ordre}]
+-- p_lignes = [{id?, bordereau_id, club, article_id, date_ligne, code_compta, designation, precisions, quantite, prix, source, ordre}]
 -- p_suppr  = identifiants des lignes à supprimer
 -- Renvoie les identifiants des lignes enregistrées, dans l'ordre reçu
 drop function if exists fac_admin_lignes(text, jsonb, bigint[]);
@@ -260,6 +289,7 @@ begin
       date_ligne  = nullif(l->>'date_ligne', '')::date,
       code_compta = nullif(trim(l->>'code_compta'), ''),
       designation = left(trim(l->>'designation'), 300),
+      precisions  = case when l ? 'precisions' then nullif(left(trim(l->>'precisions'), 2000), '') else precisions end,
       quantite    = coalesce(nullif(replace(l->>'quantite', ',', '.'), '')::numeric, 1),
       prix        = coalesce(nullif(replace(l->>'prix', ',', '.'), '')::numeric, 0),
       source      = case when l ? 'source' then nullif(l->>'source', '') else source end,
@@ -307,6 +337,7 @@ revoke execute on function fac_is_admin(text) from public, anon, authenticated;
 grant execute on function
   fac_admin_get(text, text),
   fac_admin_sources(text),
+  fac_admin_open_facture(text),
   fac_admin_club(text, jsonb),
   fac_admin_article(text, jsonb),
   fac_admin_bordereau(text, jsonb),
@@ -399,9 +430,75 @@ end $$;
 
 -- ---------- Réglages par défaut ----------
 insert into fac_reglages (cle, valeur) values
-  ('open_tarifs', '[10, 30, 50]'),   -- par équipe : 1 tournoi, 2 tournois, 3 tournois ou plus
+  ('open_tarifs', '[10, 35, 60]'),   -- par équipe : 1 tournoi, 2 tournois, 3 tournois ou plus
   ('emetteur', '"Comité du Var de Volley-Ball\nMaison des Sports du Var\n133, boulevard Général Brosset\n83200 Toulon\ncontact@volley83.fr"'),
   ('mentions', '"Règlement à réception, par virement ou par chèque à l''ordre du Comité du Var de Volley-Ball, en rappelant le numéro de la facture."')
 on conflict (cle) do nothing;
+
+-- ---------- Tarifs 2026-2027 (document « Tarifs saison 2026 / 2027 ») ----------
+-- Remplace une seule fois le catalogue de départ ; les articles créés à la main (ordre 999) sont gardés.
+do $$ begin
+  if coalesce((select valeur::text from fac_reglages where cle = 'catalogue_version'), '1') < '2' then
+    delete from fac_articles where cle is null and ordre < 999;
+    update fac_articles set cle = 'stage_cde' where cle = 'stage';
+    insert into fac_articles (code_compta, designation, prix, unite, categorie, cle, ordre) values
+      (null,     'AFFILIATION CLUB DÉPARTEMENTAL / RÉGIONAL',                 125, 'club',      'Affiliation', null, 10),
+      (null,     'AFFILIATION CLUB NATIONAL',                                 140, 'club',      'Affiliation', null, 11),
+      ('756000', 'ENGAGEMENT SENIORS ET M21 (100 € / ÉQUIPE)',                100, 'équipe',    'Engagements', null, 20),
+      ('756000', 'ENGAGEMENT COMPET''LIB (80 € / ÉQUIPE)',                     80, 'équipe',    'Engagements', null, 21),
+      ('756000', 'ENGAGEMENT M18 ET M15 (70 € / ÉQUIPE)',                      70, 'équipe',    'Engagements', null, 22),
+      ('756000', 'ENGAGEMENT M13 (100 € / ÉQUIPE)',                           100, 'équipe',    'Engagements', null, 23),
+      ('756000', 'ENGAGEMENT M11 (80 € / ÉQUIPE)',                             80, 'équipe',    'Engagements', null, 24),
+      ('756030', 'ENGAGEMENT BEACH – CHAMPIONNAT OPEN (26 €)',                 26, null,        'Beach', null, 50),
+      ('771001', 'ENGAGEMENT NON CONFORME OPEN (30 €)',                        30, 'équipe',    'Pénalités', null, 109),
+      ('771001', 'PÉNALITÉ RIS N°4 - IMPLANTATIONS COMMUNIQUÉES HORS DÉLAI', 200, 'pénalité',  'Pénalités', null, 110),
+      ('771001', 'PÉNALITÉ RIS N°4 - DEMANDE DE MODIFICATION AU CALENDRIER HORS DÉLAI (J-10)', 30, 'pénalité', 'Pénalités', null, 111),
+      ('771001', 'PÉNALITÉ RIS N°4 - DEMANDE DE REPORT DE MATCH',              20, 'pénalité',  'Pénalités', null, 112),
+      ('771001', 'PÉNALITÉ RIS N°4 - ANNULATION D''IMPLANTATION SANS MOTIF (J-5)', 100, 'pénalité', 'Pénalités', null, 113),
+      ('771001', 'PÉNALITÉ RIS N°4 - LICENCE NON PRÉSENTÉE',                    6, 'pénalité',  'Pénalités', null, 114),
+      ('771001', 'PÉNALITÉ RIS N°4 - MANAGER NON RÉGLEMENTAIREMENT LICENCIÉ',  60, 'pénalité',  'Pénalités', null, 115),
+      ('771001', 'PÉNALITÉ RIS N°4 - MANAGER NON RÉGLEMENTAIREMENT LICENCIÉ – CHAMPIONNATS JEUNES', 30, 'pénalité', 'Pénalités', null, 116),
+      ('771001', 'PÉNALITÉ RIS N°4 - MISE EN PLACE EN RETARD',                 15, 'pénalité',  'Pénalités', null, 117),
+      ('771001', 'PÉNALITÉ RIS N°4 - RÉSULTAT COMMUNIQUÉ HORS DÉLAI',          30, 'pénalité',  'Pénalités', null, 118),
+      ('771001', 'PÉNALITÉ RIS N°4 - FEUILLE DE MATCH MAL TENUE',              20, 'pénalité',  'Pénalités', null, 119),
+      ('771001', 'PÉNALITÉ RIS N°4 - FEUILLE DE MATCH PARVENUE HORS DÉLAI',    40, 'pénalité',  'Pénalités', null, 120),
+      ('771001', 'PÉNALITÉ RIS N°4 - FEUILLE DE MATCH NON PARVENUE (+ DE 30 JOURS)', 50, 'pénalité', 'Pénalités', null, 121),
+      ('771001', 'PÉNALITÉ RIS N°4 - ENVOI À MAUVAISE ADRESSE',                10, 'pénalité',  'Pénalités', null, 122),
+      ('771001', 'PÉNALITÉ RIS N°4 - ENVOI INSUFFISAMMENT AFFRANCHI',          10, 'pénalité',  'Pénalités', null, 123),
+      ('771001', 'PÉNALITÉ RIS N°4 - MAUVAISE FEUILLE UTILISÉE',               15, 'pénalité',  'Pénalités', null, 124),
+      ('771001', 'PÉNALITÉ RIS N°4 - FORFAIT UN MATCH SENIOR',                120, 'forfait',   'Forfaits', null, 130),
+      ('771001', 'PÉNALITÉ RIS N°4 - FORFAIT UN MATCH COMPET''LIB',            60, 'forfait',   'Forfaits', null, 131),
+      ('771001', 'PÉNALITÉ RIS N°4 - FORFAIT UN MATCH JEUNE (M18 ET MOINS)',   60, 'forfait',   'Forfaits', null, 132),
+      ('771001', 'PÉNALITÉ RIS N°4 - PÉNALITÉ SENIOR',                         60, 'pénalité',  'Forfaits', null, 133),
+      ('771001', 'PÉNALITÉ RIS N°4 - PÉNALITÉ COMPET''LIB',                    30, 'pénalité',  'Forfaits', null, 134),
+      ('771001', 'PÉNALITÉ RIS N°4 - PÉNALITÉ JEUNE',                          30, 'pénalité',  'Forfaits', null, 135),
+      ('771001', 'PÉNALITÉ RIS N°4 - FORFAIT GÉNÉRAL SENIOR',                 420, 'forfait',   'Forfaits', null, 136),
+      ('771001', 'PÉNALITÉ RIS N°4 - FORFAIT GÉNÉRAL COMPET''LIB',            210, 'forfait',   'Forfaits', null, 137),
+      ('771001', 'PÉNALITÉ RIS N°4 - FORFAIT GÉNÉRAL JEUNE',                  210, 'forfait',   'Forfaits', null, 138),
+      ('771001', 'PÉNALITÉ RIS N°4 - FORFAIT GÉNÉRAL SENIOR AVEC MODIFICATION DU CALENDRIER', 620, 'forfait', 'Forfaits', null, 139),
+      ('771001', 'PÉNALITÉ RIS N°4 - FORFAIT GÉNÉRAL COMPET''LIB AVEC MODIFICATION DU CALENDRIER', 410, 'forfait', 'Forfaits', null, 140),
+      ('771001', 'PÉNALITÉ RIS N°4 - FORFAIT GÉNÉRAL JEUNE AVEC MODIFICATION DU CALENDRIER', 620, 'forfait', 'Forfaits', null, 141),
+      ('771001', 'PÉNALITÉ RIS N°4 - FORFAIT PHASE FINALE',                   100, 'forfait',   'Forfaits', null, 142),
+      ('771001', 'PÉNALITÉ RIS N°4 - ABSENCE D''OBLIGATION D''ARBITRAGE',     120, 'pénalité',  'Arbitrage', null, 150),
+      ('706100', 'INDEMNITÉS ARBITRAGE DÉPARTEMENTALE ACCESSION (30 € / MATCH)', 30, 'match',   'Arbitrage', null, 151),
+      ('706100', 'INDEMNITÉS MARQUEUR DÉPARTEMENTALE ACCESSION (25 € / MATCH)',  25, 'match',   'Arbitrage', null, 152),
+      ('706100', 'FRAIS DÉPLACEMENT ARBITRAGE DÉPARTEMENTALE ACCESSION (16 € / MATCH)', 16, 'match', 'Arbitrage', null, 153),
+      ('706009', 'INSCRIPTION FORMATION MARQUEUR (40 € / STAGIAIRE)',          40, 'stagiaire', 'Formations', null, 160),
+      ('756300', 'AIDE À L''EMPLOI (4 € / LICENCE)',                            4, 'licence',   'Divers', null, 170),
+      ('708800', 'ADHÉSIF BLANC POUR TRAÇAGE DE TERRAIN (4 € / ROULEAU)',       4, 'rouleau',   'Divers', null, 171),
+      ('708800', 'ADHÉSIF BLEU POUR TRAÇAGE DE TERRAIN (5 € / ROULEAU)',        5, 'rouleau',   'Divers', null, 172);
+    insert into fac_articles (code_compta, designation, prix, unite, categorie, cle, ordre) values
+      ('706001', 'PARTICIPATION STAGE CENTRE DÉPARTEMENTAL',                    0, 'stagiaire', 'Stages', 'stage_cde', 60),
+      ('706002', 'PARTICIPATION STAGE BEACH',                                   0, 'stagiaire', 'Stages', 'stage_beach', 61),
+      ('706003', 'PARTICIPATION DES CLUBS AUX STAGES DU CENTRE DÉPARTEMENTAL (12 € / JOUR)', 12, 'jour', 'Stages', 'cde_club', 62),
+      (null,     'PARTICIPATION DES CLUBS AU STAGE PERFECTIONNEMENT BEACH (15 € / JOUR)', 15, 'jour', 'Stages', null, 63)
+    on conflict (cle) do nothing;
+    update fac_articles set code_compta = '706001', designation = 'PARTICIPATION STAGE CENTRE DÉPARTEMENTAL' where cle = 'stage_cde';
+    update fac_articles set prix = 7, designation = 'ENGAGEMENT PITCHOUN'' VOLLEY (7 € / ENFANT / SAISON)' where cle = 'pitchoun';
+    update fac_articles set designation = replace(designation, 'ENGAGEMENT OPEN M1', 'ENGAGEMENT M1') where cle like 'open_%';
+    update fac_reglages set valeur = '[10, 35, 60]' where cle = 'open_tarifs' and valeur = '[10, 30, 50]';
+    insert into fac_reglages (cle, valeur) values ('catalogue_version', '"2"') on conflict (cle) do update set valeur = '"2"';
+  end if;
+end $$;
 
 -- Message attendu : « Success. No rows returned »

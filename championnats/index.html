@@ -285,6 +285,7 @@
   .mx { border-collapse: collapse; font-size: 14px; }
   .mx th, .mx td { border: 1px solid var(--line); padding: 6px 12px; text-align: center; }
   .mx th { background: #F8FAFD; font-size: 12px; }
+  .adm th.c, .adm td.c { text-align: center; } .adm tfoot td { background: #F8FAFD; border-top: 1px solid var(--line); }
   .save { font-size: 13px; font-weight: 600; } .save.ok { color: var(--ok); } .save.err { color: var(--bad); } .save.wait { color: var(--muted); }
   .overlay { position: fixed; inset: 0; background: rgba(11,33,73,.55); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50; }
   .modal { background: #fff; border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 14px; }
@@ -1073,7 +1074,7 @@ async function renderAdmin(tab) {
   if (!ADMIN_PWD) { location.hash = '4x4'; return; }
   if (tab) ATAB = tab;
   if (!A) await loadAdmin();
-  const aTitre = { inscriptions: 'Inscriptions', classements: 'Classements', tournois: 'Calendrier et codes', clubs: 'Clubs', coupe: 'Coupe de France' };
+  const aTitre = { inscriptions: 'Inscriptions', participations: 'Participations', classements: 'Classements', tournois: 'Calendrier et codes', clubs: 'Clubs', coupe: 'Coupe de France' };
   const aValider = A.tournois.filter(t => t.statut === 'saisi').length;
   $('app').innerHTML = `
   <div class="hero"><div class="wrap"><div class="k">Espace Comité</div><h1>Gestion des championnats</h1></div></div>
@@ -1082,7 +1083,7 @@ async function renderAdmin(tab) {
       <span><span id="a-save" class="save"></span> <button class="linkbtn" onclick="ADMIN_PWD='';A=null;try{sessionStorage.removeItem('chp_admin')}catch(e){};location.hash='4x4'">Se déconnecter</button></span></div>
     <div id="a-body"></div>
   </main>`;
-  ({ inscriptions: adminInscriptions, classements: adminClassements, tournois: adminTournois, clubs: adminClubs, coupe: adminCoupe })[ATAB]();
+  ({ inscriptions: adminInscriptions, participations: adminParticipations, classements: adminClassements, tournois: adminTournois, clubs: adminClubs, coupe: adminCoupe })[ATAB]();
 }
 const tSel = (list, cur, id = 'a-t') => `<select id="${id}" style="max-width:560px">${A.competitions.map(c => { const l = list.filter(t => t.competition === c.code); return l.length ? `<optgroup label="${esc(c.nom)}">${l.map(t => `<option value="${t.id}" ${t.id === cur ? 'selected' : ''}>${esc(c.nom)} · ${tNom(t)} · ${esc(fmtShort(t.date))}${t.ville ? ' · ' + esc(t.ville) : ''}${t.statut === 'saisi' ? ' · À VALIDER' : ''}</option>`).join('')}</optgroup>` : ''; }).join('')}</select>`;
 
@@ -1253,6 +1254,55 @@ async function adminCoupe() {
 }
 
 // ----- Clubs -----
+// ----- Participations (récapitulatif pour la facturation des engagements) -----
+let PCOMP = null, FACT_OPEN = null;
+// L'équipe n d'un club joue chaque tournoi où le club a inscrit au moins n équipes (même règle que la page Facturation)
+function participations(code) {
+  const ts = A.tournois.filter(t => t.competition === code && t.statut !== 'annule').sort((a, b) => a.numero - b.numero);
+  const parClub = {};
+  A.inscriptions.forEach(i => { const t = ts.find(x => x.id === i.tournoi_id); if (!t) return; ((parClub[i.club] = parClub[i.club] || {})[t.numero] = (parClub[i.club][t.numero] || 0) + i.nb_equipes); });
+  const clubs = Object.keys(parClub).sort((a, b) => coll.compare(clubNom(a), clubNom(b)));
+  return { ts, clubs: clubs.map(c => { const pt = parClub[c], max = Math.max(0, ...Object.values(pt));
+    return { club: c, equipes: Array.from({ length: max }, (_, k) => { const tous = ts.filter(t => (pt[t.numero] || 0) >= k + 1);
+      return { n: k + 1, tournois: tous.filter(t => t.date <= today()).map(t => t.numero), avenir: tous.filter(t => t.date > today()).map(t => t.numero) }; }).filter(e => e.tournois.length || e.avenir.length) }; }) };
+}
+async function adminParticipations() {
+  const comps = A.competitions;
+  if (!PCOMP || !comps.find(c => c.code === PCOMP)) PCOMP = (comps.find(c => c.famille === 'open') || comps[0] || {}).code;
+  if (FACT_OPEN === null) { try { FACT_OPEN = await rpc('fac_admin_open_facture', { pwd: ADMIN_PWD }); } catch(e) { FACT_OPEN = false; } }
+  const tarifs = (FACT_OPEN && FACT_OPEN.tarifs) || [10, 35, 60];
+  const c = aComp(PCOMP), { ts, clubs } = participations(PCOMP);
+  const fin = ts.length ? ts[ts.length - 1].date : null, fini = fin && fin < today();
+  const facture = (club, n) => FACT_OPEN && FACT_OPEN.lignes.find(l => l.club === club && String(l.source || '').startsWith('open:' + PCOMP + '#') && l.source.split('#')[1].split(',').map(Number).includes(n));
+  const cout = nb => nb ? tarifs[Math.min(nb, 3) - 1] : 0;
+  let totE = 0, totC = 0;
+  const rows = clubs.map(k => {
+    const sub = k.equipes.reduce((s, e) => s + cout(e.tournois.length), 0); totE += k.equipes.length; totC += sub;
+    return k.equipes.map((e, i) => { const nb = e.tournois.length, f = facture(k.club, e.n);
+      const etat = f ? `<span class="badge b-open">✓ Facturé (bordereau n° ${f.bordereau})</span>` : (nb >= 3 || (fini && nb)) ? '<span class="badge b-wait">À facturer</span>' : nb ? '<span class="badge b-tbc">Fin de saison</span>' : '';
+      return `<tr>${i ? '' : `<td rowspan="${k.equipes.length + 1}" style="vertical-align:top"><b>${esc(clubNom(k.club))}</b></td>`}<td class="c">${e.n}</td>${ts.map(t => `<td class="c">${e.tournois.includes(t.numero) ? '<b>X</b>' : e.avenir.includes(t.numero) ? '<span class="small muted" title="Inscrite, tournoi à venir">inscrite</span>' : ''}</td>`).join('')}<td class="c"><b>${nb}</b></td><td class="c">${cout(nb)} €</td><td>${etat}</td></tr>`; }).join('')
+      + `<tr><td class="small muted">Total club</td>${ts.map(() => '<td></td>').join('')}<td></td><td class="c"><b>${sub} €</b></td><td></td></tr>`;
+  }).join('');
+  $('a-body').innerHTML = `<div class="stack">
+    <div class="card stack">
+      <div class="tabs">${comps.map(k => `<button class="tab ${kind(k)} ${k.code === PCOMP ? 'on' : ''}" data-pc="${k.code}"><span class="sw ${kind(k)}"></span>${esc(k.nom)}</button>`).join('')}</div>
+      <p class="small muted">Une ligne par équipe : l'équipe 2 d'un club joue les tournois où le club a inscrit au moins 2 équipes. Coût par équipe : ${tarifs[0]} € (1 tournoi), ${tarifs[1]} € (2 tournois), ${tarifs[2]} € (3 tournois et plus). Une équipe est facturée dès qu'elle atteint 3 tournois, les autres après le dernier tournoi${fin ? ` (${esc(fmtD(fin))})` : ''}. Seuls les tournois déjà joués comptent (« inscrite » = tournoi à venir). Pour corriger un nombre d'équipes, modifiez l'inscription dans l'onglet « Inscriptions ».${FACT_OPEN === false ? ' <b>La facturation n\'est pas encore installée : l\'état « facturé » ne s\'affiche pas.</b>' : ''}</p>
+      <div class="kpis"><div class="kpi"><b>${clubs.length}</b><span>clubs</span></div><div class="kpi"><b>${totE}</b><span>équipes</span></div><div class="kpi"><b>${totC} €</b><span>engagements (tournois joués à ce jour)</span></div></div>
+      <div class="btnrow" style="margin:0"><button class="btn ghost" id="p-csv">⬇ Exporter (CSV)</button><a class="btn ghost" href="../facturation/" target="_blank" rel="noopener">Ouvrir la facturation</a></div>
+    </div>
+    ${clubs.length ? `<div class="tablebox"><table class="adm"><thead><tr><th>Club</th><th class="c">Équipe</th>${ts.map(t => `<th class="c" title="${esc(fmtD(t.date))}">${esc(estFinal(t) ? 'Finale' : 'T' + t.numero)}<br><span style="font-weight:500">${esc(fmtShort(t.date).slice(0, 5))}</span></th>`).join('')}<th class="c">Tournois</th><th class="c">Coût</th><th>Facturation</th></tr></thead>
+      <tbody>${rows}</tbody><tfoot><tr><td><b>Total</b></td><td class="c"><b>${totE}</b></td>${ts.map(t => `<td class="c">${clubs.reduce((s, k) => s + k.equipes.filter(e => e.tournois.includes(t.numero)).length, 0) || ''}</td>`).join('')}<td></td><td class="c"><b>${totC} €</b></td><td></td></tr></tfoot></table></div>`
+    : '<div class="card muted">Aucune inscription pour cette compétition.</div>'}
+  </div>`;
+  document.querySelectorAll('[data-pc]').forEach(b => b.onclick = () => { PCOMP = b.dataset.pc; adminParticipations(); });
+  $('p-csv').onclick = () => {
+    const rowsCsv = [];
+    clubs.forEach(k => { k.equipes.forEach(e => { const f = facture(k.club, e.n); rowsCsv.push([clubNom(k.club), e.n, ...ts.map(t => e.tournois.includes(t.numero) ? 'X' : ''), e.tournois.length, cout(e.tournois.length), f ? 'Bordereau n° ' + f.bordereau : '']); });
+      rowsCsv.push(['', 'Total club', ...ts.map(() => ''), '', k.equipes.reduce((s, e) => s + cout(e.tournois.length), 0), '']); });
+    csvDownload(`Participations-${slug(c.nom)}.csv`, ['Club', 'Équipe', ...ts.map(t => tNom(t) + ' (' + fmtShort(t.date) + ')'), 'Nb tournois', 'Coût engagement', 'Facturé'], rowsCsv);
+  };
+}
+
 function adminClubs() {
   $('a-body').innerHTML = `<div class="card stack" style="max-width:760px">
     <p class="small muted">Liste proposée dans le formulaire d'inscription. Le code court sert aussi de nom d'équipe par défaut (ex. « VCHPL 1 »).</p>

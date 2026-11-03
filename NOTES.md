@@ -77,10 +77,15 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
   - `fac_paiements` : imputés à un bordereau ou, sinon, aux plus anciens d'abord ;
   - `fac_reglages` : `emetteur`, `mentions` (pied de facture), `open_tarifs` [1 tournoi, 2 tournois, 3 et plus] = [10, 30, 50].
 - **Vues** : `#recap` (tableau club × bordereau, export Excel), `#bordereaux`, `#b/<id>`, `#b/<id>/<CLUB>` (facture), `#b/<id>/groupe` (saisie groupée), `#b/<id>/auto` (ajouts automatiques), `#paiements`, `#articles`, `#clubs`, `#reglages`.
-- **Ajouts automatiques** (`fac_admin_sources`) :
-  - OPEN : d'après `chp_inscriptions` (tournois annulés exclus). Équipe n d'un club = présente aux tournois où le club a inscrit au moins n équipes (même logique que l'ancien Excel) ;
-  - Pitchoun' : enfants de `pitchoun_joueurs` avec au moins un plateau, 5 € ;
-  - Stages : convocations dont le mode de paiement est « Autre : facturé au club » (mode ajouté dans la gestion des stages ; commence par « Autre » donc pas de reçu aux parents).
+- **Ajouts automatiques** (`fac_admin_sources`) — règles décidées avec Clément :
+  - OPEN 2x2/4x4 et M15/M18 4x4 (tarifs 2026-2027 : 10 / 35 / 60 € par équipe) : seuls les tournois **déjà joués** comptent. Une équipe est facturée 60 € **dès qu'elle atteint 3 tournois** ; les équipes à 1 ou 2 tournois **après le dernier tournoi** de la compétition. Équipe n d'un club = présente aux tournois où le club a inscrit au moins n équipes (comme l'Excel « Engagements OPEN »). Source des lignes : `open:O11#1,3` (numéros d'équipes facturées) ;
+  - Récapitulatif des participations : onglet **Participations** de l'admin des championnats (tableau club × équipe × tournoi, coût, état « facturé (bordereau n° X) », export CSV), via `fac_admin_open_facture` ;
+  - Pitchoun' : **après le dernier plateau** (`pitchoun_plateaux`), tous les enfants ayant joué au moins un plateau, 7 € (756020) ;
+  - Participation des clubs aux stages du Centre Départemental (706003) : après chaque stage CDE terminé, enfants convoqués non absents, 12 € × nb de jours (36 € pour 3 jours), noms des enfants en précisions. Source `cde:<stage_id>` ;
+  - Stage réglé par le club à la place de la famille (mode « Autre : facturé au club ») : 706001 CDE, 706002 beach ;
+  - Case « les facturer quand même maintenant » pour forcer la fin de saison.
+- **Lignes** : désignation modifiable + champ **précisions** (affiché en italique sous la désignation sur le PDF).
+- **Catalogue** : refait d'après le document « Tarifs saison 2026 / 2027 » (`catalogue_version` = 2). Le bordereau FFVB n° 1 a facturé le Compet'Lib 90 € alors que le document dit 80 €.
 - **PDF** : jsPDF, une page par club ; numéro de facture `AAaa-NN-SIGLE` (ex. 2627-02-VCHPL). Bouton mail = brouillon Gmail, PDF à joindre.
 - **Reprise** : seul le bordereau FFVB n° 1 2026-2027 (détaillé depuis le PDF) est importé, par un script **hors dépôt** (`facturation-import-2026-2027.sql`). Pas d'historique 2025-2026 : tout était réglé.
 - **Idée pour plus tard** : affiliation (réaffiliation GSA) à facturer ici à partir de 2027-2028.
