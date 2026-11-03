@@ -242,7 +242,7 @@ function shell(tab, body) {
     <img src="logo-comite-var.jpg" alt="Comité du Var de Volley-Ball">
     <div class="t">Facturation clubs</div>
     <select id="saison" aria-label="Saison">${saisons.map(s => `<option ${s === SAISON ? 'selected' : ''}>${s}</option>`).join('')}</select>
-    <nav>${nav.map(([k, t]) => `<a class="navbtn ${tab === k ? 'on' : ''}" href="#${k}">${t}${k === 'ris' && risAFacturer().length ? ` <span class="badge b-warn" style="margin-left:6px">${risAFacturer().length}</span>` : ''}</a>`).join('')}
+    <nav>${nav.map(([k, t]) => `<a class="navbtn ${tab === k ? 'on' : ''}" href="#${k}">${t}${k === 'ris' && risAlertes() ? ` <span class="badge b-warn" style="margin-left:6px">${risAlertes()}</span>` : ''}</a>`).join('')}
       <button class="linkbtn" onclick="logout()">Déconnexion</button></nav>
   </div></header>
   <main class="wrap stack">${body}<div id="savemark" class="save" style="position:fixed;bottom:14px;right:18px;background:#fff;padding:4px 10px;border-radius:8px"></div></main>`;
@@ -771,12 +771,16 @@ function rubriqueArticle(a) {
 }
 // Infractions saisies avec un montant mais pas encore facturées (RIS pas encore généré)
 const risAFacturer = () => (D.ris_items || []).filter(i => num(i.montant) && !ligneRis(i));
+const risSansMontant = () => (D.ris_items || []).filter(i => !num(i.montant) && !i.sans_sanction);
+const risAlertes = () => risAFacturer().length + risSansMontant().length;
 function alerteRis() {
-  const a = risAFacturer(); if (!a.length) return '';
+  const sm = risSansMontant(), html = sm.length ? `<div class="msg err"><b>⚠ ${sm.length} infraction${sm.length > 1 ? 's' : ''} RIS sans montant</b> : ${sm.map(i => { const r = risDe(i.ris_id); return `<a href="#ris/${i.ris_id}">RIS n° ${r ? r.numero : '?'}</a> – ${esc(i.club)} ${esc(i.intitule)}${i.match ? ' (' + esc(i.match) + ')' : ''}`; }).join(' · ')}
+    <br><span class="small">Indiquez le montant, ou cochez « Pas de sanction financière » si elle ne doit pas être facturée.</span></div>` : '';
+  const a = risAFacturer(); if (!a.length) return html;
   const parRis = {}; a.forEach(i => { (parRis[i.ris_id] = parRis[i.ris_id] || []).push(i); });
   return `<div class="msg warn"><b>⚠ ${a.length} infraction${a.length > 1 ? 's' : ''} RIS non facturée${a.length > 1 ? 's' : ''}</b> (${euros(a.reduce((x, i) => x + num(i.montant), 0))}) :
     ${Object.entries(parRis).map(([rid, li]) => { const r = risDe(rid); return `<a href="#ris/${rid}">RIS n° ${r ? r.numero : '?'}</a> – ${li.map(i => `${esc(i.club)} ${esc(i.intitule)}${i.match ? ' (' + esc(i.match) + ')' : ''}`).join(', ')}`; }).join(' · ')}
-    <br><span class="small">Ouvrez le RIS et cliquez sur « Générer le RIS et facturer ».</span></div>`;
+    <br><span class="small">Ouvrez le RIS et cliquez sur « Générer le RIS et facturer ».</span></div>` + html;
 }
 const articlesRis = () => D.articles.filter(a => a.actif && ['Pénalités', 'Forfaits', 'Arbitrage'].includes(a.categorie));
 
@@ -807,12 +811,13 @@ function renderRis(r) {
       <td><select data-k="club" ${lock ? 'disabled' : ''} style="width:100px">${clubs.map(c => `<option ${c.code === i.club ? 'selected' : ''}>${esc(c.code)}</option>`).join('')}</select></td>
       <td><input data-k="intitule" value="${esc(i.intitule)}" ${lock ? 'disabled' : ''} style="min-width:320px"></td>
       <td><input data-k="montant" class="n" value="${fmtN(i.montant)}" ${lock ? 'disabled' : ''} style="width:80px" inputmode="decimal"></td>
-      <td>${l ? `<a class="badge b-ok" href="#b/${b.id}/${encodeURIComponent(i.club)}">✓ Bordereau n° ${b.numero}</a>` : num(i.montant) ? '<span class="badge b-warn">À facturer</span>' : '<span class="badge b-draft">Sans montant</span>'}</td>
+      <td>${l ? `<a class="badge b-ok" href="#b/${b.id}/${encodeURIComponent(i.club)}">✓ Bordereau n° ${b.numero}</a>` : num(i.montant) ? '<span class="badge b-warn">À facturer</span>'
+        : `<label class="small" style="display:flex;gap:6px;align-items:center;white-space:nowrap"><input type="checkbox" data-k="sans_sanction" ${i.sans_sanction ? 'checked' : ''}> Pas de sanction financière</label>${i.sans_sanction ? '' : '<span class="badge b-bad">Montant à saisir</span>'}`}</td>
       <td>${lock ? '' : `<button class="x" onclick="supprItem(${i.id})">✕</button>`}</td></tr>`; };
   shell('ris', `
   <div class="crumb"><a href="#ris">RIS</a> › N° ${r.numero}</div>
   <div class="card stack">
-    <div class="ttl"><div><h2>Relevé des Infractions Sportives n° ${r.numero}</h2><p class="muted">${its.length} infraction${its.length > 1 ? 's' : ''} · ${euros(its.reduce((x, i) => x + num(i.montant), 0))}${afact.length ? ` · <b>${afact.length} à facturer</b>` : ''}</p></div>
+    <div class="ttl"><div><h2>Relevé des Infractions Sportives n° ${r.numero}</h2><p class="muted">${its.length} infraction${its.length > 1 ? 's' : ''} · ${euros(its.reduce((x, i) => x + num(i.montant), 0))}${afact.length ? ` · <b>${afact.length} à facturer</b>` : ''}${its.filter(i => !num(i.montant) && !i.sans_sanction).length ? ` · <b style="color:var(--bad)">${its.filter(i => !num(i.montant) && !i.sans_sanction).length} sans montant</b>` : ''}</p></div>
       <div class="btnrow"><button class="btn ghost" onclick="pdfRis(${r.id})" ${its.length ? '' : 'disabled'}>⬇ PDF du RIS</button>
         <button class="btn primary" onclick="genererRis(${r.id})" ${its.length ? '' : 'disabled'}>✓ Générer le RIS et facturer</button>
         <button class="btn danger" onclick="supprRis(${r.id})">Supprimer</button></div></div>
@@ -842,8 +847,8 @@ function renderRis(r) {
     try { await rpc('fac_admin_ris_item', { pwd: PWD, p: it }); RIS_SAISIE = { rubrique: it.rubrique, match: it.match, club: it.club }; await load(); renderRis(risDe(r.id)); toast('✓ Infraction ajoutée'); $('ri-art').focus(); } catch(e) { fail(e); }
   };
   document.querySelectorAll('.ri-t tr[data-id] input, .ri-t tr[data-id] select').forEach(inp => inp.onchange = async () => {
-    const it = (D.ris_items || []).find(x => x.id === +inp.closest('tr').dataset.id), k = inp.dataset.k; it[k] = k === 'montant' ? num(inp.value) : k === 'rubrique' ? +inp.value : inp.value;
-    try { await rpc('fac_admin_ris_item', { pwd: PWD, p: { ...it, montant: String(num(it.montant)) } }); toast('✓ Enregistré'); if (k === 'montant' || k === 'rubrique') renderRis(risDe(r.id)); } catch(e) { fail(e); }
+    const it = (D.ris_items || []).find(x => x.id === +inp.closest('tr').dataset.id), k = inp.dataset.k; it[k] = k === 'montant' ? num(inp.value) : k === 'rubrique' ? +inp.value : inp.type === 'checkbox' ? inp.checked : inp.value;
+    try { await rpc('fac_admin_ris_item', { pwd: PWD, p: { ...it, montant: String(num(it.montant)) } }); toast('✓ Enregistré'); if (['montant', 'rubrique', 'sans_sanction'].includes(k)) renderRis(risDe(r.id)); } catch(e) { fail(e); }
   });
 }
 async function majRis(id, p) { try { await rpc('fac_admin_ris', { pwd: PWD, p: { id, ...p } }); Object.assign(risDe(id), p); toast('✓ Enregistré'); } catch(e) { fail(e); } }
@@ -856,6 +861,8 @@ async function supprRis(id) {
 async function genererRis(id) {
   const r = risDe(id), afact = itemsDe(id).filter(i => num(i.montant) && !ligneRis(i));
   let cible = bordsTries().find(b => b.statut === 'brouillon');
+  const sm = itemsDe(id).filter(i => !num(i.montant) && !i.sans_sanction);
+  if (sm.length && !confirm(`Attention : ${sm.length} infraction(s) n'ont pas de montant et ne seront pas facturées :\n\n${sm.map(i => `• ${i.club} – ${i.intitule}${i.match ? ' (' + i.match + ')' : ''}`).join('\n')}\n\nAnnulez pour saisir les montants (ou cochez « Pas de sanction financière »), ou validez pour continuer.`)) return;
   if (afact.length && !confirm(`Générer le RIS n° ${r.numero} et ajouter ${afact.length} infraction(s) (${euros(afact.reduce((x, i) => x + num(i.montant), 0))}) ${cible ? `au bordereau n° ${cible.numero}` : 'à un nouveau bordereau'} ?`)) return;
   try {
     if (afact.length) {

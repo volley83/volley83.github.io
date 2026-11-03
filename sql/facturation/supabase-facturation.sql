@@ -100,6 +100,8 @@ create table if not exists fac_ris_items (
   created_at  timestamptz not null default now()
 );
 
+alter table fac_ris_items add column if not exists sans_sanction boolean not null default false;  -- infraction volontairement non facturée
+
 create table if not exists fac_reglages (
   cle    text primary key,
   valeur jsonb
@@ -393,6 +395,7 @@ begin
     article_id = nullif(p->>'article_id', '')::bigint,
     intitule   = left(trim(p->>'intitule'), 200),
     montant    = coalesce(nullif(replace(p->>'montant', ',', '.'), '')::numeric, 0),
+    sans_sanction = coalesce((p->>'sans_sanction')::boolean, sans_sanction),
     ordre      = coalesce(nullif(p->>'ordre', '')::int, ordre)
   where id = iid;
   return iid;
