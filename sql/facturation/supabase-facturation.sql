@@ -354,6 +354,7 @@ insert into fac_clubs (code, numero, nom, ordre) values
   ('FVV',   '0839557', 'Fréjus Var Volley', 0),
   ('GSD',   '0833304', 'GSD du Var de Volley-Ball', 0),
   ('LLVB',  '0834743', 'Le Luc Volley-Ball', 0),
+  ('MVA',   '0833315', 'Mourillon Volley Asso', 0),
   ('RCVB',  '0833352', 'Rocbaron Club Volley-Ball', 0),
   ('SMCV',  '0836446', 'Sainte-Maxime Cogolin Volley', 0),
   ('SFBV',  '0833308', 'Six-Fours Beach Volley', 0),
@@ -375,6 +376,7 @@ update fac_clubs set alias = 'La Valette, UA Valettoise' where code = 'UAV' and 
 update fac_clubs set alias = 'Fréjus' where code = 'FVV' and alias is null;
 update fac_clubs set alias = 'Vidauban' where code = 'VVB' and alias is null;
 update fac_clubs set alias = 'Le Luc' where code = 'LLVB' and alias is null;
+update fac_clubs set alias = 'Mourillon' where code = 'MVA' and alias is null;
 update fac_clubs set alias = 'Brignoles' where code = 'CSB' and alias is null;
 update fac_clubs set alias = 'Six-Fours, Six Fours' where code = 'SFBV' and alias is null;
 update fac_clubs set alias = 'La Seyne' where code = 'VCS' and alias is null;

@@ -768,18 +768,22 @@ function pageFacture(doc, b, code, img) {
   doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
   doc.text(pdfTxt(`Bordereau n° ${b.numero} du ${fmtD(b.date)}`), W - M, 32, { align: 'right' });
   doc.text('Saison ' + b.saison.replace('-', '/'), W - M, 36.5, { align: 'right' });
-  // destinataire
-  const y0 = 46; doc.setDrawColor(201, 210, 226); doc.setFillColor(244, 246, 250); doc.roundedRect(W - M - 92, y0, 92, 26, 2, 2, 'FD');
+  // destinataire (adresse : lignes séparées par « / » ou des retours à la ligne)
   doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5);
-  const nomL = doc.splitTextToSize(pdfTxt(c.nom), 84); doc.text(nomL, W - M - 88, y0 + 6.5);
+  const nomL = doc.splitTextToSize(pdfTxt(c.nom), 84);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+  const adrL = String(c.adresse || '').split(/\s*\/\s*|\n/).map(x => pdfTxt(x.trim())).filter(Boolean).slice(0, 5);
+  const y0 = 46, hBox = Math.max(26, 8 + nomL.length * 4.6 + (c.numero ? 4.2 : 0) + adrL.length * 4.1);
+  doc.setDrawColor(201, 210, 226); doc.setFillColor(244, 246, 250); doc.roundedRect(W - M - 92, y0, 92, hBox, 2, 2, 'FD');
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5); doc.text(nomL, W - M - 88, y0 + 6.5);
   doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
   let yy = y0 + 6.5 + nomL.length * 4.6;
-  if (c.numero) { doc.text('N° d\'affiliation ' + c.numero, W - M - 88, yy); yy += 4.2; }
-  if (c.adresse) doc.text(doc.splitTextToSize(pdfTxt(c.adresse), 84).slice(0, 2), W - M - 88, yy);
+  if (c.numero) { doc.setTextColor(86, 98, 122); doc.text('N° d\'affiliation ' + c.numero, W - M - 88, yy); doc.setTextColor(20, 32, 58); yy += 4.2; }
+  adrL.forEach(t => { doc.text(t, W - M - 88, yy); yy += 4.1; });
   if (b.titre) { doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.text(pdfTxt(b.titre), M, y0 + 8); }
   // tableau
   const cols = [{ t: 'Date', x: M, w: 19 }, { t: 'Compte', x: M + 19, w: 16 }, { t: 'Désignation', x: M + 35, w: 89 }, { t: 'Qté', x: M + 124, w: 14, r: 1 }, { t: 'P.U. €', x: M + 138, w: 20, r: 1 }, { t: 'Total €', x: M + 158, w: 20, r: 1 }];
-  let y = 82;
+  let y = Math.max(82, y0 + hBox + 10);
   const head = () => {
     doc.setFillColor(...navy); doc.rect(M, y - 5, W - 2 * M, 7.5, 'F'); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5);
     cols.forEach(k => doc.text(pdfTxt(k.t), k.r ? k.x + k.w - 1.5 : k.x + 1.5, y, k.r ? { align: 'right' } : {}));
