@@ -242,7 +242,7 @@ function shell(tab, body) {
     <img src="logo-comite-var.jpg" alt="Comité du Var de Volley-Ball">
     <div class="t">Facturation clubs</div>
     <select id="saison" aria-label="Saison">${saisons.map(s => `<option ${s === SAISON ? 'selected' : ''}>${s}</option>`).join('')}</select>
-    <nav>${nav.map(([k, t]) => `<a class="navbtn ${tab === k ? 'on' : ''}" href="#${k}">${t}</a>`).join('')}
+    <nav>${nav.map(([k, t]) => `<a class="navbtn ${tab === k ? 'on' : ''}" href="#${k}">${t}${k === 'ris' && risAFacturer().length ? ` <span class="badge b-warn" style="margin-left:6px">${risAFacturer().length}</span>` : ''}</a>`).join('')}
       <button class="linkbtn" onclick="logout()">Déconnexion</button></nav>
   </div></header>
   <main class="wrap stack">${body}<div id="savemark" class="save" style="position:fixed;bottom:14px;right:18px;background:#fff;padding:4px 10px;border-radius:8px"></div></main>`;
@@ -267,6 +267,7 @@ function renderRecap() {
   shell('recap', `
   <div class="ttl"><div><h1 style="font-size:34px">Saison ${esc(SAISON)}</h1><p class="muted">Ce que chaque club doit et a réglé, bordereau par bordereau. Cliquez sur un montant pour ouvrir la facture.</p></div>
     <div class="btnrow"><button class="btn ghost" onclick="exportExcel()">⬇ Exporter en Excel</button><button class="btn primary" onclick="nouveauBordereau()">+ Nouveau bordereau</button></div></div>
+  ${alerteRis()}
   <div class="kpis">
     <div class="kpi"><b>${euros(totDu)}</b><span>facturés sur la saison</span></div>
     <div class="kpi ok"><b>${euros(totRg)}</b><span>encaissés</span></div>
@@ -284,6 +285,7 @@ function renderBordereaux() {
   const bs = bordsTries();
   shell('bordereaux', `
   <div class="ttl"><div><h1 style="font-size:34px">Bordereaux ${esc(SAISON)}</h1><p class="muted">Un bordereau regroupe les factures envoyées aux clubs à une même date.</p></div></div>
+  ${alerteRis()}
   <div class="bords">
     ${bs.map(b => {
       const tot = totalDe(b.id), nb = new Set(lignesDe(b.id).map(l => l.club)).size;
@@ -334,6 +336,7 @@ function renderBordereau(b) {
   const avec = clubs.filter(c => totalDe(b.id, c.code)).map(c => c.code);
   shell('bordereaux', `
   <div class="crumb"><a href="#bordereaux">Bordereaux</a> › N° ${b.numero}</div>
+  ${lock ? '' : alerteRis()}
   <div class="card stack">
     <div class="ttl"><div><h2>Bordereau n° ${b.numero} <span style="font-size:18px" class="muted">· ${esc(SAISON)}</span></h2>
       <p class="muted">${b.statut === 'envoye' ? '<span class="badge b-sent">Envoyé aux clubs</span> Les factures ne sont plus modifiables.' : '<span class="badge b-draft">Brouillon</span> Préparez les factures, puis marquez le bordereau comme envoyé.'}</p></div>
@@ -766,12 +769,22 @@ function rubriqueArticle(a) {
   if (/forfait|absente|retrait/.test(t)) return 1;
   return 5;
 }
+// Infractions saisies avec un montant mais pas encore facturées (RIS pas encore généré)
+const risAFacturer = () => (D.ris_items || []).filter(i => num(i.montant) && !ligneRis(i));
+function alerteRis() {
+  const a = risAFacturer(); if (!a.length) return '';
+  const parRis = {}; a.forEach(i => { (parRis[i.ris_id] = parRis[i.ris_id] || []).push(i); });
+  return `<div class="msg warn"><b>⚠ ${a.length} infraction${a.length > 1 ? 's' : ''} RIS non facturée${a.length > 1 ? 's' : ''}</b> (${euros(a.reduce((x, i) => x + num(i.montant), 0))}) :
+    ${Object.entries(parRis).map(([rid, li]) => { const r = risDe(rid); return `<a href="#ris/${rid}">RIS n° ${r ? r.numero : '?'}</a> – ${li.map(i => `${esc(i.club)} ${esc(i.intitule)}${i.match ? ' (' + esc(i.match) + ')' : ''}`).join(', ')}`; }).join(' · ')}
+    <br><span class="small">Ouvrez le RIS et cliquez sur « Générer le RIS et facturer ».</span></div>`;
+}
 const articlesRis = () => D.articles.filter(a => a.actif && ['Pénalités', 'Forfaits', 'Arbitrage'].includes(a.categorie));
 
 function renderRisListe() {
   const rs = [...(D.ris || [])].sort((a, b) => a.numero - b.numero);
   shell('ris', `
   <div class="ttl"><div><h1 style="font-size:34px">RIS ${esc(SAISON)}</h1><p class="muted">Relevés des Infractions Sportives. Les infractions sont envoyées sur le prochain bordereau de chaque club, avec le n° du RIS en précision.</p></div></div>
+  ${alerteRis()}
   <div class="bords">
     ${rs.map(r => { const its = itemsDe(r.id), tot = its.reduce((x, i) => x + num(i.montant), 0), afact = its.filter(i => num(i.montant) && !ligneRis(i)).length;
       return `<a class="bord" href="#ris/${r.id}"><div class="ttl"><span class="n">RIS N° ${r.numero}</span>${afact ? `<span class="badge b-warn">${afact} à facturer</span>` : its.length ? '<span class="badge b-ok">Facturé</span>' : '<span class="badge b-draft">Vide</span>'}</div>
@@ -811,7 +824,7 @@ function renderRis(r) {
       <div class="field"><label>Rubrique</label><select id="ri-rub">${RUBRIQUES.map((t, k) => `<option value="${k + 1}" ${RIS_SAISIE.rubrique === k + 1 ? 'selected' : ''}>${k + 1}- ${t}</option>`).join('')}</select></div>
       <div class="field"><label>N° de match ou tournoi</label><input id="ri-match" value="${esc(RIS_SAISIE.match)}" placeholder="DFB007, OPEN 2x2 – T1…"></div>
       <div class="field"><label>Club</label><select id="ri-club"><option value="">—</option>${clubs.map(c => `<option ${c.code === RIS_SAISIE.club ? 'selected' : ''}>${esc(c.code)}</option>`).join('')}</select></div>
-      <div class="field"><label>Infraction</label><select id="ri-art"><option value="">— Choisir dans les tarifs —</option>${['Pénalités', 'Forfaits', 'Arbitrage'].map(cat => `<optgroup label="${cat}">${as.filter(a => a.categorie === cat).map(a => `<option value="${a.id}">${esc(intituleArticle(a))} (${euros(a.prix)})</option>`).join('')}</optgroup>`).join('')}<option value="libre">Autre (saisie libre)</option></select></div>
+      <div class="field"><label>Infraction</label><select id="ri-art"><option value="">— Choisir dans les tarifs —</option>${['Pénalités', 'Forfaits', 'Arbitrage'].map(cat => `<optgroup label="${cat}">${as.filter(a => a.categorie === cat).map(a => `<option value="${a.id}">${esc(intituleArticle(a))} (${euros(a.prix)})${/FORFAIT GÉNÉRAL/.test(a.designation) && !/MODIFICATION/.test(a.designation) ? ' – aussi : retrait d\'une équipe après publication des calendriers' : /FORFAIT UN MATCH/.test(a.designation) ? ' – aussi : équipe absente' : ''}</option>`).join('')}</optgroup>`).join('')}<option value="libre">Autre (saisie libre)</option></select></div>
     </div>
     <div class="grid" style="grid-template-columns:minmax(0,1fr) 120px auto;gap:10px;align-items:end">
       <div class="field"><label>Infraction relevée (texte du RIS et de la facture, modifiable)</label><input id="ri-int" placeholder="Licence non présentée – 1 joueuse"></div>
