@@ -242,6 +242,7 @@
   .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
   .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
   .msg { border-radius: 10px; padding: 12px 14px; font-size: 14px; }
+  .msg.warn { background: var(--warn-bg); color: var(--warn); } .msg.warn a { color: inherit; font-weight: 700; }
   .msg.ok { background: var(--ok-bg); color: var(--ok); } .msg.err { background: var(--bad-bg); color: var(--bad); } .msg.info { background: #E9EFFA; color: var(--navy); }
   .form { max-width: 760px; margin: 0 auto; }
   .step { display: flex; gap: 14px; padding: 18px 0; border-top: 1px solid var(--line2); }
@@ -289,6 +290,9 @@
   .mx { border-collapse: collapse; font-size: 14px; }
   .mx th, .mx td { border: 1px solid var(--line); padding: 6px 12px; text-align: center; }
   .mx th { background: #F8FAFD; font-size: 12px; }
+  .docs-l { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+  .doc-l { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; text-decoration: none; color: var(--text); background: #fff; }
+  .doc-l:hover { border-color: var(--navy); } .doc-l b { display: block; color: var(--navy); font-size: 14px; } .doc-l small { color: var(--muted); font-size: 12.5px; } .doc-i { font-size: 20px; line-height: 1; }
   .tlist { display: flex; flex-direction: column; gap: 10px; }
   .trow { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
   .tr-l { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: flex-end; }
@@ -464,6 +468,15 @@ async function loadPublic() { D = await rpc('chp_public'); }
 
 // ======================== AJOUTER À MON AGENDA (abonnement .ics) ========================
 // Règlements (PDF dans championnats/docs/). Championnats fédéraux : ajouter ici les règlements par catégorie, ex. 'M11 FÉMININ': 'docs/reglement-M11.pdf'
+// Documents du club recevant (espace club)
+const MAIL_COMITE = 'volley83@gmail.com';
+function docsClub(c) {
+  const compo = c.code === 'O11' ? 'docs/composition-OPEN-2x2.pdf' : c.code === 'O13' ? 'docs/composition-OPEN-4x4.pdf' : 'docs/composition-M15-M18-4x4.pdf';
+  return [[compo, 'Feuille de composition des équipes', 'à faire remplir par chaque club, puis à envoyer au Comité'],
+    ...[3, 4, 5, 6].map(n => [`docs/feuille-poule-${n}.pdf`, `Feuille de poule de ${n} équipes`, 'ordre des rencontres, arbitrage et classement']),
+    ...(REGLEMENTS[c.code] ? [[REGLEMENTS[c.code], 'Règlement', '']] : [])];
+}
+const rappelCompo = () => `<div class="msg warn" style="margin:0">📧 <b>N'oubliez pas</b> d'envoyer la <b>feuille de composition des équipes</b>, remplie, par mail au Comité : <a href="mailto:${MAIL_COMITE}">${MAIL_COMITE}</a>.</div>`;
 const REGLEMENTS = { MFM: 'docs/reglement-M15-4x4.pdf', M4M: 'docs/reglement-M15-4x4.pdf', CFM: 'docs/reglement-M18-4x4.pdf', C4M: 'docs/reglement-M18-4x4.pdf', O11: 'docs/reglement-OPEN-2x2-4x4.pdf', O13: 'docs/reglement-OPEN-2x2-4x4.pdf' };
 function reglementsCat(titre) {   // championnats fédéraux : règlements selon la catégorie
   const t = normN(titre);
@@ -1023,11 +1036,12 @@ function renderClub() {
   const saved = (() => { try { return JSON.parse(sessionStorage.getItem('chp_orga')); } catch(e) { return null; } })();
   if (saved && !ORG) { orgaOpen(saved.t, saved.code).catch(() => { try { sessionStorage.removeItem('chp_orga'); } catch(e) {} renderClub(); }); return; }
   if (ORG) return renderOrgaPanel();
-  const list = D.tournois.filter(t => comp(t.competition).famille === '4x4' && !['valide', 'annule'].includes(t.statut)).sort((a, b) => a.date.localeCompare(b.date));
+  const recent = new Date(Date.now() - 10 * 864e5).toISOString().slice(0, 10);
+  const list = D.tournois.filter(t => t.statut !== 'annule' && (comp(t.competition).famille === '4x4' ? t.statut !== 'valide' : t.date >= recent)).sort((a, b) => a.date.localeCompare(b.date) || comp(a.competition).ordre - comp(b.competition).ordre);
   const near = list.find(t => t.date >= new Date(Date.now() - 10 * 864e5).toISOString().slice(0, 10));
   $('app').innerHTML = `
-  <div class="hero"><div class="wrap"><div class="k">Club recevant</div><h1>Saisir le classement d'un tournoi</h1>
-    <p>Pour le club qui reçoit un tournoi M15 ou M18 4x4 : liste des équipes inscrites, saisie du classement final et envoi au Comité, qui le valide.</p></div></div>
+  <div class="hero"><div class="wrap"><div class="k">Club recevant</div><h1>Espace du club recevant</h1>
+    <p>Pour le club qui reçoit un tournoi : liste des équipes inscrites, documents à imprimer et, en M15 / M18 4x4, saisie du classement final envoyé au Comité, qui le valide.</p></div></div>
   <main class="wrap"><form class="card form" id="orga-login">
     <div class="field"><label for="o-t">Tournoi</label><select id="o-t" required>${list.map(t => `<option value="${t.id}" ${near && near.id === t.id ? 'selected' : ''}>${esc(comp(t.competition).nom)} · Tournoi ${t.numero} · ${esc(fmtD(t.date, true, false))}</option>`).join('')}</select></div>
     <div class="field" style="margin-top:14px"><label for="o-code">Code du tournoi</label><input id="o-code" required autocomplete="off" placeholder="Communiqué par le Comité"></div>
@@ -1048,7 +1062,7 @@ async function orgaOpen(t, code) {
   renderOrgaPanel();
 }
 function renderOrgaPanel() {
-  const { data } = ORG, t = data.tournoi, c = data.competition, lock = t.statut === 'valide';
+  const { data } = ORG, t = data.tournoi, c = data.competition, lock = t.statut === 'valide', saisie = c.famille === '4x4';
   const nInscrits = data.inscriptions.reduce((s, i) => s + i.nb, 0);
   $('app').innerHTML = `
   <div class="hero"><div class="wrap"><div class="k">Club recevant · ${esc(c.nom)}</div><h1>Tournoi ${t.numero} · ${esc(fmtD(t.date, true, false))}</h1>
@@ -1059,17 +1073,23 @@ function renderOrgaPanel() {
       ${data.inscriptions.length ? `<div class="tablebox"><table class="adm"><thead><tr><th>Club</th><th>Équipes</th><th>Contact</th></tr></thead><tbody>${data.inscriptions.map(i => `<tr><td><b>${esc(clubNom(i.club))}</b></td><td>${i.nb}</td><td>${esc(i.contact || '')}${i.email ? ` · <a href="mailto:${esc(i.email)}">${esc(i.email)}</a>` : ''}${i.tel ? ' · ' + esc(i.tel) : ''}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">Aucune équipe inscrite en ligne.</p>'}
     </section>
     <section class="card stack">
+      <div class="rank-head"><h2>Documents du tournoi</h2><span class="muted small">à imprimer</span></div>
+      <div class="docs-l">${docsClub(c).map(([u, l, s]) => `<a class="doc-l" href="${u}" target="_blank" rel="noopener"><span class="doc-i">📄</span><span><b>${esc(l)}</b>${s ? `<small>${esc(s)}</small>` : ''}</span></a>`).join('')}</div>
+      ${rappelCompo()}
+    </section>
+    ${saisie ? `<section class="card stack">
       <div class="rank-head"><h2>Classement final du tournoi</h2>${{ ouvert: '<span class="badge b-tbc">À saisir</span>', saisi: '<span class="badge b-wait">Envoyé au Comité, en attente de validation</span>', valide: '<span class="badge b-res">Validé par le Comité</span>' }[t.statut]}</div>
       <p class="muted small">Classez les équipes de la 1<sup>re</sup> à la dernière place avec les flèches ▲ ▼. Gardez le même nom d'équipe d'un tournoi à l'autre : la liste propose les noms déjà utilisés dans le championnat.</p>
       <div id="org-ed"></div>
       <div id="org-msg" class="msg" hidden></div>
-      ${lock ? '' : `<div class="btnrow" style="margin:0"><button class="btn ghost" id="org-save">Enregistrer le brouillon</button><button class="btn ok" id="org-send">Envoyer le classement au Comité</button></div>`}
-    </section>
+      ${lock ? '' : `${rappelCompo()}<div class="btnrow" style="margin:0"><button class="btn ghost" id="org-save">Enregistrer le brouillon</button><button class="btn ok" id="org-send">Envoyer le classement au Comité</button></div>`}
+    </section>` : ''}
     <div><button class="linkbtn" id="org-out">Changer de tournoi</button></div>
   </main>`;
+  $('org-out').onclick = () => { ORG = null; try { sessionStorage.removeItem('chp_orga'); } catch(e) {} renderClub(); };
+  if (!saisie) return;
   const draw = () => { $('org-ed').innerHTML = editorHTML(ORG.st, lock); if (!lock) bindEditor($('org-ed'), ORG.st, draw); };
   draw();
-  $('org-out').onclick = () => { ORG = null; try { sessionStorage.removeItem('chp_orga'); } catch(e) {} renderClub(); };
   if (lock) return;
   const send = async envoyer => {
     const rows = rowsOut(ORG.st), m = $('org-msg');
@@ -1080,7 +1100,7 @@ function renderOrgaPanel() {
     try {
       const statut = await rpc('chp_orga_enregistrer', { p_tournoi: ORG.t, p_code: ORG.code, p_rows: rows, p_envoyer: envoyer });
       ORG.data.tournoi.statut = statut; ORG.st.dirty = false;
-      if (envoyer) { renderOrgaPanel(); const m2 = $('org-msg'); m2.className = 'msg ok'; m2.textContent = '✓ Classement envoyé. Le Comité le vérifie puis le publie avec le classement général. Vous pouvez encore le corriger tant qu\'il n\'est pas validé.'; m2.hidden = false; }
+      if (envoyer) { renderOrgaPanel(); const m2 = $('org-msg'); m2.className = 'msg ok'; m2.textContent = `✓ Classement envoyé. Le Comité le vérifie puis le publie avec le classement général. Vous pouvez encore le corriger tant qu'il n'est pas validé. Pensez à envoyer la feuille de composition des équipes à ${MAIL_COMITE}.`; m2.hidden = false; }
       else { m.className = 'msg ok'; m.textContent = '✓ Brouillon enregistré.'; m.hidden = false; }
     } catch(e) { m.className = 'msg err'; m.textContent = e.message; m.hidden = false; }
   };
@@ -1227,7 +1247,7 @@ function adminTournois() {
   const c = aComp(ACOMP), ts = A.tournois.filter(t => t.competition === ACOMP).sort((a, b) => a.numero - b.numero);
   $('a-body').innerHTML = `<div class="stack">
     <div class="tabs">${A.competitions.map(x => `<button class="tab ${kind(x)} ${x.code === ACOMP ? 'on' : ''}" data-c="${x.code}"><span class="sw ${kind(x)}"></span>${esc(x.nom)}</button>`).join('')}</div>
-    <p class="small muted">Les modifications sont enregistrées dès que vous quittez un champ. Inscriptions « Auto » : ouvertes 6 semaines avant le tournoi, jusqu'au jeudi précédent à 12 h (la date limite se recalcule quand vous changez la date du tournoi). ${c.famille === '4x4' ? 'Le code est à donner au club recevant, avec le lien de l\'espace club : <a href="' + SITE_URL + '#club" target="_blank">' + SITE_URL + '#club</a>.' : ''}</p>
+    <p class="small muted">Les modifications sont enregistrées dès que vous quittez un champ. Inscriptions « Auto » : ouvertes 6 semaines avant le tournoi, jusqu'au jeudi précédent à 12 h (la date limite se recalcule quand vous changez la date du tournoi). Le code est à donner au club recevant (bouton « ✉ Envoyer le code ») : avec lui, le club accède à l'espace club, <a href="${SITE_URL}#club" target="_blank">${SITE_URL}#club</a>, pour voir les inscrits, télécharger les documents du tournoi${c.famille === '4x4' ? ' et saisir le classement' : ''}.</p>
     <div class="tlist">${ts.map(t => `<div class="trow" data-id="${t.id}">
       <div class="tr-l">
         <label class="tf" style="width:64px"><span>N°</span><input data-f="numero" type="number" value="${t.numero}"></label>
@@ -1241,7 +1261,8 @@ function adminTournois() {
         <label class="tf" style="width:150px"><span>Limite inscr.</span><input data-f="date_limite" type="date" value="${esc(t.date_limite || '')}"></label>
         <label class="tf" style="width:78px"><span>Heure lim.</span><input data-f="heure_limite" value="${esc(t.heure_limite || '')}"></label>
         <label class="tf" style="width:170px"><span>Inscriptions <b class="${t.ouvert ? 'ok' : 'muted'}">${t.ouvert ? '● ouvertes' : 'closes'}</b></span><select data-f="inscriptions">${[['auto', 'Auto'], ['ouvertes', 'Forcer ouvertes'], ['fermees', 'Fermées']].map(([v, l]) => `<option value="${v}" ${t.inscriptions === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
-        ${c.famille === '4x4' ? `<label class="tf" style="width:220px"><span>Code club recevant</span><span class="tf-in"><input data-f="code_orga" class="code" value="${esc(t.code_orga || '')}"><button type="button" class="linkbtn" data-gen>Générer</button></span></label>` : ''}
+        <label class="tf" style="width:220px"><span>Code club recevant</span><span class="tf-in"><input data-f="code_orga" class="code" value="${esc(t.code_orga || '')}"><button type="button" class="linkbtn" data-gen>Générer</button></span></label>
+        ${t.code_orga ? `<div class="tf" style="padding-bottom:6px"><button type="button" class="btn ghost sm" data-mail title="Ouvre un brouillon Gmail pour le club recevant, avec le code et les explications">✉ Envoyer le code</button></div>` : ''}
         <div class="tf tf-end">${['ouvert', 'annule'].includes(t.statut) ? `<label class="tf-chk"><input type="checkbox" data-annule ${t.statut === 'annule' ? 'checked' : ''}> Annulé</label>` : '<span class="small muted">' + (t.statut === 'valide' ? 'Joué' : 'Classement saisi') + '</span>'}<button type="button" class="linkbtn red" data-del>Supprimer</button></div>
       </div></div>`).join('') || '<div class="card muted">Aucun tournoi pour le moment.</div>'}</div>
     <div><button class="btn ghost" id="a-add">+ Ajouter un tournoi</button></div>
@@ -1256,10 +1277,36 @@ function adminTournois() {
       await put(id, p); if (['inscriptions', 'date_limite', 'date'].includes(el.dataset.f)) adminTournois();
     });
     const an = tr.querySelector('[data-annule]'); if (an) an.onchange = async () => { await put(id, { statut: an.checked ? 'annule' : 'ouvert' }); adminTournois(); };
-    const g = tr.querySelector('[data-gen]'); if (g) g.onclick = async () => { const inp = tr.querySelector('[data-f="code_orga"]'); inp.value = ACOMP + '-' + Math.random().toString(36).slice(2, 6).toUpperCase().replace(/[O0I1L]/g, 'X'); await put(id, { code_orga: inp.value }); };
+    const g = tr.querySelector('[data-gen]'); if (g) g.onclick = async () => { const inp = tr.querySelector('[data-f="code_orga"]'); inp.value = ACOMP + '-' + Math.random().toString(36).slice(2, 6).toUpperCase().replace(/[O0I1L]/g, 'X'); await put(id, { code_orga: inp.value }); adminTournois(); };
+    const ml = tr.querySelector('[data-mail]'); if (ml) ml.onclick = () => mailCodeOrga(ts.find(x => x.id === id), c);
     tr.querySelector('[data-del]').onclick = async () => { if (!confirm('Supprimer ce tournoi, ses inscriptions et son classement ?')) return; await rpc('chp_admin_delete_tournoi', { pwd: ADMIN_PWD, tid: id }); await loadAdmin(); await loadPublic(); adminTournois(); };
   });
   $('a-add').onclick = async () => { const n = Math.max(0, ...ts.map(t => t.numero)) + 1, d = today(); await put(null, { competition: ACOMP, numero: n, date: d, date_limite: jeudiAvant(d), heure_limite: '12:00' }); adminTournois(); };
+}
+
+// Brouillon Gmail pour le club recevant : code, espace club, documents, rappel de la feuille de composition
+let MAILS_CLUBS = null;
+async function mailCodeOrga(t, c) {
+  const w = window.open('about:blank', '_blank');   // ouvert tout de suite pour ne pas être bloqué par le navigateur
+  if (MAILS_CLUBS === null) { try { MAILS_CLUBS = await rpc('chp_admin_mails', { pwd: ADMIN_PWD }) || {}; } catch(e) { MAILS_CLUBS = {}; } }
+  const tsC = A.tournois.filter(x => x.competition === t.competition).map(x => x.id);
+  const insc = [...new Set(A.inscriptions.filter(i => i.club === t.organisateur && tsC.includes(i.tournoi_id) && i.contact_email).map(i => i.contact_email.trim()))];
+  const to = MAILS_CLUBS[t.organisateur] || insc.join(',');
+  const quand = fmtD(t.date, true, false) + (t.heure ? ' à ' + fmtH(t.heure) : '');
+  const sujet = `${c.nom} – Tournoi ${t.numero} du ${fmtD(t.date, true, false)} : votre code club recevant`;
+  const corps = `Bonjour,\n\n`
+    + `Vous recevez le tournoi ${t.numero} de ${c.nom}, le ${quand}${t.lieu ? ', ' + lieuTxt(t) : ''}. Merci pour votre accueil !\n\n`
+    + `Votre code club recevant : ${t.code_orga}\n\n`
+    + `Avec ce code, connectez-vous à l'espace club (choisissez le tournoi, puis saisissez le code) :\n${SITE_URL}#club\n\n`
+    + `Vous y trouverez :\n`
+    + `- la liste des équipes inscrites et les contacts des clubs (inscriptions closes le jeudi précédant le tournoi à 12 h) ;\n`
+    + `- les documents à imprimer pour le tournoi : feuille de composition des équipes, feuilles de poule (de 3 à 6 équipes) et règlement.\n\n`
+    + (c.famille === '4x4' ? `Après le tournoi, reconnectez-vous avec le même code pour saisir le classement final et l'envoyer au Comité, qui le validera avant sa publication.\n\n` : '')
+    + `N'oubliez pas d'envoyer la feuille de composition des équipes, remplie, par mail au Comité : ${MAIL_COMITE}\n\n`
+    + `Sportivement,\nLe Comité du Var de Volley-Ball\n`;
+  const url = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`;
+  if (w) w.location.href = url; else window.open(url, '_blank');
+  if (!to) saveMark('err', '⚠ Pas d\'adresse mail connue pour ce club : complétez le destinataire dans Gmail');
 }
 
 // ----- Coupe de France -----

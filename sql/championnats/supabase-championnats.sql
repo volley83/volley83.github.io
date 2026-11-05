@@ -358,3 +358,14 @@ update chp_tournois set date_limite = date - case when (extract(dow from date)::
 update chp_tournois set statut = 'annule' where competition = 'C4M' and numero = 1 and statut = 'ouvert';
 
 -- Message attendu : « Success. No rows returned »
+
+-- ---------- Adresses mail des clubs (bouton « Envoyer le code ») ----------
+create or replace function chp_admin_mails(pwd text) returns jsonb
+language plpgsql stable security definer set search_path = public as $$
+begin
+  if not chp_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  return (select coalesce(jsonb_object_agg(f.code, f.email), '{}'::jsonb)
+          from fac_clubs f where coalesce(trim(f.email), '') <> '');
+end $$;
+revoke all on function chp_admin_mails(text) from public;
+grant execute on function chp_admin_mails(text) to anon, authenticated;
