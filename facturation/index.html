@@ -1009,7 +1009,12 @@ async function genererRis(id) {
     await pdfRis(id); route();
   } catch(e) { fail(e); }
 }
-let LOGO_FF = null;
+let LOGO_FF = null, LOGO_CARRE = null;
+async function logoCarre() {
+  if (LOGO_CARRE !== null) return LOGO_CARRE;
+  try { const bl = await (await fetch('logo-comite-carre.jpg')).blob(); LOGO_CARRE = await new Promise(res => { const f = new FileReader(); f.onload = () => res(f.result); f.readAsDataURL(bl); }); } catch(e) { LOGO_CARRE = ''; }
+  return LOGO_CARRE;
+}
 async function logoFF() {
   if (LOGO_FF !== null) return LOGO_FF;
   try { const bl = await (await fetch('logo-ffvolley.jpg')).blob(); LOGO_FF = await new Promise(res => { const f = new FileReader(); f.onload = () => res(f.result); f.readAsDataURL(bl); }); } catch(e) { LOGO_FF = ''; }
@@ -1019,26 +1024,26 @@ async function pdfRis(id) {
   if (!window.jspdf) { alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.'); return; }
   const r = risDe(id), its = itemsDe(id), { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const W = 210, M = 16, CW = W - 2 * M, NAVY = [11, 33, 73], GOLD = [246, 194, 27], TXT = [20, 32, 58], GRIS = [100, 112, 135], LIGNE = [226, 231, 240];
-  const img1 = await logoFF(), img2 = await logo(), pied = pdfTxt(reglage('ris_pied', '')).split('\n').filter(Boolean);
+  const img1 = await logoFF(), img2 = (await logoCarre()) || (await logo()), pied = pdfTxt(reglage('ris_pied', '')).split('\n').filter(Boolean);
   const put = (img, x, y, h, maxW, right) => { if (!img) return; try { const ip = doc.getImageProperties(img); let w = h * ip.width / ip.height; if (w > maxW) { h = h * maxW / w; w = maxW; } doc.addImage(img, 'JPEG', right ? x - w : x, y, w, h); } catch(e) {} };
   const BAS = 272;   // limite basse du contenu (pied de page en dessous)
   // ---- En-tête de la 1re page : logos, bandeau titre, résumé
   const entetePage1 = () => {
-    put(img1, M, 10, 16, 24); put(img2, W - M, 10, 16, 40, true);
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5); doc.setTextColor(...NAVY);
-    doc.text('Comité Départemental du Var', W / 2, 15.5, { align: 'center' });
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(...GRIS);
-    doc.text('de la Fédération Française de Volley', W / 2, 20.5, { align: 'center' });
-    doc.setFillColor(...NAVY); doc.roundedRect(M, 31, CW, 25, 3, 3, 'F');
-    doc.setFillColor(...GOLD); doc.rect(M + 7, 38, 1.4, 11, 'F');
+    put(img1, M, 9, 21, 24); put(img2, W - M, 9, 21, 32, true);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(14.5); doc.setTextColor(...NAVY);
+    doc.text('Comité Départemental du Var', W / 2, 18, { align: 'center' });
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(11.5); doc.setTextColor(...GRIS);
+    doc.text('de la Fédération Française de Volley', W / 2, 24.5, { align: 'center' });
+    doc.setFillColor(...NAVY); doc.roundedRect(M, 37, CW, 25, 3, 3, 'F');
+    doc.setFillColor(...GOLD); doc.rect(M + 7, 44, 1.4, 11, 'F');
     doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(17);
-    doc.text('RELEVÉ DES INFRACTIONS SPORTIVES', M + 12, 43);
+    doc.text('RELEVÉ DES INFRACTIONS SPORTIVES', M + 12, 49);
     doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(201, 212, 234);
-    doc.text(pdfTxt(`Saison ${String(r.saison || SAISON).replace('-', '/')}  ·  arrêté au ${fmtLong(r.date)}`), M + 12, 50);
+    doc.text(pdfTxt(`Saison ${String(r.saison || SAISON).replace('-', '/')}  ·  arrêté au ${fmtLong(r.date)}`), M + 12, 56);
     doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...NAVY);
-    doc.setFillColor(...GOLD); doc.roundedRect(W - M - 30, 38, 24, 11, 2, 2, 'F'); doc.text(`N° ${r.numero}`, W - M - 18, 45.2, { align: 'center' });
+    doc.setFillColor(...GOLD); doc.roundedRect(W - M - 30, 44, 24, 11, 2, 2, 'F'); doc.text(`N° ${r.numero}`, W - M - 18, 51.2, { align: 'center' });
     // résumé
-    const nClubs = new Set(its.map(i => i.club)).size, y = 62;
+    const nClubs = new Set(its.map(i => i.club)).size, y = 68;
     const chip = (x, val, lib) => { doc.setFillColor(244, 246, 250); doc.roundedRect(x, y, 40, 13, 2, 2, 'F');
       doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor(...NAVY); doc.text(String(val), x + 4, y + 8.6);
       const w = doc.getTextWidth(String(val)); doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...GRIS); doc.text(lib, x + 6 + w, y + 8.4); };
@@ -1046,7 +1051,7 @@ async function pdfRis(id) {
     return y + 21;
   };
   const enteteSuite = () => {
-    put(img2, W - M, 9, 10, 26, true);
+    put(img2, W - M, 7, 13, 16, true);
     doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(...NAVY);
     doc.text(pdfTxt(`Relevé des Infractions Sportives n° ${r.numero}`), M, 15);
     doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...GRIS); doc.text(pdfTxt(`arrêté au ${fmtLong(r.date)} (suite)`), M, 19.5);
