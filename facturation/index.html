@@ -1018,43 +1018,104 @@ async function logoFF() {
 async function pdfRis(id) {
   if (!window.jspdf) { alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.'); return; }
   const r = risDe(id), its = itemsDe(id), { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' });
-  const W = 210, M = 22, bleu = [31, 95, 168], img1 = await logoFF(), img2 = await logo();
-  const pied = pdfTxt(reglage('ris_pied', '')).split('\n').filter(Boolean);
-  const entete = () => {
-    const put = (img, x, h, maxW, right) => { if (!img) return; try { const ip = doc.getImageProperties(img); let w = h * ip.width / ip.height; if (w > maxW) { h = h * maxW / w; w = maxW; } doc.addImage(img, 'JPEG', right ? x - w : x, 10 + (20 - h) / 2, w, h); } catch(e) {} };
-    put(img1, 14, 20, 28); put(img2, W - 14, 20, 38, true);
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.setTextColor(...bleu);
-    doc.text('Comité Départemental du Var', W / 2, 17, { align: 'center' }); doc.text('de la Fédération Française de Volley', W / 2, 24, { align: 'center' });
-    doc.setDrawColor(...bleu); doc.setLineWidth(0.5); doc.line(14, 280, W - 14, 280);
-    doc.setTextColor(20, 32, 58); doc.setFontSize(7.5);
-    pied.forEach((t, k) => { doc.setFont('helvetica', k ? 'normal' : 'bold'); doc.text(t, W / 2, 284 + k * 3.4, { align: 'center' }); });
+  const W = 210, M = 16, CW = W - 2 * M, NAVY = [11, 33, 73], GOLD = [246, 194, 27], TXT = [20, 32, 58], GRIS = [100, 112, 135], LIGNE = [226, 231, 240];
+  const img1 = await logoFF(), img2 = await logo(), pied = pdfTxt(reglage('ris_pied', '')).split('\n').filter(Boolean);
+  const put = (img, x, y, h, maxW, right) => { if (!img) return; try { const ip = doc.getImageProperties(img); let w = h * ip.width / ip.height; if (w > maxW) { h = h * maxW / w; w = maxW; } doc.addImage(img, 'JPEG', right ? x - w : x, y, w, h); } catch(e) {} };
+  const BAS = 272;   // limite basse du contenu (pied de page en dessous)
+  // ---- En-tête de la 1re page : logos, bandeau titre, résumé
+  const entetePage1 = () => {
+    put(img1, M, 10, 16, 24); put(img2, W - M, 10, 16, 40, true);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5); doc.setTextColor(...NAVY);
+    doc.text('Comité Départemental du Var', W / 2, 15.5, { align: 'center' });
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(...GRIS);
+    doc.text('de la Fédération Française de Volley', W / 2, 20.5, { align: 'center' });
+    doc.setFillColor(...NAVY); doc.roundedRect(M, 31, CW, 25, 3, 3, 'F');
+    doc.setFillColor(...GOLD); doc.rect(M + 7, 38, 1.4, 11, 'F');
+    doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(17);
+    doc.text('RELEVÉ DES INFRACTIONS SPORTIVES', M + 12, 43);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(201, 212, 234);
+    doc.text(pdfTxt(`Saison ${String(r.saison || SAISON).replace('-', '/')}  ·  arrêté au ${fmtLong(r.date)}`), M + 12, 50);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...NAVY);
+    doc.setFillColor(...GOLD); doc.roundedRect(W - M - 30, 38, 24, 11, 2, 2, 'F'); doc.text(`N° ${r.numero}`, W - M - 18, 45.2, { align: 'center' });
+    // résumé
+    const nClubs = new Set(its.map(i => i.club)).size, y = 62;
+    const chip = (x, val, lib) => { doc.setFillColor(244, 246, 250); doc.roundedRect(x, y, 40, 13, 2, 2, 'F');
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor(...NAVY); doc.text(String(val), x + 4, y + 8.6);
+      const w = doc.getTextWidth(String(val)); doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...GRIS); doc.text(lib, x + 6 + w, y + 8.4); };
+    chip(M, its.length, its.length > 1 ? 'infractions' : 'infraction'); chip(M + 44, nClubs, nClubs > 1 ? 'clubs concernés' : 'club concerné');
+    return y + 21;
   };
-  entete();
-  doc.setFont('helvetica', 'normal'); doc.setTextColor(20, 32, 58); doc.setFontSize(18); doc.text('Relevé des Infractions Sportives', W / 2, 42, { align: 'center' });
-  doc.setFont('helvetica', 'italic'); doc.setFontSize(12); doc.text(pdfTxt(`N°${r.numero} – au ${fmtLong(r.date)}`), W / 2, 50, { align: 'center' });
-  let y = 62;
-  const cols = [{ t: 'N° de match ou tournoi', w: 45 }, { t: 'Club', w: 25 }, { t: 'Infraction relevée', w: W - 2 * M - 70 }];
-  const row = (vals, head) => {
-    doc.setFontSize(9); doc.setFont('helvetica', 'normal');
-    const lines = vals.map((v, k) => doc.splitTextToSize(pdfTxt(v), cols[k].w - 3)), h = Math.max(...lines.map(l => l.length)) * 4 + 3;
-    let x = M;
-    cols.forEach((c, k) => { if (head) { doc.setFillColor(220, 234, 247); doc.rect(x, y, c.w, h, 'FD'); } else doc.rect(x, y, c.w, h);
-      doc.text(lines[k], x + c.w / 2, y + 4.6, { align: 'center' }); x += c.w; });
+  const enteteSuite = () => {
+    put(img2, W - M, 9, 10, 26, true);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(...NAVY);
+    doc.text(pdfTxt(`Relevé des Infractions Sportives n° ${r.numero}`), M, 15);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...GRIS); doc.text(pdfTxt(`arrêté au ${fmtLong(r.date)} (suite)`), M, 19.5);
+    doc.setDrawColor(...LIGNE); doc.setLineWidth(0.3); doc.line(M, 23, W - M, 23);
+    return 31;
+  };
+  let y = entetePage1();
+  const nouvellePage = () => { doc.addPage(); y = enteteSuite(); };
+  // ---- Tableau
+  const cols = [{ t: 'MATCH / TOURNOI', w: 38 }, { t: 'CLUB', w: 24 }, { t: 'INFRACTION RELEVÉE', w: CW - 62 }];
+  const enteteTable = () => {
+    doc.setFillColor(244, 246, 250); doc.rect(M, y, CW, 7, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(7.2); doc.setTextColor(...GRIS);
+    let x = M; cols.forEach(c => { doc.text(c.t, x + 3, y + 4.7); x += c.w; });
+    y += 7;
+  };
+  const hauteurLigne = i => {
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9.2);
+    const l1 = doc.splitTextToSize(pdfTxt(i.intitule), cols[2].w - 6);
+    doc.setFontSize(8); const l2 = i.note ? doc.splitTextToSize(pdfTxt(i.note), cols[2].w - 6) : [];
+    return { l1, l2, h: Math.max(6.6, 2.6 + l1.length * 4 + l2.length * 3.5 + 1.2) };
+  };
+  const ligne = (i, k) => {
+    const { l1, l2, h } = hauteurLigne(i);
+    if (k % 2) { doc.setFillColor(250, 251, 253); doc.rect(M, y, CW, h, 'F'); }
+    doc.setDrawColor(...LIGNE); doc.setLineWidth(0.2); doc.line(M, y + h, M + CW, y + h);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...TXT);
+    doc.text(doc.splitTextToSize(pdfTxt(i.match || '—'), cols[0].w - 6), M + 3, y + 4.6);
+    // pastille club
+    doc.setFontSize(8); const cw = doc.getTextWidth(i.club) + 5;
+    doc.setFillColor(233, 239, 250); doc.roundedRect(M + cols[0].w + 2, y + 1.1, cw, 4.9, 1.5, 1.5, 'F');
+    doc.setTextColor(30, 79, 163); doc.text(i.club, M + cols[0].w + 4.5, y + 4.55);
+    const xi = M + cols[0].w + cols[1].w + 3;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9.2); doc.setTextColor(...TXT); doc.text(l1, xi, y + 4.6);
+    if (l2.length) { doc.setFont('helvetica', 'italic'); doc.setFontSize(8); doc.setTextColor(...GRIS); doc.text(l2, xi, y + 4.4 + l1.length * 4); }
     y += h;
   };
   RUBRIQUES.forEach((t, k) => {
-    const li = its.filter(i => i.rubrique === k + 1).sort((a, b) => a.ordre - b.ordre || a.id - b.id);
-    const besoin = 16 + Math.max(1, li.length) * 7;
-    if (y + Math.min(besoin, 40) > 272) { doc.addPage(); entete(); y = 36; }
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(20, 32, 58); doc.text(`${k + 1}-  ${t}`, M - 4, y); y += 4;
-    doc.setDrawColor(150, 160, 175); doc.setLineWidth(0.2);
-    row(cols.map(c => c.t), true);
-    (li.length ? li : [{ match: '', club: '', intitule: 'Néant' }]).forEach(i => { if (y > 268) { doc.addPage(); entete(); y = 36; row(cols.map(c => c.t), true); } row([i.match || '', i.club, i.intitule + (i.note ? ` (${i.note})` : '')]); });
+    const li = its.filter(i => i.rubrique === k + 1).sort((a, b) => coll.compare(a.match || '', b.match || '') || a.ordre - b.ordre || a.id - b.id);
+    // titre de rubrique (jamais seul en bas de page)
+    const premier = li.length ? hauteurLigne(li[0]).h : 0;
+    if (y + 11 + (li.length ? 7 + premier : 0) > BAS) nouvellePage();
+    doc.setFillColor(...NAVY); doc.circle(M + 3.2, y + 3.1, 3.2, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(255, 255, 255); doc.text(String(k + 1), M + 3.2, y + 4.3, { align: 'center' });
+    doc.setFontSize(11.5); doc.setTextColor(...NAVY); doc.text(pdfTxt(t), M + 9, y + 4.4);
+    const tw = doc.getTextWidth(pdfTxt(t));
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(...GRIS);
+    doc.text(li.length ? `${li.length} infraction${li.length > 1 ? 's' : ''}` : 'Néant', M + 12 + tw, y + 4.4);
     y += 9;
+    if (!li.length) { y += 1.5; return; }
+    enteteTable();
+    li.forEach((i, n) => { const { h } = hauteurLigne(i); if (y + h > BAS) { nouvellePage(); enteteTable(); } ligne(i, n); });
+    y += 6;
   });
-  if (y > 262) { doc.addPage(); entete(); y = 40; }
-  doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(20, 32, 58);
-  doc.text(doc.splitTextToSize('Conformément à l\'article 4.2 du RGISA, les GSA disposent d\'un délai de 5 jours pour transmettre leurs observations par courrier électronique.', 150), W / 2, y + 4, { align: 'center' });
+  // ---- Mention RGISA
+  const txt = doc.splitTextToSize("Conformément à l'article 4.2 du RGISA, les GSA disposent d'un délai de 5 jours pour transmettre leurs observations par courrier électronique.", CW - 14);
+  const hB = 6 + txt.length * 4.3;
+  if (y + hB > BAS) nouvellePage();
+  doc.setFillColor(255, 248, 225); doc.roundedRect(M, y, CW, hB, 2, 2, 'F'); doc.setFillColor(...GOLD); doc.rect(M, y, 1.4, hB, 'F');
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(122, 85, 0); doc.text(txt, M + 6, y + 5.5);
+  // ---- Pieds de page avec numérotation
+  const n = doc.internal.getNumberOfPages();
+  for (let p = 1; p <= n; p++) {
+    doc.setPage(p);
+    doc.setDrawColor(...LIGNE); doc.setLineWidth(0.3); doc.line(M, 278, W - M, 278);
+    doc.setFontSize(7.3); doc.setTextColor(...GRIS);
+    pied.forEach((tx, k) => { doc.setFont('helvetica', k ? 'normal' : 'bold'); doc.text(tx, M, 282 + k * 3.3); });
+    doc.setFont('helvetica', 'normal'); doc.text(`${p} / ${n}`, W - M, 282, { align: 'right' });
+  }
   doc.save(`RIS-${r.numero}-${SAISON}.pdf`);
 }
 
