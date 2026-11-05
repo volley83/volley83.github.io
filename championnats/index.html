@@ -148,6 +148,7 @@
   .jh { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; padding: 10px 14px; background: #F4F6FA; border-bottom: 1px solid var(--line); }
   .jh b { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 18px; text-transform: uppercase; color: var(--navy); letter-spacing: .4px; }
   .jh span { font-size: 13.5px; color: var(--text); font-weight: 600; }
+  .jnote { padding: 8px 14px; font-size: 13px; color: var(--muted); font-style: italic; border-top: 1px dashed var(--line); }
   .rm { display: grid; grid-template-columns: 56px minmax(0, 1.2fr) 64px minmax(0, 1.2fr) minmax(0, .8fr); gap: 10px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--line2); font-size: 14.5px; }
   .jh + .rm, .jh + .um { border-top: 0; }
   .rm-code { font-size: 11px; color: #8A94A6; font-family: ui-monospace, Menlo, Consolas, monospace; letter-spacing: .3px; }
@@ -608,7 +609,7 @@ function infosJournee(j) {
 }
 function enteteJournee(j, inf) {
   const quand = !inf.dates.length ? 'Date à venir' : inf.unJour ? cap(fmtD(inf.dates[0], true, false)) : 'Du ' + fmtD(inf.dates[0], false, false) + ' au ' + fmtD(inf.dates[inf.dates.length - 1], false, false);
-  return `<div class="jh"><b>${esc(joli(j.titre) || 'Rencontres')}</b><span>${esc(quand)}${inf.uneHeure && inf.heures[0] ? ' · ' + esc(fmtH(inf.heures[0])) : ''}${inf.unLieu && inf.lieux[0] ? ' · 📍 ' + esc(lieuJoli(inf.lieux[0])) : ''}</span></div>`;
+  return `<div class="jh"><b>${esc(joli(j.titre) || 'Rencontres')}${j.decale ? ' · match ' + j.decale : ''}</b><span>${esc(quand)}${inf.uneHeure && inf.heures[0] ? ' · ' + esc(fmtH(inf.heures[0])) : ''}${inf.unLieu && inf.lieux[0] ? ' · 📍 ' + esc(lieuJoli(inf.lieux[0])) : ''}</span></div>`;
 }
 function detailMatch(m, inf) {   // ce qui diffère de l'en-tête du tournoi (journées seniors étalées sur plusieurs jours)
   const d = parseD(m.date);
@@ -616,6 +617,10 @@ function detailMatch(m, inf) {   // ce qui diffère de l'en-tête du tournoi (jo
 }
 const tri = ms => ms.slice().sort((a, b) => String(a.date).localeCompare(String(b.date)) || String(a.heure || '').localeCompare(String(b.heure || '')) || a.code.localeCompare(b.code));
 // Résultats : grande liste lisible
+function noteDecales(j) {
+  const ds = (j.decales || []).filter(m => !(FEDSEUL && FEDCLUB) || estMien(m.dom) || estMien(m.ext));
+  return ds.map(m => `<div class="jnote">${esc(m.code)} · ${esc(equipeFed(m.dom))} – ${esc(equipeFed(m.ext))} : match ${m.date > (j.debut || '') ? 'reporté' : 'avancé'} au ${esc(fmtD(m.date, true, false))}</div>`).join('');
+}
 function blocResultats(j, ms) {
   const inf = infosJournee(j);
   return `<div class="jb">${enteteJournee(j, inf)}${tri(ms).map(m => {
@@ -626,7 +631,7 @@ function blocResultats(j, ms) {
       <span class="rm-score">${joue ? `<b class="${w === 'dom' ? 'w' : ''}">${m.sd}</b><i>–</i><b class="${w === 'ext' ? 'w' : ''}">${m.se}</b>` : `<i>${[m.dom, m.ext].some(x => equipeFed(x) === 'Exempt') ? 'exempt' : 'non joué'}</i>`}</span>
       <span class="rm-ext ${w === 'ext' ? 'win' : ''}">${esc(equipeFed(m.ext))}</span>
       <span class="rm-sets">${joue ? esc((m.sets || '').replace(/:/g, '-')) : ''}${det ? (joue ? ' · ' : '') + esc(det) : ''}</span>
-    </div>`; }).join('')}</div>`;
+    </div>`; }).join('')}${noteDecales(j)}</div>`;
 }
 // À venir : colonne de droite, compacte
 function blocAvenir(j, ms) {
@@ -634,17 +639,27 @@ function blocAvenir(j, ms) {
   return `<div class="jb">${enteteJournee(j, inf)}${tri(ms).map(m => { const det = detailMatch(m, inf); return `<div class="um ${estMien(m.dom) || estMien(m.ext) ? 'mine' : ''}">
       <span class="rm-code">${esc(m.code)}</span>
       <span class="um-t"><span>${esc(equipeFed(m.dom))}</span><span>${esc(equipeFed(m.ext))}</span>${det ? `<small>${esc(det)}</small>` : ''}</span>
-    </div>`; }).join('')}</div>`;
+    </div>`; }).join('')}${noteDecales(j)}</div>`;
 }
 
 function drawPoule(sel) {
   const box = $('fed-poule');
   if (!sel) { box.innerHTML = '<div class="card muted">Aucune poule dans cette catégorie pour le moment.</div>'; return; }
   const { c, p } = sel, g = c.groupe, auj = today();
+  const phaseG = x => phase(x) || (['seniors', 'competlib'].includes(g) ? '1re phase' : '');
   const filt = j => FEDSEUL && FEDCLUB ? j.matchs.filter(m => estMien(m.dom) || estMien(m.ext)) : j.matchs;
-  const js = p.journees.map(j => ({ ...j, joues: j.matchs.filter(m => m.sd != null).length, fin: j.matchs.map(m => m.date).filter(Boolean).sort().pop() }));
-  const resultats = js.filter(j => j.joues > 0 || (j.fin && j.fin < auj)).reverse();
-  const avenir = js.filter(j => !(j.joues > 0 || (j.fin && j.fin < auj)));
+  // Un match joué à plus de 10 jours de la date de sa journée (reporté ou avancé) forme son propre bloc, placé à sa date.
+  const blocs = [];
+  p.journees.forEach(j => {
+    const ds = j.matchs.map(m => m.date).filter(Boolean).sort(), ref = ds[Math.floor(ds.length / 2)];
+    const dec = ref ? j.matchs.filter(m => m.date && Math.abs(parseD(m.date) - parseD(ref)) / 864e5 > 10) : [];
+    const reste = j.matchs.filter(m => !dec.includes(m));
+    if (reste.length || !dec.length) blocs.push({ ...j, matchs: reste, decales: dec });
+    dec.forEach(m => blocs.push({ ...j, matchs: [m], decale: m.date > ref ? 'reporté' : 'avancé' }));
+  });
+  const js = blocs.map((j, i) => { const ds = j.matchs.map(m => m.date).filter(Boolean).sort(); return { ...j, i, joues: j.matchs.filter(m => m.sd != null).length, debut: ds[0] || '', fin: ds.pop() || '' }; });
+  const resultats = js.filter(j => j.joues > 0 || (j.fin && j.fin < auj)).sort((a, b) => b.fin.localeCompare(a.fin) || b.i - a.i);
+  const avenir = js.filter(j => !(j.joues > 0 || (j.fin && j.fin < auj))).sort((a, b) => (a.debut || '9').localeCompare(b.debut || '9') || a.i - b.i);
   const cl = p.classement;
   const finale = /2EME|DEUXIEME|FINALE|FINAL/.test(normN(p.titre));   // médailles seulement pour une phase finale
   const enAvant = cl.some(r => r.mis_en_avant) && cl.some(r => !r.mis_en_avant);
@@ -653,10 +668,10 @@ function drawPoule(sel) {
   const aBlocs = avenir.map(j => { const ms = filt(j); return ms.length ? blocAvenir(j, ms) : ''; }).filter(Boolean);
   const aHTML = aBlocs.slice(0, 2).join('') + (aBlocs.length > 2 ? `<details class="plus"><summary>${(() => { const n = aBlocs.length - 2, jn = /^Journ/i.test(avenir[0].titre); return n === 1 ? (jn ? 'Voir la journée suivante' : 'Voir le tournoi suivant') : `Voir les ${n} ${jn ? 'journées suivantes' : 'tournois suivants'}`; })()}</summary>${aBlocs.slice(2).join('')}</details>` : '');
   box.innerHTML = `
-  ${c.poules.length > 1 ? `<div class="pgroups">${(() => { const gr = []; c.poules.forEach(x => { const ph = phase(x), l = gr.find(e => e[0] === ph); l ? l[1].push(x) : gr.push([ph, [x]]); }); return gr; })().map(([ph, ps]) => `<div class="pgroup">${ph ? `<div class="pg-t">${esc(ph)}</div>` : ''}<div class="tabs">${ps.map(x => `<a class="tab ${x === p ? 'on' : ''}" style="${x === p ? 'background:var(--navy);color:#fff' : ''}" href="#championnats/${g}/${x.code}">${esc(pouleCourt(x))}</a>`).join('')}</div></div>`).join('')}</div>` : ''}
+  ${c.poules.length > 1 ? `<div class="pgroups">${(() => { const gr = []; c.poules.forEach(x => { const ph = phaseG(x), l = gr.find(e => e[0] === ph); l ? l[1].push(x) : gr.push([ph, [x]]); }); return gr; })().map(([ph, ps]) => `<div class="pgroup">${ph ? `<div class="pg-t">${esc(ph)}</div>` : ''}<div class="tabs">${ps.map(x => `<a class="tab ${x === p ? 'on' : ''}" style="${x === p ? 'background:var(--navy);color:#fff' : ''}" href="#championnats/${g}/${x.code}">${esc(pouleCourt(x))}</a>`).join('')}</div></div>`).join('')}</div>` : ''}
   <div class="fedgrid">
     <section class="card fg-rank">
-      <div class="rank-head"><div><div class="ph">${esc(phase(p))}</div><h2>${esc(joli(c.titre))}</h2></div><span class="muted small">${esc(c.poules.length > 1 ? pouleCourt(p) + ' · ' : '')}${p.code}</span></div>
+      <div class="rank-head"><div><div class="ph">${esc(phaseG(p))}</div><h2>${esc(joli(c.titre))}</h2></div><span class="muted small">${esc(c.poules.length > 1 ? pouleCourt(p) + ' · ' : '')}${p.code}</span></div>
       ${cl.length ? `<div class="tablebox"><table class="rank fedrank">
         <thead><tr><th>#</th><th class="l">Équipe</th><th>Pts</th><th title="Matchs joués">J</th><th title="Gagnés">G</th><th title="Perdus">P</th><th class="hs" title="Sets pour – contre">Sets</th><th class="hs" title="Coefficient de sets">Coef. sets</th><th class="hs2" title="Points pour – contre">Points</th><th class="hs" title="Coefficient de points">Coef. pts</th></tr></thead>
         <tbody>${cl.map(r => `<tr class="${estMien(r.equipe) ? 'mine' : ''} ${enAvant && r.mis_en_avant ? 'avant' : ''}">
