@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Signaler une infraction – Comité du Var de Volley-Ball</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --navy: #0B2149; --blue: #1E4FA3; --accent: #F6C21B; --bg: #F4F6FA; --line: #E2E7F0; --text: #14203A; --muted: #56627A;
+    --ok: #11672F; --ok-bg: #E7F6EC; --warn: #8A5A00; --warn-bg: #FFF4D6; --bad: #A3231D; --bad-bg: #FCE9E8; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; font-size: 16px; line-height: 1.5; }
+  [hidden] { display: none !important; }
+  header { background: #fff; border-bottom: 1px solid var(--line); }
+  .head { max-width: 720px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
+  .head img { height: 42px; }
+  .head .t { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 21px; text-transform: uppercase; color: var(--navy); line-height: 1.05; }
+  .head .who { margin-left: auto; font-size: 13px; color: var(--muted); text-align: right; }
+  main { max-width: 720px; margin: 0 auto; padding: 18px 16px 60px; display: flex; flex-direction: column; gap: 16px; }
+  h1, h2 { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; color: var(--navy); letter-spacing: .5px; }
+  h2 { font-size: 22px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  label { font-size: 14px; font-weight: 700; }
+  .req { color: var(--bad); }
+  input, select, textarea { font-family: inherit; font-size: 16px; color: var(--text); background: #fff; border: 1px solid #C9D2E2; border-radius: 10px; padding: 11px 12px; width: 100%; outline: none; }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(30,79,163,.15); }
+  textarea { min-height: 110px; resize: vertical; }
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 520px) { .g2 { grid-template-columns: 1fr; } }
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 18px; border-radius: 10px; border: 1px solid transparent; font-weight: 700; font-size: 16px; font-family: inherit; cursor: pointer; }
+  .btn.primary { background: var(--navy); color: #fff; } .btn.ghost { background: #fff; border-color: var(--line); color: var(--text); }
+  .btn[disabled] { opacity: .5; }
+  .msg { border-radius: 10px; padding: 12px 14px; font-size: 15px; }
+  .msg.ok { background: var(--ok-bg); color: var(--ok); } .msg.err { background: var(--bad-bg); color: var(--bad); } .msg.info { background: #E9EFFA; color: var(--navy); }
+  .small { font-size: 13px; } .muted { color: var(--muted); }
+  .linkbtn { background: none; border: 0; color: var(--blue); font-weight: 600; cursor: pointer; font-family: inherit; font-size: 14px; text-decoration: underline; padding: 0; }
+  .linkbtn.red { color: var(--bad); }
+  .sig { border-top: 1px solid var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 3px; }
+  .sig:first-child { border-top: 0; padding-top: 0; }
+  .badge { display: inline-flex; padding: 2px 9px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+  .b-new { background: var(--warn-bg); color: var(--warn); } .b-ok { background: var(--ok-bg); color: var(--ok); } .b-no { background: #EEF1F5; color: var(--muted); }
+  .chk { display: flex; gap: 8px; align-items: center; font-weight: 500; font-size: 14px; }
+  .chk input { width: 18px; height: 18px; }
+</style>
+</head>
+<body>
+<header><div class="head"><img src="logo-comite-var.jpg" alt=""><div class="t">Signaler une<br>infraction sportive</div><div class="who" id="who"></div></div></header>
+<main id="app"></main>
+<script>
+const SUPABASE_URL = 'https://nssdhgpvkdbgdewsnlgl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_GeMMc45mQbDOq-ZkU5vXZw_lYJe9KXf';
+const $ = id => document.getElementById(id);
+const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function rpc(fn, args) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, { method: 'POST', headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(args || {}) });
+  const txt = await res.text();
+  if (!res.ok) { let m = txt; try { m = JSON.parse(txt).message || txt; } catch(e) {} throw new Error(m); }
+  return txt ? JSON.parse(txt) : null;
+}
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const fmtD = s => { if (!s) return ''; const [y, m, d] = String(s).slice(0, 10).split('-'); return `${d}/${m}/${y}`; };
+const store = { get(k) { try { return localStorage.getItem(k); } catch(e) { return null; } }, set(k, v) { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch(e) {} } };
+// « PÉNALITÉ RIS N°4 - LICENCE NON PRÉSENTÉE » → « Licence non présentée »
+function intitule(des) {
+  const t = String(des || '').replace(/^PÉNALITÉ RIS N°\s*\d+\s*-\s*/i, '').replace(/\s*\([^)]*€[^)]*\)\s*$/, '').toLowerCase();
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+let CODE = '', D = null, GARDE = { date: today(), match: '' };
+
+function renderLogin(err) {
+  $('who').textContent = '';
+  $('app').innerHTML = `<form class="card" id="lg">
+    <h2>Accès réservé</h2>
+    <p class="muted">Cette page permet aux personnes habilitées par le Comité du Var de signaler les infractions sportives relevées (feuilles de match, licences, absences…). Saisissez le code personnel qui vous a été transmis.</p>
+    <div class="field"><label for="code">Code d'accès</label><input id="code" autocomplete="off" autocapitalize="characters" required style="text-transform:uppercase;letter-spacing:2px;font-weight:700"></div>
+    <label class="chk"><input type="checkbox" id="mem" checked> Se souvenir de moi sur cet appareil</label>
+    ${err ? `<div class="msg err">${esc(err)}</div>` : ''}
+    <button class="btn primary" type="submit">Entrer</button></form>`;
+  $('code').focus();
+  $('lg').onsubmit = async ev => { ev.preventDefault(); await login($('code').value.trim(), $('mem').checked); };
+}
+async function login(code, mem) {
+  try { D = await rpc('fac_signal_login', { p_code: code }); CODE = code; store.set('ris_code', mem ? code : null); if (location.search) history.replaceState(null, '', location.pathname); render(); }
+  catch(e) { store.set('ris_code', null); renderLogin(/code/i.test(e.message) ? 'Code incorrect.' : e.message); }
+}
+function logout() { store.set('ris_code', null); CODE = ''; D = null; renderLogin(); }
+
+function render(okMsg) {
+  $('who').innerHTML = `${esc(D.nom)}<br><button class="linkbtn" onclick="logout()">Se déconnecter</button>`;
+  const cats = ['Pénalités', 'Forfaits', 'Arbitrage'];
+  const etat = g => g.statut === 'integre' ? '<span class="badge b-ok">Pris en compte</span>' : g.statut === 'rejete' ? '<span class="badge b-no">Non retenu</span>' : '<span class="badge b-new">En attente de validation</span>';
+  $('app').innerHTML = `
+  ${okMsg ? `<div class="msg ok">${esc(okMsg)}</div>` : ''}
+  <form class="card" id="f">
+    <h2>Nouvelle infraction</h2>
+    <div class="g2">
+      <div class="field"><label for="f-date">Date du match <span class="req">*</span></label><input id="f-date" type="date" value="${esc(GARDE.date)}" max="${today()}" required></div>
+      <div class="field"><label for="f-match">N° du match ou tournoi</label><input id="f-match" value="${esc(GARDE.match)}" placeholder="DFB007, OPEN 2x2 – T1…"></div>
+    </div>
+    <div class="field"><label for="f-club">Club concerné <span class="req">*</span></label><select id="f-club" required><option value="">— Choisir —</option>${D.clubs.map(c => `<option value="${esc(c.code)}">${esc(c.code)} – ${esc(c.nom)}</option>`).join('')}</select></div>
+    <div class="field"><label for="f-nat">Nature de l'infraction <span class="req">*</span></label>
+      <select id="f-nat" required><option value="">— Choisir —</option>${cats.map(cat => { const l = D.natures.filter(n => n.categorie === cat); return l.length ? `<optgroup label="${cat}">${l.map(n => `<option value="${n.id}">${esc(intitule(n.designation))}</option>`).join('')}</optgroup>` : ''; }).join('')}<option value="autre">Autre infraction</option></select></div>
+    <div class="field"><label for="f-int">Précisez l'infraction <span class="req">*</span></label><input id="f-int" placeholder="Ex. : Licence non présentée – 1 joueuse"><span class="small muted">Pré-rempli selon la nature choisie : complétez-le si besoin (nombre de joueurs, équipe…).</span></div>
+    <div class="field"><label for="f-com">Commentaires</label><textarea id="f-com" placeholder="Tout ce qui peut aider le Comité : circonstances, joueur ou équipe concernés, numéros de licence, horaires…"></textarea></div>
+    <div id="f-err" class="msg err" hidden></div>
+    <button class="btn primary" type="submit" id="f-ok">Envoyer au Comité</button>
+  </form>
+  <div class="card"><h2>Mes signalements</h2>
+    ${D.mes.length ? D.mes.map(g => `<div class="sig"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>${esc(g.club)} · ${esc(g.nature)}</b>${etat(g)}</div>
+      <span class="small muted">Match ${esc(g.match || '—')} du ${fmtD(g.date_match)} · envoyé le ${fmtD(g.created_at)}</span>
+      ${g.commentaire ? `<span class="small">${esc(g.commentaire)}</span>` : ''}
+      ${g.statut === 'rejete' && g.motif_rejet ? `<span class="small muted">Motif : ${esc(g.motif_rejet)}</span>` : ''}
+      ${g.statut === 'nouveau' ? `<div><button class="linkbtn red" onclick="suppr(${g.id})">Supprimer ce signalement</button></div>` : ''}</div>`).join('')
+    : '<p class="muted">Aucun signalement pour le moment.</p>'}</div>`;
+  $('f-nat').onchange = () => { const n = D.natures.find(x => String(x.id) === $('f-nat').value); $('f-int').value = n ? intitule(n.designation) : ''; if (!n) $('f-int').focus(); };
+  $('f').onsubmit = async ev => {
+    ev.preventDefault();
+    const err = m => { $('f-err').textContent = m; $('f-err').hidden = false; };
+    const p = { date_match: $('f-date').value, match: $('f-match').value.trim(), club: $('f-club').value,
+      article_id: /^\d+$/.test($('f-nat').value) ? $('f-nat').value : null, nature: $('f-int').value.trim(), commentaire: $('f-com').value.trim() };
+    if (!p.date_match) return err('Indiquez la date du match.');
+    if (!p.club) return err('Choisissez le club concerné.');
+    if (!p.nature) return err('Précisez l\'infraction.');
+    $('f-ok').disabled = true;
+    try { await rpc('fac_signal_envoyer', { p_code: CODE, p }); GARDE = { date: p.date_match, match: p.match }; D = await rpc('fac_signal_login', { p_code: CODE });
+      render('✓ Signalement envoyé au Comité. Vous pouvez en saisir un autre pour le même match.'); window.scrollTo(0, 0); }
+    catch(e) { $('f-ok').disabled = false; err(e.message); }
+  };
+}
+async function suppr(id) {
+  if (!confirm('Supprimer ce signalement ?')) return;
+  try { await rpc('fac_signal_supprimer', { p_code: CODE, p_id: id }); D = await rpc('fac_signal_login', { p_code: CODE }); render(); } catch(e) { alert(e.message); }
+}
+(async () => { const c = new URLSearchParams(location.search).get('code') || store.get('ris_code'); if (c) await login(c, true); else renderLogin(); })();
+</script>
+</body>
+</html>

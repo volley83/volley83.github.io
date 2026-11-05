@@ -772,10 +772,12 @@ function rubriqueArticle(a) {
 // Infractions saisies avec un montant mais pas encore facturées (RIS pas encore généré)
 const risAFacturer = () => (D.ris_items || []).filter(i => num(i.montant) && !ligneRis(i));
 const risSansMontant = () => (D.ris_items || []).filter(i => !num(i.montant) && !i.sans_sanction);
-const risAlertes = () => risAFacturer().length + risSansMontant().length;
+const sigNouveaux = () => (D.signalements || []).filter(g => g.statut === 'nouveau');
+const risAlertes = () => risAFacturer().length + risSansMontant().length + sigNouveaux().length;
 function alerteRis() {
-  const sm = risSansMontant(), html = sm.length ? `<div class="msg err"><b>⚠ ${sm.length} infraction${sm.length > 1 ? 's' : ''} RIS sans montant</b> : ${sm.map(i => { const r = risDe(i.ris_id); return `<a href="#ris/${i.ris_id}">RIS n° ${r ? r.numero : '?'}</a> – ${esc(i.club)} ${esc(i.intitule)}${i.match ? ' (' + esc(i.match) + ')' : ''}`; }).join(' · ')}
-    <br><span class="small">Indiquez le montant, ou cochez « Pas de sanction financière » si elle ne doit pas être facturée.</span></div>` : '';
+  const sn = sigNouveaux(), sig = sn.length ? `<div class="msg info"><b>📨 ${sn.length} signalement${sn.length > 1 ? 's' : ''} d'infraction à vérifier</b> : <a href="#ris">ouvrir l'onglet RIS</a></div>` : '';
+  const sm = risSansMontant(), html = sig + (sm.length ? `<div class="msg err"><b>⚠ ${sm.length} infraction${sm.length > 1 ? 's' : ''} RIS sans montant</b> : ${sm.map(i => { const r = risDe(i.ris_id); return `<a href="#ris/${i.ris_id}">RIS n° ${r ? r.numero : '?'}</a> – ${esc(i.club)} ${esc(i.intitule)}${i.match ? ' (' + esc(i.match) + ')' : ''}`; }).join(' · ')}
+    <br><span class="small">Indiquez le montant, ou cochez « Pas de sanction financière » si elle ne doit pas être facturée.</span></div>` : '');
   const a = risAFacturer(); if (!a.length) return html;
   const parRis = {}; a.forEach(i => { (parRis[i.ris_id] = parRis[i.ris_id] || []).push(i); });
   return `<div class="msg warn"><b>⚠ ${a.length} infraction${a.length > 1 ? 's' : ''} RIS non facturée${a.length > 1 ? 's' : ''}</b> (${euros(a.reduce((x, i) => x + num(i.montant), 0))}) :
@@ -788,13 +790,93 @@ function renderRisListe() {
   const rs = [...(D.ris || [])].sort((a, b) => a.numero - b.numero);
   shell('ris', `
   <div class="ttl"><div><h1 style="font-size:34px">RIS ${esc(SAISON)}</h1><p class="muted">Relevés des Infractions Sportives. Les infractions sont envoyées sur le prochain bordereau de chaque club, avec le n° du RIS en précision.</p></div></div>
-  ${alerteRis()}
+  ${alerteRis().replace(/<div class="msg info">[\s\S]*?<\/div>/, '')}
+  ${sectionSignalements()}
   <div class="bords">
     ${rs.map(r => { const its = itemsDe(r.id), tot = its.reduce((x, i) => x + num(i.montant), 0), afact = its.filter(i => num(i.montant) && !ligneRis(i)).length;
       return `<a class="bord" href="#ris/${r.id}"><div class="ttl"><span class="n">RIS N° ${r.numero}</span>${afact ? `<span class="badge b-warn">${afact} à facturer</span>` : its.length ? '<span class="badge b-ok">Facturé</span>' : '<span class="badge b-draft">Vide</span>'}</div>
         <span class="muted small">au ${fmtLong(r.date)}</span><span class="tot">${euros(tot)}</span><span class="small muted">${its.length} infraction${its.length > 1 ? 's' : ''} · ${new Set(its.map(i => i.club)).size} club(s)</span></a>`; }).join('')}
     <button class="bord new" onclick="nouveauRis()">+ Nouveau RIS</button>
-  </div>`);
+  </div>
+  ${sectionSaisisseurs()}`);
+  brancherSignalements();
+}
+// ----- Signalements reçus des personnes habilitées (page /ris/) -----
+const SIG_URL = location.origin + location.pathname.replace(/facturation\/.*$/, 'ris/');
+function sectionSignalements() {
+  const sn = sigNouveaux(), rs = [...(D.ris || [])].sort((a, b) => b.numero - a.numero), as = articlesRis();
+  const clubs = D.clubs.filter(c => c.actif).sort((a, b) => coll.compare(a.code, b.code));
+  const traites = (D.signalements || []).filter(g => g.statut !== 'nouveau').slice(0, 30);
+  return `<div class="card stack"><div class="ttl"><div><h3>📨 Signalements à vérifier (${sn.length})</h3><p class="small muted">Envoyés depuis la page de signalement. Vérifiez, corrigez si besoin, puis validez pour les ajouter à un RIS (ils seront facturés à la génération du RIS).</p></div></div>
+    ${sn.length ? sn.map(g => { const a = art(g.article_id);
+      return `<div class="card stack" data-sig="${g.id}" style="background:#FAFBFD;gap:10px">
+        <div class="small"><b>${esc(g.auteur || '?')}</b> · envoyé le ${fmtD(g.created_at)} · match du ${fmtD(g.date_match)}${g.commentaire ? `<div style="margin-top:6px;padding:8px 10px;background:#fff;border:1px solid var(--line);border-radius:8px;white-space:pre-wrap">💬 ${esc(g.commentaire)}</div>` : ''}</div>
+        <div class="grid" style="grid-template-columns:150px 150px 110px minmax(0,1fr) 100px;gap:8px">
+          <div class="field"><label>Rubrique</label><select data-f="rubrique">${RUBRIQUES.map((t, k) => `<option value="${k + 1}" ${(a ? rubriqueArticle(a) : 5) === k + 1 ? 'selected' : ''}>${k + 1}- ${t}</option>`).join('')}</select></div>
+          <div class="field"><label>N° match</label><input data-f="match" value="${esc(g.match || '')}"></div>
+          <div class="field"><label>Club</label><select data-f="club">${clubs.map(c => `<option ${c.code === g.club ? 'selected' : ''}>${esc(c.code)}</option>`).join('')}</select></div>
+          <div class="field"><label>Infraction relevée</label><input data-f="intitule" value="${esc(g.nature)}"></div>
+          <div class="field"><label>Montant €</label><input data-f="montant" class="n" value="${a ? fmtN(a.prix) : ''}" inputmode="decimal"></div>
+        </div>
+        <div class="grid" style="grid-template-columns:minmax(0,1fr) 220px auto auto;gap:8px;align-items:end">
+          <div class="field"><label>Tarif appliqué</label><select data-f="article_id"><option value="">— Saisie libre —</option>${as.map(x => `<option value="${x.id}" ${a && a.id === x.id ? 'selected' : ''}>${esc(intituleArticle(x))} (${euros(x.prix)})</option>`).join('')}</select></div>
+          <div class="field"><label>Ajouter au RIS</label><select data-f="ris_id">${rs.map(r => `<option value="${r.id}">RIS n° ${r.numero} (au ${fmtD(r.date)})</option>`).join('')}<option value="nouveau" ${rs.length ? '' : 'selected'}>+ Nouveau RIS</option></select></div>
+          <button class="btn ok" data-ok>✓ Valider</button><button class="btn danger" data-no>Rejeter</button>
+        </div></div>`; }).join('') : '<p class="muted small">Aucun signalement en attente.</p>'}
+    ${traites.length ? `<details class="help"><summary>Signalements déjà traités (${traites.length})</summary><div><table class="t"><tbody>${traites.map(g => `<tr><td class="small nw">${fmtD(g.date_match)}</td><td class="small"><b>${esc(g.club || '')}</b> ${esc(g.nature)}${g.match ? ' (' + esc(g.match) + ')' : ''}</td><td class="small">${esc(g.auteur || '')}</td>
+      <td>${g.statut === 'integre' ? '<span class="badge b-ok">Intégré</span>' : `<span class="badge b-draft">Rejeté</span>${g.motif_rejet ? ' <span class="small muted">' + esc(g.motif_rejet) + '</span>' : ''}`}</td>
+      <td>${g.statut === 'rejete' ? `<button class="linkbtn" onclick="sigRouvrir(${g.id})">Remettre à vérifier</button>` : ''}</td></tr>`).join('')}</tbody></table></div></details>` : ''}
+  </div>`;
+}
+function brancherSignalements() {
+  document.querySelectorAll('[data-sig]').forEach(box => {
+    const id = +box.dataset.sig, f = k => box.querySelector(`[data-f="${k}"]`);
+    f('article_id').onchange = () => { const a = art(f('article_id').value); if (a) { f('montant').value = fmtN(a.prix); f('rubrique').value = rubriqueArticle(a); } };
+    box.querySelector('[data-ok]').onclick = async () => {
+      const g = D.signalements.find(x => x.id === id);
+      if (!f('intitule').value.trim()) return alert('Indiquez l\'infraction relevée.');
+      try {
+        let rid = f('ris_id').value;
+        if (rid === 'nouveau') rid = await rpc('fac_admin_ris', { pwd: PWD, p: { saison: SAISON, date: today() } });
+        await rpc('fac_admin_signalement', { pwd: PWD, p_id: id, p: { action: 'integrer', ris_id: String(rid), item: { rubrique: f('rubrique').value, match: f('match').value.trim(), club: f('club').value,
+          article_id: f('article_id').value || null, intitule: f('intitule').value.trim(), montant: String(num(f('montant').value)), commentaire: `${g.auteur || ''} : ${g.commentaire || ''}`.replace(/ : $/, '') } } });
+        await load(); toast('✓ Ajouté au RIS'); renderRisListe();
+      } catch(e) { fail(e); }
+    };
+    box.querySelector('[data-no]').onclick = async () => {
+      const motif = prompt('Motif du rejet (visible par la personne qui a signalé, facultatif) :'); if (motif === null) return;
+      try { await rpc('fac_admin_signalement', { pwd: PWD, p_id: id, p: { action: 'rejeter', motif } }); await load(); renderRisListe(); } catch(e) { fail(e); }
+    };
+  });
+  document.querySelectorAll('[data-sais]').forEach(tr => tr.querySelectorAll('input').forEach(inp => inp.onchange = async () => {
+    const x = D.saisisseurs.find(y => y.id === +tr.dataset.sais); x[inp.dataset.k] = inp.type === 'checkbox' ? inp.checked : inp.value;
+    try { await rpc('fac_admin_saisisseur', { pwd: PWD, p: x }); toast('✓ Enregistré'); } catch(e) { fail(e); }
+  }));
+}
+async function sigRouvrir(id) { try { await rpc('fac_admin_signalement', { pwd: PWD, p_id: id, p: { action: 'rouvrir' } }); await load(); renderRisListe(); } catch(e) { fail(e); } }
+function sectionSaisisseurs() {
+  const ss = D.saisisseurs || [];
+  return `<details class="card help" ${ss.length ? '' : 'open'}><summary>👤 Personnes habilitées à signaler des infractions (${ss.filter(x => x.actif).length})</summary><div class="stack" style="margin-top:12px;color:var(--text)">
+    <p class="small muted">Chaque personne reçoit un code personnel pour la page <a href="${esc(SIG_URL)}" target="_blank" rel="noopener">${esc(SIG_URL)}</a>. Décochez « Actif » pour lui retirer l'accès.</p>
+    ${ss.length ? `<div class="tablebox"><table class="t"><thead><tr><th>Nom</th><th>Mail</th><th>Code</th><th class="c">Actif</th><th></th></tr></thead><tbody>${ss.map(x => `<tr data-sais="${x.id}" class="${x.actif ? '' : 'off'}">
+      <td><input data-k="nom" value="${esc(x.nom)}"></td><td><input data-k="email" value="${esc(x.email || '')}" placeholder="adresse mail"></td>
+      <td class="code" style="font-size:15px">${esc(x.code)}</td><td class="c"><input type="checkbox" data-k="actif" ${x.actif ? 'checked' : ''}></td>
+      <td class="nw"><button class="btn sm ghost" onclick="mailAcces(${x.id})">✉ Envoyer l'accès</button> <button class="x" onclick="supprSaisisseur(${x.id})">✕</button></td></tr>`).join('')}</tbody></table></div>` : ''}
+    <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:8px;align-items:end"><div class="field"><label>Nom</label><input id="ns-nom" placeholder="Prénom NOM"></div><div class="field"><label>Mail</label><input id="ns-mail" placeholder="adresse mail"></div>
+      <button class="btn primary" onclick="ajoutSaisisseur()">+ Ajouter</button></div></div></details>`;
+}
+async function ajoutSaisisseur() {
+  const nom = $('ns-nom').value.trim(); if (!nom) return alert('Indiquez le nom.');
+  try { await rpc('fac_admin_saisisseur', { pwd: PWD, p: { nom, email: $('ns-mail').value.trim(), actif: true } }); await load(); renderRisListe(); toast('✓ Accès créé'); } catch(e) { fail(e); }
+}
+async function supprSaisisseur(id) {
+  if (!confirm('Supprimer cette personne ? Ses signalements déjà envoyés sont conservés.')) return;
+  try { await rpc('fac_admin_saisisseur', { pwd: PWD, p: { id, supprimer: true } }); await load(); renderRisListe(); } catch(e) { fail(e); }
+}
+function mailAcces(id) {
+  const x = D.saisisseurs.find(y => y.id === id);
+  const body = `Bonjour ${x.nom},\n\nVoici votre accès pour signaler au Comité du Var les infractions sportives relevées (feuilles de match, licences, absences…) :\n\nAdresse : ${SIG_URL}\nVotre code personnel : ${x.code}\n\nOu directement : ${SIG_URL}?code=${x.code}\n\nPour chaque infraction, indiquez la date et le n° du match, le club concerné, la nature de l'infraction et tous les détails utiles en commentaire. Le Comité vérifie ensuite chaque signalement avant de l'intégrer au Relevé des Infractions Sportives.\n\nMerci pour votre aide,\nLe Comité du Var de Volley-Ball`;
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(x.email || '') + '&su=' + encodeURIComponent('Accès au signalement des infractions sportives – Comité du Var') + '&body=' + encodeURIComponent(body), '_blank');
 }
 async function nouveauRis() {
   try { const id = await rpc('fac_admin_ris', { pwd: PWD, p: { saison: SAISON, date: today() } }); await load(); location.hash = 'ris/' + id; } catch(e) { fail(e); }
@@ -809,7 +891,7 @@ function renderRis(r) {
       <td><select data-k="rubrique" ${lock ? 'disabled' : ''} style="width:64px" title="Rubrique">${RUBRIQUES.map((t, k) => `<option value="${k + 1}" ${i.rubrique === k + 1 ? 'selected' : ''} title="${esc(t)}">${k + 1}</option>`).join('')}</select></td>
       <td><input data-k="match" value="${esc(i.match || '')}" ${lock ? 'disabled' : ''} style="width:150px"></td>
       <td><select data-k="club" ${lock ? 'disabled' : ''} style="width:100px">${clubs.map(c => `<option ${c.code === i.club ? 'selected' : ''}>${esc(c.code)}</option>`).join('')}</select></td>
-      <td><input data-k="intitule" value="${esc(i.intitule)}" ${lock ? 'disabled' : ''} style="min-width:320px"></td>
+      <td><input data-k="intitule" value="${esc(i.intitule)}" ${lock ? 'disabled' : ''} style="min-width:320px">${i.commentaire ? `<div class="small muted" style="margin-top:3px;white-space:pre-wrap">💬 ${esc(i.commentaire)}</div>` : ''}</td>
       <td><input data-k="montant" class="n" value="${fmtN(i.montant)}" ${lock ? 'disabled' : ''} style="width:80px" inputmode="decimal"></td>
       <td>${l ? `<a class="badge b-ok" href="#b/${b.id}/${encodeURIComponent(i.club)}">✓ Bordereau n° ${b.numero}</a>` : num(i.montant) ? '<span class="badge b-warn">À facturer</span>'
         : `<label class="small" style="display:flex;gap:6px;align-items:center;white-space:nowrap"><input type="checkbox" data-k="sans_sanction" ${i.sans_sanction ? 'checked' : ''}> Pas de sanction financière</label>${i.sans_sanction ? '' : '<span class="badge b-bad">Montant à saisir</span>'}`}</td>

@@ -102,6 +102,35 @@ create table if not exists fac_ris_items (
 
 alter table fac_ris_items add column if not exists sans_sanction boolean not null default false;  -- infraction volontairement non facturée
 
+-- Signalements d'infractions saisis par les personnes habilitées (arbitres, responsables de commission…)
+create table if not exists fac_saisisseurs (
+  id      bigint generated always as identity primary key,
+  nom     text not null,
+  email   text,
+  code    text not null unique,                    -- code d'accès personnel à la page de signalement
+  actif   boolean not null default true,
+  created_at timestamptz not null default now()
+);
+create table if not exists fac_signalements (
+  id            bigint generated always as identity primary key,
+  saison        text not null,
+  saisisseur_id bigint references fac_saisisseurs(id) on delete set null,
+  auteur        text,
+  date_match    date,
+  match         text,
+  club          text,
+  article_id    bigint references fac_articles(id) on delete set null,
+  nature        text not null,                     -- nature de l'infraction (texte choisi ou saisi)
+  commentaire   text,
+  statut        text not null default 'nouveau' check (statut in ('nouveau','integre','rejete')),
+  motif_rejet   text,
+  ris_item_id   bigint references fac_ris_items(id) on delete set null,
+  traite_le     timestamptz,
+  created_at    timestamptz not null default now()
+);
+alter table fac_ris_items add column if not exists commentaire text;
+alter table fac_ris_items add column if not exists signalement_id bigint;
+
 create table if not exists fac_reglages (
   cle    text primary key,
   valeur jsonb
@@ -116,7 +145,9 @@ alter table fac_paiements  enable row level security;
 alter table fac_reglages   enable row level security;
 alter table fac_ris        enable row level security;
 alter table fac_ris_items  enable row level security;
-revoke all on fac_clubs, fac_articles, fac_bordereaux, fac_lignes, fac_paiements, fac_reglages, fac_ris, fac_ris_items from anon, authenticated;
+alter table fac_saisisseurs  enable row level security;
+alter table fac_signalements enable row level security;
+revoke all on fac_clubs, fac_articles, fac_bordereaux, fac_lignes, fac_paiements, fac_reglages, fac_ris, fac_ris_items, fac_saisisseurs, fac_signalements from anon, authenticated;
 
 -- ---------- Outils ----------
 create or replace function fac_is_admin(pwd text) returns boolean
@@ -140,7 +171,10 @@ begin
     'paiements',  (select coalesce(jsonb_agg(to_jsonb(p) order by p.date nulls first, p.id), '[]') from fac_paiements p where p.saison = p_saison),
     'ris',        (select coalesce(jsonb_agg(to_jsonb(r) order by r.numero), '[]') from fac_ris r where r.saison = p_saison),
     'ris_items',  (select coalesce(jsonb_agg(to_jsonb(i) order by i.ris_id, i.rubrique, i.ordre, i.id), '[]')
-                   from fac_ris_items i join fac_ris r on r.id = i.ris_id where r.saison = p_saison)
+                   from fac_ris_items i join fac_ris r on r.id = i.ris_id where r.saison = p_saison),
+    'saisisseurs',  (select coalesce(jsonb_agg(to_jsonb(x) order by x.nom), '[]') from fac_saisisseurs x),
+    'signalements', (select coalesce(jsonb_agg(to_jsonb(g) order by g.created_at desc), '[]') from fac_signalements g
+                     where g.saison = p_saison or g.statut = 'nouveau')
   );
 end $$;
 
@@ -396,9 +430,110 @@ begin
     intitule   = left(trim(p->>'intitule'), 200),
     montant    = coalesce(nullif(replace(p->>'montant', ',', '.'), '')::numeric, 0),
     sans_sanction = coalesce((p->>'sans_sanction')::boolean, sans_sanction),
+    commentaire = case when p ? 'commentaire' then nullif(trim(p->>'commentaire'), '') else commentaire end,
     ordre      = coalesce(nullif(p->>'ordre', '')::int, ordre)
   where id = iid;
   return iid;
+end $$;
+
+-- ---------- Signalements (page /ris/ pour les personnes habilitées) ----------
+create or replace function fac_signal_qui(p_code text) returns fac_saisisseurs
+language sql stable security definer set search_path = public as $$
+  select * from fac_saisisseurs where actif and upper(code) = upper(trim(p_code));
+$$;
+
+create or replace function fac_signal_login(p_code text) returns jsonb
+language plpgsql stable security definer set search_path = public as $$
+declare u fac_saisisseurs;
+begin
+  u := fac_signal_qui(p_code);
+  if u.id is null then raise exception 'Code incorrect'; end if;
+  return jsonb_build_object(
+    'nom', u.nom,
+    'clubs', (select coalesce(jsonb_agg(jsonb_build_object('code', c.code, 'nom', c.nom) order by c.code), '[]') from fac_clubs c where c.actif),
+    'natures', (select coalesce(jsonb_agg(jsonb_build_object('id', a.id, 'designation', a.designation, 'categorie', a.categorie) order by a.ordre), '[]')
+                from fac_articles a where a.actif and a.categorie in ('Pénalités', 'Forfaits', 'Arbitrage')),
+    'mes', (select coalesce(jsonb_agg(jsonb_build_object('id', g.id, 'date_match', g.date_match, 'match', g.match, 'club', g.club, 'nature', g.nature,
+              'commentaire', g.commentaire, 'statut', g.statut, 'motif_rejet', g.motif_rejet, 'created_at', g.created_at) order by g.created_at desc), '[]')
+            from fac_signalements g where g.saisisseur_id = u.id and g.created_at > now() - interval '1 year'));
+end $$;
+
+-- p = {date_match, match, club, article_id, nature, commentaire}
+create or replace function fac_signal_envoyer(p_code text, p jsonb) returns bigint
+language plpgsql security definer set search_path = public as $$
+declare u fac_saisisseurs; gid bigint; d date := nullif(p->>'date_match', '')::date;
+begin
+  u := fac_signal_qui(p_code);
+  if u.id is null then raise exception 'Code incorrect'; end if;
+  if (select count(*) from fac_signalements where saisisseur_id = u.id and created_at > now() - interval '1 hour') >= 60 then
+    raise exception 'Trop de signalements en une heure, réessayez plus tard';
+  end if;
+  if coalesce(trim(p->>'nature'), '') = '' then raise exception 'Indiquez la nature de l''infraction'; end if;
+  if coalesce(trim(p->>'club'), '') = '' then raise exception 'Indiquez le club concerné'; end if;
+  if d is null then raise exception 'Indiquez la date du match'; end if;
+  insert into fac_signalements (saison, saisisseur_id, auteur, date_match, match, club, article_id, nature, commentaire)
+  values (case when extract(month from d) >= 7 then extract(year from d)::int || '-' || (extract(year from d)::int + 1)
+               else (extract(year from d)::int - 1) || '-' || extract(year from d)::int end,
+          u.id, u.nom, d, nullif(left(trim(p->>'match'), 80), ''), upper(left(trim(p->>'club'), 20)),
+          (select id from fac_articles where id = nullif(p->>'article_id', '')::bigint),
+          left(trim(p->>'nature'), 200), nullif(left(trim(p->>'commentaire'), 2000), ''))
+  returning id into gid;
+  return gid;
+end $$;
+
+create or replace function fac_signal_supprimer(p_code text, p_id bigint) returns void
+language plpgsql security definer set search_path = public as $$
+declare u fac_saisisseurs;
+begin
+  u := fac_signal_qui(p_code);
+  if u.id is null then raise exception 'Code incorrect'; end if;
+  delete from fac_signalements where id = p_id and saisisseur_id = u.id and statut = 'nouveau';
+end $$;
+
+-- Personnes habilitées : p = {id?, nom, email, actif} ; {id, supprimer:true}. Le code est créé automatiquement.
+create or replace function fac_admin_saisisseur(pwd text, p jsonb) returns bigint
+language plpgsql security definer set search_path = public as $$
+declare sid bigint := nullif(p->>'id', '')::bigint; c text;
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  if (p->>'supprimer')::boolean then delete from fac_saisisseurs where id = sid; return sid; end if;
+  if coalesce(trim(p->>'nom'), '') = '' then raise exception 'Indiquez le nom'; end if;
+  if sid is null then
+    loop
+      c := (select string_agg(substr('ABCDEFGHJKMNPQRSTUVWXYZ23456789', 1 + floor(random() * 31)::int, 1), '') from generate_series(1, 6));
+      exit when not exists (select 1 from fac_saisisseurs where code = c);
+    end loop;
+    insert into fac_saisisseurs (nom, code) values (trim(p->>'nom'), c) returning id into sid;
+  end if;
+  update fac_saisisseurs set nom = trim(p->>'nom'), email = nullif(trim(p->>'email'), ''), actif = coalesce((p->>'actif')::boolean, true) where id = sid;
+  return sid;
+end $$;
+
+-- Traitement d'un signalement : p = {action:'integrer', ris_id, item:{rubrique, match, club, article_id, intitule, montant, commentaire}}
+--                               ou {action:'rejeter', motif} ou {action:'rouvrir'}
+create or replace function fac_admin_signalement(pwd text, p_id bigint, p jsonb) returns bigint
+language plpgsql security definer set search_path = public as $$
+declare g fac_signalements; iid bigint; it jsonb := p->'item';
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  select * into g from fac_signalements where id = p_id;
+  if g.id is null then raise exception 'Signalement introuvable'; end if;
+  if p->>'action' = 'rejeter' then
+    update fac_signalements set statut = 'rejete', motif_rejet = nullif(trim(p->>'motif'), ''), traite_le = now() where id = p_id;
+    return null;
+  elsif p->>'action' = 'rouvrir' then
+    if g.ris_item_id is not null then raise exception 'Ce signalement est déjà dans un RIS : supprimez d''abord l''infraction du RIS'; end if;
+    update fac_signalements set statut = 'nouveau', motif_rejet = null, traite_le = null where id = p_id;
+    return null;
+  elsif p->>'action' = 'integrer' then
+    if g.statut = 'integre' and g.ris_item_id is not null then raise exception 'Déjà intégré à un RIS'; end if;
+    iid := fac_admin_ris_item(pwd, jsonb_build_object('ris_id', p->>'ris_id', 'rubrique', it->>'rubrique', 'match', it->>'match', 'club', it->>'club',
+             'article_id', it->>'article_id', 'intitule', it->>'intitule', 'montant', it->>'montant', 'ordre', 999));
+    update fac_ris_items set commentaire = nullif(trim(it->>'commentaire'), ''), signalement_id = p_id where id = iid;
+    update fac_signalements set statut = 'integre', ris_item_id = iid, traite_le = now() where id = p_id;
+    return iid;
+  end if;
+  raise exception 'Action inconnue';
 end $$;
 
 create or replace function fac_admin_reglage(pwd text, p_cle text, p_valeur jsonb) returns void
@@ -421,8 +556,14 @@ grant execute on function
   fac_admin_paiement(text, jsonb),
   fac_admin_reglage(text, text, jsonb),
   fac_admin_ris(text, jsonb),
-  fac_admin_ris_item(text, jsonb)
+  fac_admin_ris_item(text, jsonb),
+  fac_admin_saisisseur(text, jsonb),
+  fac_admin_signalement(text, bigint, jsonb),
+  fac_signal_login(text),
+  fac_signal_envoyer(text, jsonb),
+  fac_signal_supprimer(text, bigint)
 to anon;
+revoke execute on function fac_signal_qui(text) from public, anon, authenticated;
 
 -- ---------- Clubs du Comité (n° d'affiliation des bordereaux FFVB) ----------
 insert into fac_clubs (code, numero, nom, ordre) values
