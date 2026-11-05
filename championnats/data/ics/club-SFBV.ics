@@ -52,10 +52,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261105T210000
 DTEND;TZID=Europe/Paris:20261105T230000
 SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball – Six-Fours Beach
-  Volley
-LOCATION:Gymnase Gassendi
-DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/competlib/4FA
+  Volley (0-3)
+DESCRIPTION:Résultat : 0-3 (9:25\, 12:25\, 20:25)\nPoule 4FA – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/competlib/4FA
 END:VEVENT
 BEGIN:VEVENT
 UID:4FA012@volley83.github.io

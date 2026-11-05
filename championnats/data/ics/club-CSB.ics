@@ -39,10 +39,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261105T213000
 DTEND;TZID=Europe/Paris:20261105T233000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Sud Sainte-Baume Volley Club 3 – Club S
- portif Brignolais
-LOCATION:Compexe Sportif du Beausset
-DESCRIPTION:Poule M4D – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/competlib/M4D
+ portif Brignolais (3-2)
+DESCRIPTION:Résultat : 3-2 (23:25\, 25:11\, 20:25\, 25:10\, 16:14)\nPoul
+ e M4D – classement et résultats : https://volley83.github.io/champion
+ nats/#championnats/competlib/M4D
 END:VEVENT
 BEGIN:VEVENT
 UID:M4D005@volley83.github.io
