@@ -289,6 +289,17 @@
   .mx { border-collapse: collapse; font-size: 14px; }
   .mx th, .mx td { border: 1px solid var(--line); padding: 6px 12px; text-align: center; }
   .mx th { background: #F8FAFD; font-size: 12px; }
+  .tlist { display: flex; flex-direction: column; gap: 10px; }
+  .trow { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+  .tr-l { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: flex-end; }
+  .tf { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .tf > span:first-child { font-size: 10.5px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); font-weight: 700; white-space: nowrap; }
+  .tf > span b { text-transform: none; letter-spacing: 0; font-weight: 700; margin-left: 4px; } .tf > span b.ok { color: var(--ok, #1a7f45); }
+  .tf.grow { flex: 1 1 200px; }
+  .tf input, .tf select { width: 100%; padding: 6px 8px; font-size: 13px; border-radius: 8px; }
+  .tf-in { display: flex; gap: 6px; align-items: center; } .tf-in input { flex: 1; min-width: 0; }
+  .tf-end { flex-direction: row; align-items: center; gap: 16px; margin-left: auto; padding-bottom: 6px; }
+  .tf-chk { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer; } .tf-chk input { width: 18px; height: 18px; }
   .adm th.c, .adm td.c { text-align: center; } .adm tfoot td { background: #F8FAFD; border-top: 1px solid var(--line); }
   .save { font-size: 13px; font-weight: 600; } .save.ok { color: var(--ok); } .save.err { color: var(--bad); } .save.wait { color: var(--muted); }
   .overlay { position: fixed; inset: 0; background: rgba(11,33,73,.55); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50; }
@@ -1217,25 +1228,27 @@ function adminTournois() {
   $('a-body').innerHTML = `<div class="stack">
     <div class="tabs">${A.competitions.map(x => `<button class="tab ${kind(x)} ${x.code === ACOMP ? 'on' : ''}" data-c="${x.code}"><span class="sw ${kind(x)}"></span>${esc(x.nom)}</button>`).join('')}</div>
     <p class="small muted">Les modifications sont enregistrées dès que vous quittez un champ. Inscriptions « Auto » : ouvertes 6 semaines avant le tournoi, jusqu'au jeudi précédent à 12 h (la date limite se recalcule quand vous changez la date du tournoi). ${c.famille === '4x4' ? 'Le code est à donner au club recevant, avec le lien de l\'espace club : <a href="' + SITE_URL + '#club" target="_blank">' + SITE_URL + '#club</a>.' : ''}</p>
-    <div class="tablebox"><table class="adm"><thead><tr><th>N°</th><th>Date</th><th>Heure</th><th>Gymnase</th><th>Ville</th><th>Club recevant</th><th>Limite inscr.</th><th>Heure lim.</th><th>Inscriptions</th>${c.famille === '4x4' ? '<th>Code club</th>' : ''}<th>Annulé</th><th></th></tr></thead>
-      <tbody>${ts.map(t => `<tr data-id="${t.id}">
-        <td><input data-f="numero" type="number" value="${t.numero}" style="width:56px"></td>
-        <td><input data-f="date" type="date" value="${esc(t.date)}"></td>
-        <td><input data-f="heure" value="${esc(t.heure || '')}" placeholder="13:30" style="width:70px"></td>
-        <td><input data-f="lieu" value="${esc(t.lieu || '')}" style="min-width:160px"></td>
-        <td><input data-f="ville" value="${esc(t.ville || '')}" style="width:110px"></td>
-        <td><select data-f="organisateur"><option value="">—</option>${A.clubs.map(k => `<option value="${esc(k.code)}" ${t.organisateur === k.code ? 'selected' : ''}>${esc(k.nom)}</option>`).join('')}</select></td>
-        <td><input data-f="date_limite" type="date" value="${esc(t.date_limite || '')}"></td>
-        <td><input data-f="heure_limite" value="${esc(t.heure_limite || '')}" style="width:64px"></td>
-        <td><select data-f="inscriptions">${[['auto', 'Auto'], ['ouvertes', 'Forcer ouvertes'], ['fermees', 'Fermées']].map(([v, l]) => `<option value="${v}" ${t.inscriptions === v ? 'selected' : ''}>${l}</option>`).join('')}</select><div class="small ${t.ouvert ? '' : 'muted'}" style="margin-top:2px">${t.ouvert ? '● ouvertes' : 'closes'}</div></td>
-        ${c.famille === '4x4' ? `<td style="white-space:nowrap"><input data-f="code_orga" class="code" value="${esc(t.code_orga || '')}" style="width:100px"> <button class="linkbtn" data-gen>Générer</button></td>` : ''}
-        <td>${['ouvert', 'annule'].includes(t.statut) ? `<input type="checkbox" data-annule ${t.statut === 'annule' ? 'checked' : ''} style="width:18px;height:18px">` : '<span class="small muted">' + (t.statut === 'valide' ? 'joué' : 'saisi') + '</span>'}</td>
-        <td><button class="linkbtn red" data-del>Supprimer</button></td></tr>`).join('')}</tbody></table></div>
+    <div class="tlist">${ts.map(t => `<div class="trow" data-id="${t.id}">
+      <div class="tr-l">
+        <label class="tf" style="width:64px"><span>N°</span><input data-f="numero" type="number" value="${t.numero}"></label>
+        <label class="tf" style="width:150px"><span>Date</span><input data-f="date" type="date" value="${esc(t.date)}"></label>
+        <label class="tf" style="width:78px"><span>Heure</span><input data-f="heure" value="${esc(t.heure || '')}" placeholder="13:30"></label>
+        <label class="tf grow"><span>Gymnase</span><input data-f="lieu" value="${esc(t.lieu || '')}"></label>
+        <label class="tf" style="width:140px"><span>Ville</span><input data-f="ville" value="${esc(t.ville || '')}"></label>
+        <label class="tf" style="width:230px"><span>Club recevant</span><select data-f="organisateur"><option value="">—</option>${A.clubs.map(k => `<option value="${esc(k.code)}" ${t.organisateur === k.code ? 'selected' : ''}>${esc(k.nom)}</option>`).join('')}</select></label>
+      </div>
+      <div class="tr-l">
+        <label class="tf" style="width:150px"><span>Limite inscr.</span><input data-f="date_limite" type="date" value="${esc(t.date_limite || '')}"></label>
+        <label class="tf" style="width:78px"><span>Heure lim.</span><input data-f="heure_limite" value="${esc(t.heure_limite || '')}"></label>
+        <label class="tf" style="width:170px"><span>Inscriptions <b class="${t.ouvert ? 'ok' : 'muted'}">${t.ouvert ? '● ouvertes' : 'closes'}</b></span><select data-f="inscriptions">${[['auto', 'Auto'], ['ouvertes', 'Forcer ouvertes'], ['fermees', 'Fermées']].map(([v, l]) => `<option value="${v}" ${t.inscriptions === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+        ${c.famille === '4x4' ? `<label class="tf" style="width:220px"><span>Code club recevant</span><span class="tf-in"><input data-f="code_orga" class="code" value="${esc(t.code_orga || '')}"><button type="button" class="linkbtn" data-gen>Générer</button></span></label>` : ''}
+        <div class="tf tf-end">${['ouvert', 'annule'].includes(t.statut) ? `<label class="tf-chk"><input type="checkbox" data-annule ${t.statut === 'annule' ? 'checked' : ''}> Annulé</label>` : '<span class="small muted">' + (t.statut === 'valide' ? 'Joué' : 'Classement saisi') + '</span>'}<button type="button" class="linkbtn red" data-del>Supprimer</button></div>
+      </div></div>`).join('') || '<div class="card muted">Aucun tournoi pour le moment.</div>'}</div>
     <div><button class="btn ghost" id="a-add">+ Ajouter un tournoi</button></div>
   </div>`;
   $('a-body').querySelectorAll('[data-c]').forEach(b => b.onclick = () => { ACOMP = b.dataset.c; adminTournois(); });
   const put = async (id, p) => { saveMark('wait', 'Enregistrement…'); try { await rpc('chp_admin_save_tournoi', { pwd: ADMIN_PWD, t: { id, ...p } }); await loadAdmin(); await loadPublic(); saveMark('ok', '✓ Enregistré'); } catch(e) { saveMark('err', '⚠ ' + e.message); } };
-  $('a-body').querySelectorAll('tr[data-id]').forEach(tr => {
+  $('a-body').querySelectorAll('.trow[data-id]').forEach(tr => {
     const id = +tr.dataset.id;
     tr.querySelectorAll('[data-f]').forEach(el => el.onchange = async () => {
       const p = { [el.dataset.f]: el.value };
