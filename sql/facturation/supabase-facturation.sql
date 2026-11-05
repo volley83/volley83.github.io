@@ -62,6 +62,7 @@ create table if not exists fac_lignes (
   created_at    timestamptz not null default now()
 );
 alter table fac_lignes add column if not exists precisions text;   -- précisions sous la désignation (noms des enfants…)
+alter table fac_bordereaux add column if not exists mail_contenu text;  -- liste « Ce bordereau comprend notamment » du mail aux clubs
 create index if not exists fac_lignes_bord on fac_lignes(bordereau_id, club);
 
 create table if not exists fac_paiements (
@@ -319,6 +320,7 @@ begin
     numero = coalesce(nullif(p->>'numero', '')::int, numero),
     date   = case when p ? 'date' then nullif(p->>'date', '')::date else date end,
     titre  = case when p ? 'titre' then nullif(trim(p->>'titre'), '') else titre end,
+    mail_contenu = case when p ? 'mail_contenu' then nullif(trim(p->>'mail_contenu'), '') else mail_contenu end,
     statut = case when p->>'statut' in ('brouillon','envoye') then p->>'statut' else statut end
   where id = bid;
   return bid;
@@ -651,6 +653,8 @@ insert into fac_reglages (cle, valeur) values
   ('open_tarifs', '[10, 35, 60]'),   -- par équipe : 1 tournoi, 2 tournois, 3 tournois ou plus
   ('emetteur', '"Comité du Var de Volley-Ball\nMaison des Sports du Var\n133, boulevard Général Brosset\n83200 Toulon\ncontact@volley83.fr"'),
   ('ris_pied', '"Maison des sports du Var – 133, Boulevard du Général Brosset - 83200 TOULON\nTéléphone : 06-13-30-34-25 / e-mail : contact@volley83.fr / www.volley83.fr\nN° Siret : 42463014300024 / Code APE : 9312 Z"'),
+  ('mail_objet', '"Bordereau de facturation N° {numero} – saison {saison} – {club}"'),
+  ('mail_modele', '"Madame la présidente, Monsieur le président,\n\nVeuillez trouver ci-joint le bordereau de facturation N° {numero} de votre club pour la saison {saison}, d''un montant de {montant}.\nCe bordereau comprend notamment :\n\n{contenu}\n\nEn cas de questions ou de demandes de précisions, n''hésitez pas à nous contacter.\nVous pouvez régler cette facture par virement, par chèque à l''ordre du Comité du Var de Volley-Ball, ou par carte bancaire : https://www.helloasso.com/associations/comite-du-var-de-volley-ball/paiements/paiement-des-clubs\n\nSportivement,\n\nEric CHASSAGNARD\nTrésorier\nComité du Var de Volley-Ball"'),
   ('mentions', '"Règlement à réception, par virement ou par chèque à l''ordre du Comité du Var de Volley-Ball, en rappelant le numéro de la facture."')
 on conflict (cle) do nothing;
 

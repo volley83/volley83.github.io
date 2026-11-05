@@ -334,6 +334,9 @@ function renderBordereau(b) {
       <td class="r nw" onclick="event.stopPropagation()">${t ? `<button class="btn sm ghost" onclick="pdfClubs(${b.id},['${esc(c.code)}'])">PDF</button> <button class="btn sm ghost" onclick="mailClub(${b.id},'${esc(c.code)}')">✉ Mail</button>` : ''}</td></tr>`;
   }).join('');
   const avec = clubs.filter(c => totalDe(b.id, c.code)).map(c => c.code);
+  setTimeout(() => { if (!$('b-mail-ok')) return;
+    $('b-mail-ok').onclick = async () => { try { await rpc('fac_admin_bordereau', { pwd: PWD, p: { id: b.id, mail_contenu: $('b-mail').value } }); b.mail_contenu = $('b-mail').value.trim() || null; toast('✓ Enregistré'); } catch(e) { fail(e); } };
+    $('b-mail-prop').onclick = () => { $('b-mail').value = contenuPropose(b.id); }; }, 0);
   shell('bordereaux', `
   <div class="crumb"><a href="#bordereaux">Bordereaux</a> › N° ${b.numero}</div>
   ${lock ? '' : alerteRis()}
@@ -348,6 +351,10 @@ function renderBordereau(b) {
       <div class="field"><label>Intitulé (facultatif)</label><input value="${esc(b.titre || '')}" ${lock ? 'disabled' : ''} placeholder="Engagements, fin de saison…" onchange="majBordereau(bord(${b.id}),{titre:this.value})"></div>
       <div class="field"><label>Total du bordereau</label><div class="cond" style="font-size:28px;font-weight:800">${euros(totalDe(b.id))}</div></div>
     </div>
+    <details class="help" ${b.mail_contenu ? '' : ''}><summary>✉ Contenu du mail aux clubs (« Ce bordereau comprend notamment »)</summary><div class="stack" style="color:var(--text)">
+      <textarea id="b-mail" rows="6" placeholder="* l'affiliation de votre club pour la saison&#10;* …">${esc(b.mail_contenu || contenuPropose(b.id))}</textarea>
+      <div class="btnrow"><button class="btn sm primary" id="b-mail-ok">Enregistrer</button><button class="btn sm ghost" id="b-mail-prop">Proposer d'après les factures</button>
+        <span class="small muted">${b.mail_contenu ? 'Texte enregistré pour ce bordereau.' : 'Proposition automatique (non enregistrée) : modifiez-la puis enregistrez.'} Le reste du mail se règle dans Réglages.</span></div></div></details>
     <div class="btnrow">
       ${lock ? '' : `<a class="btn primary" href="#b/${b.id}/auto">⚡ Ajouts automatiques</a><a class="btn accent" href="#b/${b.id}/groupe">☰ Saisie groupée</a>`}
       ${avec.length ? `<button class="btn ghost" onclick="pdfClubs(${b.id},${esc(JSON.stringify(avec))})">⬇ PDF de toutes les factures (${avec.length})</button>` : ''}
@@ -741,11 +748,17 @@ function renderReglages() {
     <div class="field"><label>Coordonnées bancaires (encadré « Règlement par virement » sur chaque facture)</label><textarea id="r-bq" rows="4" placeholder="Titulaire, IBAN, BIC, banque">${esc(reglage('banque', ''))}</textarea></div>
     <div class="field"><label>Pied de page des RIS</label><textarea id="r-rp" rows="3">${esc(reglage('ris_pied', ''))}</textarea></div>
     <div class="btnrow"><button class="btn primary" id="r-ok1">Enregistrer</button></div></div>
+  <div class="card stack"><h3>Mail d'envoi des bordereaux</h3>
+    <p class="small muted">Champs remplacés automatiquement : <span class="code">{numero}</span> n° du bordereau, <span class="code">{saison}</span> 2026/2027, <span class="code">{club}</span> nom du club, <span class="code">{sigle}</span>, <span class="code">{montant}</span> total de la facture, <span class="code">{facture}</span> n° de facture, <span class="code">{date}</span> date du bordereau, <span class="code">{contenu}</span> liste « comprend notamment » (réglée sur chaque bordereau).</p>
+    <div class="field"><label>Objet</label><input id="r-mo" value="${esc(reglage('mail_objet', ''))}"></div>
+    <div class="field"><label>Texte du mail</label><textarea id="r-mm" rows="18">${esc(reglage('mail_modele', ''))}</textarea></div>
+    <div class="btnrow"><button class="btn primary" id="r-ok3">Enregistrer</button></div></div>
   <div class="card stack"><h3>Compétitions OPEN : prix par équipe</h3>
     <p class="small muted">Selon le nombre de tournois joués par chaque équipe d'un club sur la saison (finale comprise).</p>
     <div class="grid g3"><div class="field"><label>1 tournoi</label><input id="r-t1" value="${fmtN(t[0])}" inputmode="decimal"></div><div class="field"><label>2 tournois</label><input id="r-t2" value="${fmtN(t[1])}" inputmode="decimal"></div><div class="field"><label>3 tournois ou plus</label><input id="r-t3" value="${fmtN(t[2])}" inputmode="decimal"></div></div>
     <div class="btnrow"><button class="btn primary" id="r-ok2">Enregistrer</button></div></div>`);
   $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_pied', p_valeur: $('r-rp').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+  $('r-ok3').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok2').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'open_tarifs', p_valeur: [num($('r-t1').value), num($('r-t2').value), num($('r-t3').value)] }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
 }
 
@@ -1111,12 +1124,40 @@ async function pdfClubs(bid, codes) {
   codes.forEach((code, i) => { if (i) doc.addPage(); pageFacture(doc, b, code, img); });
   doc.save(codes.length === 1 ? `Facture-${facNum(b, codes[0])}.pdf` : `Bordereau-${b.numero}-${b.saison}.pdf`);
 }
+// Liste « Ce bordereau comprend notamment » proposée d'après les lignes du bordereau
+function contenuPropose(bid) {
+  const ls = lignesDe(bid), cats = new Set(ls.map(l => (art(l.article_id) || {}).categorie).filter(Boolean)), out = [];
+  const has = re => ls.some(l => re.test(norm(l.designation)));
+  if (cats.has('Affiliation') || has(/affiliation/)) out.push("l'affiliation de votre club pour la saison");
+  if (cats.has('Engagements') || ls.some(l => !l.source && /^engagements? (m11|m13|m15|m18|m21|senior|compet)/.test(norm(l.designation)) && !/4x4/.test(norm(l.designation)))) out.push('les engagements en championnat');
+  if (cats.has('Compétitions OPEN') || ls.some(l => String(l.source || '').startsWith('open:')) || has(/engagement open/)) out.push('les engagements des Compétitions OPEN et M15 / M18 4x4');
+  if (cats.has("Pitchoun' Volley") || ls.some(l => l.source === 'pitchoun')) out.push("l'engagement au Pitchoun' Volley");
+  if (cats.has('Beach') || has(/^engagements? beach/)) out.push('les engagements beach');
+  if (ls.some(l => String(l.source || '').startsWith('cde:')) || has(/participation des clubs aux stages/)) {
+    const st = [...new Set(ls.filter(l => /participation des clubs aux stages/.test(norm(l.designation))).map(l => (l.designation.split('–')[1] || '').trim()).filter(Boolean))];
+    out.push(`la participation aux stages du Centre Départemental${st.length ? ' (' + st.map(x => x.replace(/\s*\(.*$/, '').toLowerCase().replace(/\b(toussaint|noël|noel|février|pâques|paques)\b/g, w => w[0].toUpperCase() + w.slice(1))).join(', ') + ')' : ''}`);
+  }
+  if (ls.some(l => /^stage:/.test(l.source || ''))) out.push('les stages réglés par le club');
+  if (cats.has('Formations') || has(/formation/)) out.push('les formations');
+  if (cats.has('Arbitrage') || has(/arbitrage|marqueur/)) out.push("les frais d'arbitrage");
+  if (cats.has('Divers') || has(/adhesif|ballon|materiel/)) out.push("l'achat de matériel (ballons, adhésif…)");
+  if (has(/aide a l emploi/)) out.push("l'aide à l'emploi");
+  const ris = [...new Set(ls.filter(l => String(l.source || '').startsWith('ris:')).map(l => { const it = (D.ris_items || []).find(i => 'ris:' + i.id === l.source); const r = it && risDe(it.ris_id); return r ? r.numero : null; }).filter(Boolean))].sort((a, b) => a - b);
+  if (ris.length) out.push(`les pénalités du RIS N° ${ris.join(', ')}`);
+  else if (cats.has('Pénalités') || cats.has('Forfaits')) out.push('les pénalités');
+  return out.map(x => '* ' + x).join('\n');
+}
+function texteMail(b, code) {
+  const c = club(code), vars = { numero: b.numero, saison: b.saison.replace('-', '/'), club: c.nom, sigle: code, montant: euros(totalDe(b.id, code)), facture: facNum(b, code), date: fmtD(b.date),
+    contenu: b.mail_contenu || contenuPropose(b.id) };
+  const rep = t => String(t || '').replace(/\{(\w+)\}/g, (m, k) => vars[k] != null ? vars[k] : m);
+  return { objet: rep(reglage('mail_objet', 'Bordereau de facturation N° {numero} – saison {saison} – {club}')), corps: rep(reglage('mail_modele', 'Bonjour,\n\nVeuillez trouver ci-joint le bordereau de facturation N° {numero}.\n\n{contenu}')) };
+}
 async function mailClub(bid, code) {
-  const b = bord(bid), c = club(code), tot = totalDe(bid, code);
+  const b = bord(bid), c = club(code), m = texteMail(b, code);
   await pdfClubs(bid, [code]);
-  const body = `Bonjour,\n\nVeuillez trouver ci-joint la facture n° ${facNum(b, code)} (bordereau n° ${b.numero} du ${fmtD(b.date)}) d'un montant de ${euros(tot)}.\n\n${reglage('mentions', '')}${reglage('banque', '') ? '\n\nCoordonnées bancaires :\n' + reglage('banque', '') : ''}\n\nSportivement,\nLe Comité du Var de Volley-Ball`;
   const to = c.email_finances || c.email || '', cc = c.email_finances ? (c.email || '') : '';
-  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to) + (cc ? '&cc=' + encodeURIComponent(cc) : '') + '&su=' + encodeURIComponent(`Facture Comité du Var – bordereau n° ${b.numero} – ${c.nom}`) + '&body=' + encodeURIComponent(body), '_blank');
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to) + (cc ? '&cc=' + encodeURIComponent(cc) : '') + '&su=' + encodeURIComponent(m.objet) + '&body=' + encodeURIComponent(m.corps), '_blank');
   if (!to) toast('Pas de mail enregistré pour ce club (onglet Clubs)', 'err');
 }
 
