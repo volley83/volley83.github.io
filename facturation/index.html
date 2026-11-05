@@ -156,7 +156,10 @@ async function rpc(fn, args) {
     body: JSON.stringify(args || {}),
   });
   const txt = await res.text();
-  if (!res.ok) { let m = txt; try { m = JSON.parse(txt).message || txt; } catch(e) {} throw new Error(m); }
+  if (!res.ok) { let m = txt; try { m = JSON.parse(txt).message || txt; } catch(e) {}
+    if (/foreign key/i.test(m)) m = 'Un élément choisi n\'existe plus dans la base (la page n\'est peut-être plus à jour). Rechargez la page (Ctrl+F5) puis recommencez.';
+    else if (/duplicate key|unique/i.test(m)) m = 'Cet élément existe déjà.';
+    throw new Error(m); }
   return txt ? JSON.parse(txt) : null;
 }
 const r2 = n => Math.round((+n || 0) * 100) / 100;
@@ -911,7 +914,8 @@ function renderRis(r) {
       <td><select data-k="rubrique" ${lock ? 'disabled' : ''} style="width:64px" title="Rubrique">${RUBRIQUES.map((t, k) => `<option value="${k + 1}" ${i.rubrique === k + 1 ? 'selected' : ''} title="${esc(t)}">${k + 1}</option>`).join('')}</select></td>
       <td><input data-k="match" value="${esc(i.match || '')}" ${lock ? 'disabled' : ''} style="width:150px"></td>
       <td><select data-k="club" ${lock ? 'disabled' : ''} style="width:100px">${clubs.map(c => `<option ${c.code === i.club ? 'selected' : ''}>${esc(c.code)}</option>`).join('')}</select></td>
-      <td><input data-k="intitule" value="${esc(i.intitule)}" ${lock ? 'disabled' : ''} style="min-width:320px">${i.commentaire ? `<div class="small muted" style="margin-top:3px;white-space:pre-wrap">💬 ${esc(i.commentaire)}</div>` : ''}</td>
+      <td><input data-k="intitule" value="${esc(i.intitule)}" ${lock ? 'disabled' : ''} style="min-width:320px">
+        <input data-k="note" value="${esc(i.note || '')}" ${lock ? 'disabled' : ''} placeholder="Note explicative (facultatif)" style="margin-top:4px;font-size:12.5px;padding:5px 8px;color:var(--muted)">${i.commentaire ? `<div class="small muted" style="margin-top:3px;white-space:pre-wrap">💬 ${esc(i.commentaire)}</div>` : ''}</td>
       <td><input data-k="montant" class="n" value="${fmtN(i.montant)}" ${lock ? 'disabled' : ''} style="width:80px" inputmode="decimal"></td>
       <td>${l ? `<a class="badge b-ok" href="#b/${b.id}/${encodeURIComponent(i.club)}">✓ Bordereau n° ${b.numero}</a>` : num(i.montant) ? '<span class="badge b-warn">À facturer</span>'
         : `<label class="small" style="display:flex;gap:6px;align-items:center;white-space:nowrap"><input type="checkbox" data-k="sans_sanction" ${i.sans_sanction ? 'checked' : ''}> Pas de sanction financière</label>${i.sans_sanction ? '' : '<span class="badge b-bad">Montant à saisir</span>'}`}</td>
@@ -944,10 +948,11 @@ function renderRis(r) {
       <div class="field"><label>Rubrique</label><select data-r="rub">${RUBRIQUES.map((t, k) => `<option value="${k + 1}" ${k === 4 ? 'selected' : ''}>${k + 1}- ${t}</option>`).join('')}</select></div>
       <div class="field"><label>Infraction relevée (texte du RIS et de la facture)</label><input data-r="int" placeholder="Licence non présentée – 1 joueuse"></div>
       <div class="field"><label>Montant €</label><input data-r="mt" class="n" inputmode="decimal"></div>
-      <button class="x" title="Retirer cette ligne" style="height:40px">✕</button>`;
+      <button class="x" title="Retirer cette ligne" style="height:40px">✕</button>
+      <div class="field" style="grid-column:1 / -1"><input data-r="note" placeholder="Note explicative (facultatif, imprimée sur le RIS et la facture) : ex. 2ᵉ demande pour la même rencontre"></div>`;
     const q = k => d.querySelector(`[data-r="${k}"]`);
     q('art').onchange = () => { const a = art(q('art').value); if (a) { q('int').value = intituleArticle(a); q('mt').value = fmtN(a.prix); q('rub').value = rubriqueArticle(a); } else if (q('art').value === 'libre') { q('int').value = ''; q('mt').value = ''; q('int').focus(); } };
-    d.querySelector('.x').onclick = () => { if (document.querySelectorAll('.ri-row').length > 1) d.remove(); else { q('art').value = ''; q('int').value = ''; q('mt').value = ''; } };
+    d.querySelector('.x').onclick = () => { if (document.querySelectorAll('.ri-row').length > 1) d.remove(); else { q('art').value = ''; q('int').value = ''; q('mt').value = ''; q('note').value = ''; } };
     $('ri-rows').appendChild(d); return d;
   };
   addRow();
@@ -956,9 +961,17 @@ function renderRis(r) {
     const match = $('ri-match').value.trim(), club = $('ri-club').value;
     if (!club) return alert('Choisissez le club.');
     const rows = [...document.querySelectorAll('.ri-row')].map(d => { const q = k => d.querySelector(`[data-r="${k}"]`);
-      return { rubrique: +q('rub').value, article_id: art(q('art').value) ? q('art').value : null, intitule: q('int').value.trim(), montant: String(num(q('mt').value)) }; })
+      return { rubrique: +q('rub').value, article_id: art(q('art').value) ? String(art(q('art').value).id) : null, intitule: q('int').value.trim(), montant: String(num(q('mt').value)), note: q('note').value.trim() }; })
       .filter(x => x.intitule);
     if (!rows.length) return alert('Indiquez au moins une infraction.');
+    // même infraction déjà saisie pour ce match (même club ou autre club) : confirmation
+    const memeMatch = i => match && norm(i.match) === norm(match);
+    const avert = [];
+    rows.forEach((x, k) => {
+      itemsDe(r.id).filter(i => memeMatch(i) && norm(i.intitule) === norm(x.intitule)).forEach(i => avert.push(`« ${x.intitule} » est déjà saisi pour ${i.club} sur ${match}`));
+      if (rows.findIndex(y => norm(y.intitule) === norm(x.intitule)) !== k) avert.push(`« ${x.intitule} » figure deux fois dans votre saisie`);
+    });
+    if (avert.length && !confirm(`Attention :\n• ${[...new Set(avert)].join('\n• ')}\n\nAjouter quand même ? (pensez à une note explicative si la pénalité est appliquée plusieurs fois)`)) return;
     try {
       for (const [k, x] of rows.entries()) await rpc('fac_admin_ris_item', { pwd: PWD, p: { ris_id: r.id, match, club, ...x, ordre: its.length + k } });
       RIS_SAISIE = { rubrique: 5, match, club }; await load(); renderRis(risDe(r.id)); toast(`✓ ${rows.length} infraction${rows.length > 1 ? 's' : ''} ajoutée${rows.length > 1 ? 's' : ''}`);
@@ -989,7 +1002,7 @@ async function genererRis(id) {
       const n = {};
       const lignes = afact.map(i => { const a = art(i.article_id) || {}; n[i.club] = n[i.club] == null ? lignesDe(cible.id, i.club).length : n[i.club] + 1;
         return { bordereau_id: cible.id, club: i.club, article_id: a.id || null, date_ligne: r.date, code_compta: a.code_compta || '771001',
-          designation: String(i.intitule).toUpperCase(), precisions: `RIS n° ${r.numero} du ${fmtD(r.date)}${i.match ? ' – ' + i.match : ''}`, quantite: 1, prix: num(i.montant), source: 'ris:' + i.id, ordre: n[i.club] }; });
+          designation: String(i.intitule).toUpperCase(), precisions: `RIS n° ${r.numero} du ${fmtD(r.date)}${i.match ? ' – ' + i.match : ''}${i.note ? ' – ' + i.note : ''}`, quantite: 1, prix: num(i.montant), source: 'ris:' + i.id, ordre: n[i.club] }; });
       await enregistrerLignes(lignes); await load();
       toast(`✓ ${lignes.length} infraction(s) ajoutée(s) au bordereau n° ${cible.numero}`);
     }
@@ -1036,7 +1049,7 @@ async function pdfRis(id) {
     doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(20, 32, 58); doc.text(`${k + 1}-  ${t}`, M - 4, y); y += 4;
     doc.setDrawColor(150, 160, 175); doc.setLineWidth(0.2);
     row(cols.map(c => c.t), true);
-    (li.length ? li : [{ match: '', club: '', intitule: 'Néant' }]).forEach(i => { if (y > 268) { doc.addPage(); entete(); y = 36; row(cols.map(c => c.t), true); } row([i.match || '', i.club, i.intitule]); });
+    (li.length ? li : [{ match: '', club: '', intitule: 'Néant' }]).forEach(i => { if (y > 268) { doc.addPage(); entete(); y = 36; row(cols.map(c => c.t), true); } row([i.match || '', i.club, i.intitule + (i.note ? ` (${i.note})` : '')]); });
     y += 9;
   });
   if (y > 262) { doc.addPage(); entete(); y = 40; }

@@ -129,7 +129,8 @@ create table if not exists fac_signalements (
   traite_le     timestamptz,
   created_at    timestamptz not null default now()
 );
-alter table fac_ris_items add column if not exists commentaire text;
+alter table fac_ris_items add column if not exists commentaire text;   -- remarque interne (signalement…)
+alter table fac_ris_items add column if not exists note text;          -- note explicative, imprimée sur le RIS et la facture
 alter table fac_ris_items add column if not exists signalement_id bigint;
 
 -- Rappels envoyés aux clubs pour les bordereaux non réglés
@@ -445,6 +446,7 @@ begin
     montant    = coalesce(nullif(replace(p->>'montant', ',', '.'), '')::numeric, 0),
     sans_sanction = coalesce((p->>'sans_sanction')::boolean, sans_sanction),
     commentaire = case when p ? 'commentaire' then nullif(trim(p->>'commentaire'), '') else commentaire end,
+    note        = case when p ? 'note' then nullif(left(trim(p->>'note'), 300), '') else note end,
     ordre      = coalesce(nullif(p->>'ordre', '')::int, ordre)
   where id = iid;
   return iid;
@@ -687,7 +689,7 @@ on conflict (cle) do nothing;
 -- ---------- Tarifs 2026-2027 (document « Tarifs saison 2026 / 2027 ») ----------
 -- Remplace une seule fois le catalogue de départ ; les articles créés à la main (ordre 999) sont gardés.
 do $$ begin
-  if coalesce((select valeur::text from fac_reglages where cle = 'catalogue_version'), '1') < '2' then
+  if coalesce((select valeur #>> '{}' from fac_reglages where cle = 'catalogue_version'), '1') < '2' then
     delete from fac_articles where cle is null and ordre < 999;
     update fac_articles set cle = 'stage_cde' where cle = 'stage';
     insert into fac_articles (code_compta, designation, prix, unite, categorie, cle, ordre) values
