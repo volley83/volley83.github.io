@@ -662,7 +662,7 @@ function drawPoule(sel) {
           <td class="pts">${r.pts}</td><td>${r.j}</td><td>${r.g || 0}</td><td>${r.p || 0}</td>
           <td class="hs">${r.sp || 0}–${r.sc || 0}</td><td class="hs">${r.cs === 'MAX' ? 'max' : esc(String(r.cs || '–')).replace('.', ',')}</td><td class="hs2 tp">${r.pp || 0}–${r.pc || 0}</td><td class="hs">${r.cp === 'MAX' ? 'max' : esc(String(r.cp || '–')).replace('.', ',')}</td>
         </tr>`).join('')}</tbody></table></div>
-        <div class="legend"><span>J : matchs joués · G : gagnés · P : perdus · Coef. sets : sets gagnés ÷ sets perdus · Coef. pts : points marqués ÷ points encaissés.</span>${enAvant ? '<span><b style="color:var(--navy)">En gras</b> : les équipes qualifiées pour le championnat Excellence.</span>' : ''}</div>
+        <div class="legend"><span>J : matchs joués · G : gagnés · P : perdus · Coef. sets : sets gagnés ÷ sets perdus · Coef. pts : points marqués ÷ points encaissés.</span>${enAvant ? `<span><b style="color:var(--navy)">En gras</b> : les équipes qualifiées ${g === 'seniors' ? "pour les play-offs d'accession" : 'pour la phase Excellence'}.</span>` : ''}</div>
         ${baremeHTML(c, p)}`
       : `<p class="muted" style="margin-top:6px">Le classement apparaîtra après les premiers matchs.</p>
         ${p.equipes.length ? `<div class="equipes">${p.equipes.map(e => `<span class="${estMien(e) ? 'mine' : ''}">${esc(equipeFed(e))}</span>`).join('')}</div>` : ''}`}
