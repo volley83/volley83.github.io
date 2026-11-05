@@ -261,7 +261,8 @@ function renderRecap() {
       ${bs.map(b => { const cl = etatCell(b, e); return `<td class="c"><a class="cell ${cl}" href="#b/${b.id}/${encodeURIComponent(c.code)}" title="${esc(bordNom(b))} – réglé ${euros(e.regle[b.id] || 0)}">${e.du[b.id] ? fmtN(e.du[b.id]) : '—'}</a></td>`; }).join('')}
       <td class="num"><b>${fmtN(e.totDu)}</b></td><td class="num">${fmtN(e.totRegle)}</td>
       <td class="num" style="color:${e.reste > 0.005 ? 'var(--bad)' : e.reste < -0.005 ? 'var(--blue)' : 'var(--ok)'};font-weight:800">${e.reste < -0.005 ? 'avoir ' + fmtN(-e.reste) : fmtN(e.reste)}</td>
-      <td class="c">${e.reste > 0.005 ? `<button class="btn sm ghost" onclick="openPaiement({club:'${esc(c.code)}'})">+ Paiement</button>` : ''}</td></tr>`;
+      <td class="nw">${e.reste > 0.005 ? `<button class="btn sm ghost" onclick="openPaiement({club:'${esc(c.code)}'})">+ Paiement</button>` : ''}
+        ${impayes(c.code).length ? ` <button class="btn sm danger" onclick="rappelClub('${esc(c.code)}')">✉ Rappel</button>${dernierRappel(c.code) ? `<div class="small muted">dernier rappel le ${fmtD(dernierRappel(c.code).created_at)}</div>` : ''}` : ''}</td></tr>`;
   }).join('');
   const foot = `<tr><td>Total</td>${bs.map(b => `<td class="num">${fmtN(totalDe(b.id))}</td>`).join('')}<td class="num">${fmtN(totDu)}</td><td class="num">${fmtN(totRg)}</td><td class="num">${fmtN(totDu - totRg)}</td><td></td></tr>`;
   shell('recap', `
@@ -331,7 +332,7 @@ function renderBordereau(b) {
     const st = !t ? '' : cl === 'paid' ? '<span class="badge b-ok">Réglé</span>' : cl === 'part' ? `<span class="badge b-warn">Réglé ${euros(e.regle[b.id])}</span>` : lock ? '<span class="badge b-bad">À régler</span>' : '<span class="badge b-draft">Brouillon</span>';
     return `<tr class="clk ${t ? '' : 'off'}" onclick="location.hash='b/${b.id}/${encodeURIComponent(c.code)}'"><td class="club"><b>${esc(c.code)}</b><small>${esc(c.nom)}</small></td>
       <td class="c">${n || ''}</td><td class="num"><b>${t ? euros(t) : '—'}</b></td><td>${st}</td>
-      <td class="r nw" onclick="event.stopPropagation()">${t ? `<button class="btn sm ghost" onclick="pdfClubs(${b.id},['${esc(c.code)}'])">PDF</button> <button class="btn sm ghost" onclick="mailClub(${b.id},'${esc(c.code)}')">✉ Mail</button>` : ''}</td></tr>`;
+      <td class="r nw" onclick="event.stopPropagation()">${t ? `<button class="btn sm ghost" onclick="pdfClubs(${b.id},['${esc(c.code)}'])">PDF</button> <button class="btn sm ghost" onclick="mailClub(${b.id},'${esc(c.code)}')">✉ Mail</button>` : ''}${lock && t && cl !== 'paid' && cl !== 'zero' ? ` <button class="btn sm danger" onclick="rappelClub('${esc(c.code)}')">✉ Rappel</button>` : ''}</td></tr>`;
   }).join('');
   const avec = clubs.filter(c => totalDe(b.id, c.code)).map(c => c.code);
   setTimeout(() => { if (!$('b-mail-ok')) return;
@@ -388,7 +389,7 @@ function renderFacture(b, code) {
   <div class="card stack">
     <div class="ttl"><div><h2>${esc(c.nom)}</h2><p class="muted">${c.numero ? 'N° ' + esc(c.numero) + ' · ' : ''}Facture ${esc(facNum(b, code))} · Bordereau n° ${b.numero} du ${fmtD(b.date)}${lock ? ' · <span class="badge b-sent">Envoyé</span>' : ''}</p></div>
       <div class="btnrow">${ls.length ? `<button class="btn ghost" onclick="pdfClubs(${b.id},['${esc(code)}'])">⬇ PDF</button><button class="btn ghost" onclick="mailClub(${b.id},'${esc(code)}')">✉ Préparer le mail</button>` : ''}
-        <button class="btn ghost" onclick="openPaiement({club:'${esc(code)}',bordereau_id:${b.id}})">+ Paiement</button></div></div>
+        <button class="btn ghost" onclick="openPaiement({club:'${esc(code)}',bordereau_id:${b.id}})">+ Paiement</button>${lock && impayes(code).some(i => i.b.id === b.id) ? `<button class="btn danger" onclick="rappelClub('${esc(code)}')">✉ Rappel</button>` : ''}</div></div>
     ${lock ? '' : `<div class="picker"><div class="grid" style="grid-template-columns:minmax(0,1fr) auto"><input id="pk-q" placeholder="🔍 Rechercher un article : code, désignation… puis cliquez pour l'ajouter" value="${esc(PICK_Q)}" autocomplete="off">
       <button class="btn ghost" onclick="ajoutLibre()">+ Ligne libre</button></div><div id="pk-list" class="picker-list"></div></div>`}
     <div class="tablebox"><table class="t" id="fac-t"><thead><tr><th>Date</th><th>Compte</th><th>Désignation</th><th class="r">Qté</th><th class="r">P.U. €</th><th class="r">Total €</th><th></th></tr></thead>
@@ -753,12 +754,18 @@ function renderReglages() {
     <div class="field"><label>Objet</label><input id="r-mo" value="${esc(reglage('mail_objet', ''))}"></div>
     <div class="field"><label>Texte du mail</label><textarea id="r-mm" rows="18">${esc(reglage('mail_modele', ''))}</textarea></div>
     <div class="btnrow"><button class="btn primary" id="r-ok3">Enregistrer</button></div></div>
+  <div class="card stack"><h3>Mail de rappel (bordereaux non réglés)</h3>
+    <p class="small muted">Le rappel reprend tous les bordereaux <b>envoyés</b> et pas encore réglés du club. Champs : <span class="code">{impayes}</span> liste des bordereaux et montants restant dus, <span class="code">{reste}</span> total restant dû, <span class="code">{club}</span>, <span class="code">{sigle}</span>, <span class="code">{saison}</span>.</p>
+    <div class="field"><label>Objet</label><input id="r-ro" value="${esc(reglage('rappel_objet', ''))}"></div>
+    <div class="field"><label>Texte du rappel</label><textarea id="r-rm" rows="18">${esc(reglage('rappel_modele', ''))}</textarea></div>
+    <div class="btnrow"><button class="btn primary" id="r-ok4">Enregistrer</button></div></div>
   <div class="card stack"><h3>Compétitions OPEN : prix par équipe</h3>
     <p class="small muted">Selon le nombre de tournois joués par chaque équipe d'un club sur la saison (finale comprise).</p>
     <div class="grid g3"><div class="field"><label>1 tournoi</label><input id="r-t1" value="${fmtN(t[0])}" inputmode="decimal"></div><div class="field"><label>2 tournois</label><input id="r-t2" value="${fmtN(t[1])}" inputmode="decimal"></div><div class="field"><label>3 tournois ou plus</label><input id="r-t3" value="${fmtN(t[2])}" inputmode="decimal"></div></div>
     <div class="btnrow"><button class="btn primary" id="r-ok2">Enregistrer</button></div></div>`);
   $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_pied', p_valeur: $('r-rp').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok3').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+  $('r-ok4').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'rappel_objet', p_valeur: $('r-ro').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'rappel_modele', p_valeur: $('r-rm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok2').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'open_tarifs', p_valeur: [num($('r-t1').value), num($('r-t2').value), num($('r-t3').value)] }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
 }
 
@@ -1152,6 +1159,25 @@ function texteMail(b, code) {
     contenu: b.mail_contenu || contenuPropose(b.id) };
   const rep = t => String(t || '').replace(/\{(\w+)\}/g, (m, k) => vars[k] != null ? vars[k] : m);
   return { objet: rep(reglage('mail_objet', 'Bordereau de facturation N° {numero} – saison {saison} – {club}')), corps: rep(reglage('mail_modele', 'Bonjour,\n\nVeuillez trouver ci-joint le bordereau de facturation N° {numero}.\n\n{contenu}')) };
+}
+// Bordereaux envoyés et pas (entièrement) réglés pour un club
+function impayes(code) {
+  const e = etatClub(code);
+  return bordsTries().filter(b => b.statut === 'envoye').map(b => ({ b, du: r2((e.du[b.id] || 0) - (e.regle[b.id] || 0)) })).filter(x => x.du > 0.005);
+}
+const dernierRappel = code => (D.rappels || []).filter(x => x.club === code).slice(-1)[0];
+async function rappelClub(code) {
+  const c = club(code), imp = impayes(code);
+  if (!imp.length) return alert('Ce club n\'a aucun bordereau envoyé en attente de règlement.');
+  const reste = r2(imp.reduce((x, i) => x + i.du, 0));
+  const vars = { club: c.nom, sigle: code, saison: SAISON.replace('-', '/'), reste: euros(reste),
+    impayes: imp.map(i => `* Bordereau N° ${i.b.numero} du ${fmtD(i.b.date)} (facture ${facNum(i.b, code)}) : ${euros(i.du)}${num(i.du) < totalDe(i.b.id, code) - 0.005 ? ` restant sur ${euros(totalDe(i.b.id, code))}` : ''}`).join('\n') };
+  const rep = t => String(t || '').replace(/\{(\w+)\}/g, (m, k) => vars[k] != null ? vars[k] : m);
+  for (const i of imp) await pdfClubs(i.b.id, [code]);
+  const to = c.email_finances || c.email || '', cc = c.email_finances ? (c.email || '') : '';
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to) + (cc ? '&cc=' + encodeURIComponent(cc) : '') + '&su=' + encodeURIComponent(rep(reglage('rappel_objet', 'Rappel – facturation non réglée – {club}'))) + '&body=' + encodeURIComponent(rep(reglage('rappel_modele', '{impayes}'))), '_blank');
+  if (!to) toast('Pas de mail enregistré pour ce club (onglet Clubs)', 'err');
+  try { await rpc('fac_admin_rappel', { pwd: PWD, p: { club: code, saison: SAISON, bordereaux: imp.map(i => i.b.numero), montant: String(reste) } }); await load(); toast('✓ Rappel préparé (pensez à joindre le PDF)'); route(); } catch(e) { fail(e); }
 }
 async function mailClub(bid, code) {
   const b = bord(bid), c = club(code), m = texteMail(b, code);

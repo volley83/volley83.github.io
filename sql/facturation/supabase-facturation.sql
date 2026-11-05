@@ -132,6 +132,16 @@ create table if not exists fac_signalements (
 alter table fac_ris_items add column if not exists commentaire text;
 alter table fac_ris_items add column if not exists signalement_id bigint;
 
+-- Rappels envoyés aux clubs pour les bordereaux non réglés
+create table if not exists fac_rappels (
+  id          bigint generated always as identity primary key,
+  club        text not null references fac_clubs(code) on update cascade,
+  saison      text not null,
+  bordereaux  int[] not null default '{}',          -- numéros des bordereaux relancés
+  montant     numeric(10,2),
+  created_at  timestamptz not null default now()
+);
+
 create table if not exists fac_reglages (
   cle    text primary key,
   valeur jsonb
@@ -148,7 +158,8 @@ alter table fac_ris        enable row level security;
 alter table fac_ris_items  enable row level security;
 alter table fac_saisisseurs  enable row level security;
 alter table fac_signalements enable row level security;
-revoke all on fac_clubs, fac_articles, fac_bordereaux, fac_lignes, fac_paiements, fac_reglages, fac_ris, fac_ris_items, fac_saisisseurs, fac_signalements from anon, authenticated;
+alter table fac_rappels      enable row level security;
+revoke all on fac_clubs, fac_articles, fac_bordereaux, fac_lignes, fac_paiements, fac_reglages, fac_ris, fac_ris_items, fac_saisisseurs, fac_signalements, fac_rappels from anon, authenticated;
 
 -- ---------- Outils ----------
 create or replace function fac_is_admin(pwd text) returns boolean
@@ -173,6 +184,7 @@ begin
     'ris',        (select coalesce(jsonb_agg(to_jsonb(r) order by r.numero), '[]') from fac_ris r where r.saison = p_saison),
     'ris_items',  (select coalesce(jsonb_agg(to_jsonb(i) order by i.ris_id, i.rubrique, i.ordre, i.id), '[]')
                    from fac_ris_items i join fac_ris r on r.id = i.ris_id where r.saison = p_saison),
+    'rappels',      (select coalesce(jsonb_agg(to_jsonb(x) order by x.created_at), '[]') from fac_rappels x where x.saison = p_saison),
     'saisisseurs',  (select coalesce(jsonb_agg(to_jsonb(x) order by x.nom), '[]') from fac_saisisseurs x),
     'signalements', (select coalesce(jsonb_agg(to_jsonb(g) order by g.created_at desc), '[]') from fac_signalements g
                      where g.saison = p_saison or g.statut = 'nouveau')
@@ -538,6 +550,17 @@ begin
   raise exception 'Action inconnue';
 end $$;
 
+create or replace function fac_admin_rappel(pwd text, p jsonb) returns bigint
+language plpgsql security definer set search_path = public as $$
+declare rid bigint;
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  insert into fac_rappels (club, saison, bordereaux, montant)
+  values (upper(p->>'club'), p->>'saison', coalesce(array(select jsonb_array_elements_text(p->'bordereaux')::int), '{}'), nullif(p->>'montant', '')::numeric)
+  returning id into rid;
+  return rid;
+end $$;
+
 create or replace function fac_admin_reglage(pwd text, p_cle text, p_valeur jsonb) returns void
 language plpgsql security definer set search_path = public as $$
 begin
@@ -558,6 +581,7 @@ grant execute on function
   fac_admin_paiement(text, jsonb),
   fac_admin_reglage(text, text, jsonb),
   fac_admin_ris(text, jsonb),
+  fac_admin_rappel(text, jsonb),
   fac_admin_ris_item(text, jsonb),
   fac_admin_saisisseur(text, jsonb),
   fac_admin_signalement(text, bigint, jsonb),
@@ -655,6 +679,8 @@ insert into fac_reglages (cle, valeur) values
   ('ris_pied', '"Maison des sports du Var – 133, Boulevard du Général Brosset - 83200 TOULON\nTéléphone : 06-13-30-34-25 / e-mail : contact@volley83.fr / www.volley83.fr\nN° Siret : 42463014300024 / Code APE : 9312 Z"'),
   ('mail_objet', '"Bordereau de facturation N° {numero} – saison {saison} – {club}"'),
   ('mail_modele', '"Madame la présidente, Monsieur le président,\n\nVeuillez trouver ci-joint le bordereau de facturation N° {numero} de votre club pour la saison {saison}, d''un montant de {montant}.\nCe bordereau comprend notamment :\n\n{contenu}\n\nEn cas de questions ou de demandes de précisions, n''hésitez pas à nous contacter.\nVous pouvez régler cette facture par virement, par chèque à l''ordre du Comité du Var de Volley-Ball, ou par carte bancaire : https://www.helloasso.com/associations/comite-du-var-de-volley-ball/paiements/paiement-des-clubs\n\nSportivement,\n\nEric CHASSAGNARD\nTrésorier\nComité du Var de Volley-Ball"'),
+  ('rappel_objet', '"Rappel – facturation non réglée – {club}"'),
+  ('rappel_modele', '"Madame la présidente, Monsieur le président,\n\nSauf erreur de notre part, nous n''avons pas encore reçu le règlement des sommes suivantes, dues par votre club pour la saison {saison} :\n\n{impayes}\n\nSoit un total restant dû de {reste}. Vous trouverez ci-joint le(s) bordereau(x) concerné(s).\n\nSi votre règlement est déjà parti, merci de ne pas tenir compte de ce message. Dans le cas contraire, nous vous remercions de bien vouloir procéder au paiement dans les meilleurs délais, par virement, par chèque à l''ordre du Comité du Var de Volley-Ball, ou par carte bancaire : https://www.helloasso.com/associations/comite-du-var-de-volley-ball/paiements/paiement-des-clubs\n\nEn cas de question ou de difficulté, n''hésitez pas à nous contacter.\n\nSportivement,\n\nEric CHASSAGNARD\nTrésorier\nComité du Var de Volley-Ball"'),
   ('mentions', '"Règlement à réception, par virement ou par chèque à l''ordre du Comité du Var de Volley-Ball, en rappelant le numéro de la facture."')
 on conflict (cle) do nothing;
 
