@@ -1288,10 +1288,11 @@ function adminTournois() {
 let MAILS_CLUBS = null;
 async function mailCodeOrga(t, c) {
   const w = window.open('about:blank', '_blank');   // ouvert tout de suite pour ne pas être bloqué par le navigateur
-  if (MAILS_CLUBS === null) { try { MAILS_CLUBS = await rpc('chp_admin_mails', { pwd: ADMIN_PWD }) || {}; } catch(e) { MAILS_CLUBS = {}; } }
+  let mails = MAILS_CLUBS;
+  if (!mails) { try { mails = MAILS_CLUBS = await rpc('chp_admin_mails', { pwd: ADMIN_PWD }) || {}; } catch(e) { mails = {}; } }   // pas de cache en cas d'erreur
   const tsC = A.tournois.filter(x => x.competition === t.competition).map(x => x.id);
   const insc = [...new Set(A.inscriptions.filter(i => i.club === t.organisateur && tsC.includes(i.tournoi_id) && i.contact_email).map(i => i.contact_email.trim()))];
-  const to = MAILS_CLUBS[t.organisateur] || insc.join(',');
+  const to = (t.organisateur && mails[t.organisateur]) || insc.join(',');
   const quand = fmtD(t.date, true, false) + (t.heure ? ' à ' + fmtH(t.heure) : '');
   const sujet = `${c.nom} – Tournoi ${t.numero} du ${fmtD(t.date, true, false)} : votre code club recevant`;
   const corps = `Bonjour,\n\n`
@@ -1306,7 +1307,8 @@ async function mailCodeOrga(t, c) {
     + `Sportivement,\nLe Comité du Var de Volley-Ball\n`;
   const url = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`;
   if (w) w.location.href = url; else window.open(url, '_blank');
-  if (!to) saveMark('err', '⚠ Pas d\'adresse mail connue pour ce club : complétez le destinataire dans Gmail');
+  if (!t.organisateur) saveMark('err', '⚠ Aucun club recevant choisi pour ce tournoi : choisissez-le pour que son adresse soit reprise');
+  else if (!to) saveMark('err', `⚠ Pas d'adresse mail pour ${clubNom(t.organisateur)} (sigle ${t.organisateur}) dans la Facturation : complétez le destinataire dans Gmail`);
 }
 
 // ----- Coupe de France -----
