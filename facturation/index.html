@@ -759,7 +759,7 @@ const ligneRis = it => D.lignes.find(l => l.source === 'ris:' + it.id);
 // Intitulé lisible à partir d'un article : « PÉNALITÉ RIS N°4 - LICENCE NON PRÉSENTÉE » → « Licence non présentée »
 function intituleArticle(a) {
   const t = String(a.designation || '').replace(/^PÉNALITÉ RIS N°\s*\d+\s*-\s*/i, '').replace(/\s*\([^)]*€[^)]*\)\s*$/, '').toLowerCase();
-  return t.charAt(0).toUpperCase() + t.slice(1);
+  return (t.charAt(0).toUpperCase() + t.slice(1)).replace(/\bj-(\d+)/g, 'J-$1').replace(/\bm(\d+)/g, 'M$1').replace(/compet'lib/g, "Compet'Lib");
 }
 function rubriqueArticle(a) {
   const t = norm(a.designation);
@@ -906,27 +906,44 @@ function renderRis(r) {
     <div class="grid g3"><div class="field"><label>Arrêté au</label><input type="date" value="${esc(r.date)}" onchange="majRis(${r.id},{date:this.value})"></div>
       <div class="field" style="grid-column:span 2"><label>Facturation</label><div class="small muted" style="padding-top:8px">${afact.length ? `Les ${afact.length} infraction(s) avec un montant iront sur ${cible ? `le <b>bordereau n° ${cible.numero}</b> (brouillon)` : 'un <b>nouveau bordereau</b>, créé automatiquement'}.` : 'Rien à facturer.'}</div></div></div>
   </div>
-  <div class="card stack"><h3>Ajouter une infraction</h3>
-    <div class="grid" style="grid-template-columns:1.2fr 1fr 110px 2fr;gap:10px">
-      <div class="field"><label>Rubrique</label><select id="ri-rub">${RUBRIQUES.map((t, k) => `<option value="${k + 1}" ${RIS_SAISIE.rubrique === k + 1 ? 'selected' : ''}>${k + 1}- ${t}</option>`).join('')}</select></div>
+  <div class="card stack"><h3>Ajouter des infractions</h3>
+    <div class="grid" style="grid-template-columns:minmax(0,1fr) 160px;gap:10px;max-width:560px">
       <div class="field"><label>N° de match ou tournoi</label><input id="ri-match" value="${esc(RIS_SAISIE.match)}" placeholder="DFB007, OPEN 2x2 – T1…"></div>
       <div class="field"><label>Club</label><select id="ri-club"><option value="">—</option>${clubs.map(c => `<option ${c.code === RIS_SAISIE.club ? 'selected' : ''}>${esc(c.code)}</option>`).join('')}</select></div>
-      <div class="field"><label>Infraction</label><select id="ri-art"><option value="">— Choisir dans les tarifs —</option>${['Pénalités', 'Forfaits', 'Arbitrage'].map(cat => `<optgroup label="${cat}">${as.filter(a => a.categorie === cat).map(a => `<option value="${a.id}">${esc(intituleArticle(a))} (${euros(a.prix)})${/FORFAIT GÉNÉRAL/.test(a.designation) && !/MODIFICATION/.test(a.designation) ? ' – aussi : retrait d\'une équipe après publication des calendriers' : /FORFAIT UN MATCH/.test(a.designation) ? ' – aussi : équipe absente' : ''}</option>`).join('')}</optgroup>`).join('')}<option value="libre">Autre (saisie libre)</option></select></div>
     </div>
-    <div class="grid" style="grid-template-columns:minmax(0,1fr) 120px auto;gap:10px;align-items:end">
-      <div class="field"><label>Infraction relevée (texte du RIS et de la facture, modifiable)</label><input id="ri-int" placeholder="Licence non présentée – 1 joueuse"></div>
-      <div class="field"><label>Montant €</label><input id="ri-mt" class="n" inputmode="decimal"></div>
-      <button class="btn primary" id="ri-ok">+ Ajouter</button></div>
+    <div id="ri-rows" class="stack" style="gap:8px"></div>
+    <div class="btnrow"><button class="btn ghost" id="ri-plus">+ Autre infraction pour ce match</button><button class="btn primary" id="ri-ok">✓ Ajouter au RIS</button></div>
   </div>
   ${RUBRIQUES.map((t, k) => { const li = its.filter(i => i.rubrique === k + 1); return `<div class="stack" style="gap:6px"><h3>${k + 1}- ${t} <span class="muted" style="font-size:14px">· ${li.length}</span></h3>
     ${li.length ? `<div class="tablebox"><table class="t ri-t"><thead><tr><th>Rub.</th><th>N° de match ou tournoi</th><th>Club</th><th>Infraction relevée</th><th class="r">Montant</th><th>Facturation</th><th></th></tr></thead><tbody>${li.map(ligne).join('')}</tbody></table></div>` : ''}</div>`; }).join('')}`);
-  $('ri-art').onchange = () => { const a = art($('ri-art').value); if (a) { $('ri-int').value = intituleArticle(a); $('ri-mt').value = fmtN(a.prix); $('ri-rub').value = rubriqueArticle(a); } else if ($('ri-art').value === 'libre') { $('ri-int').value = ''; $('ri-mt').value = ''; $('ri-int').focus(); } };
+  // Lignes d'infractions pour le même match et le même club
+  const optArt = `<option value="">— Choisir dans les tarifs —</option>${['Pénalités', 'Forfaits', 'Arbitrage'].map(cat => `<optgroup label="${cat}">${as.filter(a => a.categorie === cat).map(a => `<option value="${a.id}">${esc(intituleArticle(a))} (${euros(a.prix)})${/FORFAIT GÉNÉRAL/.test(a.designation) && !/MODIFICATION/.test(a.designation) ? ' – aussi : retrait d\'une équipe après publication des calendriers' : /FORFAIT UN MATCH/.test(a.designation) ? ' – aussi : équipe absente' : ''}</option>`).join('')}</optgroup>`).join('')}<option value="libre">Autre (saisie libre)</option>`;
+  const addRow = () => {
+    const d = document.createElement('div'); d.className = 'ri-row grid'; d.style.cssText = 'grid-template-columns:minmax(0,1.3fr) 190px minmax(0,1.3fr) 100px 34px;gap:8px;align-items:end;padding:10px;border:1px solid var(--line);border-radius:10px;background:#FAFBFD';
+    d.innerHTML = `<div class="field"><label>Infraction</label><select data-r="art">${optArt}</select></div>
+      <div class="field"><label>Rubrique</label><select data-r="rub">${RUBRIQUES.map((t, k) => `<option value="${k + 1}" ${k === 4 ? 'selected' : ''}>${k + 1}- ${t}</option>`).join('')}</select></div>
+      <div class="field"><label>Infraction relevée (texte du RIS et de la facture)</label><input data-r="int" placeholder="Licence non présentée – 1 joueuse"></div>
+      <div class="field"><label>Montant €</label><input data-r="mt" class="n" inputmode="decimal"></div>
+      <button class="x" title="Retirer cette ligne" style="height:40px">✕</button>`;
+    const q = k => d.querySelector(`[data-r="${k}"]`);
+    q('art').onchange = () => { const a = art(q('art').value); if (a) { q('int').value = intituleArticle(a); q('mt').value = fmtN(a.prix); q('rub').value = rubriqueArticle(a); } else if (q('art').value === 'libre') { q('int').value = ''; q('mt').value = ''; q('int').focus(); } };
+    d.querySelector('.x').onclick = () => { if (document.querySelectorAll('.ri-row').length > 1) d.remove(); else { q('art').value = ''; q('int').value = ''; q('mt').value = ''; } };
+    $('ri-rows').appendChild(d); return d;
+  };
+  addRow();
+  $('ri-plus').onclick = () => addRow().querySelector('[data-r="art"]').focus();
   $('ri-ok').onclick = async () => {
-    const it = { ris_id: r.id, rubrique: +$('ri-rub').value, match: $('ri-match').value.trim(), club: $('ri-club').value, article_id: art($('ri-art').value) ? $('ri-art').value : null,
-      intitule: $('ri-int').value.trim(), montant: String(num($('ri-mt').value)), ordre: its.length };
-    if (!it.club) return alert('Choisissez le club.');
-    if (!it.intitule) return alert('Indiquez l\'infraction relevée.');
-    try { await rpc('fac_admin_ris_item', { pwd: PWD, p: it }); RIS_SAISIE = { rubrique: it.rubrique, match: it.match, club: it.club }; await load(); renderRis(risDe(r.id)); toast('✓ Infraction ajoutée'); $('ri-art').focus(); } catch(e) { fail(e); }
+    const match = $('ri-match').value.trim(), club = $('ri-club').value;
+    if (!club) return alert('Choisissez le club.');
+    const rows = [...document.querySelectorAll('.ri-row')].map(d => { const q = k => d.querySelector(`[data-r="${k}"]`);
+      return { rubrique: +q('rub').value, article_id: art(q('art').value) ? q('art').value : null, intitule: q('int').value.trim(), montant: String(num(q('mt').value)) }; })
+      .filter(x => x.intitule);
+    if (!rows.length) return alert('Indiquez au moins une infraction.');
+    try {
+      for (const [k, x] of rows.entries()) await rpc('fac_admin_ris_item', { pwd: PWD, p: { ris_id: r.id, match, club, ...x, ordre: its.length + k } });
+      RIS_SAISIE = { rubrique: 5, match, club }; await load(); renderRis(risDe(r.id)); toast(`✓ ${rows.length} infraction${rows.length > 1 ? 's' : ''} ajoutée${rows.length > 1 ? 's' : ''}`);
+      document.querySelector('.ri-row [data-r="art"]').focus();
+    } catch(e) { fail(e); }
   };
   document.querySelectorAll('.ri-t tr[data-id] input, .ri-t tr[data-id] select').forEach(inp => inp.onchange = async () => {
     const it = (D.ris_items || []).find(x => x.id === +inp.closest('tr').dataset.id), k = inp.dataset.k; it[k] = k === 'montant' ? num(inp.value) : k === 'rubrique' ? +inp.value : inp.type === 'checkbox' ? inp.checked : inp.value;

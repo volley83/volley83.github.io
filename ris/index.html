@@ -66,7 +66,7 @@ const store = { get(k) { try { return localStorage.getItem(k); } catch(e) { retu
 // « PÉNALITÉ RIS N°4 - LICENCE NON PRÉSENTÉE » → « Licence non présentée »
 function intitule(des) {
   const t = String(des || '').replace(/^PÉNALITÉ RIS N°\s*\d+\s*-\s*/i, '').replace(/\s*\([^)]*€[^)]*\)\s*$/, '').toLowerCase();
-  return t.charAt(0).toUpperCase() + t.slice(1);
+  return (t.charAt(0).toUpperCase() + t.slice(1)).replace(/\bj-(\d+)/g, 'J-$1').replace(/\bm(\d+)/g, 'M$1').replace(/compet'lib/g, "Compet'Lib");
 }
 let CODE = '', D = null, GARDE = { date: today(), match: '' };
 
