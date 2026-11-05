@@ -53,6 +53,9 @@
   .tabs { display: flex; flex-wrap: wrap; gap: 8px; }
   .tab { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 22px; border: 1px solid var(--line); background: #fff; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; color: var(--text); min-height: 44px; text-decoration: none; }
   .tab .sw { width: 10px; height: 10px; border-radius: 50%; }
+  .pgroups { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+  .pgroup { display: inline-flex; flex-direction: column; gap: 8px; padding: 10px 12px 12px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+  .pg-t { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--navy); }
   .tab.on { color: #fff; border-color: transparent; }
   .tab.F.on { background: var(--fem); } .tab.M.on { background: var(--mas); } .tab.O.on { background: var(--open); }
   .sw.F { background: var(--fem); } .sw.M { background: var(--mas); } .sw.O { background: var(--open); }
@@ -650,7 +653,7 @@ function drawPoule(sel) {
   const aBlocs = avenir.map(j => { const ms = filt(j); return ms.length ? blocAvenir(j, ms) : ''; }).filter(Boolean);
   const aHTML = aBlocs.slice(0, 2).join('') + (aBlocs.length > 2 ? `<details class="plus"><summary>${(() => { const n = aBlocs.length - 2, jn = /^Journ/i.test(avenir[0].titre); return n === 1 ? (jn ? 'Voir la journée suivante' : 'Voir le tournoi suivant') : `Voir les ${n} ${jn ? 'journées suivantes' : 'tournois suivants'}`; })()}</summary>${aBlocs.slice(2).join('')}</details>` : '');
   box.innerHTML = `
-  ${c.poules.length > 1 ? `<div class="tabs">${c.poules.map(x => `<a class="tab ${x === p ? 'on' : ''}" style="${x === p ? 'background:var(--navy);color:#fff' : ''}" href="#championnats/${g}/${x.code}">${esc(pouleCourt(x))}</a>`).join('')}</div>` : ''}
+  ${c.poules.length > 1 ? `<div class="pgroups">${(() => { const gr = []; c.poules.forEach(x => { const ph = phase(x), l = gr.find(e => e[0] === ph); l ? l[1].push(x) : gr.push([ph, [x]]); }); return gr; })().map(([ph, ps]) => `<div class="pgroup">${ph ? `<div class="pg-t">${esc(ph)}</div>` : ''}<div class="tabs">${ps.map(x => `<a class="tab ${x === p ? 'on' : ''}" style="${x === p ? 'background:var(--navy);color:#fff' : ''}" href="#championnats/${g}/${x.code}">${esc(pouleCourt(x))}</a>`).join('')}</div></div>`).join('')}</div>` : ''}
   <div class="fedgrid">
     <section class="card fg-rank">
       <div class="rank-head"><div><div class="ph">${esc(phase(p))}</div><h2>${esc(joli(c.titre))}</h2></div><span class="muted small">${esc(c.poules.length > 1 ? pouleCourt(p) + ' · ' : '')}${p.code}</span></div>
