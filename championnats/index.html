@@ -806,6 +806,18 @@ function weekendHTML() {
   </section>`;
 }
 
+// Après la clôture (jeudi 12 h, tolérance jusqu'à 14 h côté serveur) et jusqu'à 22 h le jour de la clôture :
+// le tournoi reste proposé, avec un message invitant à demander par mail l'ajout d'une équipe.
+const HEURE_TARDIF = '22:00';
+function maintenantParis() { const p = Object.fromEntries(new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).map(x => [x.type, x.value])); return { d: `${p.year}-${p.month}-${p.day}`, h: `${p.hour}:${p.minute}` }; }
+function tardif(t) {
+  if (t.ouvert || t.statut !== 'ouvert' || !t.date_limite || (t.inscriptions && t.inscriptions !== 'auto')) return false;
+  const n = maintenantParis(); return n.d === t.date_limite && n.h < HEURE_TARDIF && t.date >= n.d;
+}
+function mailTardif(t) {
+  const sujet = `Demande d'ajout d'une équipe – ${tLabel(t)} du ${fmtD(t.date, true, false)}`;
+  return `mailto:${MAIL_COMITE}?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(`Bonjour,\n\nLes inscriptions étant closes, nous souhaiterions savoir s'il est possible d'intégrer au tournoi :\n- Club : \n- Nombre d'équipes (et niveau / sexe en OPEN) : \n- Contact (nom, téléphone) : \n\nMerci,\n`)}`;
+}
 function calRow(t, avecResultats) {
   const d = parseD(t.date), past = t.date < today();
   let badge;
@@ -816,6 +828,7 @@ function calRow(t, avecResultats) {
   else if (!t.date_limite && !t.lieu) badge = '<span class="badge b-tbc">Infos à venir</span>';
   else if (t.date_limite && today() < ouverture(t)) badge = `<span class="badge b-tbc">Inscriptions à partir du ${esc(fmtD(ouverture(t), false, false))}</span>`;
   else badge = '<span class="badge b-closed">Inscriptions closes</span>';
+  const tard = !past && tardif(t);
   const n = t.resultats ? t.resultats.length : 0;
   return `<div class="cal-row">
     <div class="cal-date ${past ? 'past' : ''}"><b>${d.getDate()}</b><span>${MOIS_C[d.getMonth()]} ${String(d.getFullYear()).slice(2)}</span></div>
@@ -824,7 +837,7 @@ function calRow(t, avecResultats) {
       ${estFinal(t) ? '<div class="cal-meta" style="color:var(--open);font-weight:700">Médaille et tee-shirt pour tous les participants !</div>' : ''}
       <div class="cal-meta">${t.lieu ? `📍 <b>${esc(lieuTxt(t))}</b>` : 'Lieu à confirmer'}${t.organisateur ? ' · ' + esc(clubNom(t.organisateur)) : ''}</div>
       ${t.remarque ? `<div class="cal-meta">${esc(t.remarque)}</div>` : ''}
-      <div class="cal-act">${badge}${t.ouvert && !past ? `<a class="btn accent sm" href="#inscription/${t.id}">S'inscrire</a>` : ''}${t.nb_inscrits && !past && t.statut !== 'valide' ? `<span class="small muted">${t.nb_inscrits} équipe${t.nb_inscrits > 1 ? 's' : ''} inscrite${t.nb_inscrits > 1 ? 's' : ''}</span>` : ''}</div>
+      <div class="cal-act">${badge}${t.ouvert && !past ? `<a class="btn accent sm" href="#inscription/${t.id}">S'inscrire</a>` : tard ? `<a class="btn ghost sm" href="#inscription/${t.id}">Ajouter une équipe ?</a>` : ''}${t.nb_inscrits && !past && t.statut !== 'valide' ? `<span class="small muted">${t.nb_inscrits} équipe${t.nb_inscrits > 1 ? 's' : ''} inscrite${t.nb_inscrits > 1 ? 's' : ''}</span>` : ''}</div>
       ${avecResultats && t.statut === 'valide' && n ? `<details class="cal-res"><summary>Classement du tournoi (${n} équipes)</summary><ol>${t.resultats.map(r => `<li><span class="r">${r.rang}</span><span>${esc(nomEquipe(r.equipe, r.club))}</span><span class="p">${points(r.rang, n)} pts</span></li>`).join('')}</ol></details>` : ''}
     </div>
   </div>`;
@@ -865,7 +878,7 @@ function renderOpen(code) {
 // ======================== INSCRIPTION ========================
 let INS = null;
 function renderInscription(tid) {
-  const open = D.tournois.filter(t => t.ouvert && t.date >= today()).sort((a, b) => a.date.localeCompare(b.date) || comp(a.competition).ordre - comp(b.competition).ordre);
+  const open = D.tournois.filter(t => (t.ouvert || tardif(t)) && t.date >= today()).sort((a, b) => a.date.localeCompare(b.date) || comp(a.competition).ordre - comp(b.competition).ordre);
   const saved = store.get('chp_contact', {});
   const pre = open.find(t => String(t.id) === String(tid));
   INS = { tid: pre ? pre.id : '', lignes: [{ niveau: '', sexe: '', nb: 1 }], nb: 1 };
@@ -880,7 +893,7 @@ function renderInscription(tid) {
     ${open.length ? `<form class="card form" id="ins-form" autocomplete="on" novalidate>
       <div class="step"><div class="step-n">1</div><div class="step-b">
         <h3>Le tournoi</h3>
-        <select id="ins-t" required><option value="">Choisir le tournoi…</option>${groups.map(([c, l]) => `<optgroup label="${esc(c.nom)}">${l.map(t => `<option value="${t.id}" ${pre && pre.id === t.id ? 'selected' : ''}>${esc(c.nom)} · ${tNom(t)} · ${esc(fmtD(t.date, true, false))}${t.ville ? ' · ' + esc(t.ville) : ''}</option>`).join('')}</optgroup>`).join('')}</select>
+        <select id="ins-t" required><option value="">Choisir le tournoi…</option>${groups.map(([c, l]) => `<optgroup label="${esc(c.nom)}">${l.map(t => `<option value="${t.id}" ${pre && pre.id === t.id ? 'selected' : ''}>${esc(c.nom)} · ${tNom(t)} · ${esc(fmtD(t.date, true, false))}${t.ville ? ' · ' + esc(t.ville) : ''}${t.ouvert ? '' : ' (inscriptions closes)'}</option>`).join('')}</optgroup>`).join('')}</select>
         <div id="ins-tsum"></div>
       </div></div>
       <div class="step"><div class="step-n">2</div><div class="step-b">
@@ -913,6 +926,15 @@ function renderInscription(tid) {
 }
 function insTournoi() {
   const t = D.tournois.find(x => String(x.id) === String(INS.tid));
+  const tard = !!t && !t.ouvert && tardif(t);
+  $('ins-form').querySelectorAll('.step').forEach((s, i) => { if (i === 1 || i === 3) s.hidden = tard; if (i === 2) s.querySelector('.step-n').textContent = tard ? '2' : '3'; });
+  $('ins-ok').closest('.btnrow').hidden = tard; $('ins-err').hidden = true;
+  if (tard) {
+    $('ins-tsum').innerHTML = '';
+    $('ins-eq').innerHTML = `<h3>Inscriptions closes</h3><div class="msg warn">Les inscriptions pour ce tournoi sont closes depuis le ${esc(fmtD(t.date_limite, true, false))} à ${esc(fmtH(t.heure_limite || '12:00'))}.<br>Pour rajouter une équipe, envoyez un mail à <a href="${mailTardif(t)}">${MAIL_COMITE}</a> pour demander s'il est possible de vous intégrer au tournoi.</div>
+      <div><a class="btn primary" href="${mailTardif(t)}">✉ Écrire au Comité</a></div>`;
+    return;
+  }
   if (!t) { $('ins-tsum').innerHTML = ''; $('ins-eq').innerHTML = '<h3>Les équipes</h3><p class="muted small">Choisissez d\'abord le tournoi.</p>'; return; }
   const c = comp(t.competition);
   $('ins-tsum').innerHTML = `<div class="tsum"><b>${esc(tLabel(t))}</b><br>📅 ${esc(fmtD(t.date, true))}${t.heure ? ' à ' + esc(fmtH(t.heure)) : ''}<br>📍 ${t.lieu ? esc(lieuTxt(t)) : 'Lieu à confirmer'}${t.date_limite ? `<br>⏳ Inscriptions jusqu'au ${esc(fmtD(t.date_limite, true, false))}${t.heure_limite ? ' à ' + esc(fmtH(t.heure_limite)) : ''}` : ''}</div>`;

@@ -62,7 +62,7 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
   - pas de lien FDME.
 - **Compétitions OPEN** (tables `chp_*`) :
   - M15/M18 4x4 avec classement, et tournois OPEN 2x2/4x4 sans classement ;
-  - inscription en ligne des équipes, close le jeudi précédent à 12 h ;
+  - inscription en ligne des équipes, close le jeudi précédent à 12 h (affiché), acceptée en réalité jusqu'à 14 h (`chp_ouvert` : + 2 h) ; de 14 h à 22 h le jour de la clôture, le tournoi reste proposé avec un message « inscriptions closes, écrivez à volley83@gmail.com » (`tardif()` dans la page) ;
   - le club recevant saisit le classement (bouton seulement en 4x4), puis Clément le valide ;
   - code club recevant pour **tous** les tournois (4x4 et OPEN). Bouton « ✉ Envoyer le code » dans Calendrier et codes : brouillon Gmail au club (adresse prise dans `fac_clubs.email` via `chp_admin_mails`, sinon contacts de ses inscriptions) avec le code, le lien de l'espace club, les documents et le rappel de la feuille de composition ;
   - espace club (`#club`) : équipes inscrites, **documents à imprimer** (`championnats/docs/` : composition-OPEN-2x2, composition-OPEN-4x4, composition-M15-M18-4x4, feuille-poule-3 à 6, règlement), rappel « envoyer la feuille de composition à volley83@gmail.com » ; saisie du classement en 4x4 seulement. Les tournois OPEN y figurent jusqu'à 10 jours après leur date ;

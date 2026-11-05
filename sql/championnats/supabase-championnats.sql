@@ -87,7 +87,7 @@ language sql stable as $$
     when 'fermees'  then false
     else t.date_limite is not null and t.statut = 'ouvert'
          and current_date >= t.date - 42                      -- ouverture 6 semaines avant le tournoi
-         and (now() at time zone 'Europe/Paris') <= (t.date_limite + coalesce(nullif(t.heure_limite,''),'23:59')::time)
+         and (now() at time zone 'Europe/Paris') <= (t.date_limite + coalesce(nullif(t.heure_limite,''),'23:59')::time) + interval '2 hours'   -- tolérance de 2 h
   end;
 $$;
 
