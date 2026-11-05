@@ -332,9 +332,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261010T191500
 DTEND;TZID=Europe/Paris:20261010T211500
 SUMMARY:SENIORS M · Sud Sainte-Baume Volley Club – Volley Pradétan Ga
- rdéen 2 (0-0)
-DESCRIPTION:Résultat : 0-0 ()\nPoule DMB – classement et résultats : 
- https://volley83.github.io/championnats/#championnats/seniors/DMB
+ rdéen 2
+LOCATION:F
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
 END:VEVENT
 BEGIN:VEVENT
 UID:DMB006@volley83.github.io
@@ -342,10 +343,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261017T203000
 DTEND;TZID=Europe/Paris:20261017T223000
 SUMMARY:SENIORS M · Volley-Ball Ollioulais 1 – Sud Sainte-Baume Volley
-  Club (3-1)
-DESCRIPTION:Résultat : 3-1 (17:25\, 25:15\, 26:24\, 25:19)\nPoule DMB 
- – classement et résultats : https://volley83.github.io/championnats/#
- championnats/seniors/DMB
+  Club
+LOCATION:P
+DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/seniors/DMB
 END:VEVENT
 BEGIN:VEVENT
 UID:DMB008@volley83.github.io
