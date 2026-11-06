@@ -293,6 +293,8 @@
   .docs-l { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
   .doc-l { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; text-decoration: none; color: var(--text); background: #fff; }
   .doc-l:hover { border-color: var(--navy); } .doc-l b { display: block; color: var(--navy); font-size: 14px; } .doc-l small { color: var(--muted); font-size: 12.5px; } .doc-i { font-size: 20px; line-height: 1; }
+  .adm tr.grp td { background: var(--navy); color: #fff; font-weight: 700; font-size: 12.5px; letter-spacing: .4px; text-transform: uppercase; padding: 6px 10px; }
+  .adm tr.addrow td { background: #F6F8FC; border-top: 2px dashed var(--line); }
   .tlist { display: flex; flex-direction: column; gap: 10px; }
   .trow { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
   .tr-l { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: flex-end; }
@@ -1170,9 +1172,14 @@ function adminInscriptions() {
   if (!ATID || !ts.find(t => t.id === ATID)) { const nx = ts.find(t => t.date >= today()); ATID = nx ? nx.id : ts.length ? ts[ts.length - 1].id : null; }
   const t = ts.find(x => x.id === ATID); if (!t) { $('a-body').innerHTML = '<div class="card">Aucun tournoi.</div>'; return; }
   const c = aComp(t.competition), open = c.famille === 'open';
-  const ins = A.inscriptions.filter(i => i.tournoi_id === t.id);
+  if (MAILS_CLUBS === null) { MAILS_CLUBS = {}; rpc('chp_admin_mails', { pwd: ADMIN_PWD }).then(m => { MAILS_CLUBS = m || {}; if (ATAB === 'inscriptions') adminInscriptions(); }).catch(() => { MAILS_CLUBS = null; }); }
+  const rg = (l, v) => { const k = (l || []).indexOf(v); return k < 0 ? 99 : k; };
+  const ins = A.inscriptions.filter(i => i.tournoi_id === t.id).sort(open
+    ? (a, b) => rg(c.niveaux, a.niveau) - rg(c.niveaux, b.niveau) || rg(SEXES_OPEN, a.sexe) - rg(SEXES_OPEN, b.sexe) || coll.compare(clubNom(a.club), clubNom(b.club))
+    : (a, b) => String(a.created_at).localeCompare(String(b.created_at)));
   const total = ins.reduce((s, i) => s + i.nb_equipes, 0), clubs = [...new Set(ins.map(i => i.club))];
-  const mails = [...new Set(ins.map(i => (i.contact_email || '').toLowerCase()).filter(Boolean))];
+  const mailsClubs = clubs.flatMap(k => String((MAILS_CLUBS || {})[k] || '').split(/[,;\s]+/));
+  const mails = [...new Set(ins.map(i => i.contact_email || '').concat(mailsClubs).map(m => m.trim().toLowerCase()).filter(m => /@/.test(m)))];
   const memeWE = ts.filter(x => Math.abs(parseD(x.date) - parseD(t.date)) <= 864e5);
   let matrice = '';
   if (open && ins.length) {
@@ -1195,17 +1202,33 @@ function adminInscriptions() {
     </div>
     <div class="tablebox"><table class="adm">
       <thead><tr><th>Club</th>${open ? '<th>Niveau</th><th>Sexe</th>' : ''}<th>Équipes</th><th>Contact</th><th>Remarque</th><th>Reçue le</th><th></th></tr></thead>
-      <tbody>${ins.length ? ins.map(i => `<tr data-id="${i.id}">
+      <tbody>${ins.length ? ins.map((i, k) => `${open && (k === 0 || ins[k - 1].niveau !== i.niveau) ? `<tr class="grp"><td colspan="9">${esc(i.niveau || 'Niveau non précisé')} · ${ins.filter(x => x.niveau === i.niveau).reduce((s, x) => s + x.nb_equipes, 0)} équipe(s)</td></tr>` : ''}<tr data-id="${i.id}">
         <td><b>${esc(clubNom(i.club))}</b></td>
         ${open ? `<td><select data-f="niveau">${(c.niveaux || []).map(n => `<option ${i.niveau === n ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></td><td><select data-f="sexe">${SEXES_OPEN.map(n => `<option ${i.sexe === n ? 'selected' : ''}>${n}</option>`).join('')}</select></td>` : ''}
         <td><input data-f="nb_equipes" type="number" min="1" max="30" value="${i.nb_equipes}" style="width:70px"></td>
         <td>${esc(i.contact_nom || '')}<br><a href="mailto:${esc(i.contact_email || '')}">${esc(i.contact_email || '')}</a>${i.contact_tel ? '<br>' + esc(i.contact_tel) : ''}</td>
         <td class="small">${esc(i.commentaire || '')}</td>
         <td class="small muted">${esc(new Date(i.created_at).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }))}</td>
-        <td><button class="linkbtn red" data-del>Supprimer</button></td></tr>`).join('') : `<tr><td colspan="8" class="muted">Aucune inscription pour ce tournoi.</td></tr>`}</tbody></table></div>
+        <td><button class="linkbtn red" data-del>Supprimer</button></td></tr>`).join('') : `<tr><td colspan="8" class="muted">Aucune inscription pour ce tournoi.</td></tr>`}
+      <tr class="addrow" id="a-add-row">
+        <td><select id="n-club"><option value="">+ Ajouter un club…</option>${A.clubs.map(k => `<option value="${esc(k.code)}">${esc(k.nom)}</option>`).join('')}</select></td>
+        ${open ? `<td><select id="n-niveau">${(c.niveaux || []).map(n => `<option>${esc(n)}</option>`).join('')}</select></td><td><select id="n-sexe">${SEXES_OPEN.map(n => `<option>${n}</option>`).join('')}</select></td>` : ''}
+        <td><input id="n-nb" type="number" min="1" max="30" value="1" style="width:70px"></td>
+        <td><input id="n-contact" placeholder="Contact (facultatif)" style="min-width:140px"></td>
+        <td><input id="n-com" placeholder="Remarque" style="min-width:110px"></td>
+        <td colspan="2"><button class="btn ok sm" id="n-ok">Ajouter</button></td></tr></tbody></table></div>
     <div class="btnrow" style="margin:0"><button class="btn ghost" id="a-csv-all">⬇ Toutes les inscriptions de la saison (CSV)</button></div>
   </div>`;
   $('a-t').onchange = () => { ATID = +$('a-t').value; adminInscriptions(); };
+  $('n-ok').onclick = async () => {
+    const club = $('n-club').value; if (!club) { saveMark('err', '⚠ Choisissez le club à ajouter'); $('n-club').focus(); return; }
+    const ct = $('n-contact').value.trim(), em = (ct.match(/[^\s,;<>]+@[^\s,;<>]+/) || [''])[0];
+    const p = { tournoi_id: t.id, club, nb_equipes: +$('n-nb').value || 1, commentaire: $('n-com').value, contact_email: em || String((MAILS_CLUBS || {})[club] || '').split(/[,;\s]+/)[0] || '', contact_nom: ct.replace(em, '').trim() };
+    if (open) { p.niveau = $('n-niveau').value; p.sexe = $('n-sexe').value; }
+    saveMark('wait', 'Ajout…');
+    try { await rpc('chp_admin_inscription', { pwd: ADMIN_PWD, iid: null, p }); await loadAdmin(); adminInscriptions(); saveMark('ok', '✓ ' + clubNom(club) + ' ajouté'); }
+    catch(e) { saveMark('err', /ajouter|Indiquez|null/i.test(e.message) ? '⚠ ' + e.message + ' (avez-vous lancé le script SQL « ajout-inscription » ?)' : '⚠ ' + e.message); }
+  };
   const recap = list => list.flatMap(tt => A.inscriptions.filter(i => i.tournoi_id === tt.id).map(i => [aComp(tt.competition).nom, tt.numero, fmtShort(tt.date), lieuTxt(tt), clubNom(i.club), i.niveau || '', i.sexe || '', i.nb_equipes, i.contact_nom, i.contact_email, i.contact_tel, i.commentaire || '', new Date(i.created_at).toLocaleString('fr-FR')]));
   const head = ['Compétition', 'Tournoi', 'Date', 'Lieu', 'Club', 'Niveau', 'Sexe', 'Équipes', 'Contact', 'Mail', 'Téléphone', 'Remarque', 'Inscription le'];
   $('a-csv').onclick = () => csvDownload(`Inscriptions-${slug(aComp(t.competition).nom)}-T${t.numero}.csv`, head, recap([t]));
