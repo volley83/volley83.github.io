@@ -161,10 +161,10 @@ UID:CMB008@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
-SUMMARY:M18 M · Le Luc Volley-Ball – Draguignan Union Club Var VB
-LOCATION:College P.E Victor (Vidauban)
-DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMB
+SUMMARY:M18 M · Le Luc Volley-Ball – Draguignan Union Club Var VB (0-2)
+DESCRIPTION:Résultat : 0-2 (20:25\, 10:25)\nPoule CMB – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CMB
 END:VEVENT
 BEGIN:VEVENT
 UID:CMB011@volley83.github.io
@@ -299,10 +299,11 @@ UID:DFA008@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T190000
 DTEND;TZID=Europe/Paris:20261107T210000
-SUMMARY:SENIORS F · Le Luc Volley-Ball – Volley Club Méditerranée
-LOCATION:Pierre Gaudin
-DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DFA
+SUMMARY:SENIORS F · Le Luc Volley-Ball – Volley Club Méditerranée (3
+ -1)
+DESCRIPTION:Résultat : 3-1 (25:13\, 25:21\, 22:25\, 25:13)\nPoule DFA 
+ – classement et résultats : https://volley83.github.io/championnats/#
+ championnats/seniors/DFA
 END:VEVENT
 BEGIN:VEVENT
 UID:DFA011@volley83.github.io

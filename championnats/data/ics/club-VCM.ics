@@ -351,10 +351,11 @@ UID:DFA008@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T190000
 DTEND;TZID=Europe/Paris:20261107T210000
-SUMMARY:SENIORS F · Le Luc Volley-Ball – Volley Club Méditerranée
-LOCATION:Pierre Gaudin
-DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DFA
+SUMMARY:SENIORS F · Le Luc Volley-Ball – Volley Club Méditerranée (3
+ -1)
+DESCRIPTION:Résultat : 3-1 (25:13\, 25:21\, 22:25\, 25:13)\nPoule DFA 
+ – classement et résultats : https://volley83.github.io/championnats/#
+ championnats/seniors/DFA
 END:VEVENT
 BEGIN:VEVENT
 UID:DFA012@volley83.github.io
