@@ -782,10 +782,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T203000
 DTEND;TZID=Europe/Paris:20261107T223000
 SUMMARY:SENIORS F · Volley-Ball Ollioulais – Sainte-Maxime Cogolin Vol
- ley (M21)
-LOCATION:Piemontesi
-DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DFA
+ ley (M21) (3-1)
+DESCRIPTION:Résultat : 3-1 (25:18\, 22:25\, 25:17\, 25:17)\nPoule DFA 
+ – classement et résultats : https://volley83.github.io/championnats/#
+ championnats/seniors/DFA
 END:VEVENT
 BEGIN:VEVENT
 UID:DFA013@volley83.github.io
