@@ -29,40 +29,43 @@ UID:PFD001@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
-SUMMARY:M11 F · Vidauban Volley-Ball – Sainte-Maxime Cogolin Volley 3
-LOCATION:Gymnase Rostand (Draguignan)
-DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/PFD
+SUMMARY:M11 F · Vidauban Volley-Ball – Sainte-Maxime Cogolin Volley 3 
+ (2-0)
+DESCRIPTION:Résultat : 2-0 (15:0\, 15:5)\nPoule PFD – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /PFD
 END:VEVENT
 BEGIN:VEVENT
 UID:PFD006@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
-SUMMARY:M11 F · Le Luc Volley-Ball – Vidauban Volley-Ball
-LOCATION:Gymnase Rostand (Draguignan)
-DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/PFD
+SUMMARY:M11 F · Le Luc Volley-Ball – Vidauban Volley-Ball (0-2)
+DESCRIPTION:Résultat : 0-2 (1:15\, 5:15)\nPoule PFD – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /PFD
 END:VEVENT
 BEGIN:VEVENT
 UID:PFD007@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
-SUMMARY:M11 F · Vidauban Volley-Ball – Draguignan Union Club Var VB
-LOCATION:Gymnase Rostand (Draguignan)
-DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/PFD
+SUMMARY:M11 F · Vidauban Volley-Ball – Draguignan Union Club Var VB (2
+ -0)
+DESCRIPTION:Résultat : 2-0 (15:11\, 15:8)\nPoule PFD – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /PFD
 END:VEVENT
 BEGIN:VEVENT
 UID:PFD010@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
-SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 1 – Vidauban Volley-Ball
-LOCATION:Gymnase Rostand (Draguignan)
-DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/PFD
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 1 – Vidauban Volley-Ball 
+ (0-2)
+DESCRIPTION:Résultat : 0-2 (4:15\, 5:15)\nPoule PFD – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /PFD
 END:VEVENT
 BEGIN:VEVENT
 UID:PFD011@volley83.github.io
@@ -278,20 +281,21 @@ UID:CMB006@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
-SUMMARY:M18 M · Fréjus Var Volley – Vidauban Volley-Ball
-LOCATION:College P.E Victor (Vidauban)
-DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMB
+SUMMARY:M18 M · Fréjus Var Volley – Vidauban Volley-Ball (1-2)
+DESCRIPTION:Résultat : 1-2 (22:25\, 26:24\, 13:15)\nPoule CMB – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/jeunes/CMB
 END:VEVENT
 BEGIN:VEVENT
 UID:CMB010@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
-SUMMARY:M18 M · Draguignan Union Club Var VB – Vidauban Volley-Ball
-LOCATION:College P.E Victor (Vidauban)
-DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMB
+SUMMARY:M18 M · Draguignan Union Club Var VB – Vidauban Volley-Ball (2
+ -0)
+DESCRIPTION:Résultat : 2-0 (25:14\, 26:24)\nPoule CMB – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CMB
 END:VEVENT
 BEGIN:VEVENT
 UID:CMB011@volley83.github.io

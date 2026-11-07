@@ -85,10 +85,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 F · Volley Club Méditerranée 2 – Union Athlétique Valet
- toise
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CFA
+ toise (0-2)
+DESCRIPTION:Résultat : 0-2 (12:25\, 5:25)\nPoule CFA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /CFA
 END:VEVENT
 BEGIN:VEVENT
 UID:CFA007@volley83.github.io
@@ -96,20 +96,21 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Volley Club
-  Méditerranée 1
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CFA
+  Méditerranée 1 (0-2)
+DESCRIPTION:Résultat : 0-2 (22:25\, 17:25)\nPoule CFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CFA
 END:VEVENT
 BEGIN:VEVENT
 UID:CFA008@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
-SUMMARY:M18 F · Volley Club Méditerranée 1 – Volley-Ball Ollioulais
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CFA
+SUMMARY:M18 F · Volley Club Méditerranée 1 – Volley-Ball Ollioulais 
+ (2-1)
+DESCRIPTION:Résultat : 2-1 (25:13\, 19:25\, 15:8)\nPoule CFA – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/jeunes/CFA
 END:VEVENT
 BEGIN:VEVENT
 UID:CFA009@volley83.github.io
@@ -117,20 +118,21 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Volley Club
-  Méditerranée 2
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CFA
+  Méditerranée 2 (2-0)
+DESCRIPTION:Résultat : 2-0 (25:17\, 25:17)\nPoule CFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CFA
 END:VEVENT
 BEGIN:VEVENT
 UID:CFA010@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
-SUMMARY:M18 F · Volley-Ball Ollioulais – Union Athlétique Valettoise
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CFA
+SUMMARY:M18 F · Volley-Ball Ollioulais – Union Athlétique Valettoise 
+ (0-2)
+DESCRIPTION:Résultat : 0-2 (16:25\, 19:25)\nPoule CFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CFA
 END:VEVENT
 BEGIN:VEVENT
 UID:CFA011@volley83.github.io

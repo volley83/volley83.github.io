@@ -29,30 +29,32 @@ UID:PFD002@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
-SUMMARY:M11 F · Le Luc Volley-Ball – Sainte-Maxime Cogolin Volley 2
-LOCATION:Gymnase Rostand (Draguignan)
-DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/PFD
+SUMMARY:M11 F · Le Luc Volley-Ball – Sainte-Maxime Cogolin Volley 2 (0
+ -2)
+DESCRIPTION:Résultat : 0-2 (4:15\, 11:15)\nPoule PFD – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /PFD
 END:VEVENT
 BEGIN:VEVENT
 UID:PFD006@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
-SUMMARY:M11 F · Le Luc Volley-Ball – Vidauban Volley-Ball
-LOCATION:Gymnase Rostand (Draguignan)
-DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/PFD
+SUMMARY:M11 F · Le Luc Volley-Ball – Vidauban Volley-Ball (0-2)
+DESCRIPTION:Résultat : 0-2 (1:15\, 5:15)\nPoule PFD – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /PFD
 END:VEVENT
 BEGIN:VEVENT
 UID:PFD008@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
-SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 3 – Le Luc Volley-Ball
-LOCATION:Gymnase Rostand (Draguignan)
-DESCRIPTION:Poule PFD – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/PFD
+SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 3 – Le Luc Volley-Ball (1
+ -1)
+DESCRIPTION:Résultat : 1-1 (15:7\, 10:15)\nPoule PFD – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /PFD
 END:VEVENT
 BEGIN:VEVENT
 UID:PFD013@volley83.github.io
@@ -149,10 +151,10 @@ UID:CMB007@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
-SUMMARY:M18 M · Sainte-Maxime Cogolin Volley – Le Luc Volley-Ball
-LOCATION:College P.E Victor (Vidauban)
-DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMB
+SUMMARY:M18 M · Sainte-Maxime Cogolin Volley – Le Luc Volley-Ball (0-2)
+DESCRIPTION:Résultat : 0-2 (15:25\, 18:25)\nPoule CMB – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CMB
 END:VEVENT
 BEGIN:VEVENT
 UID:CMB008@volley83.github.io

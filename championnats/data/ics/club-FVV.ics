@@ -29,10 +29,10 @@ UID:PMD003@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
-SUMMARY:M11 M · Fréjus Var Volley – Volley Pradétan Gardéen
-LOCATION:Salle Sainte-Croix (Frejus)
-DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/PMD
+SUMMARY:M11 M · Fréjus Var Volley – Volley Pradétan Gardéen (2-0)
+DESCRIPTION:Résultat : 2-0 (15:5\, 15:7)\nPoule PMD – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /PMD
 END:VEVENT
 BEGIN:VEVENT
 UID:PMD004@volley83.github.io
@@ -40,20 +40,21 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 2 – Fréjus V
- ar Volley
-LOCATION:Salle Sainte-Croix (Frejus)
-DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/PMD
+ ar Volley (0-2)
+DESCRIPTION:Résultat : 0-2 (5:15\, 12:15)\nPoule PMD – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /PMD
 END:VEVENT
 BEGIN:VEVENT
 UID:PMD007@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
-SUMMARY:M11 M · Draguignan Union Club Var VB 1 – Fréjus Var Volley
-LOCATION:Salle Sainte-Croix (Frejus)
-DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/PMD
+SUMMARY:M11 M · Draguignan Union Club Var VB 1 – Fréjus Var Volley (2
+ -0)
+DESCRIPTION:Résultat : 2-0 (15:11\, 15:7)\nPoule PMD – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /PMD
 END:VEVENT
 BEGIN:VEVENT
 UID:PMD011@volley83.github.io
@@ -547,10 +548,10 @@ UID:CMB006@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
-SUMMARY:M18 M · Fréjus Var Volley – Vidauban Volley-Ball
-LOCATION:College P.E Victor (Vidauban)
-DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMB
+SUMMARY:M18 M · Fréjus Var Volley – Vidauban Volley-Ball (1-2)
+DESCRIPTION:Résultat : 1-2 (22:25\, 26:24\, 13:15)\nPoule CMB – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/jeunes/CMB
 END:VEVENT
 BEGIN:VEVENT
 UID:CMB009@volley83.github.io

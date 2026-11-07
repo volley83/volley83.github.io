@@ -30,10 +30,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 1 – Volley Cl
- ub Hyères / Pierrefeu La Londe 2
-LOCATION:Salle Sainte-Croix (Frejus)
-DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/PMD
+ ub Hyères / Pierrefeu La Londe 2 (2-0)
+DESCRIPTION:Résultat : 2-0 (15:9\, 15:7)\nPoule PMD – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /PMD
 END:VEVENT
 BEGIN:VEVENT
 UID:PMD004@volley83.github.io
@@ -41,10 +41,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 2 – Fréjus V
- ar Volley
-LOCATION:Salle Sainte-Croix (Frejus)
-DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/PMD
+ ar Volley (0-2)
+DESCRIPTION:Résultat : 0-2 (5:15\, 12:15)\nPoule PMD – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /PMD
 END:VEVENT
 BEGIN:VEVENT
 UID:PMD006@volley83.github.io
@@ -52,10 +52,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 1 – Draguigna
- n Union Club Var VB 1
-LOCATION:Salle Sainte-Croix (Frejus)
-DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/PMD
+ n Union Club Var VB 1 (1-1)
+DESCRIPTION:Résultat : 1-1 (4:15\, 15:10)\nPoule PMD – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /PMD
 END:VEVENT
 BEGIN:VEVENT
 UID:PMD008@volley83.github.io
@@ -63,10 +63,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Draguignan Union Club Var VB 2 – Volley Club Hyères /
-  Pierrefeu La Londe 1
-LOCATION:Salle Sainte-Croix (Frejus)
-DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/PMD
+  Pierrefeu La Londe 1 (0-2)
+DESCRIPTION:Résultat : 0-2 (11:15\, 3:15)\nPoule PMD – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /PMD
 END:VEVENT
 BEGIN:VEVENT
 UID:PMD009@volley83.github.io
@@ -74,10 +74,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Volley Pradétan Gardéen – Volley Club Hyères / Pier
- refeu La Londe 2
-LOCATION:Salle Sainte-Croix (Frejus)
-DESCRIPTION:Poule PMD – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/PMD
+ refeu La Londe 2 (0-2)
+DESCRIPTION:Résultat : 0-2 (13:15\, 7:15)\nPoule PMD – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /PMD
 END:VEVENT
 BEGIN:VEVENT
 UID:PMD012@volley83.github.io
@@ -415,10 +415,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Volley Club
-  Méditerranée 1
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CFA
+  Méditerranée 1 (0-2)
+DESCRIPTION:Résultat : 0-2 (22:25\, 17:25)\nPoule CFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CFA
 END:VEVENT
 BEGIN:VEVENT
 UID:CFA009@volley83.github.io
@@ -426,10 +426,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Volley Club
-  Méditerranée 2
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CFA
+  Méditerranée 2 (2-0)
+DESCRIPTION:Résultat : 2-0 (25:17\, 25:17)\nPoule CFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CFA
 END:VEVENT
 BEGIN:VEVENT
 UID:CFA013@volley83.github.io
@@ -503,10 +503,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 M · Union Athlétique Valettoise – Volley Club Hyères / P
- ierrefeu La Londe
-LOCATION:Gymnase Santoni (La Valette)
-DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMA
+ ierrefeu La Londe (0-2)
+DESCRIPTION:Résultat : 0-2 (20:25\, 17:25)\nPoule CMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CMA
 END:VEVENT
 BEGIN:VEVENT
 UID:CMA010@volley83.github.io
@@ -514,10 +514,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 M · Volley Pradétan Gardéen – Volley Club Hyères / Pier
- refeu La Londe
-LOCATION:Gymnase Santoni (La Valette)
-DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMA
+ refeu La Londe (1-2)
+DESCRIPTION:Résultat : 1-2 (10:25\, 26:24\, 11:15)\nPoule CMA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/jeunes/CMA
 END:VEVENT
 BEGIN:VEVENT
 UID:CMA011@volley83.github.io
