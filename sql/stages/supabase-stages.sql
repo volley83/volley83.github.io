@@ -83,6 +83,7 @@ alter table stg_convocations add column if not exists rang_attente int;   -- ord
 alter table stg_stages add column if not exists convocation_url text;     -- PDF de la convocation (filles et garçons, ou filles seulement si une convocation garçons est donnée)
 alter table stg_stages add column if not exists convocation_url_m text;   -- PDF de la convocation des garçons, si différente
 alter table stg_stages add column if not exists documents_liens jsonb default '{}'::jsonb;  -- {"Fiche sanitaire": "https://…"} : documents vierges à télécharger
+alter table stg_convocations add column if not exists rappels timestamptz[] not null default '{}';  -- dates des rappels envoyés aux familles sans réponse
 create sequence if not exists stg_recu_seq;
 
 alter table stg_stages       enable row level security;
@@ -646,7 +647,7 @@ begin
         'nom', e.nom, 'prenom', e.prenom, 'annee_naissance', e.annee_naissance, 'naissance', e.naissance, 'licence', e.licence,
         'club', e.club, 'sexe', e.sexe,
         'email_parent', coalesce(c.email, e.email_parent), 'code', e.code,
-        'reponse', c.reponse, 'reponse_le', c.reponse_le, 'tel_parent', c.tel_parent, 'commentaire', c.commentaire,
+        'reponse', c.reponse, 'reponse_le', c.reponse_le, 'tel_parent', c.tel_parent, 'commentaire', c.commentaire, 'rappels', c.rappels,
         'docs_recus', e.docs_recus, 'paye', c.paye, 'paiement_mode', c.paiement_mode,
         'paiement_date', c.paiement_date, 'montant', c.montant, 'recu_num', c.recu_num,
         'statut', c.statut, 'rang_attente', c.rang_attente,
@@ -761,7 +762,16 @@ begin
   where id = eid;
 end $$;
 
+-- Rappel aux familles sans réponse : enregistre la date de l'envoi pour chaque convocation (frères et sœurs compris)
+create or replace function stg_admin_rappel(pwd text, cids bigint[])
+returns jsonb language plpgsql security definer set search_path = public as $$
+begin
+  if not stg_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  update stg_convocations set rappels = coalesce(rappels, '{}') || now() where id = any(cids);
+  return (select coalesce(jsonb_object_agg(id::text, to_jsonb(rappels)), '{}'::jsonb) from stg_convocations where id = any(cids));
+end $$;
+
 -- ---------- Droits ----------
 revoke execute on function stg_jours(stg_stages), stg_places_restantes(bigint) from public, anon, authenticated;
 grant execute on function stg_inscrire(jsonb) to anon;
-
+grant execute on function stg_admin_rappel(text, bigint[]) to anon;
