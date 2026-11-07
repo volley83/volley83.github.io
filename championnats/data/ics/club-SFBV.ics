@@ -213,10 +213,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261106T210000
 DTEND;TZID=Europe/Paris:20261106T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Hyères / Pierrefeu La Londe 
- 4 – Six-Fours Beach Volley 1
-LOCATION:Complexe du Pas de la Garenne
-DESCRIPTION:Poule M4E – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/competlib/M4E
+ 4 – Six-Fours Beach Volley 1 (2-3)
+DESCRIPTION:Résultat : 2-3 (27:25\, 21:25\, 11:25\, 25:22\, 13:15)\nPoul
+ e M4E – classement et résultats : https://volley83.github.io/champion
+ nats/#championnats/competlib/M4E
 END:VEVENT
 BEGIN:VEVENT
 UID:M4E005@volley83.github.io
