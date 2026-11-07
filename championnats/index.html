@@ -1196,9 +1196,15 @@ function adminInscriptions() {
         <button class="btn primary" id="a-csv">⬇ Récapitulatif du tournoi (CSV)</button>
         ${memeWE.length > 1 ? `<button class="btn ghost" id="a-csv-we">⬇ Récapitulatif du week-end (${memeWE.length} tournois)</button>` : ''}
         <button class="btn ghost" id="a-copy" ${mails.length ? '' : 'disabled'}>📋 Copier les adresses mail</button>
-        <a class="btn ghost" ${mails.length ? `href="https://mail.google.com/mail/?view=cm&fs=1&bcc=${encodeURIComponent(mails.join(','))}&su=${encodeURIComponent(tLabel(t) + ' – ' + fmtD(t.date, true))}" target="_blank" rel="noopener"` : 'aria-disabled="true" style="opacity:.5;pointer-events:none"'}>✉ Écrire aux inscrits (Gmail, en Cci)</a>
+<button class="btn ghost" id="a-mail" ${mails.length ? '' : 'disabled'}>✉ Écrire aux inscrits (formule sportive)</button>
       </div>
       <textarea id="a-mails" readonly style="min-height:56px;font-size:13px" placeholder="Aucune adresse">${esc(mails.join(', '))}</textarea>
+      <div id="a-mailbox" class="stack" hidden>
+        <div class="rank-head" style="margin:0"><h2>Mail aux inscrits</h2><span class="muted small">${mails.length} destinataires en Cci · complétez les [crochets], le texte est gardé sur cet ordinateur</span></div>
+        <div class="field"><label for="a-mail-su">Objet</label><input id="a-mail-su"></div>
+        <textarea id="a-mail-body" style="min-height:520px;font-family:ui-monospace,Consolas,monospace;font-size:13px;line-height:1.45"></textarea>
+        <div class="btnrow" style="margin:0"><button class="btn primary" id="a-mail-go">✉ Ouvrir dans Gmail</button><button class="btn ghost" id="a-mail-copy">📋 Copier le texte</button><button class="btn ghost" id="a-mail-reset">↺ Repartir du modèle</button></div>
+      </div>
     </div>
     <div class="tablebox"><table class="adm">
       <thead><tr><th>Club</th>${open ? '<th>Niveau</th><th>Sexe</th>' : ''}<th>Équipes</th><th>Contact</th><th>Remarque</th><th>Reçue le</th><th></th></tr></thead>
@@ -1220,6 +1226,25 @@ function adminInscriptions() {
     <div class="btnrow" style="margin:0"><button class="btn ghost" id="a-csv-all">⬇ Toutes les inscriptions de la saison (CSV)</button></div>
   </div>`;
   $('a-t').onchange = () => { ATID = +$('a-t').value; adminInscriptions(); };
+  // ----- Mail type aux inscrits (formule sportive) -----
+  const cleMail = 'chp_mail_' + t.id;
+  const remplirMail = (force) => {
+    const sv = !force && store.get(cleMail, null);
+    $('a-mail-su').value = sv ? sv.su : `Formule sportive – ${c.nom} – ${cap(fmtD(t.date, true, false))}${t.ville ? ' à ' + t.ville : ''}`;
+    $('a-mail-body').value = sv ? sv.body : mailFormule(t, c, ins);
+  };
+  const garderMail = () => store.set(cleMail, { su: $('a-mail-su').value, body: $('a-mail-body').value });
+  $('a-mail').onclick = () => { const b = $('a-mailbox'); b.hidden = !b.hidden; if (!b.hidden) { remplirMail(false); $('a-mail-body').focus(); b.scrollIntoView({ behavior: 'smooth', block: 'start' }); } };
+  $('a-mail-su').oninput = $('a-mail-body').oninput = garderMail;
+  $('a-mail-reset').onclick = () => { if (confirm('Remplacer le texte par le modèle vierge ?')) { remplirMail(true); garderMail(); } };
+  $('a-mail-copy').onclick = async () => { try { await navigator.clipboard.writeText($('a-mail-body').value); saveMark('ok', '✓ Texte copié'); } catch(e) { $('a-mail-body').select(); document.execCommand('copy'); saveMark('ok', '✓ Copié'); } };
+  $('a-mail-go').onclick = () => {
+    const body = $('a-mail-body').value;
+    if (/\[[^\]]*\]/.test(body) && !confirm('Il reste des passages entre [crochets] à compléter. Ouvrir quand même ?')) return;
+    const url = `https://mail.google.com/mail/?view=cm&fs=1&bcc=${encodeURIComponent(mails.join(','))}&su=${encodeURIComponent($('a-mail-su').value)}&body=${encodeURIComponent(body)}`;
+    if (url.length > 7800) { navigator.clipboard && navigator.clipboard.writeText(body); alert('Le texte est trop long pour être passé à Gmail : il a été copié, collez-le dans le mail qui va s\'ouvrir.'); window.open(`https://mail.google.com/mail/?view=cm&fs=1&bcc=${encodeURIComponent(mails.join(','))}&su=${encodeURIComponent($('a-mail-su').value)}`, '_blank'); return; }
+    window.open(url, '_blank');
+  };
   $('n-ok').onclick = async () => {
     const club = $('n-club').value; if (!club) { saveMark('err', '⚠ Choisissez le club à ajouter'); $('n-club').focus(); return; }
     const ct = $('n-contact').value.trim(), em = (ct.match(/[^\s,;<>]+@[^\s,;<>]+/) || [''])[0];
@@ -1327,6 +1352,76 @@ function adminTournois() {
     tr.querySelector('[data-del]').onclick = async () => { if (!confirm('Supprimer ce tournoi, ses inscriptions et son classement ?')) return; await rpc('chp_admin_delete_tournoi', { pwd: ADMIN_PWD, tid: id }); await loadAdmin(); await loadPublic(); adminTournois(); };
   });
   $('a-add').onclick = async () => { const n = Math.max(0, ...ts.map(t => t.numero)) + 1, d = today(); await put(null, { competition: ACOMP, numero: n, date: d, date_limite: jeudiAvant(d), heure_limite: '12:00' }); adminTournois(); };
+}
+
+// Modèle du mail « formule sportive » envoyé aux inscrits
+function equipesInscrites(ins) {
+  const n = {}, out = [];
+  [...ins].sort((a, b) => coll.compare(a.club, b.club) || String(a.created_at).localeCompare(String(b.created_at))).forEach(i => {
+    for (let k = 0; k < i.nb_equipes; k++) { n[i.club] = (n[i.club] || 0) + 1; out.push({ club: i.club, k: n[i.club], niveau: i.niveau, sexe: i.sexe }); }
+  });
+  return out.map(e => ({ ...e, nom: (n[e.club] > 1 ? `${e.club} ${e.k}` : e.club) }));
+}
+function mailFormule(t, c, ins) {
+  const eq = equipesInscrites(ins), q4 = c.famille === '4x4';
+  const jour = JOURS[parseD(t.date).getDay()], orga = t.organisateur ? clubNom(t.organisateur) : '[club recevant]';
+  let liste;
+  if (q4) liste = eq.map(e => e.nom).join(', ');
+  else {
+    const g = {};
+    eq.forEach(e => { const k = `${e.niveau || 'Niveau ?'} ${e.sexe || ''}`.trim(); (g[k] = g[k] || []).push(e.nom); });
+    const rg = (l, v) => { const i = (l || []).indexOf(v); return i < 0 ? 99 : i; };
+    liste = Object.keys(g).sort((a, b) => rg(c.niveaux, a.split(' ')[0]) - rg(c.niveaux, b.split(' ')[0]) || a.localeCompare(b)).map(k => `- ${k} (${g[k].length}) : ${g[k].join(', ')}`).join('\n');
+  }
+  const poules = ['A', 'B', 'C'].map(p => `Poule ${p} :\n1 - \n2 - \n3 - \n4 - `).join('\n\n');
+  return `Bonjour à tous,
+
+voici la formule sportive pour le tournoi ${c.nom} de ${jour} à ${t.ville || '[ville]'}${t.lieu ? ' (' + t.lieu + ')' : ''}.
+Attention l'heure indiquée${t.heure ? ' (' + fmtH(t.heure) + ')' : ''} est l'heure de début des rencontres et non pas l'heure de rendez-vous.
+
+Équipes inscrites (${eq.length}) :
+${liste}
+
+1ERE PHASE
+
+[nombre de poules, ex. 2 poules de 4 et 1 poule de 3].
+Matchs en 1 set de [15] points.
+
+Composition des poules : [1 poule par terrain, répartir un match de chaque poule de 4 sur le terrain de la poule de 3 pour terminer tous les matchs en 5 rotations.]
+
+${poules}
+
+[5] rotations de matchs.
+Ne pas perdre de temps entre les rencontres avec de longs échauffements au filet, mais privilégier le jeu.
+
+2EME PHASE
+[organisation des terrains]
+
+Places 1 à 4 - Poule D : Matchs en 1 set de [21]
+1 - 
+2 - 
+3 - 
+4 - 
+
+Places 5 à 8 - Poule E : Matchs en 1 set de [21]
+1 - 
+2 - 
+3 - 
+4 - 
+
+Pour le club recevant (${orga}) :
+En vous connectant à l'espace club organisateurs sur le nouveau site des championnats (${SITE_URL}#club), vous pouvez télécharger les feuilles de poule et de composition d'équipes. Vous allez recevoir vos identifiants dans un mail séparé.
+Après le tournoi :
+${q4 ? '* Vous connecter à l\'espace club organisateurs pour saisir le classement\n' : ''}* Envoyer par mail (${MAIL_COMITE}) la fiche de composition des équipes
+${q4 ? `
+Pour tous :
+Le classement sera mis à jour très rapidement grâce à ce nouveau système, et n'apparaîtra que sur la nouvelle page (${SITE_URL}#4x4), plus sur le serveur FFvolley.
+` : ''}
+Bon tournoi à tous !
+Sportivement,
+
+Clément ROBEAU
+Comité du Var de Volley-Ball`;
 }
 
 // Brouillon Gmail pour le club recevant : code, espace club, documents, rappel de la feuille de composition
