@@ -123,10 +123,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261108T100000
 DTEND;TZID=Europe/Paris:20261108T120000
 SUMMARY:SENIORS M · Volley Club Méditerranée 1 – Volley Pradétan Ga
- rdéen 2
-LOCATION:Complexe Sportif des Lices
-DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DMB
+ rdéen 2 (3-0)
+DESCRIPTION:Résultat : 3-0 (25:22\, 25:8\, 25:11)\nPoule DMB – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/seniors/DMB
 END:VEVENT
 BEGIN:VEVENT
 UID:DMB011@volley83.github.io

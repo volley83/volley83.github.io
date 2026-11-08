@@ -113,10 +113,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261108T123000
 DTEND;TZID=Europe/Paris:20261108T143000
 SUMMARY:SENIORS M · Volley Club Méditerranée 2 – Draguignan Union Cl
- ub Var VB (M21)
-LOCATION:Complexe Sportif des Lices
-DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DMA
+ ub Var VB (M21) (0-3)
+DESCRIPTION:Résultat : 0-3 (21:25\, 16:25\, 32:34)\nPoule DMA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DMA
 END:VEVENT
 BEGIN:VEVENT
 UID:DMA010@volley83.github.io
