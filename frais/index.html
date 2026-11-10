@@ -71,7 +71,7 @@
     </div>
     <div id="abandon-info" class="msg info small" hidden>En abandonnant vos frais, vous faites un don au Comité. Le Comité pourra vous remettre un reçu fiscal pour ce don.</div>
     <div class="field"><label for="imput">Vous intervenez en tant que <span class="req">*</span></label>
-      <select id="imput"><option value="">— Choisir —</option><option value="bd">Membre du Bureau Directeur</option><option value="it">Intervenant / Commission Technique</option></select></div>
+      <select id="imput"><option value="">— Choisir —</option><option value="bd">Membre du Bureau Directeur</option><option value="it">Intervenant / Commission Technique</option><option value="sal">Salarié du Comité</option></select></div>
   </div>
 
   <div class="card" style="border-color:#F0C24B;background:#FFFBEF">
@@ -126,8 +126,9 @@
   <p class="small muted">Comité du Var de Volley-Ball · Maison des sports du Var, 133 bd Général Brosset, 83200 Toulon · volley83@gmail.com</p>
 </main>
 <script>
-const TAUX = 0.25, MAIL = 'volley83@gmail.com';
-const IMPUT = { bd: { lib: 'Bureau Directeur', code: '625101' }, it: { lib: 'Intervenants / Com. Technique', code: '625110' } };
+const TAUX_DEF = 0.25, MAIL = 'volley83@gmail.com';
+const IMPUT = { bd: { lib: 'Bureau Directeur', code: '625101', taux: 0.25 }, it: { lib: 'Intervenants / Com. Technique', code: '625110', taux: 0.25 }, sal: { lib: 'Salarié', code: '', taux: 0.60 } };
+const taux = () => (IMPUT[$('imput').value] || {}).taux || TAUX_DEF;
 const PIED = ['Maison des sports du Var – 133, Boulevard Général Brosset - 83200 TOULON', 'Téléphone : 06-13-30-34-25 / contact@volley83.fr / www.volley83.fr', 'N° Siret : 42463014300024 / Code APE : 9312 Z'];
 const $ = id => document.getElementById(id);
 const num = v => { const n = parseFloat(String(v == null ? '' : v).replace(/\s/g, '').replace(',', '.')); return isNaN(n) ? 0 : n; };
@@ -138,7 +139,6 @@ const fmtD = s => { if (!s) return ''; const [y, m, d] = String(s).split('-'); r
 const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
 const store = { get(k) { try { return localStorage.getItem(k); } catch(e) { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch(e) {} } };
 const pdfTxt = s => String(s == null ? '' : s).replace(/[  ]/g, ' ').replace(/[’]/g, "'");
-$('taux-txt').textContent = euros(TAUX);
 const cgVal = () => (document.querySelector('input[name=cg]:checked') || {}).value || '';
 const type = () => document.querySelector('input[name=type]:checked').value;
 
@@ -161,13 +161,14 @@ function addTrajet(v = {}) {
 }
 function lignes() {
   return [...document.querySelectorAll('.trajet')].map(d => { const g = k => d.querySelector(`[data-k=${k}]`).value.trim();
-    const km = num(g('km')), annexes = r2(num(g('annexes'))), mk = r2(km * TAUX);
+    const km = num(g('km')), annexes = r2(num(g('annexes'))), mk = r2(km * taux());
     return { date: g('date'), trajet: g('trajet'), motif: g('motif'), km, mk, annexes, nature: g('nature'), total: r2(mk + annexes) }; });
 }
 const remplies = () => lignes().filter(l => l.date || l.trajet || l.motif || l.km || l.annexes);
 function maj() {
   const ls = lignes();
   document.querySelectorAll('.trajet').forEach((d, k) => { d.querySelector('.num').textContent = 'Déplacement ' + (k + 1); d.querySelector('.tot').textContent = euros(ls[k].total); });
+  $('taux-txt').textContent = euros(taux()) + ($('imput').value === 'sal' ? ' (salarié)' : '');
   $('total').textContent = euros(ls.reduce((s, l) => s + l.total, 0));
   $('justif').hidden = !ls.some(l => l.annexes > 0);
   const ab = type() === 'abandon';
@@ -176,12 +177,14 @@ function maj() {
   document.querySelectorAll('.nomj').forEach(s => s.textContent = [$('prenom').value.trim(), $('nom').value.trim().toUpperCase()].filter(Boolean).join(' ') || '…');
 }
 document.querySelectorAll('input[name=type]').forEach(r => r.onchange = maj);
+$('imput').addEventListener('change', maj);
 ['nom', 'prenom'].forEach(k => $(k).addEventListener('input', maj));
 $('plus').onclick = () => addTrajet().querySelector('[data-k=date]').focus();
 
 // ---- Coordonnées mémorisées
 try { const m = JSON.parse(store.get('frais_coord') || 'null'); if (m) { ['nom', 'prenom', 'adr', 'mail', 'tel', 'imput'].forEach(k => { if (m[k]) $(k).value = m[k]; }); $('mem').checked = true; if (m.cg) { const r = document.querySelector('input[name=cg][value=fournie]'); if (r) r.checked = true; } } } catch(e) {}
 addTrajet();
+maj();
 
 // ---- Signature
 const cv = $('sig'), cx = cv.getContext('2d'); let signe = false, trace = false;
@@ -196,7 +199,7 @@ $('sig-x').onclick = () => { cx.clearRect(0, 0, cv.width, cv.height); signe = fa
 // ---- Contrôles
 function verifier() {
   const e = [], ls = remplies();
-  if (!$('imput').value) e.push('Indiquez à quel titre vous intervenez (Bureau Directeur ou Intervenant).');
+  if (!$('imput').value) e.push('Indiquez à quel titre vous intervenez (Bureau Directeur, Intervenant ou Salarié).');
   if (!$('nom').value.trim() || !$('prenom').value.trim()) e.push('Indiquez vos nom et prénom.');
   if (!$('adr').value.trim()) e.push('Indiquez votre adresse complète (point de départ des trajets, utile pour vérifier les kilomètres).');
   const cg = cgVal();
@@ -227,9 +230,9 @@ async function creerPdf() {
   doc.setFont('helvetica', 'bold'); doc.setFontSize(17); doc.setTextColor(255, 255, 255);
   doc.text(ab ? 'Abandon de frais de déplacement' : 'Frais de déplacement', 136, 20, { align: 'center' });
   // imputation
-  doc.setDrawColor(...LIGNE); doc.setLineWidth(0.3); doc.roundedRect(W - M - 66, 10, 66, 15, 2, 2, 'S');
+  doc.setDrawColor(...LIGNE); doc.setLineWidth(0.3); doc.roundedRect(W - M - 66, 9, 66, 19, 2, 2, 'S');
   doc.setFontSize(8.5); doc.setTextColor(...TXT);
-  Object.entries(IMPUT).forEach(([k, v], i) => { const y = 15.5 + i * 6; doc.rect(W - M - 63, y - 3, 3.2, 3.2, 'S'); if ($('imput').value === k) { doc.setFont('helvetica', 'bold'); doc.text('X', W - M - 62.4, y - 0.4); }
+  Object.entries(IMPUT).forEach(([k, v], i) => { const y = 14 + i * 5.5; doc.rect(W - M - 63, y - 3, 3.2, 3.2, 'S'); if ($('imput').value === k) { doc.setFont('helvetica', 'bold'); doc.text('X', W - M - 62.4, y - 0.4); }
     doc.setFont('helvetica', $('imput').value === k ? 'bold' : 'normal'); doc.text(v.lib, W - M - 58, y); doc.text(v.code, W - M - 3, y, { align: 'right' }); });
   // identité
   doc.setDrawColor(...NAVY); doc.setLineWidth(0.4); doc.roundedRect(M, 31, 170, 30, 3, 3, 'S');
@@ -257,14 +260,14 @@ async function creerPdf() {
       doc.text(fmtD(l.date), M + cols[0].w / 2, yy, { align: 'center' });
       doc.text(t1, M + cols[0].w + 2, yy); doc.text(t2, M + cols[0].w + cols[1].w + 2, yy);
       const xk = M + cols[0].w + cols[1].w + cols[2].w;
-      doc.text(pdfTxt(`${l.km ? String(l.km).replace('.', ',') : '0'} km × ${fmtN(TAUX)} € =`), xk + 3, yy); doc.text(pdfTxt(fmtN(l.mk) + ' €'), xk + cols[3].w - 3, yy, { align: 'right' });
+      doc.text(pdfTxt(`${l.km ? String(l.km).replace('.', ',') : '0'} km × ${fmtN(taux())} € =`), xk + 3, yy); doc.text(pdfTxt(fmtN(l.mk) + ' €'), xk + cols[3].w - 3, yy, { align: 'right' });
       const xa = xk + cols[3].w;
       if (t4.length) { doc.setFontSize(8); doc.setTextColor(...GRIS); doc.text(t4, xa + 3, yy); doc.setFontSize(9); doc.setTextColor(...TXT); }
       doc.text(pdfTxt(fmtN(l.annexes) + ' €'), xa + cols[4].w - 3, yy, { align: 'right' });
       doc.setFont('helvetica', 'bold'); doc.text(pdfTxt(fmtN(l.total) + ' €'), W - M - 3, yy, { align: 'right' });
     } else {
       const xk = M + cols[0].w + cols[1].w + cols[2].w; doc.setTextColor(...GRIS);
-      doc.text(pdfTxt(`km × ${fmtN(TAUX)} € =`), xk + 12, yy); doc.text('€', xk + cols[3].w - 3, yy, { align: 'right' }); doc.text('€', xk + cols[3].w + cols[4].w - 3, yy, { align: 'right' }); doc.text('€', W - M - 3, yy, { align: 'right' }); doc.setTextColor(...TXT);
+      doc.text(pdfTxt(`km × ${fmtN(taux())} € =`), xk + 12, yy); doc.text('€', xk + cols[3].w - 3, yy, { align: 'right' }); doc.text('€', xk + cols[3].w + cols[4].w - 3, yy, { align: 'right' }); doc.text('€', W - M - 3, yy, { align: 'right' }); doc.setTextColor(...TXT);
     }
     y += h;
   });
