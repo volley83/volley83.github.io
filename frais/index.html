@@ -61,7 +61,7 @@
 <body>
 <header><div class="head"><img src="logo-comite-carre.jpg" alt=""><div class="t">Frais de déplacement<br><span style="font-size:15px;color:var(--muted)">Comité du Var de Volley-Ball</span></div></div></header>
 <main>
-  <div class="msg info">Ce formulaire permet aux bénévoles et intervenants du Comité de déclarer leurs frais de déplacement. Une fois rempli, il crée un <b>PDF</b> à envoyer par mail à <b>volley83@gmail.com</b> ou à remettre en main propre, <b>avec les justificatifs</b> des frais annexes. Rien n'est enregistré sur le site.</div>
+  <div class="msg info">Ce formulaire permet aux bénévoles et intervenants du Comité de déclarer leurs frais de déplacement. Vous pouvez déclarer <b>plusieurs déplacements sur la même fiche</b>. Une fois rempli, le formulaire crée un <b>PDF</b> à envoyer par mail à <b>volley83@gmail.com</b> ou à remettre en main propre, <b>avec les justificatifs</b> des frais annexes. Rien n'est enregistré sur le site.</div>
 
   <div class="card">
     <h2>1. Votre demande</h2>
@@ -69,9 +69,18 @@
       <label class="opt"><input type="radio" name="type" value="remb" checked><div><b>Remboursement de frais</b><span>Le Comité vous rembourse les frais engagés.</span></div></label>
       <label class="opt"><input type="radio" name="type" value="abandon"><div><b>Abandon de frais</b><span>Vous renoncez au remboursement et faites don de ces frais à l'association.</span></div></label>
     </div>
-    <div id="abandon-info" class="msg info small" hidden>En abandonnant vos frais, vous faites un don au Comité. Votre adresse complète est nécessaire : le Comité pourra vous remettre un reçu fiscal pour ce don.</div>
+    <div id="abandon-info" class="msg info small" hidden>En abandonnant vos frais, vous faites un don au Comité. Le Comité pourra vous remettre un reçu fiscal pour ce don.</div>
     <div class="field"><label for="imput">Vous intervenez en tant que <span class="req">*</span></label>
       <select id="imput"><option value="">— Choisir —</option><option value="bd">Membre du Bureau Directeur</option><option value="it">Intervenant / Commission Technique</option></select></div>
+  </div>
+
+  <div class="card" style="border-color:#F0C24B;background:#FFFBEF">
+    <h2>🚗 Certificat d'immatriculation (carte grise)</h2>
+    <p class="small">Pour tout remboursement ou abandon de frais kilométriques, <b>une copie du certificat d'immatriculation du véhicule utilisé est obligatoire</b>. Si vous ne l'avez pas encore fournie au Comité (ou si vous avez changé de véhicule), envoyez-la par mail à <b>volley83@gmail.com</b> avec votre fiche (photo ou scan), ou remettez-la avec la fiche papier.</p>
+    <div class="field"><span class="lbl">Votre carte grise <span class="req">*</span></span>
+      <label class="chk"><input type="radio" name="cg" value="fournie"> Le Comité a déjà la copie de la carte grise de mon véhicule actuel</label>
+      <label class="chk"><input type="radio" name="cg" value="jointe"> Je joins la copie de ma carte grise à cet envoi</label>
+      <label class="chk"><input type="radio" name="cg" value="sans"> Je n'ai utilisé aucun véhicule personnel (pas de kilomètres)</label></div>
   </div>
 
   <div class="card">
@@ -80,7 +89,7 @@
       <div class="field"><label for="nom">Nom <span class="req">*</span></label><input id="nom" autocomplete="family-name"></div>
       <div class="field"><label for="prenom">Prénom <span class="req">*</span></label><input id="prenom" autocomplete="given-name"></div>
     </div>
-    <div class="field"><label for="adr">Adresse <span class="req" id="adr-req" hidden>*</span></label><textarea id="adr" rows="2" autocomplete="street-address" placeholder="N°, rue&#10;Code postal, ville"></textarea></div>
+    <div class="field"><label for="adr">Adresse <span class="req">*</span></label><textarea id="adr" rows="2" autocomplete="street-address" placeholder="N°, rue&#10;Code postal, ville"></textarea></div>
     <div class="g2">
       <div class="field"><label for="mail">Mail</label><input id="mail" type="email" autocomplete="email"></div>
       <div class="field"><label for="tel">Téléphone</label><input id="tel" type="tel" autocomplete="tel"></div>
@@ -130,6 +139,7 @@ const today = () => { const d = new Date(); return d.getFullYear() + '-' + Strin
 const store = { get(k) { try { return localStorage.getItem(k); } catch(e) { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch(e) {} } };
 const pdfTxt = s => String(s == null ? '' : s).replace(/[  ]/g, ' ').replace(/[’]/g, "'");
 $('taux-txt').textContent = euros(TAUX);
+const cgVal = () => (document.querySelector('input[name=cg]:checked') || {}).value || '';
 const type = () => document.querySelector('input[name=type]:checked').value;
 
 // ---- Déplacements
@@ -162,7 +172,7 @@ function maj() {
   $('justif').hidden = !ls.some(l => l.annexes > 0);
   const ab = type() === 'abandon';
   $('total-lbl').textContent = ab ? 'Montant total' : 'Total à payer';
-  $('abandon-info').hidden = !ab; $('adr-req').hidden = !ab; $('engage').hidden = !ab; $('certif').hidden = ab;
+  $('abandon-info').hidden = !ab; $('engage').hidden = !ab; $('certif').hidden = ab;
   document.querySelectorAll('.nomj').forEach(s => s.textContent = [$('prenom').value.trim(), $('nom').value.trim().toUpperCase()].filter(Boolean).join(' ') || '…');
 }
 document.querySelectorAll('input[name=type]').forEach(r => r.onchange = maj);
@@ -170,7 +180,7 @@ document.querySelectorAll('input[name=type]').forEach(r => r.onchange = maj);
 $('plus').onclick = () => addTrajet().querySelector('[data-k=date]').focus();
 
 // ---- Coordonnées mémorisées
-try { const m = JSON.parse(store.get('frais_coord') || 'null'); if (m) { ['nom', 'prenom', 'adr', 'mail', 'tel', 'imput'].forEach(k => { if (m[k]) $(k).value = m[k]; }); $('mem').checked = true; } } catch(e) {}
+try { const m = JSON.parse(store.get('frais_coord') || 'null'); if (m) { ['nom', 'prenom', 'adr', 'mail', 'tel', 'imput'].forEach(k => { if (m[k]) $(k).value = m[k]; }); $('mem').checked = true; if (m.cg) { const r = document.querySelector('input[name=cg][value=fournie]'); if (r) r.checked = true; } } } catch(e) {}
 addTrajet();
 
 // ---- Signature
@@ -188,13 +198,16 @@ function verifier() {
   const e = [], ls = remplies();
   if (!$('imput').value) e.push('Indiquez à quel titre vous intervenez (Bureau Directeur ou Intervenant).');
   if (!$('nom').value.trim() || !$('prenom').value.trim()) e.push('Indiquez vos nom et prénom.');
-  if (type() === 'abandon' && !$('adr').value.trim()) e.push('Votre adresse est nécessaire pour un abandon de frais (reçu fiscal).');
+  if (!$('adr').value.trim()) e.push('Indiquez votre adresse complète (point de départ des trajets, utile pour vérifier les kilomètres).');
+  const cg = cgVal();
+  if (!cg) e.push('Indiquez si vous avez déjà fourni la copie de votre carte grise ou si vous la joignez.');
+  else if (cg === 'sans' && ls.some(l => l.km)) e.push('Vous avez déclaré des kilomètres : une copie de la carte grise du véhicule utilisé est obligatoire.');
   if (!ls.length) e.push('Indiquez au moins un déplacement.');
   ls.forEach((l, k) => { if (!l.date || !l.trajet || !l.motif) e.push(`Déplacement ${k + 1} : indiquez la date, le trajet et le motif.`); if (!l.km && !l.annexes) e.push(`Déplacement ${k + 1} : indiquez les kilomètres ou les frais annexes.`); if (l.annexes > 0 && !l.nature) e.push(`Déplacement ${k + 1} : précisez la nature des frais annexes.`); });
   if (ls.some(l => l.annexes > 0) && !$('justif-ok').checked) e.push('Cochez la case confirmant que vous joignez les justificatifs des frais annexes.');
   $('err').hidden = !e.length; $('err').innerHTML = e.map(x => '• ' + x).join('<br>');
   if (e.length) $('err').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  if (!e.length && $('mem').checked) store.set('frais_coord', JSON.stringify(Object.fromEntries(['nom', 'prenom', 'adr', 'mail', 'tel', 'imput'].map(k => [k, $(k).value])))); else if (!$('mem').checked) store.set('frais_coord', null);
+  if (!e.length && $('mem').checked) store.set('frais_coord', JSON.stringify({ ...Object.fromEntries(['nom', 'prenom', 'adr', 'mail', 'tel', 'imput'].map(k => [k, $(k).value])), cg: ['fournie', 'jointe'].includes(cgVal()) })); else if (!$('mem').checked) store.set('frais_coord', null);
   return !e.length;
 }
 
@@ -271,7 +284,9 @@ async function creerPdf() {
   doc.text('Signature :', M, y + 23);
   if (signe) { try { doc.addImage(cv.toDataURL('image/png'), 'PNG', M + 22, y + 15, 52, 52 * cv.height / cv.width); } catch(e) {} }
   doc.setFont('helvetica', 'bold'); doc.text('Visa du Président :', 200, y);
-  if (ls.some(l => l.annexes > 0)) { doc.setFont('helvetica', 'italic'); doc.setFontSize(8.5); doc.setTextColor(...GRIS); doc.text('Justificatifs des frais annexes joints à la demande.', 200, y + 23); }
+  doc.setFont('helvetica', 'italic'); doc.setFontSize(8.5); doc.setTextColor(...GRIS);
+  const mentions = [ls.some(l => l.annexes > 0) && 'Justificatifs des frais annexes joints à la demande.', { fournie: 'Carte grise : copie déjà fournie au Comité.', jointe: 'Carte grise : copie jointe à la demande.', sans: 'Aucun véhicule personnel utilisé.' }[cgVal()]].filter(Boolean);
+  mentions.forEach((t, k) => doc.text(pdfTxt(t), 200, y + 23 + k * 4.5));
   // pied
   doc.setDrawColor(...[31, 95, 168]); doc.setLineWidth(0.4); doc.line(M, 192, W - M, 192);
   doc.setTextColor(...TXT); doc.setFontSize(7.5);
@@ -279,11 +294,12 @@ async function creerPdf() {
   const nomF = `${ab ? 'Abandon-frais' : 'Frais-deplacement'}-${$('nom').value.trim().toUpperCase().replace(/[^A-Z0-9]+/gi, '-')}-${today()}.pdf`;
   return { doc, nomF, tot, ab };
 }
+const pieces = (et = ' avec') => { const p = [!$('justif').hidden && 'vos justificatifs', cgVal() === 'jointe' && 'la copie de votre carte grise'].filter(Boolean); return p.length ? `${et} ${p.join(' et ')}` : ''; };
 $('pdf').onclick = async () => {
   if (!verifier()) return;
   if (!window.jspdf) return alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.');
   const { doc, nomF } = await creerPdf(); doc.save(nomF);
-  $('ok').hidden = false; $('ok').innerHTML = `✓ PDF créé : <b>${nomF}</b>. Envoyez-le à <b>${MAIL}</b>${$('justif').hidden ? '' : ' avec vos justificatifs'}, ou imprimez-le pour le remettre en main propre.`;
+  $('ok').hidden = false; $('ok').innerHTML = `✓ PDF créé : <b>${nomF}</b>. Envoyez-le à <b>${MAIL}</b>${pieces()}, ou imprimez-le pour le remettre en main propre.`;
 };
 $('envoi').onclick = async () => {
   if (!verifier()) return;
@@ -291,7 +307,7 @@ $('envoi').onclick = async () => {
   const { doc, nomF, tot, ab } = await creerPdf();
   const nomC = `${$('prenom').value.trim()} ${$('nom').value.trim().toUpperCase()}`;
   const objet = `${ab ? 'Abandon de frais' : 'Frais de déplacement'} – ${nomC}`;
-  const corps = `Bonjour,\n\nVeuillez trouver ci-joint ma ${ab ? "déclaration d'abandon de frais de déplacement" : 'demande de remboursement de frais de déplacement'} (${euros(tot)}).${$('justif').hidden ? '' : '\nLes justificatifs des frais annexes sont joints.'}\n\nCordialement,\n${nomC}`;
+  const corps = `Bonjour,\n\nVeuillez trouver ci-joint ma ${ab ? "déclaration d'abandon de frais de déplacement" : 'demande de remboursement de frais de déplacement'} (${euros(tot)}).${$('justif').hidden ? '' : '\nLes justificatifs des frais annexes sont joints.'}${cgVal() === 'jointe' ? '\nLa copie de ma carte grise est jointe.' : ''}\n\nCordialement,\n${nomC}`;
   const fichier = new File([doc.output('blob')], nomF, { type: 'application/pdf' });
   // sur téléphone : partage direct du PDF vers l'application de mail
   if (navigator.canShare && navigator.canShare({ files: [fichier] })) {
@@ -299,7 +315,7 @@ $('envoi').onclick = async () => {
   }
   doc.save(nomF);
   location.href = `mailto:${MAIL}?subject=${encodeURIComponent(objet)}&body=${encodeURIComponent(corps)}`;
-  $('ok').hidden = false; $('ok').innerHTML = `✓ Le PDF <b>${nomF}</b> vient d'être téléchargé et votre messagerie s'ouvre : <b>joignez-y le PDF</b>${$('justif').hidden ? '' : ' et vos justificatifs'} avant d'envoyer.`;
+  $('ok').hidden = false; $('ok').innerHTML = `✓ Le PDF <b>${nomF}</b> vient d'être téléchargé et votre messagerie s'ouvre : <b>joignez-y le PDF</b>${pieces(' et')} avant d'envoyer.`;
 };
 maj();
 </script>

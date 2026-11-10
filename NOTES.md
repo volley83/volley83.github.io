@@ -104,7 +104,8 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 ## Frais de déplacement — `frais/index.html` (accès libre)
 
 - **Adresse** : https://volley83.github.io/frais/ (non indexée ; lien sur l'écran de connexion de la facturation et dans son menu « Frais dépl. »). Aucune base de données : tout se passe dans le navigateur.
-- Le bénévole / intervenant choisit **Remboursement de frais** ou **Abandon de frais** (don à l'association, adresse obligatoire pour le reçu fiscal), l'imputation (Bureau Directeur 625101 / Intervenants – Com. Technique 625110), ses coordonnées, puis ses déplacements (date, trajet, motif, km A/R × 0,25 €, frais annexes + nature).
+- Le bénévole / intervenant choisit **Remboursement de frais** ou **Abandon de frais** (don à l'association, reçu fiscal), l'imputation (Bureau Directeur 625101 / Intervenants – Com. Technique 625110), ses coordonnées, puis ses déplacements (date, trajet, motif, km A/R × 0,25 €, frais annexes + nature).
+- Adresse obligatoire dans les 2 cas (vérification des km). Encadré **carte grise** obligatoire : déjà fournie / jointe à l'envoi / aucun véhicule (refusé s'il y a des km) ; mention reprise sur le PDF et dans le mail. Si coordonnées mémorisées, « déjà fournie » est pré-cochée la fois suivante.
 - Dès qu'il y a des frais annexes : encadré « justificatifs obligatoires » + case à cocher obligatoire.
 - Signature facultative au doigt/souris (sinon signer la fiche imprimée). Coordonnées mémorisables sur l'appareil (localStorage `frais_coord`).
 - PDF A4 paysage reprenant les 2 modèles du Comité (titre, tableau 5 lignes mini, total, « Je soussigné… » pour l'abandon, Visa du Président, pied Maison des sports). « Envoyer au Comité » : partage direct du PDF sur téléphone, sinon téléchargement + ouverture de la messagerie vers volley83@gmail.com (joindre le PDF à la main).
