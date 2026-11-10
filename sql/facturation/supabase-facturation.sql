@@ -759,7 +759,10 @@ insert into fac_articles (code_compta, designation, prix, unite, categorie, rubr
 select v.* from (values
   ('771001', 'PÉNALITÉ - SANCTION TERRAIN - AVERTISSEMENT', 50::numeric, 'sanction', 'Pénalités', 5, 125),
   ('771001', 'PÉNALITÉ - SANCTION TERRAIN - PÉNALITÉ', 100::numeric, 'sanction', 'Pénalités', 5, 126),
-  ('771001', 'PÉNALITÉ - ENGAGEMENT NON CONFORME', 0::numeric, 'équipe', 'Pénalités', 5, 108)
+  ('771001', 'PÉNALITÉ - ENGAGEMENT NON CONFORME', 0::numeric, 'équipe', 'Pénalités', 5, 108),
+  ('706009', 'INSCRIPTION FORMATION ARBITRE (90 € / STAGIAIRE)', 90::numeric, 'stagiaire', 'Formations', null, 161),
+  ('706005', 'INSCRIPTION FORMATION CAV - DRE 1 (180 € / STAGIAIRE)', 180::numeric, 'stagiaire', 'Formations', null, 162),
+  ('706005', 'INSCRIPTION FORMATION AFJ - DRE 2 (90 € / STAGIAIRE)', 90::numeric, 'stagiaire', 'Formations', null, 163)
 ) as v(code_compta, designation, prix, unite, categorie, rubrique_ris, ordre)
 where not exists (select 1 from fac_articles a where regexp_replace(a.designation, '^PÉNALITÉ RIS N°\s*\d+\s*-\s*', 'PÉNALITÉ - ') = v.designation);
 
