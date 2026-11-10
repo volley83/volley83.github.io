@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Frais de déplacement – Comité du Var de Volley-Ball</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root { --navy: #0B2149; --blue: #1E4FA3; --accent: #F6C21B; --bg: #F4F6FA; --line: #E2E7F0; --text: #14203A; --muted: #56627A;
+    --ok: #11672F; --ok-bg: #E7F6EC; --warn: #8A5A00; --warn-bg: #FFF4D6; --bad: #A3231D; --bad-bg: #FCE9E8; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; font-size: 16px; line-height: 1.5; }
+  [hidden] { display: none !important; }
+  header { background: #fff; border-bottom: 1px solid var(--line); }
+  .head { max-width: 860px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
+  .head img { height: 44px; }
+  .head .t { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 22px; text-transform: uppercase; color: var(--navy); line-height: 1.05; }
+  main { max-width: 860px; margin: 0 auto; padding: 18px 16px 70px; display: flex; flex-direction: column; gap: 16px; }
+  h2 { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; color: var(--navy); letter-spacing: .5px; font-size: 22px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  label, .lbl { font-size: 14px; font-weight: 700; }
+  .req { color: var(--bad); }
+  input, select, textarea { font-family: inherit; font-size: 16px; color: var(--text); background: #fff; border: 1px solid #C9D2E2; border-radius: 10px; padding: 10px 12px; width: 100%; outline: none; }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(30,79,163,.15); }
+  textarea { min-height: 70px; resize: vertical; }
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .choix { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .opt { border: 2px solid var(--line); border-radius: 12px; padding: 14px; cursor: pointer; display: flex; gap: 10px; align-items: flex-start; background: #fff; }
+  .opt input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--navy); flex: none; }
+  .opt b { display: block; color: var(--navy); }
+  .opt span { font-size: 13.5px; color: var(--muted); }
+  .opt:has(input:checked) { border-color: var(--navy); background: #F2F5FB; }
+  .trajet { border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: #FAFBFD; display: grid; grid-template-columns: 150px 1fr 1fr; gap: 10px; position: relative; }
+  .trajet .l2 { grid-column: 1 / -1; display: grid; grid-template-columns: 120px 140px 1fr auto; gap: 10px; align-items: end; }
+  .trajet .num { position: absolute; top: -10px; left: 12px; background: var(--navy); color: #fff; font-size: 12px; font-weight: 700; border-radius: 10px; padding: 1px 9px; }
+  .tot { font-weight: 800; color: var(--navy); white-space: nowrap; padding-bottom: 10px; text-align: right; min-width: 90px; }
+  .x { width: 40px; height: 44px; border-radius: 10px; border: 1px solid #f2c4c1; background: #fff; color: var(--bad); cursor: pointer; font-size: 16px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 48px; padding: 0 18px; border-radius: 10px; border: 1px solid transparent; font-weight: 700; font-size: 16px; font-family: inherit; cursor: pointer; text-decoration: none; }
+  .btn.primary { background: var(--navy); color: #fff; } .btn.ghost { background: #fff; border-color: var(--line); color: var(--text); } .btn.accent { background: var(--accent); color: var(--navy); }
+  .btnrow { display: flex; flex-wrap: wrap; gap: 10px; }
+  .msg { border-radius: 10px; padding: 12px 14px; font-size: 15px; }
+  .msg.warn { background: var(--warn-bg); color: var(--warn); } .msg.info { background: #E9EFFA; color: var(--navy); } .msg.err { background: var(--bad-bg); color: var(--bad); } .msg.ok { background: var(--ok-bg); color: var(--ok); }
+  .small { font-size: 13px; } .muted { color: var(--muted); }
+  .total { display: flex; justify-content: space-between; align-items: center; background: #FDEBD8; border-radius: 12px; padding: 14px 18px; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 26px; color: var(--navy); text-transform: uppercase; }
+  .sig { border: 1px dashed #A8B3C7; border-radius: 10px; background: #fff; touch-action: none; width: 100%; height: 150px; display: block; }
+  .chk { display: flex; gap: 10px; align-items: flex-start; font-weight: 500; font-size: 15px; }
+  .chk input { width: 20px; height: 20px; margin-top: 2px; flex: none; accent-color: var(--navy); }
+  @media (max-width: 640px) {
+    .g2, .choix { grid-template-columns: 1fr; }
+    .trajet { grid-template-columns: 1fr; }
+    .trajet .l2 { grid-template-columns: 1fr 1fr; }
+    .trajet .l2 .field:nth-child(3) { grid-column: 1 / -1; }
+    .total { font-size: 21px; }
+  }
+</style>
+</head>
+<body>
+<header><div class="head"><img src="logo-comite-carre.jpg" alt=""><div class="t">Frais de déplacement<br><span style="font-size:15px;color:var(--muted)">Comité du Var de Volley-Ball</span></div></div></header>
+<main>
+  <div class="msg info">Ce formulaire permet aux bénévoles et intervenants du Comité de déclarer leurs frais de déplacement. Une fois rempli, il crée un <b>PDF</b> à envoyer par mail à <b>volley83@gmail.com</b> ou à remettre en main propre, <b>avec les justificatifs</b> des frais annexes. Rien n'est enregistré sur le site.</div>
+
+  <div class="card">
+    <h2>1. Votre demande</h2>
+    <div class="choix">
+      <label class="opt"><input type="radio" name="type" value="remb" checked><div><b>Remboursement de frais</b><span>Le Comité vous rembourse les frais engagés.</span></div></label>
+      <label class="opt"><input type="radio" name="type" value="abandon"><div><b>Abandon de frais</b><span>Vous renoncez au remboursement et faites don de ces frais à l'association.</span></div></label>
+    </div>
+    <div id="abandon-info" class="msg info small" hidden>En abandonnant vos frais, vous faites un don au Comité. Votre adresse complète est nécessaire : le Comité pourra vous remettre un reçu fiscal pour ce don.</div>
+    <div class="field"><label for="imput">Vous intervenez en tant que <span class="req">*</span></label>
+      <select id="imput"><option value="">— Choisir —</option><option value="bd">Membre du Bureau Directeur</option><option value="it">Intervenant / Commission Technique</option></select></div>
+  </div>
+
+  <div class="card">
+    <h2>2. Vos coordonnées</h2>
+    <div class="g2">
+      <div class="field"><label for="nom">Nom <span class="req">*</span></label><input id="nom" autocomplete="family-name"></div>
+      <div class="field"><label for="prenom">Prénom <span class="req">*</span></label><input id="prenom" autocomplete="given-name"></div>
+    </div>
+    <div class="field"><label for="adr">Adresse <span class="req" id="adr-req" hidden>*</span></label><textarea id="adr" rows="2" autocomplete="street-address" placeholder="N°, rue&#10;Code postal, ville"></textarea></div>
+    <div class="g2">
+      <div class="field"><label for="mail">Mail</label><input id="mail" type="email" autocomplete="email"></div>
+      <div class="field"><label for="tel">Téléphone</label><input id="tel" type="tel" autocomplete="tel"></div>
+    </div>
+    <label class="chk"><input type="checkbox" id="mem"> Se souvenir de mes coordonnées sur cet appareil (pour ma prochaine demande)</label>
+  </div>
+
+  <div class="card">
+    <h2>3. Vos déplacements</h2>
+    <p class="small muted">Kilométrage remboursé à <b id="taux-txt"></b> par km. Indiquez le trajet aller-retour.</p>
+    <div id="trajets" style="display:flex;flex-direction:column;gap:18px;padding-top:8px"></div>
+    <div class="btnrow"><button class="btn ghost" id="plus" type="button">+ Ajouter un déplacement</button></div>
+    <div id="justif" class="msg warn" hidden>
+      <b>📎 Justificatifs obligatoires pour les frais annexes</b> (péage, parking, repas, train, hébergement…). Joignez-les à votre mail (photo ou scan) ou remettez-les avec la fiche : <b>sans justificatif, les frais annexes ne pourront pas être pris en compte.</b>
+      <label class="chk" style="margin-top:10px;color:var(--text)"><input type="checkbox" id="justif-ok"> Je joins les justificatifs de mes frais annexes</label>
+    </div>
+    <div class="total"><span id="total-lbl">Total à payer</span><span id="total">0,00 €</span></div>
+  </div>
+
+  <div class="card">
+    <h2>4. Signature</h2>
+    <p id="engage" class="small" hidden><b>Je soussigné(e) <span class="nomj"></span></b>, certifie renoncer au remboursement des frais mentionnés ci-dessus et les abandonner à l'association en tant que don.</p>
+    <p id="certif" class="small"><b>Je soussigné(e) <span class="nomj"></span></b>, certifie l'exactitude des frais mentionnés ci-dessus.</p>
+    <div class="field"><label>Signez dans le cadre (doigt ou souris) — facultatif : vous pouvez aussi signer la fiche imprimée</label><canvas id="sig" class="sig"></canvas>
+      <div><button class="btn ghost" id="sig-x" type="button" style="min-height:36px;font-size:14px">Effacer la signature</button></div></div>
+  </div>
+
+  <div id="err" class="msg err" hidden></div>
+  <div class="btnrow">
+    <button class="btn primary" id="pdf" type="button">⬇ Créer le PDF</button>
+    <button class="btn accent" id="envoi" type="button">✉ Envoyer au Comité</button>
+  </div>
+  <div id="ok" class="msg ok" hidden></div>
+  <p class="small muted">Comité du Var de Volley-Ball · Maison des sports du Var, 133 bd Général Brosset, 83200 Toulon · volley83@gmail.com</p>
+</main>
+<script>
+const TAUX = 0.25, MAIL = 'volley83@gmail.com';
+const IMPUT = { bd: { lib: 'Bureau Directeur', code: '625101' }, it: { lib: 'Intervenants / Com. Technique', code: '625110' } };
+const PIED = ['Maison des sports du Var – 133, Boulevard Général Brosset - 83200 TOULON', 'Téléphone : 06-13-30-34-25 / contact@volley83.fr / www.volley83.fr', 'N° Siret : 42463014300024 / Code APE : 9312 Z'];
+const $ = id => document.getElementById(id);
+const num = v => { const n = parseFloat(String(v == null ? '' : v).replace(/\s/g, '').replace(',', '.')); return isNaN(n) ? 0 : n; };
+const r2 = n => Math.round((+n || 0) * 100) / 100;
+const fmtN = n => r2(n).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const euros = n => fmtN(n) + ' €';
+const fmtD = s => { if (!s) return ''; const [y, m, d] = String(s).split('-'); return `${d}/${m}/${y}`; };
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const store = { get(k) { try { return localStorage.getItem(k); } catch(e) { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch(e) {} } };
+const pdfTxt = s => String(s == null ? '' : s).replace(/[  ]/g, ' ').replace(/[’]/g, "'");
+$('taux-txt').textContent = euros(TAUX);
+const type = () => document.querySelector('input[name=type]:checked').value;
+
+// ---- Déplacements
+function addTrajet(v = {}) {
+  const d = document.createElement('div'); d.className = 'trajet';
+  d.innerHTML = `<span class="num"></span>
+    <div class="field"><label>Date <span class="req">*</span></label><input type="date" data-k="date" value="${v.date || ''}" max="${today()}"></div>
+    <div class="field"><label>Trajet <span class="req">*</span></label><input data-k="trajet" placeholder="Draguignan – Toulon (A/R)"></div>
+    <div class="field"><label>Motif <span class="req">*</span></label><input data-k="motif" placeholder="Réunion, stage, arbitrage…"></div>
+    <div class="l2">
+      <div class="field"><label>Km (A/R)</label><input data-k="km" inputmode="decimal" placeholder="0"></div>
+      <div class="field"><label>Frais annexes €</label><input data-k="annexes" inputmode="decimal" placeholder="0,00"></div>
+      <div class="field"><label>Nature des frais annexes</label><input data-k="nature" placeholder="Péage, parking, repas…"></div>
+      <div style="display:flex;gap:8px;align-items:end"><span class="tot">0,00 €</span><button class="x" type="button" title="Retirer ce déplacement">✕</button></div>
+    </div>`;
+  d.querySelector('.x').onclick = () => { if (document.querySelectorAll('.trajet').length > 1) d.remove(); else d.querySelectorAll('input').forEach(i => i.value = ''); maj(); };
+  d.querySelectorAll('input').forEach(i => i.oninput = maj);
+  $('trajets').appendChild(d); maj(); return d;
+}
+function lignes() {
+  return [...document.querySelectorAll('.trajet')].map(d => { const g = k => d.querySelector(`[data-k=${k}]`).value.trim();
+    const km = num(g('km')), annexes = r2(num(g('annexes'))), mk = r2(km * TAUX);
+    return { date: g('date'), trajet: g('trajet'), motif: g('motif'), km, mk, annexes, nature: g('nature'), total: r2(mk + annexes) }; });
+}
+const remplies = () => lignes().filter(l => l.date || l.trajet || l.motif || l.km || l.annexes);
+function maj() {
+  const ls = lignes();
+  document.querySelectorAll('.trajet').forEach((d, k) => { d.querySelector('.num').textContent = 'Déplacement ' + (k + 1); d.querySelector('.tot').textContent = euros(ls[k].total); });
+  $('total').textContent = euros(ls.reduce((s, l) => s + l.total, 0));
+  $('justif').hidden = !ls.some(l => l.annexes > 0);
+  const ab = type() === 'abandon';
+  $('total-lbl').textContent = ab ? 'Montant total' : 'Total à payer';
+  $('abandon-info').hidden = !ab; $('adr-req').hidden = !ab; $('engage').hidden = !ab; $('certif').hidden = ab;
+  document.querySelectorAll('.nomj').forEach(s => s.textContent = [$('prenom').value.trim(), $('nom').value.trim().toUpperCase()].filter(Boolean).join(' ') || '…');
+}
+document.querySelectorAll('input[name=type]').forEach(r => r.onchange = maj);
+['nom', 'prenom'].forEach(k => $(k).addEventListener('input', maj));
+$('plus').onclick = () => addTrajet().querySelector('[data-k=date]').focus();
+
+// ---- Coordonnées mémorisées
+try { const m = JSON.parse(store.get('frais_coord') || 'null'); if (m) { ['nom', 'prenom', 'adr', 'mail', 'tel', 'imput'].forEach(k => { if (m[k]) $(k).value = m[k]; }); $('mem').checked = true; } } catch(e) {}
+addTrajet();
+
+// ---- Signature
+const cv = $('sig'), cx = cv.getContext('2d'); let signe = false, trace = false;
+function tailleSig() { const r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1; cv.width = r.width * dpr; cv.height = r.height * dpr; cx.scale(dpr, dpr); cx.lineWidth = 2.2; cx.lineCap = 'round'; cx.lineJoin = 'round'; cx.strokeStyle = '#14203A'; signe = false; }
+tailleSig(); window.addEventListener('resize', () => { if (!signe) tailleSig(); });
+const pos = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+cv.addEventListener('pointerdown', e => { trace = true; cv.setPointerCapture(e.pointerId); cx.beginPath(); cx.moveTo(...pos(e)); });
+cv.addEventListener('pointermove', e => { if (!trace) return; cx.lineTo(...pos(e)); cx.stroke(); signe = true; });
+cv.addEventListener('pointerup', () => { trace = false; });
+$('sig-x').onclick = () => { cx.clearRect(0, 0, cv.width, cv.height); signe = false; };
+
+// ---- Contrôles
+function verifier() {
+  const e = [], ls = remplies();
+  if (!$('imput').value) e.push('Indiquez à quel titre vous intervenez (Bureau Directeur ou Intervenant).');
+  if (!$('nom').value.trim() || !$('prenom').value.trim()) e.push('Indiquez vos nom et prénom.');
+  if (type() === 'abandon' && !$('adr').value.trim()) e.push('Votre adresse est nécessaire pour un abandon de frais (reçu fiscal).');
+  if (!ls.length) e.push('Indiquez au moins un déplacement.');
+  ls.forEach((l, k) => { if (!l.date || !l.trajet || !l.motif) e.push(`Déplacement ${k + 1} : indiquez la date, le trajet et le motif.`); if (!l.km && !l.annexes) e.push(`Déplacement ${k + 1} : indiquez les kilomètres ou les frais annexes.`); if (l.annexes > 0 && !l.nature) e.push(`Déplacement ${k + 1} : précisez la nature des frais annexes.`); });
+  if (ls.some(l => l.annexes > 0) && !$('justif-ok').checked) e.push('Cochez la case confirmant que vous joignez les justificatifs des frais annexes.');
+  $('err').hidden = !e.length; $('err').innerHTML = e.map(x => '• ' + x).join('<br>');
+  if (e.length) $('err').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (!e.length && $('mem').checked) store.set('frais_coord', JSON.stringify(Object.fromEntries(['nom', 'prenom', 'adr', 'mail', 'tel', 'imput'].map(k => [k, $(k).value])))); else if (!$('mem').checked) store.set('frais_coord', null);
+  return !e.length;
+}
+
+// ---- PDF
+const imgCache = {};
+async function img(src) { if (imgCache[src] !== undefined) return imgCache[src]; try { const bl = await (await fetch(src)).blob(); imgCache[src] = await new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(bl); }); } catch(e) { imgCache[src] = ''; } return imgCache[src]; }
+async function creerPdf() {
+  const { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+  const W = 297, M = 14, NAVY = [11, 33, 73], TXT = [20, 32, 58], GRIS = [100, 112, 135], LIGNE = [200, 208, 222], BLEU = [220, 234, 247];
+  const ab = type() === 'abandon', ls = remplies(), tot = r2(ls.reduce((s, l) => s + l.total, 0)), imp = IMPUT[$('imput').value];
+  const nomC = `${$('nom').value.trim().toUpperCase()} ${$('prenom').value.trim()}`;
+  const put = (im, x, y, h, maxW, right) => { if (!im) return; try { const ip = doc.getImageProperties(im); let w = h * ip.width / ip.height; if (w > maxW) { h = h * maxW / w; w = maxW; } doc.addImage(im, 'JPEG', right ? x - w : x, y, w, h); } catch(e) {} };
+  put(await img('logo-ffvolley.jpg'), M, 9, 20, 24);
+  put(await img('logo-comite-carre.jpg'), W - M, 30, 26, 52, true);
+  // titre
+  doc.setFillColor(...NAVY); doc.roundedRect(66, 10, 140, 15, 3, 3, 'F');
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(17); doc.setTextColor(255, 255, 255);
+  doc.text(ab ? 'Abandon de frais de déplacement' : 'Frais de déplacement', 136, 20, { align: 'center' });
+  // imputation
+  doc.setDrawColor(...LIGNE); doc.setLineWidth(0.3); doc.roundedRect(W - M - 66, 10, 66, 15, 2, 2, 'S');
+  doc.setFontSize(8.5); doc.setTextColor(...TXT);
+  Object.entries(IMPUT).forEach(([k, v], i) => { const y = 15.5 + i * 6; doc.rect(W - M - 63, y - 3, 3.2, 3.2, 'S'); if ($('imput').value === k) { doc.setFont('helvetica', 'bold'); doc.text('X', W - M - 62.4, y - 0.4); }
+    doc.setFont('helvetica', $('imput').value === k ? 'bold' : 'normal'); doc.text(v.lib, W - M - 58, y); doc.text(v.code, W - M - 3, y, { align: 'right' }); });
+  // identité
+  doc.setDrawColor(...NAVY); doc.setLineWidth(0.4); doc.roundedRect(M, 31, 170, 30, 3, 3, 'S');
+  doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.text('Nom, Prénom :', M + 5, 39); doc.setFont('helvetica', 'normal'); doc.text(pdfTxt(nomC), M + 34, 39);
+  doc.setFont('helvetica', 'bold'); doc.text('Adresse :', M + 5, 46); doc.setFont('helvetica', 'normal');
+  doc.text(doc.splitTextToSize(pdfTxt($('adr').value.trim().replace(/\n+/g, ', ')), 130).slice(0, 2), M + 34, 46);
+  const contact = [$('mail').value.trim(), $('tel').value.trim()].filter(Boolean).join('  ·  ');
+  if (contact) { doc.setFont('helvetica', 'bold'); doc.text('Contact :', M + 5, 57); doc.setFont('helvetica', 'normal'); doc.text(pdfTxt(contact), M + 34, 57); }
+  // tableau
+  const cols = [{ t: 'Date', w: 24 }, { t: 'Trajet', w: 58 }, { t: 'Motif', w: 58 }, { t: 'Kilométrage', w: 52 }, { t: 'Frais annexes', s: '(sur justificatif)', w: 52 }, { t: 'Total', w: W - 2 * M - 244 }];
+  let y = 68;
+  doc.setFillColor(...BLEU); doc.setDrawColor(...LIGNE); doc.setLineWidth(0.25); doc.rect(M, y, W - 2 * M, 10, 'FD');
+  let x = M; doc.setTextColor(...TXT);
+  cols.forEach(c => { doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.text(c.t, x + c.w / 2, y + (c.s ? 4.5 : 6.3), { align: 'center' }); if (c.s) { doc.setFont('helvetica', 'italic'); doc.setFontSize(7.5); doc.text(c.s, x + c.w / 2, y + 8.3, { align: 'center' }); } x += c.w; doc.line(x, y, x, y + 10); });
+  y += 10;
+  const rows = ls.length >= 5 ? ls : [...ls, ...Array(5 - ls.length).fill(null)];
+  rows.forEach(l => {
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+    const t1 = l ? doc.splitTextToSize(pdfTxt(l.trajet), cols[1].w - 4) : [], t2 = l ? doc.splitTextToSize(pdfTxt(l.motif), cols[2].w - 4) : [], t4 = l && l.annexes ? doc.splitTextToSize(pdfTxt(l.nature), cols[4].w - 24) : [];
+    const h = Math.max(9, 4 + Math.max(t1.length, t2.length, t4.length, 1) * 4);
+    if (y + h > 160) { doc.addPage(); y = 20; }
+    doc.rect(M, y, W - 2 * M, h); let xx = M; cols.forEach(c => { xx += c.w; doc.line(xx, y, xx, y + h); });
+    const yy = y + 5.6;
+    if (l) {
+      doc.text(fmtD(l.date), M + cols[0].w / 2, yy, { align: 'center' });
+      doc.text(t1, M + cols[0].w + 2, yy); doc.text(t2, M + cols[0].w + cols[1].w + 2, yy);
+      const xk = M + cols[0].w + cols[1].w + cols[2].w;
+      doc.text(pdfTxt(`${l.km ? String(l.km).replace('.', ',') : '0'} km × ${fmtN(TAUX)} € =`), xk + 3, yy); doc.text(pdfTxt(fmtN(l.mk) + ' €'), xk + cols[3].w - 3, yy, { align: 'right' });
+      const xa = xk + cols[3].w;
+      if (t4.length) { doc.setFontSize(8); doc.setTextColor(...GRIS); doc.text(t4, xa + 3, yy); doc.setFontSize(9); doc.setTextColor(...TXT); }
+      doc.text(pdfTxt(fmtN(l.annexes) + ' €'), xa + cols[4].w - 3, yy, { align: 'right' });
+      doc.setFont('helvetica', 'bold'); doc.text(pdfTxt(fmtN(l.total) + ' €'), W - M - 3, yy, { align: 'right' });
+    } else {
+      const xk = M + cols[0].w + cols[1].w + cols[2].w; doc.setTextColor(...GRIS);
+      doc.text(pdfTxt(`km × ${fmtN(TAUX)} € =`), xk + 12, yy); doc.text('€', xk + cols[3].w - 3, yy, { align: 'right' }); doc.text('€', xk + cols[3].w + cols[4].w - 3, yy, { align: 'right' }); doc.text('€', W - M - 3, yy, { align: 'right' }); doc.setTextColor(...TXT);
+    }
+    y += h;
+  });
+  doc.setFillColor(253, 235, 216); doc.rect(M, y, W - 2 * M, 11, 'FD');
+  doc.line(W - M - cols[5].w, y, W - M - cols[5].w, y + 11);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor(...NAVY);
+  doc.text(ab ? 'MONTANT TOTAL' : 'TOTAL À PAYER EN EUROS', W - M - cols[5].w - 4, y + 7.5, { align: 'right' }); doc.text(pdfTxt(euros(tot)), W - M - 3, y + 7.5, { align: 'right' });
+  y += 17;
+  if (y > 168) { doc.addPage(); y = 20; }
+  // bas : demandeur / visa
+  doc.setTextColor(...TXT); doc.setFontSize(10);
+  if (ab) { doc.setFont('helvetica', 'bold'); doc.text(pdfTxt(`Je soussigné(e) ${nomC},`), M, y); doc.setFont('helvetica', 'normal');
+    doc.text('certifie renoncer au remboursement des frais mentionnés ci-dessus', M, y + 5); doc.text("et les abandonner à l'association en tant que don.", M, y + 10); }
+  else { doc.setFont('helvetica', 'bold'); doc.text('NOM et Prénom du demandeur :', M, y); doc.setFont('helvetica', 'normal'); doc.text(pdfTxt(nomC), M + 60, y);
+    doc.text('Je certifie l\'exactitude des frais mentionnés ci-dessus.', M, y + 5); }
+  doc.text(pdfTxt(`Date : ${fmtD(today())}`), M, y + 17);
+  doc.text('Signature :', M, y + 23);
+  if (signe) { try { doc.addImage(cv.toDataURL('image/png'), 'PNG', M + 22, y + 15, 52, 52 * cv.height / cv.width); } catch(e) {} }
+  doc.setFont('helvetica', 'bold'); doc.text('Visa du Président :', 200, y);
+  if (ls.some(l => l.annexes > 0)) { doc.setFont('helvetica', 'italic'); doc.setFontSize(8.5); doc.setTextColor(...GRIS); doc.text('Justificatifs des frais annexes joints à la demande.', 200, y + 23); }
+  // pied
+  doc.setDrawColor(...[31, 95, 168]); doc.setLineWidth(0.4); doc.line(M, 192, W - M, 192);
+  doc.setTextColor(...TXT); doc.setFontSize(7.5);
+  PIED.forEach((t, k) => { doc.setFont('helvetica', k ? 'normal' : 'bold'); doc.text(t, W / 2, 196 + k * 3.4, { align: 'center' }); });
+  const nomF = `${ab ? 'Abandon-frais' : 'Frais-deplacement'}-${$('nom').value.trim().toUpperCase().replace(/[^A-Z0-9]+/gi, '-')}-${today()}.pdf`;
+  return { doc, nomF, tot, ab };
+}
+$('pdf').onclick = async () => {
+  if (!verifier()) return;
+  if (!window.jspdf) return alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.');
+  const { doc, nomF } = await creerPdf(); doc.save(nomF);
+  $('ok').hidden = false; $('ok').innerHTML = `✓ PDF créé : <b>${nomF}</b>. Envoyez-le à <b>${MAIL}</b>${$('justif').hidden ? '' : ' avec vos justificatifs'}, ou imprimez-le pour le remettre en main propre.`;
+};
+$('envoi').onclick = async () => {
+  if (!verifier()) return;
+  if (!window.jspdf) return alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.');
+  const { doc, nomF, tot, ab } = await creerPdf();
+  const nomC = `${$('prenom').value.trim()} ${$('nom').value.trim().toUpperCase()}`;
+  const objet = `${ab ? 'Abandon de frais' : 'Frais de déplacement'} – ${nomC}`;
+  const corps = `Bonjour,\n\nVeuillez trouver ci-joint ma ${ab ? "déclaration d'abandon de frais de déplacement" : 'demande de remboursement de frais de déplacement'} (${euros(tot)}).${$('justif').hidden ? '' : '\nLes justificatifs des frais annexes sont joints.'}\n\nCordialement,\n${nomC}`;
+  const fichier = new File([doc.output('blob')], nomF, { type: 'application/pdf' });
+  // sur téléphone : partage direct du PDF vers l'application de mail
+  if (navigator.canShare && navigator.canShare({ files: [fichier] })) {
+    try { await navigator.share({ files: [fichier], title: objet, text: corps + `\n\n(à envoyer à ${MAIL})` }); $('ok').hidden = false; $('ok').textContent = `✓ Pensez à choisir ${MAIL} comme destinataire.`; return; } catch(e) { if (e.name === 'AbortError') return; }
+  }
+  doc.save(nomF);
+  location.href = `mailto:${MAIL}?subject=${encodeURIComponent(objet)}&body=${encodeURIComponent(corps)}`;
+  $('ok').hidden = false; $('ok').innerHTML = `✓ Le PDF <b>${nomF}</b> vient d'être téléchargé et votre messagerie s'ouvre : <b>joignez-y le PDF</b>${$('justif').hidden ? '' : ' et vos justificatifs'} avant d'envoyer.`;
+};
+maj();
+</script>
+</body>
+</html>

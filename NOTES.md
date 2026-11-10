@@ -101,6 +101,15 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - **Reprise** : le bordereau FFVB n° 1 2026-2027 (détaillé depuis le PDF), l'IBAN et les mails/adresses des clubs (annuaire FFVB rech_aff_club.php, POST ws_new_comit=083 puis id_club=<n°>) sont importés, par un script **hors dépôt** (`facturation-import-2026-2027.sql`). Pas d'historique 2025-2026 : tout était réglé.
 - **Idée pour plus tard** : affiliation (réaffiliation GSA) à facturer ici à partir de 2027-2028.
 
+## Frais de déplacement — `frais/index.html` (accès libre)
+
+- **Adresse** : https://volley83.github.io/frais/ (non indexée ; lien sur l'écran de connexion de la facturation et dans son menu « Frais dépl. »). Aucune base de données : tout se passe dans le navigateur.
+- Le bénévole / intervenant choisit **Remboursement de frais** ou **Abandon de frais** (don à l'association, adresse obligatoire pour le reçu fiscal), l'imputation (Bureau Directeur 625101 / Intervenants – Com. Technique 625110), ses coordonnées, puis ses déplacements (date, trajet, motif, km A/R × 0,25 €, frais annexes + nature).
+- Dès qu'il y a des frais annexes : encadré « justificatifs obligatoires » + case à cocher obligatoire.
+- Signature facultative au doigt/souris (sinon signer la fiche imprimée). Coordonnées mémorisables sur l'appareil (localStorage `frais_coord`).
+- PDF A4 paysage reprenant les 2 modèles du Comité (titre, tableau 5 lignes mini, total, « Je soussigné… » pour l'abandon, Visa du Président, pied Maison des sports). « Envoyer au Comité » : partage direct du PDF sur téléphone, sinon téléchargement + ouverture de la messagerie vers volley83@gmail.com (joindre le PDF à la main).
+- Taux kilométrique : constante `TAUX` en haut du script.
+
 ## Scripts SQL — dossier `sql/`
 
 - `sql/stages/supabase-stages.sql`, `sql/championnats/supabase-championnats.sql` et `sql/facturation/supabase-facturation.sql` : installation complète. Ils contiennent les dernières versions des fonctions.
