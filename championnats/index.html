@@ -1367,7 +1367,7 @@ function adressesSaison() {
 function mailRappel(ts) {
   const lim = ts.map(t => t.date_limite).filter(Boolean).sort()[0], hl = ts.find(t => t.date_limite === lim)?.heure_limite || '12:00';
   const lignes = ts.map(t => { const c = A.competitions.find(x => x.code === t.competition) || {}, nom = /^OPEN/i.test(c.nom || '') ? c.nom : 'OPEN ' + (c.nom || '');
-    return `* ${nom} - ${capMots(fmtD(t.date, true, false))}${t.heure ? ' à ' + hMail(t.heure) : ''}${t.ville ? ' à ' + t.ville : ''}${t.lieu ? ' (' + t.lieu.replace(/^Gymnase\s+/i, '') + ')' : ''}\n  → ${SITE_URL}#inscription/${t.id}`; }).join('\n');
+    return `* ${nom} - ${capMots(fmtD(t.date, true, false))}${t.heure ? ' à ' + hMail(t.heure) : ''}${t.ville ? ' à ' + t.ville : ''}${t.lieu ? ' (' + t.lieu.replace(/^Gymnase\s+/i, '') + ')' : ''}`; }).join('\n');
   const open = ts.some(t => (A.competitions.find(x => x.code === t.competition) || {}).famille === 'open');
   return `Bonjour à tous,
 
