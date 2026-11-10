@@ -150,12 +150,16 @@
 const TAUX_DEF = 0.25, MAIL = 'volley83@gmail.com', PRESIDENT = 'Gérald HENRY';
 // Familles de dépenses de la note de frais : [libellé, code comptable]. « Autre » est ajouté automatiquement (code attribué par le Comité).
 const FAMILLES = [
-  ['Transport (train, bus, avion…)', ''],
-  ['Hébergement', ''],
-  ['Repas', ''],
-  ['Achat de matériel sportif', ''],
-  ['Fournitures de bureau', ''],
-  ['Récompenses / cadeaux', ''],
+  ['Affranchissement', '626300'],
+  ['Goûter / Collation', '625710'],
+  ['Repas stages / missions', '625112'],
+  ['Fournitures administratives', '606400'],
+  ['Achat matériel', '605000'],
+  ['Brevet, abonnement…', '651100'],
+  ['Location véhicules', '613100'],
+  ['Voyages et déplacements', '625100'],
+  ['Hébergement', '625113'],
+  ['Réception', '625700'],
 ];
 const AUTRE = 'Autre';
 let MODE = location.hash === '#note' ? 'note' : 'dep';
