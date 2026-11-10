@@ -109,7 +109,7 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - Dès qu'il y a des frais annexes : encadré « justificatifs obligatoires » + case à cocher obligatoire.
 - Signature facultative au doigt/souris (sinon signer la fiche imprimée). Coordonnées mémorisables sur l'appareil (localStorage `frais_coord`).
 - PDF A4 paysage reprenant les 2 modèles du Comité (titre, tableau 5 lignes mini, total, « Je soussigné… » pour l'abandon, Visa du Président, pied Maison des sports). « Envoyer au Comité » : partage direct du PDF sur téléphone, sinon téléchargement + ouverture de la messagerie vers volley83@gmail.com (joindre le PDF à la main).
-- Taux kilométrique selon l'imputation (objet `IMPUT` en haut du script) : 0,25 €/km bénévoles et intervenants, 0,60 €/km salariés.
+- Taux kilométrique selon l'imputation (objet `IMPUT` en haut du script) : 0,25 €/km bénévoles et intervenants, 0,60 €/km salariés (abandon de frais impossible pour un salarié : option grisée).
 
 ## Scripts SQL — dossier `sql/`
 

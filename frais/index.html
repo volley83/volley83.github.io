@@ -69,6 +69,7 @@
       <label class="opt"><input type="radio" name="type" value="remb" checked><div><b>Remboursement de frais</b><span>Le Comité vous rembourse les frais engagés.</span></div></label>
       <label class="opt"><input type="radio" name="type" value="abandon"><div><b>Abandon de frais</b><span>Vous renoncez au remboursement et faites don de ces frais à l'association. Vous recevez un reçu fiscal (réduction d'impôt).</span></div></label>
     </div>
+    <div id="sal-info" class="msg warn small" hidden>L'abandon de frais n'est pas ouvert aux salariés du Comité : seul le remboursement est possible.</div>
     <div id="abandon-info" class="msg info small" hidden><b>🧾 Vous recevrez un reçu fiscal.</b> En abandonnant vos frais, vous faites un don au Comité. Le Comité vous adressera un <b>reçu fiscal</b> (Cerfa n° 11580) du montant abandonné, à joindre à votre déclaration de revenus : il ouvre droit à une <b>réduction d'impôt de 66 %</b> de ce montant, dans la limite de 20 % de votre revenu imposable.<br><span class="muted">Exemple : 100 € de frais abandonnés = 66 € de réduction d'impôt. Votre adresse doit être complète, elle figurera sur le reçu.</span></div>
     <div class="field"><label for="imput">Vous intervenez en tant que <span class="req">*</span></label>
       <select id="imput"><option value="">— Choisir —</option><option value="bd">Membre du Bureau Directeur</option><option value="it">Intervenant / Commission Technique</option><option value="sal">Salarié du Comité</option></select></div>
@@ -171,6 +172,10 @@ function maj() {
   $('taux-txt').textContent = euros(taux()) + ($('imput').value === 'sal' ? ' (salarié)' : '');
   $('total').textContent = euros(ls.reduce((s, l) => s + l.total, 0));
   $('justif').hidden = !ls.some(l => l.annexes > 0);
+  const sal = $('imput').value === 'sal', rAb = document.querySelector('input[name=type][value=abandon]');
+  rAb.disabled = sal; rAb.closest('.opt').style.opacity = sal ? .45 : ''; rAb.closest('.opt').style.cursor = sal ? 'not-allowed' : '';
+  if (sal && rAb.checked) document.querySelector('input[name=type][value=remb]').checked = true;
+  $('sal-info').hidden = !sal;
   const ab = type() === 'abandon';
   $('total-lbl').textContent = ab ? 'Montant total' : 'Total à payer';
   $('abandon-info').hidden = !ab; $('engage').hidden = !ab; $('certif').hidden = ab;
