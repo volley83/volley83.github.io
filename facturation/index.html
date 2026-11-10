@@ -231,7 +231,7 @@ function renderLogin(err) {
     <div class="field"><label for="pwd">Mot de passe</label><input id="pwd" type="password" autocomplete="current-password" required></div>
     <div id="lg-err" class="msg err" ${err ? '' : 'hidden'}>${esc(err || '')}</div>
     <button class="btn primary" type="submit">Entrer</button>
-    <a class="btn ghost" href="../frais/" style="margin-top:6px">🚗 Bénévoles et intervenants : déclarer vos frais de déplacement</a></form></div>`;
+    <a class="btn ghost" href="../frais/" style="margin-top:6px">🚗 Bénévoles, intervenants, salariés : frais de déplacement et notes de frais</a></form></div>`;
   $('pwd').focus();
   $('lg').onsubmit = async ev => {
     ev.preventDefault();
@@ -252,7 +252,7 @@ function shell(tab, body) {
     <div class="t">Facturation clubs</div>
     <select id="saison" aria-label="Saison">${saisons.map(s => `<option ${s === SAISON ? 'selected' : ''}>${s}</option>`).join('')}</select>
     <nav>${nav.map(([k, t]) => `<a class="navbtn ${tab === k ? 'on' : ''}" href="#${k}">${t}${k === 'ris' && risAlertes() ? ` <span class="badge b-warn" style="margin-left:6px">${risAlertes()}</span>` : ''}</a>`).join('')}
-      <a class="navbtn" href="../frais/" target="_blank" title="Formulaire public de remboursement / abandon de frais">Frais dépl. ↗</a>
+      <a class="navbtn" href="../frais/" target="_blank" title="Formulaire public de remboursement / abandon de frais">Frais ↗</a>
       <button class="linkbtn" onclick="logout()">Déconnexion</button></nav>
   </div></header>
   <main class="wrap stack">${body}<div id="savemark" class="save" style="position:fixed;bottom:14px;right:18px;background:#fff;padding:4px 10px;border-radius:8px"></div></main>`;
