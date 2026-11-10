@@ -327,14 +327,19 @@ function nouveauBordereau() {
 async function majBordereau(b, p) {
   try { await rpc('fac_admin_bordereau', { pwd: PWD, p: { id: b.id, ...p } }); Object.assign(b, p); toast('✓ Enregistré'); route(); } catch(e) { fail(e); }
 }
-// Marquer comme envoyé : la date du bordereau devient celle du jour de l'envoi
+// Date d'envoi : la date du bordereau (et des lignes qui portaient cette date) devient celle du jour
+async function passerDateDuJour(b) {
+  const t = today(), suivre = lignesDe(b.id).filter(l => l.date_ligne === b.date);
+  suivre.forEach(l => { l.date_ligne = t; });
+  if (suivre.length) await enregistrerLignes(suivre);
+  await rpc('fac_admin_bordereau', { pwd: PWD, p: { id: b.id, date: t } }); b.date = t;
+}
 async function envoyerBordereau(bid) {
   const b = bord(bid), t = today(), change = b.date !== t;
-  // les lignes qui portent la date du bordereau (date mise par défaut à la saisie) suivent la nouvelle date
-  const suivre = change ? lignesDe(b.id).filter(l => l.date_ligne === b.date) : [];
-  if (!confirm(`Marquer le bordereau n° ${b.numero} comme envoyé ?${change ? `\n\nSa date passera du ${fmtD(b.date)} au ${fmtD(t)} (date d'envoi), sur l'en-tête des factures${suivre.length ? ` et sur les ${suivre.length} ligne(s) datées du ${fmtD(b.date)}` : ''}.` : ''}\nLes factures ne seront plus modifiables (vous pourrez le rouvrir).`)) return;
-  try { if (suivre.length) { suivre.forEach(l => { l.date_ligne = t; }); await enregistrerLignes(suivre); } } catch(e) { return fail(e); }
-  await majBordereau(b, change ? { statut: 'envoye', date: t } : { statut: 'envoye' });
+  const n = change ? lignesDe(b.id).filter(l => l.date_ligne === b.date).length : 0;
+  if (!confirm(`Marquer le bordereau n° ${b.numero} comme envoyé ?${change ? `\n\nSa date passera du ${fmtD(b.date)} au ${fmtD(t)} (date d'envoi), sur l'en-tête des factures${n ? ` et sur les ${n} ligne(s) datées du ${fmtD(b.date)}` : ''}.` : ''}\nLes factures ne seront plus modifiables (vous pourrez le rouvrir).`)) return;
+  try { if (change) await passerDateDuJour(b); } catch(e) { return fail(e); }
+  await majBordereau(b, { statut: 'envoye' });
 }
 async function supprBordereau(b) {
   const n = lignesDe(b.id).length;
@@ -1305,6 +1310,10 @@ async function rappelClub(code) {
   try { await rpc('fac_admin_rappel', { pwd: PWD, p: { club: code, saison: SAISON, bordereaux: imp.map(i => i.b.numero), montant: String(reste) } }); await load(); toast('✓ Rappel préparé (pensez à joindre le PDF)'); route(); } catch(e) { fail(e); }
 }
 async function mailClub(bid, code) {
+  const b0 = bord(bid);
+  if (b0.statut !== 'envoye' && b0.date !== today() && confirm(`Mettre la date du bordereau n° ${b0.numero} au ${fmtD(today())} (date d'envoi) avant de préparer le mail ?\n\nElle est actuellement au ${fmtD(b0.date)}. Les factures des autres clubs prendront aussi cette date.`)) {
+    try { await passerDateDuJour(b0); toast('✓ Date du bordereau mise au ' + fmtD(today())); } catch(e) { return fail(e); }
+  }
   const b = bord(bid), c = club(code), m = texteMail(b, code);
   await pdfClubs(bid, [code]);
   const to = c.email_finances || c.email || '', cc = c.email_finances ? (c.email || '') : '';
