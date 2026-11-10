@@ -393,7 +393,7 @@ async function creerNote() {
   const contact = [$('mail').value.trim(), $('tel').value.trim()].filter(Boolean).join('  ·  ');
   if (contact) { doc.setFont('helvetica', 'bold'); doc.text('Contact :', M + 5, 66); doc.setFont('helvetica', 'normal'); doc.text(pdfTxt(contact), M + 33, 66); }
   // tableau
-  const cols = [{ t: 'Date', w: 24 }, { t: 'Code', w: 22 }, { t: 'Nature des dépenses engagées', w: W - 2 * M - 78 }, { t: 'Montant', w: 32 }];
+  const cols = [{ t: 'Date', w: 24 }, { t: 'Nature des dépenses engagées', w: W - 2 * M - 78 }, { t: 'Code', w: 22 }, { t: 'Montant', w: 32 }];
   const xs = cols.reduce((a, c) => [...a, a[a.length - 1] + c.w], [M]);
   let y = 78;
   doc.setFillColor(...BLEU); doc.setDrawColor(...LIGNE); doc.setLineWidth(0.25); doc.rect(M, y, W - 2 * M, 9, 'FD');
@@ -403,24 +403,24 @@ async function creerNote() {
   const rows = ds.length >= 8 ? ds : [...ds, ...Array(8 - ds.length).fill(null)];
   rows.forEach(l => {
     doc.setFontSize(9.5);
-    const t = l ? doc.splitTextToSize(pdfTxt(`${l.famille} – ${l.nature}`), cols[2].w - 4) : [], h = Math.max(8.5, 4 + t.length * 4.2);
+    const t = l ? doc.splitTextToSize(pdfTxt(`${l.famille} – ${l.nature}`), cols[1].w - 4) : [], h = Math.max(8.5, 4 + t.length * 4.2);
     if (y + h > 250) { doc.addPage(); y = 20; }
     doc.rect(M, y, W - 2 * M, h); xs.slice(1, -1).forEach(xx => doc.line(xx, y, xx, y + h));
     const yy = y + 5.7;
     if (l) {
       doc.setFont('helvetica', 'normal'); doc.text(fmtD(l.date), xs[0] + cols[0].w / 2, yy, { align: 'center' });
-      doc.text(l.code || '…', xs[1] + cols[1].w / 2, yy, { align: 'center' });
+      doc.text(l.code || '…', xs[2] + cols[2].w / 2, yy, { align: 'center' });
       const fam = pdfTxt(l.famille); doc.setFont('helvetica', 'bold'); const wf = doc.getTextWidth(fam);
-      if (t[0].startsWith(fam)) { doc.text(fam, xs[2] + 2.5, yy); doc.setFont('helvetica', 'normal'); doc.text(t[0].slice(fam.length), xs[2] + 2.5 + wf, yy); }
-      else { doc.setFont('helvetica', 'normal'); doc.text(t[0], xs[2] + 2.5, yy); }
-      if (t.length > 1) doc.text(t.slice(1), xs[2] + 2.5, yy + 4.2);
+      if (t[0].startsWith(fam)) { doc.text(fam, xs[1] + 2.5, yy); doc.setFont('helvetica', 'normal'); doc.text(t[0].slice(fam.length).trim(), xs[1] + 2.5 + wf + 1.8, yy); }
+      else { doc.setFont('helvetica', 'normal'); doc.text(t[0], xs[1] + 2.5, yy); }
+      if (t.length > 1) doc.text(t.slice(1), xs[1] + 2.5, yy + 4.2);
       doc.text(pdfTxt(euros(l.montant)), W - M - 3, yy, { align: 'right' });
     } else { doc.setTextColor(...GRIS); doc.setFont('helvetica', 'normal'); doc.text('€', W - M - 3, yy, { align: 'right' }); doc.setTextColor(...TXT); }
     y += h;
   });
-  doc.setFillColor(253, 235, 216); doc.rect(M, y, W - 2 * M, 11, 'FD'); doc.line(xs[3], y, xs[3], y + 11);
+  doc.setFillColor(253, 235, 216); doc.rect(M, y, W - 2 * M, 11, 'FD'); doc.line(xs[2], y, xs[2], y + 11);
   doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor(...NAVY);
-  doc.text('TOTAL :', xs[3] - 4, y + 7.5, { align: 'right' }); doc.text(pdfTxt(euros(tot)), W - M - 3, y + 7.5, { align: 'right' });
+  doc.text('TOTAL :', xs[2] - 4, y + 7.5, { align: 'right' }); doc.text(pdfTxt(euros(tot)), W - M - 3, y + 7.5, { align: 'right' });
   y += 17;
   // récapitulatif par code comptable
   const rec = {}; ds.forEach(l => { const k = l.code || '…'; (rec[k] = rec[k] || { fams: new Set(), tot: 0 }); rec[k].fams.add(l.famille); rec[k].tot = r2(rec[k].tot + l.montant); });
