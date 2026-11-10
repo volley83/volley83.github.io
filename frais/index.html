@@ -67,9 +67,9 @@
     <h2>1. Votre demande</h2>
     <div class="choix">
       <label class="opt"><input type="radio" name="type" value="remb" checked><div><b>Remboursement de frais</b><span>Le Comité vous rembourse les frais engagés.</span></div></label>
-      <label class="opt"><input type="radio" name="type" value="abandon"><div><b>Abandon de frais</b><span>Vous renoncez au remboursement et faites don de ces frais à l'association.</span></div></label>
+      <label class="opt"><input type="radio" name="type" value="abandon"><div><b>Abandon de frais</b><span>Vous renoncez au remboursement et faites don de ces frais à l'association. Vous recevez un reçu fiscal (réduction d'impôt).</span></div></label>
     </div>
-    <div id="abandon-info" class="msg info small" hidden>En abandonnant vos frais, vous faites un don au Comité. Le Comité pourra vous remettre un reçu fiscal pour ce don.</div>
+    <div id="abandon-info" class="msg info small" hidden><b>🧾 Vous recevrez un reçu fiscal.</b> En abandonnant vos frais, vous faites un don au Comité. Le Comité vous adressera un <b>reçu fiscal</b> (Cerfa n° 11580) du montant abandonné, à joindre à votre déclaration de revenus : il ouvre droit à une <b>réduction d'impôt de 66 %</b> de ce montant, dans la limite de 20 % de votre revenu imposable.<br><span class="muted">Exemple : 100 € de frais abandonnés = 66 € de réduction d'impôt. Votre adresse doit être complète, elle figurera sur le reçu.</span></div>
     <div class="field"><label for="imput">Vous intervenez en tant que <span class="req">*</span></label>
       <select id="imput"><option value="">— Choisir —</option><option value="bd">Membre du Bureau Directeur</option><option value="it">Intervenant / Commission Technique</option><option value="sal">Salarié du Comité</option></select></div>
   </div>
@@ -280,7 +280,8 @@ async function creerPdf() {
   // bas : demandeur / visa
   doc.setTextColor(...TXT); doc.setFontSize(10);
   if (ab) { doc.setFont('helvetica', 'bold'); doc.text(pdfTxt(`Je soussigné(e) ${nomC},`), M, y); doc.setFont('helvetica', 'normal');
-    doc.text('certifie renoncer au remboursement des frais mentionnés ci-dessus', M, y + 5); doc.text("et les abandonner à l'association en tant que don.", M, y + 10); }
+    doc.text('certifie renoncer au remboursement des frais mentionnés ci-dessus', M, y + 5); doc.text("et les abandonner à l'association en tant que don.", M, y + 10);
+    doc.setFont('helvetica', 'italic'); doc.setFontSize(8.5); doc.setTextColor(...GRIS); doc.text(pdfTxt('Un reçu fiscal (Cerfa n° 11580) sera adressé au donateur.'), M + 85, y + 17); doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(...TXT); }
   else { doc.setFont('helvetica', 'bold'); doc.text('NOM et Prénom du demandeur :', M, y); doc.setFont('helvetica', 'normal'); doc.text(pdfTxt(nomC), M + 60, y);
     doc.text('Je certifie l\'exactitude des frais mentionnés ci-dessus.', M, y + 5); }
   doc.text(pdfTxt(`Date : ${fmtD(today())}`), M, y + 17);
@@ -310,7 +311,7 @@ $('envoi').onclick = async () => {
   const { doc, nomF, tot, ab } = await creerPdf();
   const nomC = `${$('prenom').value.trim()} ${$('nom').value.trim().toUpperCase()}`;
   const objet = `${ab ? 'Abandon de frais' : 'Frais de déplacement'} – ${nomC}`;
-  const corps = `Bonjour,\n\nVeuillez trouver ci-joint ma ${ab ? "déclaration d'abandon de frais de déplacement" : 'demande de remboursement de frais de déplacement'} (${euros(tot)}).${$('justif').hidden ? '' : '\nLes justificatifs des frais annexes sont joints.'}${cgVal() === 'jointe' ? '\nLa copie de ma carte grise est jointe.' : ''}\n\nCordialement,\n${nomC}`;
+  const corps = `Bonjour,\n\nVeuillez trouver ci-joint ma ${ab ? "déclaration d'abandon de frais de déplacement" : 'demande de remboursement de frais de déplacement'} (${euros(tot)}).${ab ? "\nMerci de m'adresser le reçu fiscal correspondant." : ''}${$('justif').hidden ? '' : '\nLes justificatifs des frais annexes sont joints.'}${cgVal() === 'jointe' ? '\nLa copie de ma carte grise est jointe.' : ''}\n\nCordialement,\n${nomC}`;
   const fichier = new File([doc.output('blob')], nomF, { type: 'application/pdf' });
   // sur téléphone : partage direct du PDF vers l'application de mail
   if (navigator.canShare && navigator.canShare({ files: [fichier] })) {
