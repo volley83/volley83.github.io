@@ -754,6 +754,14 @@ do $$ begin
   end if;
 end $$;
 
+-- ---------- Articles ajoutés en cours de saison (ajoutés une seule fois) ----------
+insert into fac_articles (code_compta, designation, prix, unite, categorie, rubrique_ris, ordre)
+select v.* from (values
+  ('771001', 'PÉNALITÉ RIS N°4 - SANCTION TERRAIN - AVERTISSEMENT', 50::numeric, 'sanction', 'Pénalités', 5, 125),
+  ('771001', 'PÉNALITÉ RIS N°4 - SANCTION TERRAIN - PÉNALITÉ', 100::numeric, 'sanction', 'Pénalités', 5, 126)
+) as v(code_compta, designation, prix, unite, categorie, rubrique_ris, ordre)
+where not exists (select 1 from fac_articles a where a.designation = v.designation);
+
 -- ---------- Rubrique du RIS des pénalités (une seule fois, modifiable ensuite dans Articles) ----------
 -- 1 Dossiers · 2 Licences · 3 Saisie des résultats et envoi des feuilles · 4 Feuille de match · 5 Divers
 update fac_articles set rubrique_ris = case
