@@ -1241,9 +1241,7 @@ function adminInscriptions() {
   $('a-mail-go').onclick = () => {
     const body = $('a-mail-body').value;
     if (/\[[^\]]*\]/.test(body) && !confirm('Il reste des passages entre [crochets] à compléter. Ouvrir quand même ?')) return;
-    const url = `https://mail.google.com/mail/?view=cm&fs=1&bcc=${encodeURIComponent(mails.join(','))}&su=${encodeURIComponent($('a-mail-su').value)}&body=${encodeURIComponent(body)}`;
-    if (url.length > 7800) { navigator.clipboard && navigator.clipboard.writeText(body); alert('Le texte est trop long pour être passé à Gmail : il a été copié, collez-le dans le mail qui va s\'ouvrir.'); window.open(`https://mail.google.com/mail/?view=cm&fs=1&bcc=${encodeURIComponent(mails.join(','))}&su=${encodeURIComponent($('a-mail-su').value)}`, '_blank'); return; }
-    window.open(url, '_blank');
+    gmailMisEnForme({ bcc: mails.join(','), su: $('a-mail-su').value, body });
   };
   $('n-ok').onclick = async () => {
     const club = $('n-club').value; if (!club) { saveMark('err', '⚠ Choisissez le club à ajouter'); $('n-club').focus(); return; }
@@ -1354,6 +1352,28 @@ function adminTournois() {
   $('a-add').onclick = async () => { const n = Math.max(0, ...ts.map(t => t.numero)) + 1, d = today(); await put(null, { competition: ACOMP, numero: n, date: d, date_limite: jeudiAvant(d), heure_limite: '12:00' }); adminTournois(); };
 }
 
+// ----- Ouverture d'un mail Gmail « mis en forme » (police Garamond + logo du Comité sous la signature) -----
+// Gmail n'accepte que du texte brut dans le lien : le mail mis en forme est copié, puis collé (Ctrl+V) dans Gmail.
+const LOGO_MAIL = SITE_URL + 'logo-comite-var.jpg';
+function mailHTML(txt) {
+  const lien = s => s.replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)])/g, '<a href="$1">$1</a>').replace(/([\w.+-]+@[\w-]+\.[\w.-]+)/g, m => m.includes('href') ? m : `<a href="mailto:${m}">${m}</a>`);
+  const corps = esc(txt).split('\n').map(l => lien(l) || '&nbsp;').join('<br>');
+  return `<div style="font-family: Garamond, 'EB Garamond', 'Times New Roman', serif; font-size: 13pt; color: #1a1a1a">${corps}<br><br><img src="${LOGO_MAIL}" alt="Comité du Var de Volley-Ball" width="180" style="width:180px;height:auto"></div>`;
+}
+async function gmailMisEnForme({ to = '', bcc = '', su = '', body = '' }) {
+  const base = `https://mail.google.com/mail/?view=cm&fs=1${to ? '&to=' + encodeURIComponent(to) : ''}${bcc ? '&bcc=' + encodeURIComponent(bcc) : ''}&su=${encodeURIComponent(su)}`;
+  try {
+    await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([mailHTML(body)], { type: 'text/html' }), 'text/plain': new Blob([body], { type: 'text/plain' }) })]);
+    window.open(base, '_blank');
+    saveMark('ok', '✓ Mail mis en forme copié : dans Gmail, cliquez dans le message puis Ctrl+V');
+  } catch(e) {
+    const url = base + '&body=' + encodeURIComponent(body);
+    if (url.length > 7800) { alert('Le texte est trop long pour Gmail : copiez-le depuis cette page et collez-le dans le mail.'); window.open(base, '_blank'); }
+    else window.open(url, '_blank');
+    saveMark('err', '⚠ Copie mise en forme impossible dans ce navigateur : texte simple envoyé à Gmail');
+  }
+}
+
 // ----- Rappel des tournois du week-end (mail à tous les clubs, avec le lien d'inscription) -----
 let RAP_SAMEDI = null;
 const isoLocal = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -1414,9 +1434,7 @@ function adminRappel() {
   const tous = () => [...new Set(auto.concat($('r-extra').value.split(/[,;\s]+/).map(m => m.trim().toLowerCase()).filter(m => /@/.test(m))))];
   $('r-copy').onclick = async () => { try { await navigator.clipboard.writeText(tous().join(', ')); saveMark('ok', `✓ ${tous().length} adresses copiées`); } catch(e) { saveMark('err', '⚠ Copie impossible'); } };
   $('r-go').onclick = () => {
-    const url = `https://mail.google.com/mail/?view=cm&fs=1&bcc=${encodeURIComponent(tous().join(','))}&su=${encodeURIComponent($('r-su').value)}&body=${encodeURIComponent($('r-body').value)}`;
-    if (url.length > 7800) { navigator.clipboard && navigator.clipboard.writeText($('r-body').value); alert('Le mail est trop long pour être passé à Gmail en une fois : le texte a été copié, collez-le dans le mail qui va s\'ouvrir.'); window.open(`https://mail.google.com/mail/?view=cm&fs=1&bcc=${encodeURIComponent(tous().join(','))}&su=${encodeURIComponent($('r-su').value)}`, '_blank'); return; }
-    window.open(url, '_blank');
+    gmailMisEnForme({ bcc: tous().join(','), su: $('r-su').value, body: $('r-body').value });
   };
 }
 
@@ -1493,7 +1511,6 @@ Comité du Var de Volley-Ball`;
 // Brouillon Gmail pour le club recevant : code, espace club, documents, rappel de la feuille de composition
 let MAILS_CLUBS = null;
 async function mailCodeOrga(t, c) {
-  const w = window.open('about:blank', '_blank');   // ouvert tout de suite pour ne pas être bloqué par le navigateur
   let mails = MAILS_CLUBS;
   if (!mails) { try { mails = MAILS_CLUBS = await rpc('chp_admin_mails', { pwd: ADMIN_PWD }) || {}; } catch(e) { mails = {}; } }   // pas de cache en cas d'erreur
   const tsC = A.tournois.filter(x => x.competition === t.competition).map(x => x.id);
@@ -1510,9 +1527,8 @@ async function mailCodeOrga(t, c) {
     + `- les documents à imprimer pour le tournoi : feuille de composition des équipes, feuilles de poule (de 3 à 6 équipes) et règlement.\n\n`
     + (c.famille === '4x4' ? `Après le tournoi, reconnectez-vous avec le même code pour saisir le classement final et l'envoyer au Comité, qui le validera avant sa publication.\n\n` : '')
     + `N'oubliez pas d'envoyer la feuille de composition des équipes, remplie, par mail au Comité : ${MAIL_COMITE}\n\n`
-    + `Sportivement,\nLe Comité du Var de Volley-Ball\n`;
-  const url = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`;
-  if (w) w.location.href = url; else window.open(url, '_blank');
+    + `Sportivement,\n\nClément ROBEAU\nComité du Var de Volley-Ball`;
+  await gmailMisEnForme({ to, su: sujet, body: corps });
   if (!t.organisateur) saveMark('err', '⚠ Aucun club recevant choisi pour ce tournoi : choisissez-le pour que son adresse soit reprise');
   else if (!to) saveMark('err', `⚠ Pas d'adresse mail pour ${clubNom(t.organisateur)} (sigle ${t.organisateur}) dans la Facturation : complétez le destinataire dans Gmail`);
 }
