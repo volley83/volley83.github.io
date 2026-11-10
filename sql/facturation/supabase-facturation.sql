@@ -61,7 +61,8 @@ create table if not exists fac_lignes (
   ordre         int not null default 0,
   created_at    timestamptz not null default now()
 );
-alter table fac_lignes add column if not exists precisions text;   -- précisions sous la désignation (noms des enfants…)
+alter table fac_lignes add column if not exists precisions text;
+alter table fac_articles add column if not exists rubrique_ris int check (rubrique_ris between 1 and 5);  -- rubrique du RIS pour les pénalités   -- précisions sous la désignation (noms des enfants…)
 alter table fac_bordereaux add column if not exists mail_contenu text;  -- liste « Ce bordereau comprend notamment » du mail aux clubs
 create index if not exists fac_lignes_bord on fac_lignes(bordereau_id, club);
 
@@ -307,7 +308,8 @@ begin
     unite       = nullif(trim(p->>'unite'), ''),
     categorie   = nullif(trim(p->>'categorie'), ''),
     actif       = coalesce((p->>'actif')::boolean, true),
-    ordre       = coalesce(nullif(p->>'ordre', '')::int, ordre)
+    ordre       = coalesce(nullif(p->>'ordre', '')::int, ordre),
+    rubrique_ris = case when p ? 'rubrique_ris' then nullif(p->>'rubrique_ris', '')::int else rubrique_ris end
   where id = aid;
   return aid;
 end $$;
@@ -751,5 +753,15 @@ do $$ begin
     insert into fac_reglages (cle, valeur) values ('catalogue_version', '"2"') on conflict (cle) do update set valeur = '"2"';
   end if;
 end $$;
+
+-- ---------- Rubrique du RIS des pénalités (une seule fois, modifiable ensuite dans Articles) ----------
+-- 1 Dossiers · 2 Licences · 3 Saisie des résultats et envoi des feuilles · 4 Feuille de match · 5 Divers
+update fac_articles set rubrique_ris = case
+    when designation ~* 'LICENCE|LICENCIÉ|QUALIFI|SURCLASSEMENT' then 2
+    when designation ~* 'RÉSULTAT|PARVENUE|ADRESSE|AFFRANCHI' then 3
+    when designation ~* 'MAL TENUE|MAUVAISE FEUILLE' then 4
+    when designation ~* 'FORFAIT|ABSENTE|INCOMPLÈTE|PÉNALITÉ (SENIOR|COMPET|JEUNE)' then 1
+    else 5 end
+  where rubrique_ris is null and categorie in ('Pénalités', 'Forfaits', 'Arbitrage');
 
 -- Message attendu : « Success. No rows returned »

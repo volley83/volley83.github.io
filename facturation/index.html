@@ -687,6 +687,7 @@ function renderArticles() {
     <td><input data-k="prix" class="n" value="${fmtN(a.prix)}" style="width:90px" inputmode="decimal"></td>
     <td><input data-k="unite" value="${esc(a.unite || '')}" style="width:100px" placeholder="équipe…"></td>
     <td><input data-k="categorie" value="${esc(a.categorie || '')}" list="cats" style="width:150px"></td>
+    <td>${['Pénalités', 'Forfaits', 'Arbitrage'].includes(a.categorie) ? `<select data-k="rubrique_ris" style="width:150px">${RUBRIQUES.map((t, k) => `<option value="${k + 1}" ${rubriqueArticle(a) === k + 1 ? 'selected' : ''}>${k + 1}- ${t}</option>`).join('')}</select>` : ''}</td>
     <td class="c"><input type="checkbox" data-k="actif" ${a.actif ? 'checked' : ''}></td>
     <td><input data-k="ordre" value="${a.ordre}" style="width:56px" class="n"></td>
     <td>${a.cle ? '' : `<button class="x" onclick="supprArticle(${a.id})">✕</button>`}</td></tr>`;
@@ -694,10 +695,10 @@ function renderArticles() {
   <div class="ttl"><div><h1 style="font-size:34px">Articles</h1><p class="muted">Les éléments que vous facturez régulièrement. Modifiez directement dans le tableau : c'est enregistré dès que vous quittez la case. Changer un prix ne modifie pas les factures déjà faites.</p></div>
     <button class="btn primary" onclick="nouvelArticle()">+ Nouvel article</button></div>
   <datalist id="cats">${cats.map(c => `<option value="${esc(c)}">`).join('')}</datalist>
-  <div class="tablebox"><table class="t" id="art-t"><thead><tr><th>Compte</th><th>Désignation</th><th class="r">Prix €</th><th>Unité</th><th>Catégorie</th><th class="c">Actif</th><th>Ordre</th><th></th></tr></thead>
+  <div class="tablebox"><table class="t" id="art-t"><thead><tr><th>Compte</th><th>Désignation</th><th class="r">Prix €</th><th>Unité</th><th>Catégorie</th><th>Rubrique RIS</th><th class="c">Actif</th><th>Ordre</th><th></th></tr></thead>
     <tbody>${as.map(row).join('')}</tbody></table></div>
   <p class="small muted">Les articles marqués <span class="badge b-auto">auto</span> servent aux ajouts automatiques (OPEN, Pitchoun', stages) : leur compte et leur désignation sont repris sur les factures. Pour l'OPEN, le prix par équipe se règle dans <a href="#reglages">Réglages</a>.</p>`);
-  document.querySelectorAll('#art-t tr[data-id] input').forEach(inp => inp.onchange = async () => {
+  document.querySelectorAll('#art-t tr[data-id] input, #art-t tr[data-id] select').forEach(inp => inp.onchange = async () => {
     const a = art(inp.closest('tr').dataset.id);
     const k = inp.dataset.k; a[k] = inp.type === 'checkbox' ? inp.checked : (k === 'prix' ? num(inp.value) : inp.value);
     try { await rpc('fac_admin_article', { pwd: PWD, p: { ...a, prix: String(a.prix) } }); toast('✓ Enregistré'); if (k === 'designation') inp.value = a.designation = a.designation.toUpperCase().trim(); if (k === 'actif') inp.closest('tr').className = a.actif ? '' : 'off'; } catch(e) { fail(e); }
@@ -785,6 +786,7 @@ function intituleArticle(a) {
   return (t.charAt(0).toUpperCase() + t.slice(1)).replace(/\bj-(\d+)/g, 'J-$1').replace(/\bm(\d+)/g, 'M$1').replace(/compet'lib/g, "Compet'Lib");
 }
 function rubriqueArticle(a) {
+  if (a.rubrique_ris) return +a.rubrique_ris;
   const t = norm(a.designation);
   if (/licence|licencie|qualifie/.test(t)) return 2;
   if (/resultat|non parvenue|hors delai|adresse|affranchi/.test(t) && !/calendrier|implantation/.test(t)) return 3;
@@ -941,27 +943,29 @@ function renderRis(r) {
   ${RUBRIQUES.map((t, k) => { const li = its.filter(i => i.rubrique === k + 1); return `<div class="stack" style="gap:6px"><h3>${k + 1}- ${t} <span class="muted" style="font-size:14px">· ${li.length}</span></h3>
     ${li.length ? `<div class="tablebox"><table class="t ri-t"><thead><tr><th>Rub.</th><th>N° de match ou tournoi</th><th>Club</th><th>Infraction relevée</th><th class="r">Montant</th><th>Facturation</th><th></th></tr></thead><tbody>${li.map(ligne).join('')}</tbody></table></div>` : ''}</div>`; }).join('')}`);
   // Lignes d'infractions pour le même match et le même club
-  const optArt = `<option value="">— Choisir dans les tarifs —</option>${['Pénalités', 'Forfaits', 'Arbitrage'].map(cat => `<optgroup label="${cat}">${as.filter(a => a.categorie === cat).map(a => `<option value="${a.id}">${esc(intituleArticle(a))} (${euros(a.prix)})${/FORFAIT GÉNÉRAL/.test(a.designation) && !/MODIFICATION/.test(a.designation) ? ' – aussi : retrait d\'une équipe après publication des calendriers' : /FORFAIT UN MATCH/.test(a.designation) ? ' – aussi : équipe absente' : ''}</option>`).join('')}</optgroup>`).join('')}<option value="libre">Autre (saisie libre)</option>`;
+  const optArt = rub => `<option value="">— Choisir l'infraction —</option>${['Pénalités', 'Forfaits', 'Arbitrage'].map(cat => { const l = as.filter(a => a.categorie === cat && (!rub || rubriqueArticle(a) === rub)); return l.length ? `<optgroup label="${cat}">${l.map(a => `<option value="${a.id}">${esc(intituleArticle(a))} (${euros(a.prix)})${/FORFAIT GÉNÉRAL/.test(a.designation) && !/MODIFICATION/.test(a.designation) ? ' – aussi : retrait d\'une équipe après publication des calendriers' : /FORFAIT UN MATCH/.test(a.designation) ? ' – aussi : équipe absente' : ''}</option>`).join('')}</optgroup>` : ''; }).join('')}<option value="libre">Autre (saisie libre)</option>`;
   const addRow = () => {
     const d = document.createElement('div'); d.className = 'ri-row grid'; d.style.cssText = 'grid-template-columns:minmax(0,1.3fr) 190px minmax(0,1.3fr) 100px 34px;gap:8px;align-items:end;padding:10px;border:1px solid var(--line);border-radius:10px;background:#FAFBFD';
-    d.innerHTML = `<div class="field"><label>Infraction</label><select data-r="art">${optArt}</select></div>
-      <div class="field"><label>Rubrique</label><select data-r="rub">${RUBRIQUES.map((t, k) => `<option value="${k + 1}" ${k === 4 ? 'selected' : ''}>${k + 1}- ${t}</option>`).join('')}</select></div>
+    d.style.gridTemplateColumns = '230px minmax(0,1.3fr) minmax(0,1.3fr) 100px 34px';
+    d.innerHTML = `<div class="field"><label>Rubrique</label><select data-r="rub"><option value="">— Choisir —</option>${RUBRIQUES.map((t, k) => `<option value="${k + 1}">${k + 1}- ${t}</option>`).join('')}</select></div>
+      <div class="field"><label>Infraction</label><select data-r="art">${optArt(0)}</select></div>
       <div class="field"><label>Infraction relevée (texte du RIS et de la facture)</label><input data-r="int" placeholder="Licence non présentée – 1 joueuse"></div>
       <div class="field"><label>Montant €</label><input data-r="mt" class="n" inputmode="decimal"></div>
       <button class="x" title="Retirer cette ligne" style="height:40px">✕</button>
       <div class="field" style="grid-column:1 / -1"><input data-r="note" placeholder="Note explicative (facultatif, imprimée sur le RIS et la facture) : ex. 2ᵉ demande pour la même rencontre"></div>`;
     const q = k => d.querySelector(`[data-r="${k}"]`);
-    q('art').onchange = () => { const a = art(q('art').value); if (a) { q('int').value = intituleArticle(a); q('mt').value = fmtN(a.prix); q('rub').value = rubriqueArticle(a); } else if (q('art').value === 'libre') { q('int').value = ''; q('mt').value = ''; q('int').focus(); } };
+    q('rub').onchange = () => { const v = q('art').value; q('art').innerHTML = optArt(+q('rub').value); if ([...q('art').options].some(o => o.value === v)) q('art').value = v; q('art').focus(); };
+    q('art').onchange = () => { const a = art(q('art').value); if (a) { q('int').value = intituleArticle(a); q('mt').value = fmtN(a.prix); if (!q('rub').value) q('rub').value = rubriqueArticle(a); } else if (q('art').value === 'libre') { q('int').value = ''; q('mt').value = ''; q('int').focus(); } };
     d.querySelector('.x').onclick = () => { if (document.querySelectorAll('.ri-row').length > 1) d.remove(); else { q('art').value = ''; q('int').value = ''; q('mt').value = ''; q('note').value = ''; } };
     $('ri-rows').appendChild(d); return d;
   };
   addRow();
-  $('ri-plus').onclick = () => addRow().querySelector('[data-r="art"]').focus();
+  $('ri-plus').onclick = () => addRow().querySelector('[data-r="rub"]').focus();
   $('ri-ok').onclick = async () => {
     const match = $('ri-match').value.trim(), club = $('ri-club').value;
     if (!club) return alert('Choisissez le club.');
     const rows = [...document.querySelectorAll('.ri-row')].map(d => { const q = k => d.querySelector(`[data-r="${k}"]`);
-      return { rubrique: +q('rub').value, article_id: art(q('art').value) ? String(art(q('art').value).id) : null, intitule: q('int').value.trim(), montant: String(num(q('mt').value)), note: q('note').value.trim() }; })
+      return { rubrique: +q('rub').value || 5, article_id: art(q('art').value) ? String(art(q('art').value).id) : null, intitule: q('int').value.trim(), montant: String(num(q('mt').value)), note: q('note').value.trim() }; })
       .filter(x => x.intitule);
     if (!rows.length) return alert('Indiquez au moins une infraction.');
     // même infraction déjà saisie pour ce match (même club ou autre club) : confirmation
@@ -975,7 +979,7 @@ function renderRis(r) {
     try {
       for (const [k, x] of rows.entries()) await rpc('fac_admin_ris_item', { pwd: PWD, p: { ris_id: r.id, match, club, ...x, ordre: its.length + k } });
       RIS_SAISIE = { rubrique: 5, match, club }; await load(); renderRis(risDe(r.id)); toast(`✓ ${rows.length} infraction${rows.length > 1 ? 's' : ''} ajoutée${rows.length > 1 ? 's' : ''}`);
-      document.querySelector('.ri-row [data-r="art"]').focus();
+      document.querySelector('.ri-row [data-r="rub"]').focus();
     } catch(e) { fail(e); }
   };
   document.querySelectorAll('.ri-t tr[data-id] input, .ri-t tr[data-id] select').forEach(inp => inp.onchange = async () => {
