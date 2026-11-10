@@ -127,7 +127,7 @@
 </main>
 <script>
 const TAUX_DEF = 0.25, MAIL = 'volley83@gmail.com';
-const IMPUT = { bd: { lib: 'Bureau Directeur', code: '625101', taux: 0.25 }, it: { lib: 'Intervenants / Com. Technique', code: '625110', taux: 0.25 }, sal: { lib: 'Salarié', code: '', taux: 0.60 } };
+const IMPUT = { bd: { lib: 'Bureau Directeur', code: '625101', taux: 0.25 }, it: { lib: 'Intervenants / Com. Technique', code: '625110', taux: 0.25 }, sal: { lib: 'Salarié', code: '625111', taux: 0.60 } };
 const taux = () => (IMPUT[$('imput').value] || {}).taux || TAUX_DEF;
 const PIED = ['Maison des sports du Var – 133, Boulevard Général Brosset - 83200 TOULON', 'Téléphone : 06-13-30-34-25 / contact@volley83.fr / www.volley83.fr', 'N° Siret : 42463014300024 / Code APE : 9312 Z'];
 const $ = id => document.getElementById(id);
