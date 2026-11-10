@@ -1079,7 +1079,7 @@ async function pdfRis(id) {
   const enteteTable = () => {
     doc.setFillColor(244, 246, 250); doc.rect(M, y, CW, 7, 'F');
     doc.setFont('helvetica', 'bold'); doc.setFontSize(7.2); doc.setTextColor(...GRIS);
-    let x = M; cols.forEach(c => { doc.text(c.t, x + 3, y + 4.7); x += c.w; });
+    let x = M; cols.forEach((c, k) => { if (k === 1) doc.text(c.t, x + c.w / 2, y + 4.7, { align: 'center' }); else doc.text(c.t, x + 3, y + 4.7); x += c.w; });
     y += 7;
   };
   const hauteurLigne = i => {
@@ -1096,8 +1096,9 @@ async function pdfRis(id) {
     doc.text(doc.splitTextToSize(pdfTxt(i.match || '—'), cols[0].w - 6), M + 3, y + 4.6);
     // pastille club
     doc.setFontSize(8); const cw = doc.getTextWidth(i.club) + 5;
-    doc.setFillColor(233, 239, 250); doc.roundedRect(M + cols[0].w + 2, y + 1.1, cw, 4.9, 1.5, 1.5, 'F');
-    doc.setTextColor(30, 79, 163); doc.text(i.club, M + cols[0].w + 4.5, y + 4.55);
+    const xc = M + cols[0].w + cols[1].w / 2;
+    doc.setFillColor(233, 239, 250); doc.roundedRect(xc - cw / 2, y + 1.1, cw, 4.9, 1.5, 1.5, 'F');
+    doc.setTextColor(30, 79, 163); doc.text(i.club, xc, y + 4.55, { align: 'center' });
     const xi = M + cols[0].w + cols[1].w + 3;
     doc.setFont('helvetica', 'normal'); doc.setFontSize(9.2); doc.setTextColor(...TXT); doc.text(l1, xi, y + 4.6);
     if (l2.length) { doc.setFont('helvetica', 'italic'); doc.setFontSize(8); doc.setTextColor(...GRIS); doc.text(l2, xi, y + 4.4 + l1.length * 4); }
@@ -1125,7 +1126,7 @@ async function pdfRis(id) {
   const hB = 6 + txt.length * 4.3;
   if (y + hB > BAS) nouvellePage();
   doc.setFillColor(255, 248, 225); doc.roundedRect(M, y, CW, hB, 2, 2, 'F'); doc.setFillColor(...GOLD); doc.rect(M, y, 1.4, hB, 'F');
-  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(122, 85, 0); doc.text(txt, M + 6, y + 5.5);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(122, 85, 0); doc.text(txt, W / 2 + 0.7, y + hB / 2 + 1.4 - (txt.length - 1) * 2.15, { align: 'center' });
   // ---- Pieds de page avec numérotation
   const n = doc.internal.getNumberOfPages();
   for (let p = 1; p <= n; p++) {
