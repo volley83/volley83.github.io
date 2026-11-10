@@ -296,8 +296,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:BMB007@volley83.github.io
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261205T140000
-DTEND;TZID=Europe/Paris:20261205T160000
+DTSTART;TZID=Europe/Paris:20261205T130000
+DTEND;TZID=Europe/Paris:20261205T150000
 SUMMARY:M13 M · Fréjus Var Volley 2 – Fréjus Var Volley 1
 LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
@@ -306,8 +306,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:BMB008@volley83.github.io
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261205T140000
-DTEND;TZID=Europe/Paris:20261205T160000
+DTSTART;TZID=Europe/Paris:20261205T130000
+DTEND;TZID=Europe/Paris:20261205T150000
 SUMMARY:M13 M · Fréjus Var Volley 1 – Draguignan Union Club Var VB
 LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
@@ -316,8 +316,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:BMB009@volley83.github.io
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261205T140000
-DTEND;TZID=Europe/Paris:20261205T160000
+DTSTART;TZID=Europe/Paris:20261205T130000
+DTEND;TZID=Europe/Paris:20261205T150000
 SUMMARY:M13 M · Draguignan Union Club Var VB – Fréjus Var Volley 2
 LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
@@ -566,8 +566,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:CMB012@volley83.github.io
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261121T133000
-DTEND;TZID=Europe/Paris:20261121T153000
+DTSTART;TZID=Europe/Paris:20261121T120000
+DTEND;TZID=Europe/Paris:20261121T140000
 SUMMARY:M18 M · Draguignan Union Club Var VB – Fréjus Var Volley
 LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
@@ -576,8 +576,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:CMB014@volley83.github.io
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261121T133000
-DTEND;TZID=Europe/Paris:20261121T153000
+DTSTART;TZID=Europe/Paris:20261121T120000
+DTEND;TZID=Europe/Paris:20261121T140000
 SUMMARY:M18 M · Fréjus Var Volley – Le Luc Volley-Ball
 LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
@@ -649,11 +649,11 @@ END:VEVENT
 BEGIN:VEVENT
 UID:DFB015@volley83.github.io
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261128T180000
-DTEND;TZID=Europe/Paris:20261128T200000
+DTSTART;TZID=Europe/Paris:20261128T190000
+DTEND;TZID=Europe/Paris:20261128T210000
 SUMMARY:SENIORS F · Fréjus Var Volley (M21) – Union Athlétique Valet
  toise
-LOCATION:Pierre Clere
+LOCATION:Pierre Clère
 DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/seniors/DFB
 END:VEVENT

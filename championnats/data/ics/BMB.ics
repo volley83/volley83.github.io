@@ -89,8 +89,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:BMB007@volley83.github.io
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261205T140000
-DTEND;TZID=Europe/Paris:20261205T160000
+DTSTART;TZID=Europe/Paris:20261205T130000
+DTEND;TZID=Europe/Paris:20261205T150000
 SUMMARY:M13 M · Fréjus Var Volley 2 – Fréjus Var Volley 1
 LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
@@ -99,8 +99,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:BMB008@volley83.github.io
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261205T140000
-DTEND;TZID=Europe/Paris:20261205T160000
+DTSTART;TZID=Europe/Paris:20261205T130000
+DTEND;TZID=Europe/Paris:20261205T150000
 SUMMARY:M13 M · Fréjus Var Volley 1 – Draguignan Union Club Var VB
 LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
@@ -109,8 +109,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:BMB009@volley83.github.io
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261205T140000
-DTEND;TZID=Europe/Paris:20261205T160000
+DTSTART;TZID=Europe/Paris:20261205T130000
+DTEND;TZID=Europe/Paris:20261205T150000
 SUMMARY:M13 M · Draguignan Union Club Var VB – Fréjus Var Volley 2
 LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git

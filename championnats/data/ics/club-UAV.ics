@@ -373,11 +373,11 @@ END:VEVENT
 BEGIN:VEVENT
 UID:DFB015@volley83.github.io
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261128T180000
-DTEND;TZID=Europe/Paris:20261128T200000
+DTSTART;TZID=Europe/Paris:20261128T190000
+DTEND;TZID=Europe/Paris:20261128T210000
 SUMMARY:SENIORS F · Fréjus Var Volley (M21) – Union Athlétique Valet
  toise
-LOCATION:Pierre Clere
+LOCATION:Pierre Clère
 DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/seniors/DFB
 END:VEVENT
