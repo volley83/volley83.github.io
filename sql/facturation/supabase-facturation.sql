@@ -758,7 +758,8 @@ end $$;
 insert into fac_articles (code_compta, designation, prix, unite, categorie, rubrique_ris, ordre)
 select v.* from (values
   ('771001', 'PÉNALITÉ RIS N°4 - SANCTION TERRAIN - AVERTISSEMENT', 50::numeric, 'sanction', 'Pénalités', 5, 125),
-  ('771001', 'PÉNALITÉ RIS N°4 - SANCTION TERRAIN - PÉNALITÉ', 100::numeric, 'sanction', 'Pénalités', 5, 126)
+  ('771001', 'PÉNALITÉ RIS N°4 - SANCTION TERRAIN - PÉNALITÉ', 100::numeric, 'sanction', 'Pénalités', 5, 126),
+  ('771001', 'PÉNALITÉ RIS N°4 - ENGAGEMENT NON CONFORME', 0::numeric, 'équipe', 'Pénalités', 5, 108)
 ) as v(code_compta, designation, prix, unite, categorie, rubrique_ris, ordre)
 where not exists (select 1 from fac_articles a where a.designation = v.designation);
 

@@ -841,10 +841,10 @@ function sectionSignalements() {
           <div class="field"><label>N° match</label><input data-f="match" value="${esc(g.match || '')}"></div>
           <div class="field"><label>Club</label><select data-f="club">${clubs.map(c => `<option ${c.code === g.club ? 'selected' : ''}>${esc(c.code)}</option>`).join('')}</select></div>
           <div class="field"><label>Infraction relevée</label><input data-f="intitule" value="${esc(g.nature)}"></div>
-          <div class="field"><label>Montant €</label><input data-f="montant" class="n" value="${a ? fmtN(a.prix) : ''}" inputmode="decimal"></div>
+          <div class="field"><label>Montant €</label><input data-f="montant" class="n" value="${a && num(a.prix) ? fmtN(a.prix) : ''}" inputmode="decimal"></div>
         </div>
         <div class="grid" style="grid-template-columns:minmax(0,1fr) 220px auto auto;gap:8px;align-items:end">
-          <div class="field"><label>Tarif appliqué</label><select data-f="article_id"><option value="">— Saisie libre —</option>${as.map(x => `<option value="${x.id}" ${a && a.id === x.id ? 'selected' : ''}>${esc(intituleArticle(x))} (${euros(x.prix)})</option>`).join('')}</select></div>
+          <div class="field"><label>Tarif appliqué</label><select data-f="article_id"><option value="">— Saisie libre —</option>${as.map(x => `<option value="${x.id}" ${a && a.id === x.id ? 'selected' : ''}>${esc(intituleArticle(x))}${num(x.prix) ? ` (${euros(x.prix)})` : ' (montant à saisir)'}</option>`).join('')}</select></div>
           <div class="field"><label>Ajouter au RIS</label><select data-f="ris_id">${rs.map(r => `<option value="${r.id}">RIS n° ${r.numero} (au ${fmtD(r.date)})</option>`).join('')}<option value="nouveau" ${rs.length ? '' : 'selected'}>+ Nouveau RIS</option></select></div>
           <button class="btn ok" data-ok>✓ Valider</button><button class="btn danger" data-no>Rejeter</button>
         </div></div>`; }).join('') : '<p class="muted small">Aucun signalement en attente.</p>'}
@@ -856,7 +856,7 @@ function sectionSignalements() {
 function brancherSignalements() {
   document.querySelectorAll('[data-sig]').forEach(box => {
     const id = +box.dataset.sig, f = k => box.querySelector(`[data-f="${k}"]`);
-    f('article_id').onchange = () => { const a = art(f('article_id').value); if (a) { f('montant').value = fmtN(a.prix); f('rubrique').value = rubriqueArticle(a); } };
+    f('article_id').onchange = () => { const a = art(f('article_id').value); if (a) { f('montant').value = num(a.prix) ? fmtN(a.prix) : ''; f('rubrique').value = rubriqueArticle(a); } };
     box.querySelector('[data-ok]').onclick = async () => {
       const g = D.signalements.find(x => x.id === id);
       if (!f('intitule').value.trim()) return alert('Indiquez l\'infraction relevée.');
@@ -943,7 +943,7 @@ function renderRis(r) {
   ${RUBRIQUES.map((t, k) => { const li = its.filter(i => i.rubrique === k + 1); return `<div class="stack" style="gap:6px"><h3>${k + 1}- ${t} <span class="muted" style="font-size:14px">· ${li.length}</span></h3>
     ${li.length ? `<div class="tablebox"><table class="t ri-t"><thead><tr><th>Rub.</th><th>N° de match ou tournoi</th><th>Club</th><th>Infraction relevée</th><th class="r">Montant</th><th>Facturation</th><th></th></tr></thead><tbody>${li.map(ligne).join('')}</tbody></table></div>` : ''}</div>`; }).join('')}`);
   // Lignes d'infractions pour le même match et le même club
-  const optArt = rub => `<option value="">— Choisir l'infraction —</option>${['Pénalités', 'Forfaits', 'Arbitrage'].map(cat => { const l = as.filter(a => a.categorie === cat && (!rub || rubriqueArticle(a) === rub)); return l.length ? `<optgroup label="${cat}">${l.map(a => `<option value="${a.id}">${esc(intituleArticle(a))} (${euros(a.prix)})${/FORFAIT GÉNÉRAL/.test(a.designation) && !/MODIFICATION/.test(a.designation) ? ' – aussi : retrait d\'une équipe après publication des calendriers' : /FORFAIT UN MATCH/.test(a.designation) ? ' – aussi : équipe absente' : ''}</option>`).join('')}</optgroup>` : ''; }).join('')}<option value="libre">Autre (saisie libre)</option>`;
+  const optArt = rub => `<option value="">— Choisir l'infraction —</option>${['Pénalités', 'Forfaits', 'Arbitrage'].map(cat => { const l = as.filter(a => a.categorie === cat && (!rub || rubriqueArticle(a) === rub)); return l.length ? `<optgroup label="${cat}">${l.map(a => `<option value="${a.id}">${esc(intituleArticle(a))}${num(a.prix) ? ` (${euros(a.prix)})` : ' (montant à saisir)'}${/FORFAIT GÉNÉRAL/.test(a.designation) && !/MODIFICATION/.test(a.designation) ? ' – aussi : retrait d\'une équipe après publication des calendriers' : /FORFAIT UN MATCH/.test(a.designation) ? ' – aussi : équipe absente' : ''}</option>`).join('')}</optgroup>` : ''; }).join('')}<option value="libre">Autre (saisie libre)</option>`;
   const addRow = () => {
     const d = document.createElement('div'); d.className = 'ri-row grid'; d.style.cssText = 'grid-template-columns:minmax(0,1.3fr) 190px minmax(0,1.3fr) 100px 34px;gap:8px;align-items:end;padding:10px;border:1px solid var(--line);border-radius:10px;background:#FAFBFD';
     d.style.gridTemplateColumns = '230px minmax(0,1.3fr) minmax(0,1.3fr) 100px 34px';
@@ -955,7 +955,7 @@ function renderRis(r) {
       <div class="field" style="grid-column:1 / -1"><input data-r="note" placeholder="Note explicative (facultatif, imprimée sur le RIS et la facture) : ex. 2ᵉ demande pour la même rencontre"></div>`;
     const q = k => d.querySelector(`[data-r="${k}"]`);
     q('rub').onchange = () => { const v = q('art').value; q('art').innerHTML = optArt(+q('rub').value); if ([...q('art').options].some(o => o.value === v)) q('art').value = v; q('art').focus(); };
-    q('art').onchange = () => { const a = art(q('art').value); if (a) { q('int').value = intituleArticle(a); q('mt').value = fmtN(a.prix); if (!q('rub').value) q('rub').value = rubriqueArticle(a); } else if (q('art').value === 'libre') { q('int').value = ''; q('mt').value = ''; q('int').focus(); } };
+    q('art').onchange = () => { const a = art(q('art').value); if (a) { q('int').value = intituleArticle(a); q('mt').value = num(a.prix) ? fmtN(a.prix) : ''; if (!num(a.prix)) q('mt').focus(); if (!q('rub').value) q('rub').value = rubriqueArticle(a); } else if (q('art').value === 'libre') { q('int').value = ''; q('mt').value = ''; q('int').focus(); } };
     d.querySelector('.x').onclick = () => { if (document.querySelectorAll('.ri-row').length > 1) d.remove(); else { q('art').value = ''; q('int').value = ''; q('mt').value = ''; q('note').value = ''; } };
     $('ri-rows').appendChild(d); return d;
   };
