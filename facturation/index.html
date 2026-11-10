@@ -327,6 +327,12 @@ function nouveauBordereau() {
 async function majBordereau(b, p) {
   try { await rpc('fac_admin_bordereau', { pwd: PWD, p: { id: b.id, ...p } }); Object.assign(b, p); toast('✓ Enregistré'); route(); } catch(e) { fail(e); }
 }
+// Marquer comme envoyé : la date du bordereau devient celle du jour de l'envoi
+async function envoyerBordereau(bid) {
+  const b = bord(bid), t = today(), change = b.date !== t;
+  if (!confirm(`Marquer le bordereau n° ${b.numero} comme envoyé ?${change ? `\n\nSa date passera du ${fmtD(b.date)} au ${fmtD(t)} (date d'envoi).` : ''}\nLes factures ne seront plus modifiables (vous pourrez le rouvrir).`)) return;
+  await majBordereau(b, change ? { statut: 'envoye', date: t } : { statut: 'envoye' });
+}
 async function supprBordereau(b) {
   const n = lignesDe(b.id).length;
   if (!confirm(`Supprimer le bordereau n° ${b.numero}${n ? ` et ses ${n} lignes de facture` : ''} ? Les paiements qui lui étaient imputés seront répartis automatiquement.`)) return;
@@ -353,7 +359,7 @@ function renderBordereau(b) {
     <div class="ttl"><div><h2>Bordereau n° ${b.numero} <span style="font-size:18px" class="muted">· ${esc(SAISON)}</span></h2>
       <p class="muted">${b.statut === 'envoye' ? '<span class="badge b-sent">Envoyé aux clubs</span> Les factures ne sont plus modifiables.' : '<span class="badge b-draft">Brouillon</span> Préparez les factures, puis marquez le bordereau comme envoyé.'}</p></div>
       <div class="btnrow">
-        ${lock ? `<button class="btn ghost" onclick="majBordereau(bord(${b.id}),{statut:'brouillon'})">Rouvrir pour modifier</button>` : `<button class="btn ok" onclick="if(confirm('Marquer le bordereau comme envoyé ? Les factures ne seront plus modifiables (vous pourrez le rouvrir).'))majBordereau(bord(${b.id}),{statut:'envoye'})">✓ Marquer comme envoyé</button>`}
+        ${lock ? `<button class="btn ghost" onclick="majBordereau(bord(${b.id}),{statut:'brouillon'})">Rouvrir pour modifier</button>` : `<button class="btn ok" onclick="envoyerBordereau(${b.id})">✓ Marquer comme envoyé</button>`}
         <button class="btn danger" onclick="supprBordereau(bord(${b.id}))">Supprimer</button></div></div>
     <div class="grid g3">
       <div class="field"><label>Date du bordereau</label><input type="date" value="${esc(b.date || '')}" ${lock ? 'disabled' : ''} onchange="majBordereau(bord(${b.id}),{date:this.value})"></div>
