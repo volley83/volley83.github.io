@@ -98,7 +98,11 @@
       <div class="field"><label for="nom">Nom <span class="req">*</span></label><input id="nom" autocomplete="family-name"></div>
       <div class="field"><label for="prenom">Prénom <span class="req">*</span></label><input id="prenom" autocomplete="given-name"></div>
     </div>
-    <div class="field"><label for="adr">Adresse <span class="req">*</span></label><textarea id="adr" rows="2" autocomplete="street-address" placeholder="N°, rue&#10;Code postal, ville"></textarea></div>
+    <div class="field"><label for="adr">Adresse (n° et rue) <span class="req">*</span></label><textarea id="adr" rows="2" autocomplete="street-address" placeholder="N°, rue, lieu-dit, bâtiment…"></textarea></div>
+    <div class="g2" style="grid-template-columns:160px 1fr">
+      <div class="field"><label for="cp">Code postal <span class="req">*</span></label><input id="cp" inputmode="numeric" maxlength="5" autocomplete="postal-code" placeholder="83000"></div>
+      <div class="field"><label for="ville">Ville <span class="req">*</span></label><input id="ville" autocomplete="address-level2" placeholder="Toulon"></div>
+    </div>
     <div class="g2">
       <div class="field"><label for="mail">Mail</label><input id="mail" type="email" autocomplete="email"></div>
       <div class="field"><label for="tel">Téléphone</label><input id="tel" type="tel" autocomplete="tel"></div>
@@ -176,6 +180,7 @@ const today = () => { const d = new Date(); return d.getFullYear() + '-' + Strin
 const store = { get(k) { try { return localStorage.getItem(k); } catch(e) { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch(e) {} } };
 const pdfTxt = s => String(s == null ? '' : s).replace(/[  ]/g, ' ').replace(/[’]/g, "'");
 const cgVal = () => (document.querySelector('input[name=cg]:checked') || {}).value || '';
+const adresseComplete = () => [$('adr').value.trim().replace(/\s*\n+\s*/g, ', '), [$('cp').value.trim(), $('ville').value.trim().toUpperCase()].filter(Boolean).join(' ')].filter(Boolean).join(', ');
 const type = () => MODE === 'note' ? 'remb' : document.querySelector('input[name=type]:checked').value;
 
 // ---- Déplacements
@@ -250,7 +255,7 @@ document.querySelectorAll('.tab').forEach(t => t.onclick = () => setMode(t.datas
 window.addEventListener('hashchange', () => setMode(location.hash === '#note' ? 'note' : 'dep'));
 
 // ---- Coordonnées mémorisées
-try { const m = JSON.parse(store.get('frais_coord') || 'null'); if (m) { ['nom', 'prenom', 'adr', 'mail', 'tel', 'imput'].forEach(k => { if (m[k]) $(k).value = m[k]; }); $('mem').checked = true; if (m.cg) { const r = document.querySelector('input[name=cg][value=fournie]'); if (r) r.checked = true; } } } catch(e) {}
+try { const m = JSON.parse(store.get('frais_coord') || 'null'); if (m) { ['nom', 'prenom', 'adr', 'cp', 'ville', 'mail', 'tel', 'imput'].forEach(k => { if (m[k]) $(k).value = m[k]; }); $('mem').checked = true; if (m.cg) { const r = document.querySelector('input[name=cg][value=fournie]'); if (r) r.checked = true; } } } catch(e) {}
 addTrajet(); addDep(); setMode(MODE);
 
 // ---- Signature
@@ -268,7 +273,9 @@ function verifier() {
   const e = [], ls = remplies();
   if (MODE === 'dep' && !$('imput').value) e.push('Indiquez à quel titre vous intervenez (Bureau Directeur, Intervenant ou Salarié).');
   if (!$('nom').value.trim() || !$('prenom').value.trim()) e.push('Indiquez vos nom et prénom.');
-  if (!$('adr').value.trim()) e.push(MODE === 'note' ? 'Indiquez votre adresse complète.' : 'Indiquez votre adresse complète (point de départ des trajets, utile pour vérifier les kilomètres).');
+  if (!$('adr').value.trim()) e.push(MODE === 'note' ? 'Indiquez votre adresse (n° et rue).' : 'Indiquez votre adresse (n° et rue) : c\'est le point de départ des trajets, utile pour vérifier les kilomètres.');
+  if (!/^\d{5}$/.test($('cp').value.trim())) e.push('Indiquez votre code postal (5 chiffres).');
+  if (!$('ville').value.trim()) e.push('Indiquez votre ville.');
   if (MODE === 'note') {
     const ds = depenses();
     if (!ds.length) e.push('Indiquez au moins une dépense.');
@@ -284,7 +291,7 @@ function verifier() {
   }
   $('err').hidden = !e.length; $('err').innerHTML = e.map(x => '• ' + x).join('<br>');
   if (e.length) $('err').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  if (!e.length && $('mem').checked) store.set('frais_coord', JSON.stringify({ ...Object.fromEntries(['nom', 'prenom', 'adr', 'mail', 'tel', 'imput'].map(k => [k, $(k).value])), cg: ['fournie', 'jointe'].includes(cgVal()) || (MODE === 'note' && !!(JSON.parse(store.get('frais_coord') || '{}') || {}).cg) })); else if (!$('mem').checked) store.set('frais_coord', null);
+  if (!e.length && $('mem').checked) store.set('frais_coord', JSON.stringify({ ...Object.fromEntries(['nom', 'prenom', 'adr', 'cp', 'ville', 'mail', 'tel', 'imput'].map(k => [k, $(k).value])), cg: ['fournie', 'jointe'].includes(cgVal()) || (MODE === 'note' && !!(JSON.parse(store.get('frais_coord') || '{}') || {}).cg) })); else if (!$('mem').checked) store.set('frais_coord', null);
   return !e.length;
 }
 
@@ -312,7 +319,7 @@ async function creerPdf() {
   doc.setDrawColor(...NAVY); doc.setLineWidth(0.4); doc.roundedRect(M, 31, 170, 30, 3, 3, 'S');
   doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.text('Nom, Prénom :', M + 5, 39); doc.setFont('helvetica', 'normal'); doc.text(pdfTxt(nomC), M + 34, 39);
   doc.setFont('helvetica', 'bold'); doc.text('Adresse :', M + 5, 46); doc.setFont('helvetica', 'normal');
-  doc.text(doc.splitTextToSize(pdfTxt($('adr').value.trim().replace(/\n+/g, ', ')), 130).slice(0, 2), M + 34, 46);
+  doc.text(doc.splitTextToSize(pdfTxt(adresseComplete()), 130).slice(0, 2), M + 34, 46);
   const contact = [$('mail').value.trim(), $('tel').value.trim()].filter(Boolean).join('  ·  ');
   if (contact) { doc.setFont('helvetica', 'bold'); doc.text('Contact :', M + 5, 57); doc.setFont('helvetica', 'normal'); doc.text(pdfTxt(contact), M + 34, 57); }
   // tableau
@@ -389,7 +396,7 @@ async function creerNote() {
   doc.setTextColor(...TXT); doc.setFontSize(10);
   doc.setFont('helvetica', 'bold'); doc.text('Nom, Prénom :', M + 5, 49); doc.setFont('helvetica', 'normal'); doc.text(pdfTxt(nomC), M + 33, 49);
   doc.setFont('helvetica', 'bold'); doc.text('Adresse :', M + 5, 56); doc.setFont('helvetica', 'normal');
-  doc.text(doc.splitTextToSize(pdfTxt($('adr').value.trim().replace(/\n+/g, ', ')), W - 2 * M - 40).slice(0, 2), M + 33, 56);
+  doc.text(doc.splitTextToSize(pdfTxt(adresseComplete()), W - 2 * M - 40).slice(0, 2), M + 33, 56);
   const contact = [$('mail').value.trim(), $('tel').value.trim()].filter(Boolean).join('  ·  ');
   if (contact) { doc.setFont('helvetica', 'bold'); doc.text('Contact :', M + 5, 66); doc.setFont('helvetica', 'normal'); doc.text(pdfTxt(contact), M + 33, 66); }
   // tableau
