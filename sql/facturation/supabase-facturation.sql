@@ -672,7 +672,7 @@ do $$ begin
       ('771001', 'PÉNALITÉ RIS N°4 - AVERTISSEMENT ENTRAÎNEUR',              50, 'pénalité', 'Pénalités', null, 117),
       ('771001', 'PÉNALITÉ RIS N°4 - AVERTISSEMENT JOUEUR',                  50, 'pénalité', 'Pénalités', null, 118),
       ('771001', 'PÉNALITÉ RIS N°4 - LICENCE NON PRÉSENTÉE',                  5, 'pénalité', 'Pénalités', null, 119),
-      ('771001', 'PÉNALITÉ RIS N°4 - ENGAGEMENT NON CONFORME',               30, 'équipe',   'Pénalités', null, 120);
+      ('771001', 'PÉNALITÉ - ENGAGEMENT NON CONFORME',               30, 'équipe',   'Pénalités', null, 120);
   end if;
 end $$;
 
@@ -757,11 +757,15 @@ end $$;
 -- ---------- Articles ajoutés en cours de saison (ajoutés une seule fois) ----------
 insert into fac_articles (code_compta, designation, prix, unite, categorie, rubrique_ris, ordre)
 select v.* from (values
-  ('771001', 'PÉNALITÉ RIS N°4 - SANCTION TERRAIN - AVERTISSEMENT', 50::numeric, 'sanction', 'Pénalités', 5, 125),
-  ('771001', 'PÉNALITÉ RIS N°4 - SANCTION TERRAIN - PÉNALITÉ', 100::numeric, 'sanction', 'Pénalités', 5, 126),
-  ('771001', 'PÉNALITÉ RIS N°4 - ENGAGEMENT NON CONFORME', 0::numeric, 'équipe', 'Pénalités', 5, 108)
+  ('771001', 'PÉNALITÉ - SANCTION TERRAIN - AVERTISSEMENT', 50::numeric, 'sanction', 'Pénalités', 5, 125),
+  ('771001', 'PÉNALITÉ - SANCTION TERRAIN - PÉNALITÉ', 100::numeric, 'sanction', 'Pénalités', 5, 126),
+  ('771001', 'PÉNALITÉ - ENGAGEMENT NON CONFORME', 0::numeric, 'équipe', 'Pénalités', 5, 108)
 ) as v(code_compta, designation, prix, unite, categorie, rubrique_ris, ordre)
-where not exists (select 1 from fac_articles a where a.designation = v.designation);
+where not exists (select 1 from fac_articles a where regexp_replace(a.designation, '^PÉNALITÉ RIS N°\s*\d+\s*-\s*', 'PÉNALITÉ - ') = v.designation);
+
+-- Les pénalités ne portent plus « RIS N°4 » : le n° du dernier RIS est ajouté à la saisie
+update fac_articles set designation = regexp_replace(designation, '^PÉNALITÉ RIS N°\s*\d+\s*-\s*', 'PÉNALITÉ - ')
+  where designation ~ '^PÉNALITÉ RIS N°';
 
 -- ---------- Rubrique du RIS des pénalités (une seule fois, modifiable ensuite dans Articles) ----------
 -- 1 Dossiers · 2 Licences · 3 Saisie des résultats et envoi des feuilles · 4 Feuille de match · 5 Divers

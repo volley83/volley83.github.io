@@ -408,18 +408,28 @@ function renderFacture(b, code) {
 }
 function pickList(b, code) {
   const q = norm(PICK_Q).split(' ').filter(Boolean);
-  const as = D.articles.filter(a => a.actif && q.every(w => norm(`${a.code_compta} ${a.designation} ${a.categorie}`).includes(w)));
+  const as = articlesManuels().filter(a => q.every(w => norm(`${a.code_compta} ${a.designation} ${a.categorie}`).includes(w)));
   const cats = [...new Set(as.map(a => a.categorie || 'Autres'))];
   $('pk-list').innerHTML = as.length ? cats.map(cat => `<div class="picker-cat">${esc(cat)}</div>` + as.filter(a => (a.categorie || 'Autres') === cat).map(a =>
-    `<button class="pick" onclick="ajoutArticle(${b.id},'${esc(code)}',${a.id})"><span class="code muted">${esc(a.code_compta || '—')}</span><span>${esc(a.designation)}</span><span class="p">${euros(a.prix)}${a.unite ? ' / ' + esc(a.unite) : ''}</span></button>`).join('')).join('')
+    `<button class="pick" onclick="ajoutArticle(${b.id},'${esc(code)}',${a.id})"><span class="code muted">${esc(a.code_compta || '—')}</span><span>${esc(desArticle(a))}</span><span class="p">${num(a.prix) ? euros(a.prix) + (a.unite ? ' / ' + esc(a.unite) : '') : 'à saisir'}</span></button>`).join('')).join('')
     : `<div class="muted small" style="padding:12px">Aucun article ne correspond. Ajoutez-le dans l'onglet <a href="#articles">Articles</a>, ou utilisez « Ligne libre ».</div>`;
 }
+// Désignation proposée pour un article : « PÉNALITÉ - X » devient « PÉNALITÉ RIS N°<dernier RIS généré> - X »
+function dernierRisGenere() {
+  const ns = (D.ris || []).filter(r => itemsDe(r.id).some(i => ligneRis(i))).map(r => r.numero);
+  return ns.length ? Math.max(...ns) : null;
+}
+function desArticle(a) {
+  const d = String(a.designation || '').replace(/^PÉNALITÉ RIS N°\s*\d+\s*-\s*/i, 'PÉNALITÉ - '), n = dernierRisGenere();
+  return n && /^PÉNALITÉ - /.test(d) ? d.replace(/^PÉNALITÉ - /, `PÉNALITÉ RIS N°${n} - `) : d;
+}
+const articlesManuels = () => D.articles.filter(a => a.actif && !a.cle);   // les articles « auto » arrivent par les ajouts automatiques
 async function enregistrerLignes(lignes, suppr) {
   return rpc('fac_admin_lignes', { pwd: PWD, p_lignes: lignes, p_suppr: suppr || [] });
 }
 async function ajoutArticle(bid, code, aid) {
   const a = art(aid), b = bord(bid);
-  const l = { bordereau_id: bid, club: code, article_id: a.id, date_ligne: b.date, code_compta: a.code_compta, designation: a.designation, quantite: 1, prix: num(a.prix), ordre: lignesDe(bid, code).length };
+  const l = { bordereau_id: bid, club: code, article_id: a.id, date_ligne: b.date, code_compta: a.code_compta, designation: desArticle(a), quantite: 1, prix: num(a.prix), ordre: lignesDe(bid, code).length };
   try {
     const [id] = await enregistrerLignes([l]); D.lignes.push({ ...l, id });
     renderFacture(b, code); toast('✓ Ligne ajoutée');
@@ -463,7 +473,7 @@ function renderGroupe(b) {
   <div class="card stack">
     <div><h2>Saisie groupée</h2><p class="muted">Choisissez un article, puis indiquez le nombre pour chaque club concerné. Une ligne est ajoutée à la facture de chaque club dont le nombre n'est pas vide.</p></div>
     <div class="grid" style="grid-template-columns:minmax(0,2fr) minmax(0,1fr) 150px">
-      <div class="field"><label>Article</label><select id="g-art"><option value="">— Choisir —</option>${D.articles.filter(a => a.actif).map(a => `<option value="${a.id}">${esc((a.code_compta ? a.code_compta + ' · ' : '') + a.designation)} (${euros(a.prix)})</option>`).join('')}</select></div>
+      <div class="field"><label>Article</label><select id="g-art"><option value="">— Choisir —</option>${articlesManuels().map(a => `<option value="${a.id}">${esc((a.code_compta ? a.code_compta + ' · ' : '') + a.designation)} (${euros(a.prix)})</option>`).join('')}</select></div>
       <div class="field"><label>Prix unitaire €</label><input id="g-prix" inputmode="decimal"></div>
       <div class="field"><label>Date</label><input id="g-date" type="date" value="${esc(b.date || today())}"></div>
     </div>
@@ -478,7 +488,7 @@ function renderGroupe(b) {
     document.querySelectorAll('.g-q').forEach(i => { const q = num(i.value); const m = document.querySelector(`.g-m[data-c="${i.dataset.c}"]`); m.textContent = q ? fmtN(q * p) : ''; tq += q; tm += q * p; });
     $('g-tq').textContent = tq ? qte(tq) : ''; $('g-tm').textContent = tm ? euros(tm) : '';
   };
-  $('g-art').onchange = () => { const a = art($('g-art').value); $('g-prix').value = a ? fmtN(a.prix) : ''; $('g-des').value = a ? a.designation : ''; calc(); };
+  $('g-art').onchange = () => { const a = art($('g-art').value); $('g-prix').value = a ? fmtN(a.prix) : ''; $('g-des').value = a ? desArticle(a) : ''; calc(); };
   $('g-prix').oninput = calc;
   document.querySelectorAll('.g-q').forEach(i => { i.oninput = calc; i.onkeydown = ev => { if (ev.key === 'Enter') { const all = [...document.querySelectorAll('.g-q')]; const n = all[all.indexOf(i) + 1]; if (n) n.focus(); } }; });
   $('g-ok').onclick = async () => {
@@ -782,7 +792,7 @@ const itemsDe = rid => (D.ris_items || []).filter(i => String(i.ris_id) === Stri
 const ligneRis = it => D.lignes.find(l => l.source === 'ris:' + it.id);
 // Intitulé lisible à partir d'un article : « PÉNALITÉ RIS N°4 - LICENCE NON PRÉSENTÉE » → « Licence non présentée »
 function intituleArticle(a) {
-  const t = String(a.designation || '').replace(/^PÉNALITÉ RIS N°\s*\d+\s*-\s*/i, '').replace(/\s*\([^)]*€[^)]*\)\s*$/, '').toLowerCase();
+  const t = String(a.designation || '').replace(/^PÉNALITÉ (RIS N°\s*\d+\s*)?-\s*/i, '').replace(/\s*\([^)]*€[^)]*\)\s*$/, '').toLowerCase();
   return (t.charAt(0).toUpperCase() + t.slice(1)).replace(/\bj-(\d+)/g, 'J-$1').replace(/\bm(\d+)/g, 'M$1').replace(/compet'lib/g, "Compet'Lib");
 }
 function rubriqueArticle(a) {
