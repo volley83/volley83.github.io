@@ -149,6 +149,27 @@ create table if not exists fac_reglages (
   valeur jsonb
 );
 
+-- Factures « hors clubs » (club extérieur, mairie, entreprise…) : coordonnées et lignes dans la facture
+create table if not exists fac_factures (
+  id             bigserial primary key,
+  saison         text not null,
+  numero         int not null,
+  date           date not null default current_date,
+  client_nom     text not null,
+  client_contact text,
+  client_adresse text,
+  client_email   text,
+  objet          text,
+  lignes         jsonb not null default '[]',   -- [{date, code_compta, designation, precisions, quantite, prix}]
+  statut         text not null default 'brouillon' check (statut in ('brouillon', 'envoyee')),
+  regle_montant  numeric(10,2),
+  regle_date     date,
+  regle_mode     text,
+  remarque       text,
+  created_at     timestamptz not null default now(),
+  unique (saison, numero)
+);
+
 alter table fac_clubs add column if not exists email_finances text;   -- trésorier(s) : destinataires des factures
 alter table fac_clubs      enable row level security;
 alter table fac_articles   enable row level security;
@@ -161,7 +182,8 @@ alter table fac_ris_items  enable row level security;
 alter table fac_saisisseurs  enable row level security;
 alter table fac_signalements enable row level security;
 alter table fac_rappels      enable row level security;
-revoke all on fac_clubs, fac_articles, fac_bordereaux, fac_lignes, fac_paiements, fac_reglages, fac_ris, fac_ris_items, fac_saisisseurs, fac_signalements, fac_rappels from anon, authenticated;
+alter table fac_factures     enable row level security;
+revoke all on fac_clubs, fac_articles, fac_bordereaux, fac_lignes, fac_paiements, fac_reglages, fac_ris, fac_ris_items, fac_saisisseurs, fac_signalements, fac_rappels, fac_factures from anon, authenticated;
 
 -- ---------- Outils ----------
 create or replace function fac_is_admin(pwd text) returns boolean
@@ -188,6 +210,11 @@ begin
                    from fac_ris_items i join fac_ris r on r.id = i.ris_id where r.saison = p_saison),
     'rappels',      (select coalesce(jsonb_agg(to_jsonb(x) order by x.created_at), '[]') from fac_rappels x where x.saison = p_saison),
     'saisisseurs',  (select coalesce(jsonb_agg(to_jsonb(x) order by x.nom), '[]') from fac_saisisseurs x),
+    'factures',     (select coalesce(jsonb_agg(to_jsonb(f) order by f.numero), '[]') from fac_factures f where f.saison = p_saison),
+    'clients',      (select coalesce(jsonb_agg(x order by x->>'client_nom'), '[]') from (
+                       select distinct on (lower(client_nom)) jsonb_build_object('client_nom', client_nom, 'client_contact', client_contact,
+                         'client_adresse', client_adresse, 'client_email', client_email) as x
+                       from fac_factures order by lower(client_nom), created_at desc) c),
     'signalements', (select coalesce(jsonb_agg(to_jsonb(g) order by g.created_at desc), '[]') from fac_signalements g
                      where g.saison = p_saison or g.statut = 'nouveau')
   );
@@ -572,6 +599,36 @@ begin
   insert into fac_reglages (cle, valeur) values (p_cle, p_valeur) on conflict (cle) do update set valeur = excluded.valeur;
 end $$;
 
+-- Facture hors clubs : p = {id?, saison, numero?, date, client_*, objet, lignes, statut, regle_*, remarque} ; {id, supprimer:true}
+create or replace function fac_admin_facture(pwd text, p jsonb) returns bigint
+language plpgsql security definer set search_path = public as $$
+declare fid bigint := nullif(p->>'id', '')::bigint; n int;
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  if (p->>'supprimer')::boolean then delete from fac_factures where id = fid; return fid; end if;
+  if fid is null then
+    n := coalesce(nullif(p->>'numero', '')::int, (select coalesce(max(numero), 0) + 1 from fac_factures where saison = p->>'saison'));
+    insert into fac_factures (saison, numero, client_nom) values (p->>'saison', n, coalesce(nullif(trim(p->>'client_nom'), ''), 'Nouveau client'))
+      returning id into fid;
+  end if;
+  update fac_factures f set
+    numero         = coalesce(nullif(p->>'numero', '')::int, f.numero),
+    date           = coalesce(nullif(p->>'date', '')::date, f.date),
+    client_nom     = coalesce(nullif(trim(p->>'client_nom'), ''), f.client_nom),
+    client_contact = case when p ? 'client_contact' then nullif(trim(p->>'client_contact'), '') else f.client_contact end,
+    client_adresse = case when p ? 'client_adresse' then nullif(trim(p->>'client_adresse'), '') else f.client_adresse end,
+    client_email   = case when p ? 'client_email'   then nullif(trim(p->>'client_email'), '')   else f.client_email end,
+    objet          = case when p ? 'objet'          then nullif(trim(p->>'objet'), '')          else f.objet end,
+    lignes         = case when p ? 'lignes'         then coalesce(p->'lignes', '[]')            else f.lignes end,
+    statut         = coalesce(nullif(p->>'statut', ''), f.statut),
+    regle_montant  = case when p ? 'regle_montant'  then nullif(replace(p->>'regle_montant', ',', '.'), '')::numeric else f.regle_montant end,
+    regle_date     = case when p ? 'regle_date'     then nullif(p->>'regle_date', '')::date     else f.regle_date end,
+    regle_mode     = case when p ? 'regle_mode'     then nullif(trim(p->>'regle_mode'), '')     else f.regle_mode end,
+    remarque       = case when p ? 'remarque'       then nullif(trim(p->>'remarque'), '')       else f.remarque end
+  where f.id = fid;
+  return fid;
+end $$;
+
 -- ---------- Droits ----------
 revoke execute on function fac_is_admin(text) from public, anon, authenticated;
 grant execute on function
@@ -584,6 +641,7 @@ grant execute on function
   fac_admin_lignes(text, jsonb, bigint[]),
   fac_admin_paiement(text, jsonb),
   fac_admin_reglage(text, text, jsonb),
+  fac_admin_facture(text, jsonb),
   fac_admin_ris(text, jsonb),
   fac_admin_rappel(text, jsonb),
   fac_admin_ris_item(text, jsonb),
@@ -781,5 +839,11 @@ update fac_articles set rubrique_ris = case
     when designation ~* 'FORFAIT|ABSENTE|INCOMPLÈTE|PÉNALITÉ (SENIOR|COMPET|JEUNE)' then 1
     else 5 end
   where rubrique_ris is null and categorie in ('Pénalités', 'Forfaits', 'Arbitrage');
+
+-- ---------- Mail des factures hors clubs (modifiable dans Réglages) ----------
+insert into fac_reglages (cle, valeur) values
+  ('facture_objet', '"Facture N° {numero} – Comité du Var de Volley-Ball"'),
+  ('facture_modele', '"Madame, Monsieur,\n\nVeuillez trouver ci-joint la facture N° {numero} du {date}{objet}, d''un montant de {montant}.\n\nVous pouvez la régler par virement (coordonnées bancaires sur la facture) ou par chèque à l''ordre du Comité du Var de Volley-Ball, en rappelant le numéro de la facture.\n\nEn cas de question, n''hésitez pas à nous contacter.\n\nCordialement,\n\nEric CHASSAGNARD\nTrésorier\nComité du Var de Volley-Ball"')
+on conflict (cle) do nothing;
 
 -- Message attendu : « Success. No rows returned »

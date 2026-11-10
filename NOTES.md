@@ -101,6 +101,13 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - **Reprise** : le bordereau FFVB n° 1 2026-2027 (détaillé depuis le PDF), l'IBAN et les mails/adresses des clubs (annuaire FFVB rech_aff_club.php, POST ws_new_comit=083 puis id_club=<n°>) sont importés, par un script **hors dépôt** (`facturation-import-2026-2027.sql`). Pas d'historique 2025-2026 : tout était réglé.
 - **Idée pour plus tard** : affiliation (réaffiliation GSA) à facturer ici à partir de 2027-2028.
 
+## Factures hors clubs — onglet « Hors clubs » de la facturation
+
+- Pour un club extérieur, une mairie, une entreprise… Table `fac_factures` (coordonnées du client et lignes jsonb dans la facture), RPC `fac_admin_facture`, `fac_admin_get` renvoie `factures` (saison) et `clients` (derniers clients connus, pour l'autocomplétion).
+- Numéro `2627-F001` (saison + numéro auto, modifiable). Articles du catalogue ou lignes libres ; règlement saisi sur la facture (montant, date, mode).
+- PDF : même mise en page que les factures clubs (fonction commune `dessinFacture`). Mail Gmail avec les modèles `facture_objet` / `facture_modele` (Réglages). « Marquer comme envoyée » / préparer le mail proposent de passer la date au jour d'envoi.
+- Export Excel : feuille « Hors clubs ».
+
 ## Frais de déplacement — `frais/index.html` (accès libre)
 
 - **Adresse** : https://volley83.github.io/frais/ (non indexée ; lien sur l'écran de connexion de la facturation et dans son menu « Frais dépl. »). Aucune base de données : tout se passe dans le navigateur.

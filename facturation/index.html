@@ -220,6 +220,7 @@ const clubsVisibles = () => D.clubs.filter(c => c.actif || D.lignes.some(l => l.
 async function load() {
   D = await rpc('fac_admin_get', { pwd: PWD, p_saison: SAISON });
   D.lignes.forEach(l => { l.quantite = num(l.quantite); l.prix = num(l.prix); });
+  D.factures = D.factures || []; D.clients = D.clients || [];
 }
 
 // ======================== CONNEXION ========================
@@ -245,7 +246,7 @@ function logout() { PWD = ''; D = null; try { sessionStorage.removeItem('fac_adm
 // ======================== MISE EN PAGE ========================
 function shell(tab, body) {
   const saisons = [...new Set([...(D.saisons || []), saisonDe(today()), SAISON])].sort().reverse();
-  const nav = [['recap', 'Récapitulatif'], ['bordereaux', 'Bordereaux'], ['ris', 'RIS'], ['paiements', 'Paiements'], ['articles', 'Articles'], ['clubs', 'Clubs'], ['reglages', 'Réglages']];
+  const nav = [['recap', 'Récapitulatif'], ['bordereaux', 'Bordereaux'], ['ris', 'RIS'], ['paiements', 'Paiements'], ['factures', 'Hors clubs'], ['articles', 'Articles'], ['clubs', 'Clubs'], ['reglages', 'Réglages']];
   $('app').innerHTML = `
   <header><div class="wrap head">
     <img src="logo-comite-var.jpg" alt="Comité du Var de Volley-Ball">
@@ -797,12 +798,18 @@ function renderReglages() {
     <div class="field"><label>Objet</label><input id="r-ro" value="${esc(reglage('rappel_objet', ''))}"></div>
     <div class="field"><label>Texte du rappel</label><textarea id="r-rm" rows="18">${esc(reglage('rappel_modele', ''))}</textarea></div>
     <div class="btnrow"><button class="btn primary" id="r-ok4">Enregistrer</button></div></div>
+  <div class="card stack"><h3>Mail des factures hors clubs</h3>
+    <p class="small muted">Champs : <span class="code">{numero}</span> n° de facture, <span class="code">{date}</span>, <span class="code">{montant}</span>, <span class="code">{client}</span>, <span class="code">{objet}</span> (objet de la facture entre parenthèses, vide s'il n'y en a pas).</p>
+    <div class="field"><label>Objet</label><input id="r-fo" value="${esc(reglage('facture_objet', ''))}"></div>
+    <div class="field"><label>Texte du mail</label><textarea id="r-fm" rows="14">${esc(reglage('facture_modele', ''))}</textarea></div>
+    <div class="btnrow"><button class="btn primary" id="r-ok5">Enregistrer</button></div></div>
   <div class="card stack"><h3>Compétitions OPEN : prix par équipe</h3>
     <p class="small muted">Selon le nombre de tournois joués par chaque équipe d'un club sur la saison (finale comprise).</p>
     <div class="grid g3"><div class="field"><label>1 tournoi</label><input id="r-t1" value="${fmtN(t[0])}" inputmode="decimal"></div><div class="field"><label>2 tournois</label><input id="r-t2" value="${fmtN(t[1])}" inputmode="decimal"></div><div class="field"><label>3 tournois ou plus</label><input id="r-t3" value="${fmtN(t[2])}" inputmode="decimal"></div></div>
     <div class="btnrow"><button class="btn primary" id="r-ok2">Enregistrer</button></div></div>`);
   $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_pied', p_valeur: $('r-rp').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok3').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_total', p_valeur: $('r-at').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_partiel', p_valeur: $('r-ap').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+  $('r-ok5').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'facture_objet', p_valeur: $('r-fo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'facture_modele', p_valeur: $('r-fm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok4').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'rappel_objet', p_valeur: $('r-ro').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'rappel_modele', p_valeur: $('r-rm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok2').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'open_tarifs', p_valeur: [num($('r-t1').value), num($('r-t2').value), num($('r-t3').value)] }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
 }
@@ -1173,7 +1180,20 @@ async function logo() {
 const pdfTxt = s => String(s == null ? '' : s).replace(/[  ]/g, ' ').replace(/[’]/g, "'");
 const pdfN = n => pdfTxt(fmtN(n));
 function pageFacture(doc, b, code, img) {
-  const c = club(code), ls = lignesDe(b.id, code), W = 210, M = 16, navy = [11, 33, 73];
+  const c = club(code), tot = totalDe(b.id, code), e = etatClub(code), av = tot > 0 ? r2(e.avoir[b.id] || 0) : 0, rg = tot > 0 ? r2((e.regle[b.id] || 0) - av) : 0;
+  const extra = [];
+  if (av > 0 || rg > 0) {
+    if (av > 0) extra.push({ t: `Avoir déduit${e.sourcesAvoir.length ? ' (bordereau N° ' + e.sourcesAvoir.join(', ') + ')' : ''} : ` + euros(av) });
+    if (rg > 0) extra.push({ t: 'Déjà réglé : ' + euros(rg) });
+    extra.push({ t: 'Reste à payer : ' + euros(Math.max(0, tot - av - rg)), b: 1 });
+    if (av > 0 && e.creditRestant > 0.005) extra.push({ t: 'Avoir restant : ' + euros(e.creditRestant), s: 1 });
+  }
+  dessinFacture(doc, { numero: facNum(b, code), infos: [`Bordereau n° ${b.numero} du ${fmtD(b.date)}`, 'Saison ' + b.saison.replace('-', '/')],
+    dest: { nom: c.nom, sous: c.numero ? 'N° d\'affiliation ' + c.numero : '', adresse: c.adresse }, titre: b.titre, lignes: lignesDe(b.id, code), tot, extra }, img);
+}
+// Mise en page commune des factures (clubs et hors clubs)
+function dessinFacture(doc, o, img) {
+  const ls = o.lignes, W = 210, M = 16, navy = [11, 33, 73];
   doc.setTextColor(20, 32, 58);
   let lw = 0;
   if (img) { try { const ip = doc.getImageProperties(img), h = 22; lw = Math.min(40, h * ip.width / ip.height); doc.addImage(img, 'JPEG', M, 12, lw, lw * ip.height / ip.width); } catch(e) { lw = 0; } }
@@ -1183,23 +1203,22 @@ function pageFacture(doc, b, code, img) {
   doc.text(em[0] || '', X, 17); doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
   em.slice(1).forEach((t, i) => doc.text(t, X, 21.5 + i * 4.2));
   doc.setFont('helvetica', 'bold'); doc.setFontSize(24); doc.setTextColor(...navy); doc.text('FACTURE', W - M, 20, { align: 'right' });
-  doc.setFontSize(10); doc.setTextColor(20, 32, 58); doc.text('N° ' + facNum(b, code), W - M, 27, { align: 'right' });
+  doc.setFontSize(10); doc.setTextColor(20, 32, 58); doc.text('N° ' + o.numero, W - M, 27, { align: 'right' });
   doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
-  doc.text(pdfTxt(`Bordereau n° ${b.numero} du ${fmtD(b.date)}`), W - M, 32, { align: 'right' });
-  doc.text('Saison ' + b.saison.replace('-', '/'), W - M, 36.5, { align: 'right' });
+  (o.infos || []).forEach((t, k) => doc.text(pdfTxt(t), W - M, 32 + k * 4.5, { align: 'right' }));
   // destinataire (adresse : lignes séparées par « / » ou des retours à la ligne)
   doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5);
-  const nomL = doc.splitTextToSize(pdfTxt(c.nom), 84);
+  const nomL = doc.splitTextToSize(pdfTxt(o.dest.nom), 84);
   doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
-  const adrL = String(c.adresse || '').split(/\s*\/\s*|\n/).map(x => pdfTxt(x.trim())).filter(Boolean).slice(0, 5);
-  const y0 = 46, hBox = Math.max(26, 8 + nomL.length * 4.6 + (c.numero ? 4.2 : 0) + adrL.length * 4.1);
+  const adrL = String(o.dest.adresse || '').split(/\s*\/\s*|\n/).map(x => pdfTxt(x.trim())).filter(Boolean).slice(0, 5);
+  const y0 = 46, hBox = Math.max(26, 8 + nomL.length * 4.6 + (o.dest.sous ? 4.2 : 0) + adrL.length * 4.1);
   doc.setDrawColor(201, 210, 226); doc.setFillColor(244, 246, 250); doc.roundedRect(W - M - 92, y0, 92, hBox, 2, 2, 'FD');
   doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5); doc.text(nomL, W - M - 88, y0 + 6.5);
   doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
   let yy = y0 + 6.5 + nomL.length * 4.6;
-  if (c.numero) { doc.setTextColor(86, 98, 122); doc.text('N° d\'affiliation ' + c.numero, W - M - 88, yy); doc.setTextColor(20, 32, 58); yy += 4.2; }
+  if (o.dest.sous) { doc.setTextColor(86, 98, 122); doc.text(pdfTxt(o.dest.sous), W - M - 88, yy); doc.setTextColor(20, 32, 58); yy += 4.2; }
   adrL.forEach(t => { doc.text(t, W - M - 88, yy); yy += 4.1; });
-  if (b.titre) { doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.text(pdfTxt(b.titre), M, y0 + 8); }
+  if (o.titre) { doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.text(doc.splitTextToSize(pdfTxt(o.titre), W - 2 * M - 100), M, y0 + 8); }
   // tableau
   const cols = [{ t: 'Date', x: M, w: 19 }, { t: 'Compte', x: M + 19, w: 16 }, { t: 'Désignation', x: M + 35, w: 89 }, { t: 'Qté', x: M + 124, w: 14, r: 1 }, { t: 'P.U. €', x: M + 138, w: 20, r: 1 }, { t: 'Total €', x: M + 158, w: 20, r: 1 }];
   let y = Math.max(82, y0 + hBox + 10);
@@ -1224,14 +1243,11 @@ function pageFacture(doc, b, code, img) {
   });
   doc.setDrawColor(...navy); doc.setLineWidth(0.4); doc.line(M, y - 2.5, W - M, y - 2.5);
   if (y > 240) { doc.addPage(); y = 24; }
-  const tot = totalDe(b.id, code), e = etatClub(code), av = tot > 0 ? r2(e.avoir[b.id] || 0) : 0, rg = tot > 0 ? r2((e.regle[b.id] || 0) - av) : 0;
+  const tot = o.tot;
   y += 5; doc.setFillColor(...navy); doc.rect(W - M - 70, y - 5.5, 70, 10, 'F'); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
   doc.text('TOTAL', W - M - 66, y + 1); doc.text(pdfTxt(euros(tot)), W - M - 3, y + 1, { align: 'right' }); doc.setTextColor(20, 32, 58);
-  if (av > 0 || rg > 0) { y += 5; doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5);
-    if (av > 0) { y += 5; doc.text(pdfTxt(`Avoir déduit${e.sourcesAvoir.length ? ' (bordereau N° ' + e.sourcesAvoir.join(', ') + ')' : ''} : ` + euros(av)), W - M - 3, y, { align: 'right' }); }
-    if (rg > 0) { y += 5; doc.text(pdfTxt('Déjà réglé : ' + euros(rg)), W - M - 3, y, { align: 'right' }); }
-    y += 5.5; doc.setFont('helvetica', 'bold'); doc.text(pdfTxt('Reste à payer : ' + euros(Math.max(0, tot - av - rg))), W - M - 3, y, { align: 'right' });
-    if (av > 0 && e.creditRestant > 0.005) { y += 5; doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.text(pdfTxt('Avoir restant : ' + euros(e.creditRestant)), W - M - 3, y, { align: 'right' }); } }
+  if ((o.extra || []).length) { y += 5;
+    o.extra.forEach(x => { y += x.b ? 5.5 : 5; doc.setFont('helvetica', x.b ? 'bold' : 'normal'); doc.setFontSize(x.s ? 8.5 : 9.5); doc.text(pdfTxt(x.t), W - M - 3, y, { align: 'right' }); }); }
   // pied : coordonnées bancaires puis mentions
   doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5);
   const me = doc.splitTextToSize(pdfTxt(reglage('mentions', '')), W - 2 * M), yMe = 285 - me.length * 3.8;
@@ -1323,6 +1339,188 @@ async function mailClub(bid, code) {
   if (!to) toast('Pas de mail enregistré pour ce club (onglet Clubs)', 'err');
 }
 
+// ======================== FACTURES HORS CLUBS ========================
+// Club extérieur, mairie, entreprise… : les coordonnées et les lignes sont dans la facture elle-même
+const facDe = id => D.factures.find(f => String(f.id) === String(id));
+const facLibreNum = f => `${f.saison.slice(2, 4)}${f.saison.slice(7, 9)}-F${String(f.numero).padStart(3, '0')}`;
+const facLibreTot = f => r2((f.lignes || []).reduce((s, l) => s + montant(l), 0));
+function facLibreEtat(f) {
+  const t = facLibreTot(f), rg = num(f.regle_montant);
+  if (t > 0 && rg >= t - 0.005) return ['b-ok', 'Réglée'];
+  if (rg > 0) return ['b-warn', 'Réglée ' + euros(rg)];
+  return f.statut === 'envoyee' ? ['b-bad', 'À régler'] : ['b-draft', 'Brouillon'];
+}
+function renderFactures() {
+  const fs = [...D.factures].sort((a, b) => b.numero - a.numero);
+  const tot = r2(fs.reduce((s, f) => s + facLibreTot(f), 0)), rg = r2(fs.reduce((s, f) => s + num(f.regle_montant), 0));
+  shell('factures', `
+  <div class="ttl"><div><h1 style="font-size:34px">Factures hors clubs ${esc(SAISON)}</h1><p class="muted">Pour facturer un club extérieur, une mairie, une entreprise… : saisissez les coordonnées, les articles, puis générez le PDF et le mail.</p></div>
+    <div class="btnrow"><button class="btn primary" onclick="nouvelleFactureLibre()">+ Nouvelle facture</button></div></div>
+  <div class="kpis">
+    <div class="kpi"><b>${euros(tot)}</b><span>facturés</span></div>
+    <div class="kpi ok"><b>${euros(rg)}</b><span>encaissés</span></div>
+    <div class="kpi ${tot - rg > 0.005 ? 'bad' : ''}"><b>${euros(tot - rg)}</b><span>restant à encaisser</span></div>
+    <div class="kpi"><b>${fs.length}</b><span>facture${fs.length > 1 ? 's' : ''}</span></div>
+  </div>
+  ${fs.length ? `<div class="tablebox"><table class="t"><thead><tr><th>N°</th><th>Date</th><th>Client</th><th>Objet</th><th class="r">Montant</th><th>État</th><th></th></tr></thead><tbody>
+    ${fs.map(f => { const [cl, et] = facLibreEtat(f); return `<tr class="clk" onclick="location.hash='f/${f.id}'"><td class="nw"><b>${esc(facLibreNum(f))}</b></td><td class="nw">${fmtD(f.date)}</td>
+      <td class="club"><b>${esc(f.client_nom)}</b>${f.client_contact ? `<small>${esc(f.client_contact)}</small>` : ''}</td><td class="small">${esc(f.objet || '')}</td>
+      <td class="num"><b>${euros(facLibreTot(f))}</b></td><td><span class="badge ${cl}">${et}</span></td>
+      <td class="r nw" onclick="event.stopPropagation()"><button class="btn sm ghost" onclick="pdfFactureLibre(${f.id})">PDF</button> <button class="btn sm ghost" onclick="mailFactureLibre(${f.id})">✉ Mail</button></td></tr>`; }).join('')}
+    </tbody><tfoot><tr><td colspan="4">Total</td><td class="num">${euros(tot)}</td><td></td><td></td></tr></tfoot></table></div>`
+  : `<div class="card msg info">Aucune facture hors clubs pour la saison ${esc(SAISON)}. Créez la première avec « Nouvelle facture ».</div>`}`);
+}
+async function nouvelleFactureLibre() {
+  try { const id = await rpc('fac_admin_facture', { pwd: PWD, p: { saison: SAISON, date: today(), client_nom: 'Nouveau client', lignes: [] } }); await load(); location.hash = 'f/' + id; } catch(e) { fail(e); }
+}
+let FL_PICK = '';
+async function majFactureLibre(f, p, redessiner) {
+  toast('Enregistrement…', 'wait');
+  try { await rpc('fac_admin_facture', { pwd: PWD, p: { id: f.id, ...p } }); Object.assign(f, p); toast('✓ Enregistré'); if (redessiner) renderFactureLibre(f); else majTotauxFL(f); }
+  catch(e) { fail(e); }
+}
+function majTotauxFL(f) {
+  const t = facLibreTot(f), rg = num(f.regle_montant); if (!$('fl-tot')) return;
+  $('fl-tot').textContent = euros(t); $('fl-reste').textContent = rg ? `Réglé : ${euros(rg)} · reste ${euros(t - rg)}` : '';
+  document.querySelectorAll('#fl-t tr[data-i]').forEach(tr => { const l = f.lignes[+tr.dataset.i]; if (l) tr.querySelector('[data-tot]').innerHTML = `<b>${fmtN(montant(l))}</b>`; });
+}
+function renderFactureLibre(f) {
+  const lock = f.statut === 'envoyee', [cl, et] = facLibreEtat(f), dis = lock ? 'disabled' : '';
+  f.lignes = f.lignes || [];
+  const ligne = (l, i) => `<tr data-i="${i}">
+      <td><input type="date" value="${esc(l.date || '')}" data-k="date" ${dis} style="width:132px"></td>
+      <td><input value="${esc(l.code_compta || '')}" data-k="code_compta" ${dis} style="width:86px" class="code"></td>
+      <td style="width:50%"><textarea data-k="designation" ${dis} rows="${Math.max(1, Math.ceil(String(l.designation || '').length / 60))}" style="min-width:340px;min-height:0;font-weight:600;resize:none;padding:6px 8px;font-size:13.5px;border-radius:7px">${esc(l.designation || '')}</textarea>
+        <input value="${esc(l.precisions || '')}" data-k="precisions" ${dis} placeholder="Précisions (facultatif)" style="font-size:12.5px;padding:5px 8px;color:var(--muted);margin-top:4px"></td>
+      <td><input class="n" value="${qte(num(l.quantite))}" data-k="quantite" ${dis} style="width:70px" inputmode="decimal"></td>
+      <td><input class="n" value="${fmtN(num(l.prix))}" data-k="prix" ${dis} style="width:96px" inputmode="decimal"></td>
+      <td class="num" data-tot><b>${fmtN(montant(l))}</b></td>
+      <td>${lock ? '' : `<button class="x" title="Supprimer la ligne" onclick="supprLigneFL(${f.id},${i})">✕</button>`}</td></tr>`;
+  shell('factures', `
+  <div class="crumb"><a href="#factures">Hors clubs</a> › Facture ${esc(facLibreNum(f))}</div>
+  <div class="card stack">
+    <div class="ttl"><div><h2>Facture ${esc(facLibreNum(f))}</h2><p class="muted"><span class="badge ${cl}">${et}</span> ${lock ? 'Envoyée : la facture n\'est plus modifiable (vous pouvez la rouvrir).' : 'Complétez la facture, préparez le mail puis marquez-la comme envoyée.'}</p></div>
+      <div class="btnrow"><button class="btn ghost" onclick="pdfFactureLibre(${f.id})">⬇ PDF</button><button class="btn ghost" onclick="mailFactureLibre(${f.id})">✉ Préparer le mail</button>
+        ${lock ? `<button class="btn ghost" onclick="majFactureLibre(facDe(${f.id}),{statut:'brouillon'},true)">Rouvrir pour modifier</button>` : `<button class="btn ok" onclick="envoyerFactureLibre(${f.id})">✓ Marquer comme envoyée</button>`}
+        <button class="btn danger" onclick="supprFactureLibre(${f.id})">Supprimer</button></div></div>
+    <div class="grid g2">
+      <div class="stack" style="gap:10px">
+        <h3 class="cond" style="font-size:19px">Client</h3>
+        <div class="field"><label>Nom (club, mairie, société…) *</label><input id="fl-nom" list="fl-clients" value="${esc(f.client_nom === 'Nouveau client' ? '' : f.client_nom)}" ${dis} placeholder="Ex. : Mairie de Draguignan" autocomplete="off">
+          <datalist id="fl-clients">${D.clients.map(c => `<option value="${esc(c.client_nom)}">`).join('')}</datalist>
+          ${D.clients.length ? '<span class="small muted">Un client déjà facturé ? Choisissez-le dans la liste : ses coordonnées sont reprises.</span>' : ''}</div>
+        <div class="field"><label>À l'attention de / service</label><input data-f="client_contact" value="${esc(f.client_contact || '')}" ${dis} placeholder="Service des sports, M. Dupont…"></div>
+        <div class="field"><label>Adresse</label><textarea data-f="client_adresse" rows="3" ${dis} placeholder="N°, rue&#10;Code postal, ville">${esc(f.client_adresse || '')}</textarea></div>
+        <div class="field"><label>Mail (un ou plusieurs, séparés par des virgules)</label><input data-f="client_email" value="${esc(f.client_email || '')}" ${dis} type="text" inputmode="email"></div>
+      </div>
+      <div class="stack" style="gap:10px">
+        <h3 class="cond" style="font-size:19px">Facture</h3>
+        <div class="grid g2"><div class="field"><label>Numéro</label><input data-f="numero" type="number" min="1" value="${f.numero}" ${dis}><span class="small muted">${esc(facLibreNum(f))}</span></div>
+          <div class="field"><label>Date de la facture</label><input data-f="date" type="date" value="${esc(f.date || '')}" ${dis}></div></div>
+        <div class="field"><label>Objet (en tête de la facture)</label><input data-f="objet" value="${esc(f.objet || '')}" ${dis} placeholder="Ex. : Mise à disposition d'arbitres – tournoi du 12/12"></div>
+        <div class="field"><label>Remarque interne (n'apparaît pas sur la facture)</label><input data-f="remarque" value="${esc(f.remarque || '')}"></div>
+      </div>
+    </div>
+    <h3 class="cond" style="font-size:19px">Articles</h3>
+    ${lock ? '' : `<div class="picker"><div class="grid" style="grid-template-columns:minmax(0,1fr) auto"><input id="fl-q" placeholder="🔍 Rechercher un article du catalogue… puis cliquez pour l'ajouter" value="${esc(FL_PICK)}" autocomplete="off">
+      <button class="btn ghost" onclick="ajoutLigneFL(${f.id})">+ Ligne libre</button></div><div id="fl-list" class="picker-list"></div></div>`}
+    <div class="tablebox"><table class="t" id="fl-t"><thead><tr><th>Date</th><th>Compte</th><th>Désignation</th><th class="r">Qté</th><th class="r">P.U. €</th><th class="r">Total €</th><th></th></tr></thead>
+      <tbody>${f.lignes.map(ligne).join('') || `<tr><td colspan="7" class="muted c" style="padding:22px">Aucune ligne. Choisissez un article ci-dessus ou ajoutez une ligne libre.</td></tr>`}</tbody></table></div>
+    <div class="fac-total"><span>Total de la facture</span><span class="big" id="fl-tot">${euros(facLibreTot(f))}</span><span class="small muted" id="fl-reste"></span></div>
+    <h3 class="cond" style="font-size:19px">Règlement</h3>
+    <div class="grid g4" style="grid-template-columns:repeat(4,minmax(0,1fr))">
+      <div class="field"><label>Montant réglé €</label><input data-f="regle_montant" value="${f.regle_montant != null ? fmtN(f.regle_montant) : ''}" inputmode="decimal" placeholder="0,00"></div>
+      <div class="field"><label>Date</label><input data-f="regle_date" type="date" value="${esc(f.regle_date || '')}"></div>
+      <div class="field"><label>Mode</label><select data-f="regle_mode"><option value=""></option>${MODES.map(m => `<option ${f.regle_mode === m ? 'selected' : ''}>${m}</option>`).join('')}</select></div>
+      <div class="field"><label>&nbsp;</label><button class="btn ghost" onclick="regleTotalFL(${f.id})">Réglée en totalité aujourd'hui</button></div>
+    </div>
+  </div>`);
+  majTotauxFL(f);
+  // champs de la facture
+  document.querySelectorAll('[data-f]').forEach(inp => {
+    inp.onchange = () => { const k = inp.dataset.f; let v = inp.value;
+      if (k === 'regle_montant') { v = inp.value.trim() ? String(num(inp.value)) : ''; f.regle_montant = v === '' ? null : num(v); }
+      majFactureLibre(f, { [k]: v }, k === 'numero' || k === 'regle_montant'); };
+  });
+  const nom = $('fl-nom');
+  nom.onchange = () => {
+    const v = nom.value.trim(); if (!v) return;
+    const c = D.clients.find(x => norm(x.client_nom) === norm(v)), p = { client_nom: v };
+    if (c && !f.client_adresse && !f.client_email && !f.client_contact) Object.assign(p, { client_nom: c.client_nom, client_contact: c.client_contact || '', client_adresse: c.client_adresse || '', client_email: c.client_email || '' });
+    majFactureLibre(f, p, !!c);
+  };
+  // lignes
+  document.querySelectorAll('#fl-t tr[data-i] input, #fl-t tr[data-i] textarea').forEach(inp => {
+    inp.onchange = () => { const l = f.lignes[+inp.closest('tr').dataset.i], k = inp.dataset.k;
+      l[k] = (k === 'quantite' || k === 'prix') ? num(inp.value) : inp.value.replace(/\s*\n\s*/g, ' ');
+      if (k === 'prix') inp.value = fmtN(l.prix);
+      majFactureLibre(f, { lignes: f.lignes }); };
+    inp.onkeydown = ev => { if (ev.key === 'Enter') { ev.preventDefault(); inp.blur(); } };
+  });
+  if (!lock) { $('fl-q').oninput = ev => { FL_PICK = ev.target.value; pickFL(f); }; pickFL(f); }
+}
+function pickFL(f) {
+  const q = norm(FL_PICK).split(' ').filter(Boolean);
+  const as = articlesManuels().filter(a => q.every(w => norm(`${a.code_compta} ${a.designation} ${a.categorie}`).includes(w)));
+  const cats = [...new Set(as.map(a => a.categorie || 'Autres'))];
+  $('fl-list').innerHTML = as.length ? cats.map(cat => `<div class="picker-cat">${esc(cat)}</div>` + as.filter(a => (a.categorie || 'Autres') === cat).map(a =>
+    `<button class="pick" onclick="ajoutLigneFL(${f.id},${a.id})"><span class="code muted">${esc(a.code_compta || '—')}</span><span>${esc(a.designation)}</span><span class="p">${num(a.prix) ? euros(a.prix) + (a.unite ? ' / ' + esc(a.unite) : '') : 'à saisir'}</span></button>`).join('')).join('')
+    : `<div class="muted small" style="padding:12px">Aucun article ne correspond. Utilisez « Ligne libre », ou ajoutez l'article dans l'onglet <a href="#articles">Articles</a>.</div>`;
+}
+async function ajoutLigneFL(fid, aid) {
+  const f = facDe(fid), a = aid ? art(aid) : null;
+  const l = a ? { date: f.date, code_compta: a.code_compta || '', designation: a.designation, precisions: '', quantite: 1, prix: num(a.prix) }
+              : { date: f.date, code_compta: '', designation: '', precisions: '', quantite: 1, prix: 0 };
+  f.lignes = [...(f.lignes || []), l];
+  await majFactureLibre(f, { lignes: f.lignes }, true);
+  const tr = document.querySelector(`#fl-t tr[data-i="${f.lignes.length - 1}"]`);
+  if (tr) { const inp = tr.querySelector(a ? '[data-k=quantite]' : '[data-k=designation]'); inp.focus(); inp.select && inp.select(); }
+}
+function supprLigneFL(fid, i) { const f = facDe(fid); f.lignes = f.lignes.filter((x, k) => k !== i); majFactureLibre(f, { lignes: f.lignes }, true); }
+function regleTotalFL(fid) { const f = facDe(fid); majFactureLibre(f, { regle_montant: String(facLibreTot(f)), regle_date: today(), regle_mode: f.regle_mode || 'Virement' }, true); }
+async function supprFactureLibre(fid) {
+  const f = facDe(fid);
+  if (!confirm(`Supprimer la facture ${facLibreNum(f)} (${f.client_nom}) ?`)) return;
+  try { await rpc('fac_admin_facture', { pwd: PWD, p: { id: f.id, supprimer: true } }); await load(); location.hash = 'factures'; } catch(e) { fail(e); }
+}
+function verifFactureLibre(f) {
+  if (!f.client_nom || f.client_nom === 'Nouveau client') return 'Indiquez le nom du client.';
+  if (!(f.lignes || []).length) return 'Ajoutez au moins une ligne à la facture.';
+  if ((f.lignes || []).some(l => !String(l.designation || '').trim())) return 'Une ligne n\'a pas de désignation.';
+  return '';
+}
+async function envoyerFactureLibre(fid) {
+  const f = facDe(fid), err = verifFactureLibre(f); if (err) return alert(err);
+  const t = today(), change = f.date !== t;
+  if (!confirm(`Marquer la facture ${facLibreNum(f)} comme envoyée ?${change ? `\n\nSa date passera du ${fmtD(f.date)} au ${fmtD(t)} (date d'envoi).` : ''}\nElle ne sera plus modifiable (vous pourrez la rouvrir).`)) return;
+  const p = { statut: 'envoyee' };
+  if (change) { p.date = t; f.lignes.forEach(l => { if (l.date === f.date) l.date = t; }); p.lignes = f.lignes; }
+  await majFactureLibre(f, p, true);
+}
+async function pdfFactureLibre(fid) {
+  if (!window.jspdf) { alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.'); return; }
+  const f = facDe(fid), err = verifFactureLibre(f); if (err) return alert(err);
+  const img = await logo(), { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' }), t = facLibreTot(f), rg = num(f.regle_montant);
+  const extra = rg > 0 ? [{ t: 'Déjà réglé : ' + euros(rg) }, { t: 'Reste à payer : ' + euros(Math.max(0, t - rg)), b: 1 }] : [];
+  dessinFacture(doc, { numero: facLibreNum(f), infos: ['Date : ' + fmtD(f.date)],
+    dest: { nom: f.client_nom, sous: f.client_contact || '', adresse: f.client_adresse },
+    titre: f.objet, lignes: f.lignes.map(l => ({ ...l, date_ligne: l.date })), tot: t, extra }, img);
+  doc.save(`Facture-${facLibreNum(f)}-${slug(f.client_nom)}.pdf`);
+}
+async function mailFactureLibre(fid) {
+  const f0 = facDe(fid), err = verifFactureLibre(f0); if (err) return alert(err);
+  if (f0.statut !== 'envoyee' && f0.date !== today() && confirm(`Mettre la date de la facture au ${fmtD(today())} (date d'envoi) avant de préparer le mail ?\n\nElle est actuellement au ${fmtD(f0.date)}.`)) {
+    const p = { date: today() }; f0.lignes.forEach(l => { if (l.date === f0.date) l.date = p.date; }); p.lignes = f0.lignes;
+    await majFactureLibre(f0, p, true);
+  }
+  const f = facDe(fid), vars = { numero: facLibreNum(f), date: fmtD(f.date), client: f.client_nom, montant: euros(facLibreTot(f)), objet: f.objet ? ' (' + f.objet + ')' : '' };
+  const rep = t => String(t || '').replace(/\{(\w+)\}/g, (m, k) => vars[k] != null ? vars[k] : m);
+  await pdfFactureLibre(fid);
+  const to = (f.client_email || '').trim();
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to) + '&su=' + encodeURIComponent(rep(reglage('facture_objet', 'Facture N° {numero} – Comité du Var de Volley-Ball'))) + '&body=' + encodeURIComponent(rep(reglage('facture_modele', 'Madame, Monsieur,\n\nVeuillez trouver ci-joint la facture N° {numero} du {date}{objet}, d\'un montant de {montant}.\n\nCordialement,\n\nComité du Var de Volley-Ball'))), '_blank');
+  toast(to ? '✓ PDF téléchargé : pensez à le joindre au mail' : 'Pas de mail indiqué pour ce client : complétez le destinataire', to ? 'ok' : 'err');
+}
+
 // ======================== EXPORT EXCEL ========================
 function loadScript(src) { return new Promise((ok, ko) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => ko(new Error('Module Excel indisponible')); document.head.appendChild(s); }); }
 async function exportExcel() {
@@ -1344,6 +1542,12 @@ async function exportExcel() {
   XLSX.utils.book_append_sheet(wb, ws(det, [10, 12, 18, 8, 11, 9, 60, 40, 9, 11, 11]), 'Détail des factures');
   XLSX.utils.book_append_sheet(wb, ws(pay, [11, 8, 11, 10, 16, 11, 30]), 'Paiements');
   XLSX.utils.book_append_sheet(wb, ws(cpt, [16, 12]), 'Par compte');
+  if (D.factures.length) {
+    const hc = [['Facture', 'Date', 'Client', 'Objet', 'Compte', 'Désignation', 'Précisions', 'Quantité', 'Prix unitaire', 'Montant', 'État', 'Réglé', 'Date règlement', 'Mode']];
+    [...D.factures].sort((a, b) => a.numero - b.numero).forEach(f => (f.lignes || []).forEach((l, k) => hc.push([facLibreNum(f), fmtD(f.date), f.client_nom, f.objet || '', l.code_compta || '', l.designation || '', l.precisions || '', num(l.quantite), num(l.prix), montant(l),
+      k ? '' : facLibreEtat(f)[1], k ? '' : num(f.regle_montant), k ? '' : fmtD(f.regle_date), k ? '' : f.regle_mode || ''])));
+    XLSX.utils.book_append_sheet(wb, ws(hc, [12, 11, 30, 30, 9, 50, 30, 9, 11, 11, 14, 10, 12, 10]), 'Hors clubs');
+  }
   XLSX.writeFile(wb, `Facturation-clubs-${SAISON}.xlsx`);
 }
 
@@ -1363,6 +1567,8 @@ async function route() {
     else if ((m = h.match(/^ris\/(\d+)$/))) { const r = risDe(m[1]); if (!r) { location.hash = 'ris'; return; } renderRis(r); }
     else if (h === 'ris') renderRisListe();
     else if (h === 'bordereaux') renderBordereaux();
+    else if ((m = h.match(/^f\/(\d+)$/))) { const f = facDe(m[1]); if (!f) { location.hash = 'factures'; return; } renderFactureLibre(f); }
+    else if (h === 'factures') renderFactures();
     else if (h === 'paiements') renderPaiements();
     else if (h === 'articles') renderArticles();
     else if (h === 'clubs') renderClubs();
