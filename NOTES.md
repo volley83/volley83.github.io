@@ -108,6 +108,7 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - PDF : même mise en page que les factures clubs (fonction commune `dessinFacture`). Mail Gmail avec les modèles `facture_objet` / `facture_modele` (Réglages). « Marquer comme envoyée » / préparer le mail proposent de passer la date au jour d'envoi.
 - **Devis** : même table (`type` = 'devis', numéro `2627-D001`, numérotation séparée, `validite` = date + 30 jours par défaut). Statuts brouillon / envoyé / accepté / refusé. « Devis accepté → créer la facture » : RPC `fac_admin_devis_facture` (copie client, objet et lignes dans une nouvelle facture datée du jour, `devis_id` = lien). PDF « DEVIS » sans coordonnées bancaires, avec cadre « Bon pour accord ». Mail : `devis_objet` / `devis_modele` (+ {validite}).
 - Export Excel : feuille « Hors clubs » (factures seulement).
+- Mention TVA (réglage `mention_tva`, modifiable dans Réglages) imprimée sous le total de toutes les factures (clubs et hors clubs) et des devis. Défaut : « TVA non applicable – article 261-7-1° b du CGI ». Recodification de la TVA dans le CIBS au 1er janvier 2027 (anciennes références CGI tolérées jusqu'au 31/12/2027).
 
 ## Frais de déplacement — `frais/index.html` (accès libre)
 

@@ -781,7 +781,8 @@ function renderReglages() {
   <h1 style="font-size:34px">Réglages</h1>
   <div class="card stack"><h3>En-tête des factures</h3>
     <div class="grid g2"><div class="field"><label>Émetteur (en haut à gauche)</label><textarea id="r-em" rows="6">${esc(reglage('emetteur', ''))}</textarea></div>
-    <div class="field"><label>Mentions en bas de facture (conditions de règlement, SIRET…)</label><textarea id="r-me" rows="6">${esc(reglage('mentions', ''))}</textarea></div></div>
+    <div class="field"><label>Mentions en bas de facture (conditions de règlement, SIRET…)</label><textarea id="r-me" rows="6">${esc(reglage('mentions', ''))}</textarea></div>
+    <div class="field"><label>Mention TVA (sous le total des factures et des devis)</label><input id="r-tva" value="${esc(reglage('mention_tva', ''))}"></div></div>
     <div class="field"><label>Coordonnées bancaires (encadré « Règlement par virement » sur chaque facture)</label><textarea id="r-bq" rows="4" placeholder="Titulaire, IBAN, BIC, banque">${esc(reglage('banque', ''))}</textarea></div>
     <div class="field"><label>Pied de page des RIS</label><textarea id="r-rp" rows="3">${esc(reglage('ris_pied', ''))}</textarea></div>
     <div class="btnrow"><button class="btn primary" id="r-ok1">Enregistrer</button></div></div>
@@ -812,7 +813,7 @@ function renderReglages() {
     <p class="small muted">Selon le nombre de tournois joués par chaque équipe d'un club sur la saison (finale comprise).</p>
     <div class="grid g3"><div class="field"><label>1 tournoi</label><input id="r-t1" value="${fmtN(t[0])}" inputmode="decimal"></div><div class="field"><label>2 tournois</label><input id="r-t2" value="${fmtN(t[1])}" inputmode="decimal"></div><div class="field"><label>3 tournois ou plus</label><input id="r-t3" value="${fmtN(t[2])}" inputmode="decimal"></div></div>
     <div class="btnrow"><button class="btn primary" id="r-ok2">Enregistrer</button></div></div>`);
-  $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_pied', p_valeur: $('r-rp').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+  $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mention_tva', p_valeur: $('r-tva').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_pied', p_valeur: $('r-rp').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok3').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_total', p_valeur: $('r-at').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_partiel', p_valeur: $('r-ap').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok6').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'devis_objet', p_valeur: $('r-do').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'devis_modele', p_valeur: $('r-dm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok5').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'facture_objet', p_valeur: $('r-fo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'facture_modele', p_valeur: $('r-fm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
@@ -1254,6 +1255,8 @@ function dessinFacture(doc, o, img) {
   doc.text('TOTAL', W - M - 66, y + 1); doc.text(pdfTxt(euros(tot)), W - M - 3, y + 1, { align: 'right' }); doc.setTextColor(20, 32, 58);
   if ((o.extra || []).length) { y += 5;
     o.extra.forEach(x => { y += x.b ? 5.5 : 5; doc.setFont('helvetica', x.b ? 'bold' : 'normal'); doc.setFontSize(x.s ? 8.5 : 9.5); doc.text(pdfTxt(x.t), W - M - 3, y, { align: 'right' }); }); }
+  const tva = String(reglage('mention_tva', '') || '').trim();
+  if (tva) { y += (o.extra || []).length ? 6.5 : 10.5; doc.setFont('helvetica', 'italic'); doc.setFontSize(8.5); doc.setTextColor(86, 98, 122); doc.text(doc.splitTextToSize(pdfTxt(tva), 125), W - M - 3, y, { align: 'right' }); doc.setTextColor(20, 32, 58); }
   if (o.devis) {   // devis : pas de coordonnées bancaires, cadre « Bon pour accord »
     const yA = Math.max(y + 12, 222);
     if (yA + 48 > 285) doc.addPage();

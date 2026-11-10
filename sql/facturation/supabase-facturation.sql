@@ -876,6 +876,7 @@ update fac_articles set rubrique_ris = case
 -- ---------- Mail des factures hors clubs (modifiable dans Réglages) ----------
 insert into fac_reglages (cle, valeur) values
   ('facture_objet', '"Facture N° {numero} – Comité du Var de Volley-Ball"'),
+  ('mention_tva', '"TVA non applicable – article 261-7-1° b du CGI (association sans but lucratif à gestion désintéressée)"'),
   ('devis_objet', '"Devis N° {numero} – Comité du Var de Volley-Ball"'),
   ('devis_modele', '"Madame, Monsieur,\n\nVeuillez trouver ci-joint notre devis N° {numero} du {date}{objet}, d''un montant de {montant}, valable jusqu''au {validite}.\n\nPour l''accepter, il vous suffit de nous le retourner signé avec la mention « Bon pour accord », ou de nous répondre par mail. La facture correspondante vous sera alors adressée.\n\nEn cas de question, n''hésitez pas à nous contacter.\n\nCordialement,\n\nComité du Var de Volley-Ball"'),
   ('facture_modele', '"Madame, Monsieur,\n\nVeuillez trouver ci-joint la facture N° {numero} du {date}{objet}, d''un montant de {montant}.\n\nVous pouvez la régler par virement (coordonnées bancaires sur la facture) ou par chèque à l''ordre du Comité du Var de Volley-Ball, en rappelant le numéro de la facture.\n\nEn cas de question, n''hésitez pas à nous contacter.\n\nCordialement,\n\nEric CHASSAGNARD\nTrésorier\nComité du Var de Volley-Ball"')
