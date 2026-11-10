@@ -170,6 +170,17 @@ create table if not exists fac_factures (
   unique (saison, numero)
 );
 
+-- Devis : même table, type 'devis' (numérotation séparée) ; un devis accepté donne une facture (devis_id)
+alter table fac_factures add column if not exists type text not null default 'facture';
+alter table fac_factures add column if not exists devis_id bigint references fac_factures(id) on delete set null;
+alter table fac_factures add column if not exists validite date;
+alter table fac_factures drop constraint if exists fac_factures_saison_numero_key;
+alter table fac_factures drop constraint if exists fac_factures_statut_check;
+alter table fac_factures drop constraint if exists fac_factures_type_check;
+alter table fac_factures add constraint fac_factures_statut_check check (statut in ('brouillon', 'envoyee', 'accepte', 'refuse'));
+alter table fac_factures add constraint fac_factures_type_check check (type in ('facture', 'devis'));
+create unique index if not exists fac_factures_numero_uk on fac_factures (saison, type, numero);
+
 alter table fac_clubs add column if not exists email_finances text;   -- trésorier(s) : destinataires des factures
 alter table fac_clubs      enable row level security;
 alter table fac_articles   enable row level security;
@@ -607,9 +618,10 @@ begin
   if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
   if (p->>'supprimer')::boolean then delete from fac_factures where id = fid; return fid; end if;
   if fid is null then
-    n := coalesce(nullif(p->>'numero', '')::int, (select coalesce(max(numero), 0) + 1 from fac_factures where saison = p->>'saison'));
-    insert into fac_factures (saison, numero, client_nom) values (p->>'saison', n, coalesce(nullif(trim(p->>'client_nom'), ''), 'Nouveau client'))
-      returning id into fid;
+    n := coalesce(nullif(p->>'numero', '')::int, (select coalesce(max(numero), 0) + 1 from fac_factures
+           where saison = p->>'saison' and type = coalesce(nullif(p->>'type', ''), 'facture')));
+    insert into fac_factures (saison, type, numero, client_nom) values (p->>'saison', coalesce(nullif(p->>'type', ''), 'facture'), n,
+      coalesce(nullif(trim(p->>'client_nom'), ''), 'Nouveau client')) returning id into fid;
   end if;
   update fac_factures f set
     numero         = coalesce(nullif(p->>'numero', '')::int, f.numero),
@@ -624,8 +636,28 @@ begin
     regle_montant  = case when p ? 'regle_montant'  then nullif(replace(p->>'regle_montant', ',', '.'), '')::numeric else f.regle_montant end,
     regle_date     = case when p ? 'regle_date'     then nullif(p->>'regle_date', '')::date     else f.regle_date end,
     regle_mode     = case when p ? 'regle_mode'     then nullif(trim(p->>'regle_mode'), '')     else f.regle_mode end,
-    remarque       = case when p ? 'remarque'       then nullif(trim(p->>'remarque'), '')       else f.remarque end
+    remarque       = case when p ? 'remarque'       then nullif(trim(p->>'remarque'), '')       else f.remarque end,
+    validite       = case when p ? 'validite'       then nullif(p->>'validite', '')::date       else f.validite end
   where f.id = fid;
+  return fid;
+end $$;
+
+-- Devis accepté → facture (date du jour, mêmes client et lignes) ; renvoie l'id de la facture
+create or replace function fac_admin_devis_facture(pwd text, p_id bigint) returns bigint
+language plpgsql security definer set search_path = public as $$
+declare d fac_factures; fid bigint;
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  select * into d from fac_factures where id = p_id and type = 'devis';
+  if d.id is null then raise exception 'Devis introuvable'; end if;
+  select id into fid from fac_factures where devis_id = d.id and type = 'facture' limit 1;
+  if fid is null then
+    insert into fac_factures (saison, type, numero, date, client_nom, client_contact, client_adresse, client_email, objet, lignes, devis_id)
+    values (d.saison, 'facture', (select coalesce(max(numero), 0) + 1 from fac_factures where saison = d.saison and type = 'facture'),
+            current_date, d.client_nom, d.client_contact, d.client_adresse, d.client_email, d.objet, d.lignes, d.id)
+    returning id into fid;
+  end if;
+  update fac_factures set statut = 'accepte' where id = d.id;
   return fid;
 end $$;
 
@@ -642,6 +674,7 @@ grant execute on function
   fac_admin_paiement(text, jsonb),
   fac_admin_reglage(text, text, jsonb),
   fac_admin_facture(text, jsonb),
+  fac_admin_devis_facture(text, bigint),
   fac_admin_ris(text, jsonb),
   fac_admin_rappel(text, jsonb),
   fac_admin_ris_item(text, jsonb),
@@ -843,6 +876,8 @@ update fac_articles set rubrique_ris = case
 -- ---------- Mail des factures hors clubs (modifiable dans Réglages) ----------
 insert into fac_reglages (cle, valeur) values
   ('facture_objet', '"Facture N° {numero} – Comité du Var de Volley-Ball"'),
+  ('devis_objet', '"Devis N° {numero} – Comité du Var de Volley-Ball"'),
+  ('devis_modele', '"Madame, Monsieur,\n\nVeuillez trouver ci-joint notre devis N° {numero} du {date}{objet}, d''un montant de {montant}, valable jusqu''au {validite}.\n\nPour l''accepter, il vous suffit de nous le retourner signé avec la mention « Bon pour accord », ou de nous répondre par mail. La facture correspondante vous sera alors adressée.\n\nEn cas de question, n''hésitez pas à nous contacter.\n\nCordialement,\n\nComité du Var de Volley-Ball"'),
   ('facture_modele', '"Madame, Monsieur,\n\nVeuillez trouver ci-joint la facture N° {numero} du {date}{objet}, d''un montant de {montant}.\n\nVous pouvez la régler par virement (coordonnées bancaires sur la facture) ou par chèque à l''ordre du Comité du Var de Volley-Ball, en rappelant le numéro de la facture.\n\nEn cas de question, n''hésitez pas à nous contacter.\n\nCordialement,\n\nEric CHASSAGNARD\nTrésorier\nComité du Var de Volley-Ball"')
 on conflict (cle) do nothing;
 

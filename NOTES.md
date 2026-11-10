@@ -106,7 +106,8 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - Pour un club extérieur, une mairie, une entreprise… Table `fac_factures` (coordonnées du client et lignes jsonb dans la facture), RPC `fac_admin_facture`, `fac_admin_get` renvoie `factures` (saison) et `clients` (derniers clients connus, pour l'autocomplétion).
 - Numéro `2627-F001` (saison + numéro auto, modifiable). Articles du catalogue ou lignes libres ; règlement saisi sur la facture (montant, date, mode).
 - PDF : même mise en page que les factures clubs (fonction commune `dessinFacture`). Mail Gmail avec les modèles `facture_objet` / `facture_modele` (Réglages). « Marquer comme envoyée » / préparer le mail proposent de passer la date au jour d'envoi.
-- Export Excel : feuille « Hors clubs ».
+- **Devis** : même table (`type` = 'devis', numéro `2627-D001`, numérotation séparée, `validite` = date + 30 jours par défaut). Statuts brouillon / envoyé / accepté / refusé. « Devis accepté → créer la facture » : RPC `fac_admin_devis_facture` (copie client, objet et lignes dans une nouvelle facture datée du jour, `devis_id` = lien). PDF « DEVIS » sans coordonnées bancaires, avec cadre « Bon pour accord ». Mail : `devis_objet` / `devis_modele` (+ {validite}).
+- Export Excel : feuille « Hors clubs » (factures seulement).
 
 ## Frais de déplacement — `frais/index.html` (accès libre)
 
