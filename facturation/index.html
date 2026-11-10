@@ -193,14 +193,19 @@ const bordsTries = () => [...D.bordereaux].sort((a, b) => a.numero - b.numero);
 
 // Paiements d'un club : d'abord imputés au bordereau indiqué, puis le reste sur les bordereaux les plus anciens
 function etatClub(code) {
-  const bs = bordsTries(), du = {}, regle = {};
-  bs.forEach(b => { du[b.id] = totalDe(b.id, code); regle[b.id] = 0; });
+  const bs = bordsTries(), du = {}, regle = {}, avoir = {};
+  bs.forEach(b => { du[b.id] = totalDe(b.id, code); regle[b.id] = 0; avoir[b.id] = 0; });
+  // un bordereau négatif (avoir, trop-perçu) est soldé et crée un crédit, déduit des bordereaux suivants
+  let credit = 0; const sources = [];
+  bs.forEach(b => { if (du[b.id] < -0.005) { credit += -du[b.id]; regle[b.id] = du[b.id]; sources.push(b.numero); } });
+  const creditTotal = r2(credit);
   const pays = D.paiements.filter(p => p.club === code);
   let libre = 0;
   pays.forEach(p => { if (p.bordereau_id && regle[p.bordereau_id] != null) regle[p.bordereau_id] += num(p.montant); else libre += num(p.montant); });
+  bs.forEach(b => { const reste = du[b.id] - regle[b.id]; if (reste > 0 && credit > 0) { const x = Math.min(reste, credit); regle[b.id] += x; avoir[b.id] = r2(x); credit -= x; } });
   bs.forEach(b => { const reste = du[b.id] - regle[b.id]; if (reste > 0 && libre > 0) { const x = Math.min(reste, libre); regle[b.id] += x; libre -= x; } });
   const totDu = r2(Object.values(du).reduce((s, x) => s + x, 0)), totRegle = r2(pays.reduce((s, p) => s + num(p.montant), 0));
-  return { du, regle, totDu, totRegle, reste: r2(totDu - totRegle) };
+  return { du, regle, avoir, creditTotal, creditRestant: r2(credit), sourcesAvoir: sources, totDu, totRegle, reste: r2(totDu - totRegle) };
 }
 function etatCell(b, e) {
   const du = e.du[b.id] || 0, rg = r2(e.regle[b.id] || 0);
@@ -767,6 +772,9 @@ function renderReglages() {
     <p class="small muted">Champs remplacés automatiquement : <span class="code">{numero}</span> n° du bordereau, <span class="code">{saison}</span> 2026/2027, <span class="code">{club}</span> nom du club, <span class="code">{sigle}</span>, <span class="code">{montant}</span> total de la facture, <span class="code">{facture}</span> n° de facture, <span class="code">{date}</span> date du bordereau, <span class="code">{contenu}</span> liste « comprend notamment » (réglée sur chaque bordereau).</p>
     <div class="field"><label>Objet</label><input id="r-mo" value="${esc(reglage('mail_objet', ''))}"></div>
     <div class="field"><label>Texte du mail</label><textarea id="r-mm" rows="18">${esc(reglage('mail_modele', ''))}</textarea></div>
+    <p class="small muted" style="margin-top:6px"><b>Club disposant d'un avoir</b> (bordereau négatif, trop-perçu…) : la phrase « Vous pouvez régler cette facture… » est remplacée par l'un des textes ci-dessous. Champs : <span class="code">{avoir}</span> avoir total, <span class="code">{avoir_deduit}</span>, <span class="code">{avoir_restant}</span>, <span class="code">{a_payer}</span>, <span class="code">{bordereaux_avoir}</span>, <span class="code">{montant}</span>.</p>
+    <div class="field"><label>Si l'avoir couvre toute la facture</label><textarea id="r-at" rows="3">${esc(reglage('mail_avoir_total', ''))}</textarea></div>
+    <div class="field"><label>Si l'avoir ne couvre qu'une partie de la facture</label><textarea id="r-ap" rows="4">${esc(reglage('mail_avoir_partiel', ''))}</textarea></div>
     <div class="btnrow"><button class="btn primary" id="r-ok3">Enregistrer</button></div></div>
   <div class="card stack"><h3>Mail de rappel (bordereaux non réglés)</h3>
     <p class="small muted">Le rappel reprend tous les bordereaux <b>envoyés</b> et pas encore réglés du club. Champs : <span class="code">{impayes}</span> liste des bordereaux et montants restant dus, <span class="code">{reste}</span> total restant dû, <span class="code">{club}</span>, <span class="code">{sigle}</span>, <span class="code">{saison}</span>.</p>
@@ -778,7 +786,7 @@ function renderReglages() {
     <div class="grid g3"><div class="field"><label>1 tournoi</label><input id="r-t1" value="${fmtN(t[0])}" inputmode="decimal"></div><div class="field"><label>2 tournois</label><input id="r-t2" value="${fmtN(t[1])}" inputmode="decimal"></div><div class="field"><label>3 tournois ou plus</label><input id="r-t3" value="${fmtN(t[2])}" inputmode="decimal"></div></div>
     <div class="btnrow"><button class="btn primary" id="r-ok2">Enregistrer</button></div></div>`);
   $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_pied', p_valeur: $('r-rp').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
-  $('r-ok3').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+  $('r-ok3').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_total', p_valeur: $('r-at').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_partiel', p_valeur: $('r-ap').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok4').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'rappel_objet', p_valeur: $('r-ro').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'rappel_modele', p_valeur: $('r-rm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok2').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'open_tarifs', p_valeur: [num($('r-t1').value), num($('r-t2').value), num($('r-t3').value)] }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
 }
@@ -1200,10 +1208,14 @@ function pageFacture(doc, b, code, img) {
   });
   doc.setDrawColor(...navy); doc.setLineWidth(0.4); doc.line(M, y - 2.5, W - M, y - 2.5);
   if (y > 240) { doc.addPage(); y = 24; }
-  const tot = totalDe(b.id, code), e = etatClub(code), rg = r2(e.regle[b.id] || 0);
+  const tot = totalDe(b.id, code), e = etatClub(code), av = tot > 0 ? r2(e.avoir[b.id] || 0) : 0, rg = tot > 0 ? r2((e.regle[b.id] || 0) - av) : 0;
   y += 5; doc.setFillColor(...navy); doc.rect(W - M - 70, y - 5.5, 70, 10, 'F'); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
   doc.text('TOTAL', W - M - 66, y + 1); doc.text(pdfTxt(euros(tot)), W - M - 3, y + 1, { align: 'right' }); doc.setTextColor(20, 32, 58);
-  if (rg > 0) { y += 10; doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.text(pdfTxt('Déjà réglé : ' + euros(rg)), W - M - 3, y, { align: 'right' }); y += 5; doc.setFont('helvetica', 'bold'); doc.text(pdfTxt('Reste à payer : ' + euros(Math.max(0, tot - rg))), W - M - 3, y, { align: 'right' }); }
+  if (av > 0 || rg > 0) { y += 5; doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5);
+    if (av > 0) { y += 5; doc.text(pdfTxt(`Avoir déduit${e.sourcesAvoir.length ? ' (bordereau N° ' + e.sourcesAvoir.join(', ') + ')' : ''} : ` + euros(av)), W - M - 3, y, { align: 'right' }); }
+    if (rg > 0) { y += 5; doc.text(pdfTxt('Déjà réglé : ' + euros(rg)), W - M - 3, y, { align: 'right' }); }
+    y += 5.5; doc.setFont('helvetica', 'bold'); doc.text(pdfTxt('Reste à payer : ' + euros(Math.max(0, tot - av - rg))), W - M - 3, y, { align: 'right' });
+    if (av > 0 && e.creditRestant > 0.005) { y += 5; doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.text(pdfTxt('Avoir restant : ' + euros(e.creditRestant)), W - M - 3, y, { align: 'right' }); } }
   // pied : coordonnées bancaires puis mentions
   doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5);
   const me = doc.splitTextToSize(pdfTxt(reglage('mentions', '')), W - 2 * M), yMe = 285 - me.length * 3.8;
@@ -1249,10 +1261,20 @@ function contenuPropose(bid) {
   return out.map(x => '* ' + x).join('\n');
 }
 function texteMail(b, code) {
-  const c = club(code), vars = { numero: b.numero, saison: b.saison.replace('-', '/'), club: c.nom, sigle: code, montant: euros(totalDe(b.id, code)), facture: facNum(b, code), date: fmtD(b.date),
-    contenu: b.mail_contenu || contenuPropose(b.id) };
+  const c = club(code), e = etatClub(code), tot = totalDe(b.id, code), av = tot > 0 ? r2(e.avoir[b.id] || 0) : 0;
+  const vars = { numero: b.numero, saison: b.saison.replace('-', '/'), club: c.nom, sigle: code, montant: euros(tot), facture: facNum(b, code), date: fmtD(b.date),
+    contenu: b.mail_contenu || contenuPropose(b.id), avoir: euros(e.creditTotal), avoir_deduit: euros(av), avoir_restant: euros(e.creditRestant),
+    a_payer: euros(Math.max(0, tot - av)), bordereaux_avoir: e.sourcesAvoir.length ? 'bordereau N° ' + e.sourcesAvoir.join(', ') : 'bordereau précédent' };
   const rep = t => String(t || '').replace(/\{(\w+)\}/g, (m, k) => vars[k] != null ? vars[k] : m);
-  return { objet: rep(reglage('mail_objet', 'Bordereau de facturation N° {numero} – saison {saison} – {club}')), corps: rep(reglage('mail_modele', 'Bonjour,\n\nVeuillez trouver ci-joint le bordereau de facturation N° {numero}.\n\n{contenu}')) };
+  let corps = reglage('mail_modele', 'Bonjour,\n\nVeuillez trouver ci-joint le bordereau de facturation N° {numero}.\n\n{contenu}');
+  if (av > 0) {
+    // avoir en cours : le paragraphe sur les modes de paiement est remplacé
+    const txtAvoir = tot - av <= 0.005 ? reglage('mail_avoir_total', '') : reglage('mail_avoir_partiel', '');
+    const lignes = corps.split('\n'), k = lignes.findIndex(l => /vous pouvez r[ée]gler/i.test(l));
+    if (k >= 0) lignes.splice(k, 1, txtAvoir); else lignes.push('', txtAvoir);
+    corps = lignes.join('\n');
+  }
+  return { objet: rep(reglage('mail_objet', 'Bordereau de facturation N° {numero} – saison {saison} – {club}')), corps: rep(corps) };
 }
 // Bordereaux envoyés et pas (entièrement) réglés pour un club
 function impayes(code) {
