@@ -224,10 +224,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261109T210000
 DTEND;TZID=Europe/Paris:20261109T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Vidauban Volley-Ball – Six-Fours Beach 
- Volley 1
-LOCATION:Collège P.E Victor
-DESCRIPTION:Poule M4E – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/competlib/M4E
+ Volley 1 (0-3)
+DESCRIPTION:Résultat : 0-3 (7:25\, 9:25\, 9:25)\nPoule M4E – classemen
+ t et résultats : https://volley83.github.io/championnats/#championnats/
+ competlib/M4E
 END:VEVENT
 BEGIN:VEVENT
 UID:M4E007@volley83.github.io

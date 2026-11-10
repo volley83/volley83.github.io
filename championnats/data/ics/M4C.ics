@@ -71,10 +71,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261109T203000
 DTEND;TZID=Europe/Paris:20261109T223000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club de Saint-Maximin – Volley C
- lub Hyères / Pierrefeu La Londe 1
-LOCATION:College Leï Garrus
-DESCRIPTION:Poule M4C – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/competlib/M4C
+ lub Hyères / Pierrefeu La Londe 1 (0-3)
+DESCRIPTION:Résultat : 0-3 (8:25\, 8:25\, 12:25)\nPoule M4C – classeme
+ nt et résultats : https://volley83.github.io/championnats/#championnats
+ /competlib/M4C
 END:VEVENT
 BEGIN:VEVENT
 UID:M4C006@volley83.github.io
