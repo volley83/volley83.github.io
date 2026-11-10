@@ -1153,7 +1153,7 @@ async function renderAdmin(tab) {
   if (!ADMIN_PWD) { location.hash = '4x4'; return; }
   if (tab) ATAB = tab;
   if (!A) await loadAdmin();
-  const aTitre = { inscriptions: 'Inscriptions', participations: 'Participations', classements: 'Classements', tournois: 'Calendrier et codes', clubs: 'Clubs', coupe: 'Coupe de France' };
+  const aTitre = { inscriptions: 'Inscriptions', rappel: 'Rappel week-end', participations: 'Participations', classements: 'Classements', tournois: 'Calendrier et codes', clubs: 'Clubs', coupe: 'Coupe de France' };
   const aValider = A.tournois.filter(t => t.statut === 'saisi').length;
   $('app').innerHTML = `
   <div class="hero"><div class="wrap"><div class="k">Espace Comité</div><h1>Gestion des championnats</h1></div></div>
@@ -1162,7 +1162,7 @@ async function renderAdmin(tab) {
       <span><span id="a-save" class="save"></span> <button class="linkbtn" onclick="ADMIN_PWD='';A=null;try{sessionStorage.removeItem('chp_admin')}catch(e){};location.hash='4x4'">Se déconnecter</button></span></div>
     <div id="a-body"></div>
   </main>`;
-  ({ inscriptions: adminInscriptions, participations: adminParticipations, classements: adminClassements, tournois: adminTournois, clubs: adminClubs, coupe: adminCoupe })[ATAB]();
+  ({ inscriptions: adminInscriptions, rappel: adminRappel, participations: adminParticipations, classements: adminClassements, tournois: adminTournois, clubs: adminClubs, coupe: adminCoupe })[ATAB]();
 }
 const tSel = (list, cur, id = 'a-t') => `<select id="${id}" style="max-width:560px">${A.competitions.map(c => { const l = list.filter(t => t.competition === c.code); return l.length ? `<optgroup label="${esc(c.nom)}">${l.map(t => `<option value="${t.id}" ${t.id === cur ? 'selected' : ''}>${esc(c.nom)} · ${tNom(t)} · ${esc(fmtShort(t.date))}${t.ville ? ' · ' + esc(t.ville) : ''}${t.statut === 'saisi' ? ' · À VALIDER' : ''}</option>`).join('')}</optgroup>` : ''; }).join('')}</select>`;
 
@@ -1352,6 +1352,69 @@ function adminTournois() {
     tr.querySelector('[data-del]').onclick = async () => { if (!confirm('Supprimer ce tournoi, ses inscriptions et son classement ?')) return; await rpc('chp_admin_delete_tournoi', { pwd: ADMIN_PWD, tid: id }); await loadAdmin(); await loadPublic(); adminTournois(); };
   });
   $('a-add').onclick = async () => { const n = Math.max(0, ...ts.map(t => t.numero)) + 1, d = today(); await put(null, { competition: ACOMP, numero: n, date: d, date_limite: jeudiAvant(d), heure_limite: '12:00' }); adminTournois(); };
+}
+
+// ----- Rappel des tournois du week-end (mail à tous les clubs, avec le lien d'inscription) -----
+let RAP_SAMEDI = null;
+const isoLocal = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+function prochainSamedi() { const d = parseD(today()), j = d.getDay(); d.setDate(d.getDate() + (j === 0 ? 6 : 6 - j)); return isoLocal(d); }
+const hMail = h => h ? String(h).slice(0, 5).replace(/^0/, '').replace(':00', 'h').replace(':', 'h') : '';
+const capMots = s => s.replace(/(^|\s)(\p{Ll})/gu, (m, a, b) => a + b.toUpperCase());
+function adressesSaison() {
+  const l = Object.values(MAILS_CLUBS || {}).concat(A.inscriptions.map(i => i.contact_email || ''));
+  return [...new Set(l.flatMap(m => String(m).split(/[,;\s]+/)).map(m => m.trim().toLowerCase()).filter(m => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m)))];
+}
+function mailRappel(ts) {
+  const lim = ts.map(t => t.date_limite).filter(Boolean).sort()[0], hl = ts.find(t => t.date_limite === lim)?.heure_limite || '12:00';
+  const lignes = ts.map(t => { const c = A.competitions.find(x => x.code === t.competition) || {}, nom = /^OPEN/i.test(c.nom || '') ? c.nom : 'OPEN ' + (c.nom || '');
+    return `* ${nom} - ${capMots(fmtD(t.date, true, false))}${t.heure ? ' à ' + hMail(t.heure) : ''}${t.ville ? ' à ' + t.ville : ''}${t.lieu ? ' (' + t.lieu.replace(/^Gymnase\s+/i, '') + ')' : ''}\n  → ${SITE_URL}#inscription/${t.id}`; }).join('\n');
+  const open = ts.some(t => (A.competitions.find(x => x.code === t.competition) || {}).famille === 'open');
+  return `Bonjour à tous,
+
+je vous rappelle les tournois du week-end pour lesquels il faut s'inscrire :
+${lignes}
+
+Les inscriptions se font en ligne${lim ? `, jusqu'au ${fmtD(lim, true, false)} ${hMail(hl)} maximum` : ''}, sur la page des championnats :
+${SITE_URL}#inscription
+
+Il suffit de choisir le tournoi (catégorie et sexe) et d'indiquer le nombre d'équipes${open ? ', ainsi que le niveau pour les tournois OPEN 2 contre 2 et 4 contre 4 (Débutant ou Intermédiaire)' : ''}.
+
+Merci de partager ces informations avec vos licenciés et éducateurs concernés.
+
+Sportivement,
+
+Clément ROBEAU
+Comité du Var de Volley-Ball`;
+}
+function adminRappel() {
+  if (MAILS_CLUBS === null) { MAILS_CLUBS = {}; rpc('chp_admin_mails', { pwd: ADMIN_PWD }).then(m => { MAILS_CLUBS = m || {}; if (ATAB === 'rappel') adminRappel(); }).catch(() => { MAILS_CLUBS = null; }); }
+  const sam = RAP_SAMEDI || prochainSamedi(), dim = (() => { const d = parseD(sam); d.setDate(d.getDate() + 1); return isoLocal(d); })();
+  const ts = A.tournois.filter(t => t.date >= sam && t.date <= dim && t.statut !== 'annule' && ['4x4', 'open'].includes((A.competitions.find(c => c.code === t.competition) || {}).famille))
+    .sort((a, b) => a.date.localeCompare(b.date) || String(a.heure).localeCompare(String(b.heure)) || (A.competitions.findIndex(c => c.code === a.competition) - A.competitions.findIndex(c => c.code === b.competition)));
+  const auto = adressesSaison(), extra = store.get('chp_rappel_extra', '');
+  $('a-body').innerHTML = `<div class="card stack">
+    <div class="rank-head"><h2>Rappel des tournois du week-end</h2><span class="muted small">mail à tous les clubs, avec le lien d'inscription en ligne</span></div>
+    <div class="row" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
+      <div class="field" style="margin:0"><label for="r-sam">Week-end du samedi</label><input id="r-sam" type="date" value="${sam}"></div>
+      <span class="muted small" style="padding-bottom:10px">${ts.length ? ts.length + ' tournoi(s) M15 · M18 4x4 et OPEN ce week-end' : 'Aucun tournoi M15 · M18 4x4 ou OPEN ce week-end'}</span>
+    </div>
+    ${ts.length ? `
+    <div class="field"><label>Destinataires en Cci (${auto.length} adresses : fiches clubs de la Facturation + contacts des inscriptions de la saison)</label><textarea readonly style="min-height:56px;font-size:12.5px">${esc(auto.join(', '))}</textarea></div>
+    <div class="field"><label for="r-extra">Autres destinataires (membres du Comité, éducateurs…) · gardés sur cet ordinateur</label><textarea id="r-extra" style="min-height:44px;font-size:12.5px" placeholder="adresse1@…, adresse2@…">${esc(extra)}</textarea></div>
+    <div class="field"><label for="r-su">Objet</label><input id="r-su" value="Inscriptions pour les tournois du week-end"></div>
+    <textarea id="r-body" style="min-height:420px;font-family:ui-monospace,Consolas,monospace;font-size:13px;line-height:1.45">${esc(mailRappel(ts))}</textarea>
+    <div class="btnrow" style="margin:0"><button class="btn primary" id="r-go">✉ Ouvrir dans Gmail</button><button class="btn ghost" id="r-copy">📋 Copier les adresses</button></div>` : ''}
+  </div>`;
+  $('r-sam').onchange = () => { RAP_SAMEDI = $('r-sam').value || null; adminRappel(); };
+  if (!ts.length) return;
+  $('r-extra').oninput = () => store.set('chp_rappel_extra', $('r-extra').value);
+  const tous = () => [...new Set(auto.concat($('r-extra').value.split(/[,;\s]+/).map(m => m.trim().toLowerCase()).filter(m => /@/.test(m))))];
+  $('r-copy').onclick = async () => { try { await navigator.clipboard.writeText(tous().join(', ')); saveMark('ok', `✓ ${tous().length} adresses copiées`); } catch(e) { saveMark('err', '⚠ Copie impossible'); } };
+  $('r-go').onclick = () => {
+    const url = `https://mail.google.com/mail/?view=cm&fs=1&bcc=${encodeURIComponent(tous().join(','))}&su=${encodeURIComponent($('r-su').value)}&body=${encodeURIComponent($('r-body').value)}`;
+    if (url.length > 7800) { navigator.clipboard && navigator.clipboard.writeText($('r-body').value); alert('Le mail est trop long pour être passé à Gmail en une fois : le texte a été copié, collez-le dans le mail qui va s\'ouvrir.'); window.open(`https://mail.google.com/mail/?view=cm&fs=1&bcc=${encodeURIComponent(tous().join(','))}&su=${encodeURIComponent($('r-su').value)}`, '_blank'); return; }
+    window.open(url, '_blank');
+  };
 }
 
 // Modèle du mail « formule sportive » envoyé aux inscrits
