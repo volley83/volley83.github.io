@@ -330,7 +330,10 @@ async function majBordereau(b, p) {
 // Marquer comme envoyé : la date du bordereau devient celle du jour de l'envoi
 async function envoyerBordereau(bid) {
   const b = bord(bid), t = today(), change = b.date !== t;
-  if (!confirm(`Marquer le bordereau n° ${b.numero} comme envoyé ?${change ? `\n\nSa date passera du ${fmtD(b.date)} au ${fmtD(t)} (date d'envoi).` : ''}\nLes factures ne seront plus modifiables (vous pourrez le rouvrir).`)) return;
+  // les lignes qui portent la date du bordereau (date mise par défaut à la saisie) suivent la nouvelle date
+  const suivre = change ? lignesDe(b.id).filter(l => l.date_ligne === b.date) : [];
+  if (!confirm(`Marquer le bordereau n° ${b.numero} comme envoyé ?${change ? `\n\nSa date passera du ${fmtD(b.date)} au ${fmtD(t)} (date d'envoi), sur l'en-tête des factures${suivre.length ? ` et sur les ${suivre.length} ligne(s) datées du ${fmtD(b.date)}` : ''}.` : ''}\nLes factures ne seront plus modifiables (vous pourrez le rouvrir).`)) return;
+  try { if (suivre.length) { suivre.forEach(l => { l.date_ligne = t; }); await enregistrerLignes(suivre); } } catch(e) { return fail(e); }
   await majBordereau(b, change ? { statut: 'envoye', date: t } : { statut: 'envoye' });
 }
 async function supprBordereau(b) {
