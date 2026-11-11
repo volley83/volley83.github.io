@@ -220,7 +220,8 @@ const clubsVisibles = () => D.clubs.filter(c => c.actif || D.lignes.some(l => l.
 async function load() {
   D = await rpc('fac_admin_get', { pwd: PWD, p_saison: SAISON });
   D.lignes.forEach(l => { l.quantite = num(l.quantite); l.prix = num(l.prix); });
-  D.factures = D.factures || []; D.clients = D.clients || [];
+  D.factures = D.factures || []; D.clients = D.clients || []; D.recus = D.recus || []; D.donateurs = D.donateurs || [];
+  D.recus.forEach(r => { r.montant = num(r.montant); });
 }
 
 // ======================== CONNEXION ========================
@@ -246,7 +247,7 @@ function logout() { PWD = ''; D = null; try { sessionStorage.removeItem('fac_adm
 // ======================== MISE EN PAGE ========================
 function shell(tab, body) {
   const saisons = [...new Set([...(D.saisons || []), saisonDe(today()), SAISON])].sort().reverse();
-  const nav = [['recap', 'Récapitulatif'], ['bordereaux', 'Bordereaux'], ['ris', 'RIS'], ['paiements', 'Paiements'], ['factures', 'Hors clubs'], ['articles', 'Articles'], ['clubs', 'Clubs'], ['reglages', 'Réglages']];
+  const nav = [['recap', 'Récapitulatif'], ['bordereaux', 'Bordereaux'], ['ris', 'RIS'], ['paiements', 'Paiements'], ['factures', 'Hors clubs'], ['dons', 'Reçus de dons'], ['articles', 'Articles'], ['clubs', 'Clubs'], ['reglages', 'Réglages']];
   $('app').innerHTML = `
   <header><div class="wrap head">
     <img src="logo-comite-var.jpg" alt="Comité du Var de Volley-Ball">
@@ -804,6 +805,17 @@ function renderReglages() {
     <div class="field"><label>Objet</label><input id="r-fo" value="${esc(reglage('facture_objet', ''))}"></div>
     <div class="field"><label>Texte du mail</label><textarea id="r-fm" rows="14">${esc(reglage('facture_modele', ''))}</textarea></div>
     <div class="btnrow"><button class="btn primary" id="r-ok5">Enregistrer</button></div></div>
+  <div class="card stack"><h3>Reçus de dons</h3>
+    <div class="field"><label>Objet de l'association (doit reprendre l'objet inscrit dans les statuts)</label><textarea id="r-ro2" rows="2">${esc(reglage('recu_objet_asso', ''))}</textarea></div>
+    <div class="grid g2"><div class="field"><label>Signataire (1re ligne : nom, puis qualité)</label><textarea id="r-sg" rows="3">${esc(reglage('recu_signataire', ''))}</textarea></div>
+      <div class="field"><label>N° RNA (facultatif, W…)</label><input id="r-rna" value="${esc(reglage('recu_rna', ''))}"></div></div>
+    <div class="field"><label>Signature (image scannée, imprimée sur les reçus)</label>
+      <div class="btnrow" style="align-items:center">${reglage('recu_signature', '') ? `<img src="${reglage('recu_signature', '')}" alt="Signature" style="height:60px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:4px">` : '<span class="small muted">Aucune signature enregistrée.</span>'}
+        <input type="file" id="r-sigf" accept="image/*" style="width:auto">${reglage('recu_signature', '') ? '<button class="btn sm ghost" id="r-sigx">Retirer</button>' : ''}</div>
+      <span class="small muted">Elle reste dans votre espace (pas sur le site public).</span></div>
+    <div class="field"><label>Objet du mail</label><input id="r-rmo" value="${esc(reglage('recu_mail_objet', ''))}"></div>
+    <div class="field"><label>Texte du mail (champs : {prenom}, {nom}, {montant}, {numero}, {date})</label><textarea id="r-rmm" rows="9">${esc(reglage('recu_mail_modele', ''))}</textarea></div>
+    <div class="btnrow"><button class="btn primary" id="r-ok7">Enregistrer</button></div></div>
   <div class="card stack"><h3>Mail des devis</h3>
     <p class="small muted">Mêmes champs, plus <span class="code">{validite}</span> (date de fin de validité du devis).</p>
     <div class="field"><label>Objet</label><input id="r-do" value="${esc(reglage('devis_objet', ''))}"></div>
@@ -815,6 +827,9 @@ function renderReglages() {
     <div class="btnrow"><button class="btn primary" id="r-ok2">Enregistrer</button></div></div>`);
   $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mention_tva', p_valeur: $('r-tva').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_pied', p_valeur: $('r-rp').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok3').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_total', p_valeur: $('r-at').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_partiel', p_valeur: $('r-ap').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+  $('r-ok7').onclick = async () => { try { for (const [k, i] of [['recu_objet_asso', 'r-ro2'], ['recu_signataire', 'r-sg'], ['recu_rna', 'r-rna'], ['recu_mail_objet', 'r-rmo'], ['recu_mail_modele', 'r-rmm']]) await rpc('fac_admin_reglage', { pwd: PWD, p_cle: k, p_valeur: $(i).value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+  $('r-sigf').onchange = async e => { const f = e.target.files[0]; if (!f) return; try { const u = await chargerSignature(f); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'recu_signature', p_valeur: u }); await load(); route(); toast('✓ Signature enregistrée'); } catch(err) { fail(err); } };
+  if ($('r-sigx')) $('r-sigx').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'recu_signature', p_valeur: '' }); await load(); route(); } catch(err) { fail(err); } };
   $('r-ok6').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'devis_objet', p_valeur: $('r-do').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'devis_modele', p_valeur: $('r-dm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok5').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'facture_objet', p_valeur: $('r-fo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'facture_modele', p_valeur: $('r-fm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok4').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'rappel_objet', p_valeur: $('r-ro').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'rappel_modele', p_valeur: $('r-rm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
@@ -1567,6 +1582,224 @@ async function mailFactureLibre(fid) {
   toast(to ? '✓ PDF téléchargé : pensez à le joindre au mail' : 'Pas de mail indiqué pour ce client : complétez le destinataire', to ? 'ok' : 'err');
 }
 
+// ======================== REÇUS DE DONS (Cerfa 11580) ========================
+const recuDe = id => D.recus.find(r => String(r.id) === String(id));
+const donateurDe = id => D.donateurs.find(d => String(d.id) === String(id));
+const recuNum = r => `${r.annee}-${String(r.numero).padStart(3, '0')}`;
+const MODES_DON = { especes: 'Espèces', cheque: 'Chèque', virement: 'Virement / carte' };
+let DONS_AN = null;
+// Montant en toutes lettres (euros et centimes)
+function enLettres(n) {
+  const U = ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf'];
+  const D10 = ['', '', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'soixante', 'quatre-vingt', 'quatre-vingt'];
+  const m100 = x => { if (x < 20) return U[x]; const d = Math.floor(x / 10), u = x % 10;
+    if (d === 7 || d === 9) return D10[d] + (d === 7 && u === 1 ? '-et-' : '-') + U[10 + u];
+    if (d === 8) return u ? 'quatre-vingt-' + U[u] : 'quatre-vingts';
+    return D10[d] + (u === 1 ? '-et-un' : u ? '-' + U[u] : ''); };
+  const m1000 = (x, fin) => { const c = Math.floor(x / 100), r = x % 100; let t = '';
+    if (c) t = (c > 1 ? U[c] + '-cent' : 'cent') + (c > 1 && !r && fin ? 's' : '');
+    if (r) t += (t ? '-' : '') + m100(r);
+    if (!fin && t.endsWith('quatre-vingts')) t = t.slice(0, -1);
+    return t; };
+  const ent = (x) => { if (!x) return 'zéro'; const parts = []; const mi = Math.floor(x / 1e6), k = Math.floor(x / 1000) % 1000, r = x % 1000;
+    if (mi) parts.push(m1000(mi, true) + (mi > 1 ? '-millions' : '-million'));
+    if (k) parts.push(k === 1 ? 'mille' : m1000(k, false) + '-mille');
+    if (r) parts.push(m1000(r, true));
+    return parts.join('-'); };
+  const e = Math.floor(r2(n) + 1e-9), c = Math.round((r2(n) - e) * 100);
+  let t = ent(e) + (e > 1 ? ' euros' : ' euro');
+  if (/(millions?|^.*-million)$/.test(ent(e))) t = ent(e) + " d'euros";
+  if (c) t += ' et ' + ent(c) + (c > 1 ? ' centimes' : ' centime');
+  return t;
+}
+function renderDons() {
+  const ans = [...new Set([new Date().getFullYear(), ...D.recus.map(r => r.annee)])].sort((a, b) => b - a);
+  if (!DONS_AN || !ans.includes(DONS_AN)) DONS_AN = ans[0];
+  const rs = D.recus.filter(r => r.annee === DONS_AN), ok = rs.filter(r => !r.annule);
+  const tot = r2(ok.reduce((s, r) => s + r.montant, 0)), totAb = r2(ok.filter(r => r.type_don === 'abandon').reduce((s, r) => s + r.montant, 0));
+  shell('dons', `
+  <div class="ttl"><div><h1 style="font-size:34px">Reçus de dons ${DONS_AN}</h1><p class="muted">Reçus fiscaux (modèle Cerfa n° 11580), numérotés automatiquement par année. Les coordonnées des donateurs sont gardées pour leurs prochains dons.</p></div>
+    <div class="btnrow"><select id="dons-an" style="width:auto">${ans.map(a => `<option ${a === DONS_AN ? 'selected' : ''}>${a}</option>`).join('')}</select><a class="btn primary" href="#d/new">+ Nouveau reçu</a></div></div>
+  <div class="kpis">
+    <div class="kpi"><b>${ok.length}</b><span>reçu${ok.length > 1 ? 's' : ''} émis en ${DONS_AN}</span></div>
+    <div class="kpi ok"><b>${euros(tot)}</b><span>de dons reçus</span></div>
+    <div class="kpi"><b>${euros(totAb)}</b><span>dont abandons de frais</span></div>
+    <div class="kpi"><b>${D.donateurs.length}</b><span>donateur${D.donateurs.length > 1 ? 's' : ''} enregistré${D.donateurs.length > 1 ? 's' : ''}</span></div>
+  </div>
+  <div class="msg info small">Chaque année, le Comité doit déclarer aux impôts le montant total des dons reçus et le nombre de reçus émis l'année précédente (article 222 bis du CGI) : ce sont les deux premiers chiffres ci-dessus.</div>
+  ${rs.length ? `<div class="tablebox"><table class="t"><thead><tr><th>N°</th><th>Date du don</th><th>Donateur</th><th>Type</th><th class="r">Montant</th><th>Reçu du</th><th></th></tr></thead><tbody>
+    ${rs.map(r => `<tr class="clk${r.annule ? ' muted' : ''}" onclick="location.hash='d/${r.id}'"${r.annule ? ' style="opacity:.55"' : ''}><td class="nw"><b>${recuNum(r)}</b></td><td class="nw">${fmtD(r.date_don)}</td>
+      <td class="club"><b>${esc(String(r.nom).toUpperCase())} ${esc(r.prenom || '')}</b><small>${esc([r.cp, r.ville].filter(Boolean).join(' '))}</small></td>
+      <td>${r.annule ? '<span class="badge b-bad">Annulé</span>' : r.type_don === 'abandon' ? '<span class="badge b-sent">Abandon de frais</span>' : `<span class="badge b-ok">Don</span> <span class="small muted">${esc(MODES_DON[r.mode] || '')}</span>`}</td>
+      <td class="num"><b>${euros(r.montant)}</b></td><td class="nw">${fmtD(r.date_recu)}</td>
+      <td class="r nw" onclick="event.stopPropagation()">${r.annule ? '' : `<button class="btn sm ghost" onclick="pdfRecu(${r.id})">PDF</button> <button class="btn sm ghost" onclick="mailRecu(${r.id})">✉ Mail</button>`}</td></tr>`).join('')}
+    </tbody><tfoot><tr><td colspan="4">Total ${DONS_AN} (hors reçus annulés)</td><td class="num">${euros(tot)}</td><td></td><td></td></tr></tfoot></table></div>`
+  : `<div class="card msg info">Aucun reçu en ${DONS_AN}. Créez le premier avec « Nouveau reçu ».</div>`}
+  <h2 class="cond" style="font-size:24px">Donateurs</h2>
+  ${D.donateurs.length ? `<div class="tablebox"><table class="t"><thead><tr><th>Donateur</th><th>Adresse</th><th>Mail</th><th class="r">Dons</th><th></th></tr></thead><tbody>
+    ${D.donateurs.map(d => { const ds = D.recus.filter(r => String(r.donateur_id) === String(d.id) && !r.annule);
+      return `<tr><td class="club"><b>${esc(String(d.nom).toUpperCase())} ${esc(d.prenom || '')}</b></td><td class="small">${esc([d.adresse, [d.cp, d.ville].filter(Boolean).join(' ')].filter(Boolean).join(', '))}</td>
+      <td class="small">${esc(d.email || '')}</td><td class="num">${ds.length ? `${ds.length} · ${euros(ds.reduce((s, r) => s + r.montant, 0))}` : '—'}</td>
+      <td class="r nw"><a class="btn sm primary" href="#d/new/${d.id}">+ Reçu</a> <button class="btn sm ghost" title="Retirer ce donateur de la liste" onclick="supprDonateur(${d.id})">✕</button></td></tr>`; }).join('')}
+    </tbody></table></div>` : '<p class="muted small">Les donateurs sont enregistrés automatiquement à leur premier reçu.</p>'}`);
+  $('dons-an').onchange = e => { DONS_AN = +e.target.value; renderDons(); };
+}
+async function supprDonateur(id) {
+  const d = donateurDe(id);
+  if (!confirm(`Retirer ${d.prenom || ''} ${d.nom} de la liste des donateurs ?\n\nSes reçus déjà émis sont conservés.`)) return;
+  try { await rpc('fac_admin_donateur', { pwd: PWD, p: { id, supprimer: true } }); await load(); renderDons(); toast('✓ Donateur retiré'); } catch(e) { fail(e); }
+}
+function renderRecu(r, donId) {
+  const nouveau = !r, d0 = r || donateurDe(donId) || {}, v = k => esc(d0[k] || '');
+  const typ = r ? r.type_don : 'don', dernier = r && !D.recus.some(x => x.annee === r.annee && x.numero > r.numero);
+  shell('dons', `
+  <div class="crumb"><a href="#dons">Reçus de dons</a> › ${r ? 'Reçu ' + recuNum(r) : 'Nouveau reçu'}</div>
+  <div class="card stack">
+    <div class="ttl"><div><h2>${r ? 'Reçu fiscal N° ' + recuNum(r) : 'Nouveau reçu fiscal'}</h2><p class="muted">${r ? (r.annule ? '<span class="badge b-bad">Annulé</span> Ce reçu est annulé : son numéro reste réservé.' : 'Vous pouvez corriger le reçu puis le régénérer : il garde son numéro.') : `Le numéro sera attribué à l'enregistrement (prochain : <b>${new Date().getFullYear()}-${String(Math.max(0, ...D.recus.filter(x => x.annee === new Date().getFullYear()).map(x => x.numero)) + 1).padStart(3, '0')}</b>).`}</p></div>
+      ${r ? `<div class="btnrow">${r.annule ? `<button class="btn ghost" onclick="annulerRecu(${r.id},false)">Rétablir le reçu</button>` : `<button class="btn ghost" onclick="pdfRecu(${r.id})">⬇ PDF</button><button class="btn ghost" onclick="mailRecu(${r.id})">✉ Préparer le mail</button><button class="btn ghost" onclick="annulerRecu(${r.id},true)">Annuler le reçu</button>`}
+        ${dernier ? `<button class="btn danger" onclick="supprRecu(${r.id})">Supprimer</button>` : ''}</div>` : ''}</div>
+    <div class="grid g2">
+      <div class="stack" style="gap:10px">
+        <h3 class="cond" style="font-size:19px">Donateur</h3>
+        ${D.donateurs.length ? `<div class="field"><label>Donateur déjà enregistré</label><select id="rc-don"><option value="">— Nouveau donateur —</option>${D.donateurs.map(d => `<option value="${d.id}" ${String(d0.donateur_id || d0.id) === String(d.id) && (r ? r.donateur_id : donId) ? 'selected' : ''}>${esc(String(d.nom).toUpperCase())} ${esc(d.prenom || '')}${d.ville ? ' – ' + esc(d.ville) : ''}</option>`).join('')}</select></div>` : ''}
+        <div class="grid g2"><div class="field"><label>Nom *</label><input id="rc-nom" value="${v('nom')}"></div><div class="field"><label>Prénom(s) *</label><input id="rc-prenom" value="${v('prenom')}"></div></div>
+        <div class="field"><label>Adresse (n° et rue) *</label><input id="rc-adresse" value="${v('adresse')}"></div>
+        <div class="grid" style="grid-template-columns:130px minmax(0,1fr)"><div class="field"><label>Code postal *</label><input id="rc-cp" value="${v('cp')}" maxlength="5" inputmode="numeric"></div><div class="field"><label>Commune *</label><input id="rc-ville" value="${v('ville')}"></div></div>
+        <div class="field"><label>Mail (pour lui envoyer le reçu)</label><input id="rc-email" value="${v('email')}" inputmode="email"></div>
+      </div>
+      <div class="stack" style="gap:10px">
+        <h3 class="cond" style="font-size:19px">Don</h3>
+        <div class="field"><label>Type</label><div class="btnrow">
+          <label class="chk"><input type="radio" name="rc-type" value="don" ${typ === 'don' ? 'checked' : ''}> Don (somme versée)</label>
+          <label class="chk"><input type="radio" name="rc-type" value="abandon" ${typ === 'abandon' ? 'checked' : ''}> Abandon de frais (bénévole)</label></div></div>
+        <div class="grid g2"><div class="field"><label>Montant € *</label><input id="rc-montant" value="${r ? fmtN(r.montant) : ''}" inputmode="decimal" placeholder="0,00"><span class="small muted" id="rc-lettres"></span></div>
+          <div class="field"><label>Date du don *</label><input id="rc-date" type="date" value="${esc(r ? r.date_don : today())}"></div></div>
+        <div class="field" id="rc-mode-f"><label>Mode de versement *</label><select id="rc-mode"><option value=""></option>${Object.entries(MODES_DON).map(([k, t]) => `<option value="${k}" ${r && r.mode === k ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
+        <div class="msg info small" id="rc-ab-info">Abandon de frais : gardez la fiche de frais signée par le bénévole (« Je soussigné… certifie renoncer au remboursement… ») et ses justificatifs avec la comptabilité.</div>
+        <div class="grid g2"><div class="field"><label>Date du reçu</label><input id="rc-daterecu" type="date" value="${esc(r ? r.date_recu : today())}"></div>
+          <div class="field"><label>Remarque interne</label><input id="rc-remarque" value="${esc(r ? r.remarque || '' : '')}"></div></div>
+      </div>
+    </div>
+    ${r && r.annule ? '' : `<div class="btnrow"><button class="btn primary" id="rc-ok">${nouveau ? '✓ Enregistrer et créer le PDF' : '✓ Enregistrer et régénérer le PDF'}</button>${nouveau ? '<a class="btn ghost" href="#dons">Annuler</a>' : ''}</div>`}
+    <p class="small muted">Rappel : un reçu fiscal ne peut être délivré que pour un don <b>sans contrepartie</b> (pas en paiement d'un stage, d'une licence…).</p>
+  </div>`);
+  const majType = () => { const ab = document.querySelector('input[name=rc-type]:checked').value === 'abandon'; $('rc-mode-f').hidden = ab; $('rc-ab-info').hidden = !ab; };
+  const majL = () => { const n = num($('rc-montant').value); $('rc-lettres').textContent = n > 0 ? enLettres(n) : ''; };
+  document.querySelectorAll('input[name=rc-type]').forEach(x => x.onchange = majType); majType();
+  $('rc-montant').oninput = majL; majL();
+  if ($('rc-don')) $('rc-don').onchange = e => { const d = donateurDe(e.target.value) || {}; ['nom', 'prenom', 'adresse', 'cp', 'ville', 'email'].forEach(k => $('rc-' + k).value = d[k] || ''); };
+  if ($('rc-ok')) $('rc-ok').onclick = () => enregistrerRecu(r);
+}
+async function enregistrerRecu(r) {
+  const g = k => $('rc-' + k).value.trim(), type_don = document.querySelector('input[name=rc-type]:checked').value;
+  const p = { id: r ? r.id : null, donateur_id: $('rc-don') ? $('rc-don').value : '', nom: g('nom'), prenom: g('prenom'), adresse: g('adresse'), cp: g('cp'), ville: g('ville'), email: g('email'),
+    montant: String(num(g('montant'))), date_don: g('date'), type_don, mode: type_don === 'don' ? g('mode') : '', date_recu: g('daterecu') || today(), remarque: g('remarque') };
+  const e = [];
+  if (!p.nom || !p.prenom) e.push('le nom et le prénom du donateur');
+  if (!p.adresse) e.push('son adresse');
+  if (!/^\d{5}$/.test(p.cp)) e.push('son code postal (5 chiffres)');
+  if (!p.ville) e.push('sa commune');
+  if (!(num(p.montant) > 0)) e.push('le montant');
+  if (!p.date_don) e.push('la date du don');
+  if (type_don === 'don' && !p.mode) e.push('le mode de versement');
+  if (e.length) return alert('Indiquez ' + e.join(', ') + '.');
+  if (r && String(new Date(p.date_recu).getFullYear()) !== String(r.annee)) return alert(`Ce reçu est numéroté sur l'année ${r.annee} : sa date doit rester en ${r.annee}.`);
+  try {
+    const id = await rpc('fac_admin_recu', { pwd: PWD, p }); await load();
+    toast(r ? '✓ Reçu mis à jour' : `✓ Reçu ${recuNum(recuDe(id))} enregistré`);
+    location.hash = 'd/' + id; await pdfRecu(id);
+  } catch(err) { fail(err); }
+}
+async function annulerRecu(id, annule) {
+  const r = recuDe(id);
+  if (annule && !confirm(`Annuler le reçu ${recuNum(r)} ?\n\nSon numéro reste réservé (la numérotation doit rester continue) et il ne compte plus dans les totaux. À faire par exemple si un reçu a été établi par erreur.`)) return;
+  try { await rpc('fac_admin_recu', { pwd: PWD, p: { ...r, annule } }); await load(); renderRecu(recuDe(id)); toast(annule ? '✓ Reçu annulé' : '✓ Reçu rétabli'); } catch(e) { fail(e); }
+}
+async function supprRecu(id) {
+  const r = recuDe(id);
+  if (!confirm(`Supprimer définitivement le reçu ${recuNum(r)} ?\n\nC'est le dernier de l'année : son numéro sera réattribué au prochain reçu.`)) return;
+  try { await rpc('fac_admin_recu', { pwd: PWD, p: { id, supprimer: true } }); await load(); location.hash = 'dons'; toast('✓ Reçu supprimé'); } catch(e) { fail(e); }
+}
+let SIGNATURE_IMG = null;
+async function pdfRecu(id) {
+  if (!window.jspdf) { alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.'); return; }
+  const r = recuDe(id), { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, M = 15, NAVY = [11, 33, 73], TXT = [20, 32, 58], GRIS = [100, 112, 135], ab = r.type_don === 'abandon';
+  const img1 = await logoFF(), img2 = (await logoCarre()) || (await logo()), sig = reglage('recu_signature', '');
+  const put = (img, x, y, h, maxW, right) => { if (!img) return; try { const ip = doc.getImageProperties(img); let w = h * ip.width / ip.height; if (w > maxW) { h = h * maxW / w; w = maxW; } doc.addImage(img, img.startsWith('data:image/png') ? 'PNG' : 'JPEG', right ? x - w : x, y, w, h); } catch(e) {} };
+  put(img1, M, 10, 20, 26); put(img2, W - M, 10, 22, 30, true);
+  doc.setTextColor(...NAVY); doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.text('Reçu au titre des dons', W / 2, 17, { align: 'center' });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.text("à certains organismes d'intérêt général", W / 2, 22.5, { align: 'center' });
+  doc.setFont('helvetica', 'italic'); doc.setFontSize(8); doc.setTextColor(...GRIS);
+  doc.text('Articles 200, 238 bis et 978 du code général des impôts (CGI)', W / 2, 27.5, { align: 'center' }); doc.text('Modèle Cerfa n° 11580*05', W / 2, 31.5, { align: 'center' });
+  doc.setTextColor(...TXT); doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5); doc.text(pdfTxt("Numéro d'ordre du reçu : " + recuNum(r)), W - M, 39, { align: 'right' });
+  let y = 44;
+  const section = t => { doc.setFillColor(...NAVY); doc.rect(M, y, W - 2 * M, 6.5, 'F'); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.text(t, M + 2.5, y + 4.6); doc.setTextColor(...TXT); y += 12; };
+  const ligne = (lab, val, lw = 44) => { doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.text(pdfTxt(lab), M + 2.5, y); doc.setFont('helvetica', 'normal');
+    const t = doc.splitTextToSize(pdfTxt(val || ''), W - 2 * M - lw - 4); doc.text(t, M + 2.5 + lw, y); y += 4.8 * t.length + 0.8; };
+  const caseX = (x, yy, on, lab) => { doc.setDrawColor(...TXT); doc.setLineWidth(0.3); doc.rect(x, yy - 3, 3.4, 3.4); if (on) { doc.setLineWidth(0.5); doc.line(x + 0.6, yy - 2.4, x + 2.8, yy - 0.2); doc.line(x + 2.8, yy - 2.4, x + 0.6, yy - 0.2); }
+    doc.setFont('helvetica', on ? 'bold' : 'normal'); doc.setFontSize(8.8); doc.text(pdfTxt(lab), x + 5, yy); return x + 5 + doc.getTextWidth(pdfTxt(lab)) + 7; };
+  // bénéficiaire
+  section('Bénéficiaire des versements');
+  const em = String(reglage('emetteur', '')).split('\n').map(x => x.trim()).filter(Boolean);
+  ligne('Nom ou dénomination :', 'Comité du Var de Volley-Ball');
+  ligne('Adresse :', 'Maison des Sports du Var – 133, boulevard Général Brosset – 83200 TOULON');
+  ligne('N° SIREN :', '424 630 143' + (reglage('recu_rna', '') ? '   –   N° RNA : ' + reglage('recu_rna', '') : ''));
+  ligne('Objet :', reglage('recu_objet_asso', ''));
+  y += 1; caseX(M + 3, y, true, "Œuvre ou organisme d'intérêt général (association à but non lucratif, gestion désintéressée)"); y += 9;
+  // donateur
+  section('Donateur');
+  ligne('Nom, prénom(s) :', `${String(r.nom).toUpperCase()} ${r.prenom || ''}`);
+  ligne('Adresse :', r.adresse || '');
+  ligne('Code postal, commune :', `${r.cp || ''} ${String(r.ville || '').toUpperCase()}`);
+  y += 3;
+  // don
+  section('Don');
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+  doc.text(pdfTxt("Le bénéficiaire reconnaît avoir reçu, au titre des dons et versements ouvrant droit à réduction d'impôt, la somme de :"), M + 2.5, y); y += 8;
+  doc.setFillColor(253, 235, 216); doc.roundedRect(M + 2.5, y - 5.5, 60, 9, 1.5, 1.5, 'F'); doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor(...NAVY);
+  doc.text(pdfTxt(euros(r.montant)), M + 32.5, y + 0.8, { align: 'center' }); doc.setTextColor(...TXT); y += 9;
+  ligne('Somme en toutes lettres :', enLettres(r.montant)); ligne('Date du versement ou du don :', fmtD(r.date_don), 52);
+  y += 2; doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+  doc.text(doc.splitTextToSize(pdfTxt("Le bénéficiaire certifie sur l'honneur que les dons et versements qu'il reçoit ouvrent droit à la réduction d'impôt prévue à l'article :"), W - 2 * M - 5), M + 2.5, y); y += 9;
+  let x = caseX(M + 3, y, true, '200 du CGI'); x = caseX(x, y, false, '238 bis du CGI'); caseX(x, y, false, '978 du CGI'); y += 9;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.text('Forme du don :', M + 2.5, y); y += 6;
+  x = caseX(M + 3, y, false, 'Acte authentique'); x = caseX(x, y, false, 'Acte sous seing privé'); x = caseX(x, y, !ab, 'Déclaration de don manuel'); caseX(x, y, ab, 'Autres'); y += 8;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.text('Nature du don :', M + 2.5, y); y += 6;
+  x = caseX(M + 3, y, !ab, 'Numéraire'); x = caseX(x, y, false, 'Titres de sociétés cotés'); caseX(x, y, ab, 'Autres (frais engagés par un bénévole, abandonnés)'); y += 8;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.text('En cas de don en numéraire, mode de versement du don :', M + 2.5, y); y += 6;
+  x = caseX(M + 3, y, !ab && r.mode === 'especes', "Remise d'espèces"); x = caseX(x, y, !ab && r.mode === 'cheque', 'Chèque'); caseX(x, y, !ab && r.mode === 'virement', 'Virement, prélèvement, carte bancaire'); y += 12;
+  // signature
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.text(pdfTxt('Fait à Toulon, le ' + fmtD(r.date_recu)), M + 2.5, y);
+  const sx = W - M - 75, sl = String(reglage('recu_signataire', '')).split('\n').filter(Boolean);
+  doc.setFont('helvetica', 'bold'); doc.text('Date et signature :', sx, y);
+  doc.setFontSize(10); doc.text(pdfTxt(sl[0] || ''), sx + 37, y + 6, { align: 'center' }); doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5);
+  sl.slice(1).forEach((t, k) => doc.text(pdfTxt(t), sx + 37, y + 10.5 + k * 4, { align: 'center' }));
+  if (sig) put(sig, sx + 37 - 20, y + 12 + 4 * Math.max(0, sl.length - 2), 22, 40);
+  if (r.annule) { doc.setTextColor(200, 40, 40); doc.setFont('helvetica', 'bold'); doc.setFontSize(60); doc.text('ANNULÉ', W / 2, 160, { align: 'center', angle: 30 }); doc.setTextColor(...TXT); }
+  // pied
+  doc.setDrawColor(200, 208, 222); doc.setLineWidth(0.3); doc.line(M, 279, W - M, 279);
+  doc.setFont('helvetica', 'italic'); doc.setFontSize(7.5); doc.setTextColor(...GRIS);
+  doc.text('Reçu à conserver par le donateur : il ouvre droit à une réduction d\'impôt sur le revenu (article 200 du CGI).', W / 2, 283, { align: 'center' });
+  doc.text("Un don n'ouvre droit à réduction d'impôt que s'il est consenti sans contrepartie directe ou indirecte au profit du donateur.", W / 2, 286.5, { align: 'center' });
+  doc.save(`Recu-fiscal-${recuNum(r)}-${slug(r.nom)}.pdf`);
+}
+async function mailRecu(id) {
+  const r = recuDe(id);
+  await pdfRecu(id);
+  const vars = { numero: recuNum(r), montant: euros(r.montant), nom: String(r.nom).toUpperCase(), prenom: r.prenom || '', date: fmtD(r.date_don) };
+  const rep = t => String(t || '').replace(/\{(\w+)\}/g, (m, k) => vars[k] != null ? vars[k] : m);
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(r.email || '') + '&su=' + encodeURIComponent(rep(reglage('recu_mail_objet', 'Reçu fiscal N° {numero}'))) + '&body=' + encodeURIComponent(rep(reglage('recu_mail_modele', ''))), '_blank');
+  toast(r.email ? '✓ PDF téléchargé : pensez à le joindre au mail' : 'Pas de mail pour ce donateur : complétez le destinataire', r.email ? 'ok' : 'err');
+}
+async function chargerSignature(file) {
+  const url = await new Promise(res => { const f = new FileReader(); f.onload = () => res(f.result); f.readAsDataURL(file); });
+  const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+  const k = Math.min(1, 500 / im.width), c = document.createElement('canvas'); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+  c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+  return c.toDataURL('image/png');
+}
+
 // ======================== EXPORT EXCEL ========================
 function loadScript(src) { return new Promise((ok, ko) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => ko(new Error('Module Excel indisponible')); document.head.appendChild(s); }); }
 async function exportExcel() {
@@ -1615,6 +1848,9 @@ async function route() {
     else if (h === 'bordereaux') renderBordereaux();
     else if ((m = h.match(/^f\/(\d+)$/))) { const f = facDe(m[1]); if (!f) { location.hash = 'factures'; return; } renderFactureLibre(f); }
     else if (h === 'factures') renderFactures();
+    else if (h === 'dons') renderDons();
+    else if ((m = h.match(/^d\/new(?:\/(\d+))?$/))) renderRecu(null, m[1]);
+    else if ((m = h.match(/^d\/(\d+)$/))) { const r = recuDe(m[1]); if (!r) { location.hash = 'dons'; return; } renderRecu(r); }
     else if (h === 'paiements') renderPaiements();
     else if (h === 'articles') renderArticles();
     else if (h === 'clubs') renderClubs();

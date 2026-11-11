@@ -110,6 +110,12 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - Export Excel : feuille « Hors clubs » (factures seulement).
 - Mention TVA (réglage `mention_tva`, modifiable dans Réglages) imprimée sous le total de toutes les factures (clubs et hors clubs) et des devis. Défaut : « TVA non applicable – article 261-7-1° b du CGI ». Recodification de la TVA dans le CIBS au 1er janvier 2027 (anciennes références CGI tolérées jusqu'au 31/12/2027).
 
+## Reçus de dons — onglet « Reçus de dons » de la facturation
+
+- Tables `fac_donateurs` (coordonnées mémorisées) et `fac_recus` (copie des coordonnées, montant, date du don, type don / abandon de frais, mode, date du reçu, annulé). RPC `fac_admin_recu` (numéro attribué à la création : année du reçu + n° à la suite, `2026-001` ; mise à jour du donateur ; suppression seulement du dernier reçu de l'année, sinon « annuler » pour garder une numérotation continue) et `fac_admin_donateur`.
+- PDF reprenant le modèle Cerfa n° 11580*05 : bénéficiaire (SIREN, objet = réglage `recu_objet_asso`, RNA facultatif `recu_rna`), donateur, montant en chiffres et en lettres (`enLettres`), cases art. 200, forme (don manuel / Autres pour l'abandon de frais), nature (numéraire / Autres : frais de bénévole abandonnés), mode de versement. Signataire `recu_signataire`, signature image `recu_signature` (dataURL déposée dans Réglages, jamais dans le dépôt public).
+- Totaux par année (nombre de reçus et montant) pour la déclaration annuelle (art. 222 bis du CGI). Mail Gmail : `recu_mail_objet` / `recu_mail_modele`.
+
 ## Frais de déplacement — `frais/index.html` (accès libre)
 
 - **Adresse** : https://volley83.github.io/frais/ (non indexée ; lien sur l'écran de connexion de la facturation et dans son menu « Frais dépl. »). Aucune base de données : tout se passe dans le navigateur.

@@ -181,6 +181,39 @@ alter table fac_factures add constraint fac_factures_statut_check check (statut 
 alter table fac_factures add constraint fac_factures_type_check check (type in ('facture', 'devis'));
 create unique index if not exists fac_factures_numero_uk on fac_factures (saison, type, numero);
 
+-- Reçus fiscaux de dons (Cerfa 11580) : donateurs mémorisés, reçus numérotés par année civile (2026-001…)
+create table if not exists fac_donateurs (
+  id         bigserial primary key,
+  nom        text not null,
+  prenom     text,
+  adresse    text,
+  cp         text,
+  ville      text,
+  email      text,
+  created_at timestamptz not null default now()
+);
+create table if not exists fac_recus (
+  id          bigserial primary key,
+  annee       int not null,
+  numero      int not null,
+  donateur_id bigint references fac_donateurs(id) on delete set null,
+  nom         text not null,
+  prenom      text,
+  adresse     text,
+  cp          text,
+  ville       text,
+  email       text,
+  montant     numeric(10,2) not null,
+  date_don    date not null,
+  type_don    text not null default 'don' check (type_don in ('don', 'abandon')),   -- don manuel / abandon de frais
+  mode        text check (mode in ('especes', 'cheque', 'virement')),
+  date_recu   date not null default current_date,
+  annule      boolean not null default false,
+  remarque    text,
+  created_at  timestamptz not null default now(),
+  unique (annee, numero)
+);
+
 alter table fac_clubs add column if not exists email_finances text;   -- trésorier(s) : destinataires des factures
 alter table fac_clubs      enable row level security;
 alter table fac_articles   enable row level security;
@@ -194,7 +227,9 @@ alter table fac_saisisseurs  enable row level security;
 alter table fac_signalements enable row level security;
 alter table fac_rappels      enable row level security;
 alter table fac_factures     enable row level security;
-revoke all on fac_clubs, fac_articles, fac_bordereaux, fac_lignes, fac_paiements, fac_reglages, fac_ris, fac_ris_items, fac_saisisseurs, fac_signalements, fac_rappels, fac_factures from anon, authenticated;
+alter table fac_donateurs    enable row level security;
+alter table fac_recus        enable row level security;
+revoke all on fac_clubs, fac_articles, fac_bordereaux, fac_lignes, fac_paiements, fac_reglages, fac_ris, fac_ris_items, fac_saisisseurs, fac_signalements, fac_rappels, fac_factures, fac_donateurs, fac_recus from anon, authenticated;
 
 -- ---------- Outils ----------
 create or replace function fac_is_admin(pwd text) returns boolean
@@ -221,6 +256,8 @@ begin
                    from fac_ris_items i join fac_ris r on r.id = i.ris_id where r.saison = p_saison),
     'rappels',      (select coalesce(jsonb_agg(to_jsonb(x) order by x.created_at), '[]') from fac_rappels x where x.saison = p_saison),
     'saisisseurs',  (select coalesce(jsonb_agg(to_jsonb(x) order by x.nom), '[]') from fac_saisisseurs x),
+    'recus',        (select coalesce(jsonb_agg(to_jsonb(r) order by r.annee desc, r.numero desc), '[]') from fac_recus r),
+    'donateurs',    (select coalesce(jsonb_agg(to_jsonb(d) order by lower(d.nom), lower(d.prenom)), '[]') from fac_donateurs d),
     'factures',     (select coalesce(jsonb_agg(to_jsonb(f) order by f.numero), '[]') from fac_factures f where f.saison = p_saison),
     'clients',      (select coalesce(jsonb_agg(x order by x->>'client_nom'), '[]') from (
                        select distinct on (lower(client_nom)) jsonb_build_object('client_nom', client_nom, 'client_contact', client_contact,
@@ -661,6 +698,60 @@ begin
   return fid;
 end $$;
 
+-- Reçu de don : p = {id?, donateur_id?, nom, prenom, adresse, cp, ville, email, montant, date_don, type_don, mode, date_recu, remarque, annule}
+-- Le numéro est attribué à la création (année du reçu, à la suite). Les coordonnées du donateur sont mémorisées / mises à jour.
+-- {id, supprimer:true} : seulement le dernier reçu de l'année (sinon l'annuler, pour garder la numérotation continue).
+create or replace function fac_admin_recu(pwd text, p jsonb) returns bigint
+language plpgsql security definer set search_path = public as $$
+declare rid bigint := nullif(p->>'id', '')::bigint; did bigint := nullif(p->>'donateur_id', '')::bigint; r fac_recus; an int;
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  if (p->>'supprimer')::boolean then
+    select * into r from fac_recus where id = rid;
+    if exists (select 1 from fac_recus where annee = r.annee and numero > r.numero) then
+      raise exception 'Seul le dernier reçu de l''année peut être supprimé : annulez plutôt celui-ci (la numérotation doit rester continue).';
+    end if;
+    delete from fac_recus where id = rid; return rid;
+  end if;
+  if nullif(trim(p->>'nom'), '') is null then raise exception 'Nom du donateur manquant'; end if;
+  -- donateur : celui choisi, sinon même nom + prénom + code postal, sinon nouveau
+  if did is null then
+    select id into did from fac_donateurs where lower(nom) = lower(trim(p->>'nom')) and lower(coalesce(prenom, '')) = lower(coalesce(trim(p->>'prenom'), ''))
+      and coalesce(cp, '') = coalesce(trim(p->>'cp'), '') limit 1;
+  end if;
+  if did is null then insert into fac_donateurs (nom) values (trim(p->>'nom')) returning id into did; end if;
+  update fac_donateurs set nom = trim(p->>'nom'), prenom = nullif(trim(p->>'prenom'), ''), adresse = nullif(trim(p->>'adresse'), ''),
+    cp = nullif(trim(p->>'cp'), ''), ville = nullif(trim(p->>'ville'), ''), email = nullif(trim(p->>'email'), '') where id = did;
+  if rid is null then
+    an := extract(year from coalesce(nullif(p->>'date_recu', '')::date, current_date));
+    insert into fac_recus (annee, numero, nom, montant, date_don)
+    values (an, (select coalesce(max(numero), 0) + 1 from fac_recus where annee = an), trim(p->>'nom'), 0, current_date) returning id into rid;
+  end if;
+  update fac_recus set donateur_id = did, nom = trim(p->>'nom'), prenom = nullif(trim(p->>'prenom'), ''), adresse = nullif(trim(p->>'adresse'), ''),
+    cp = nullif(trim(p->>'cp'), ''), ville = nullif(trim(p->>'ville'), ''), email = nullif(trim(p->>'email'), ''),
+    montant = coalesce(nullif(replace(p->>'montant', ',', '.'), '')::numeric, montant),
+    date_don = coalesce(nullif(p->>'date_don', '')::date, date_don),
+    type_don = coalesce(nullif(p->>'type_don', ''), type_don),
+    mode = case when coalesce(nullif(p->>'type_don', ''), type_don) = 'abandon' then null else nullif(p->>'mode', '') end,
+    date_recu = coalesce(nullif(p->>'date_recu', '')::date, date_recu),
+    remarque = nullif(trim(p->>'remarque'), ''),
+    annule = coalesce((p->>'annule')::boolean, annule)
+  where id = rid;
+  return rid;
+end $$;
+
+-- Donateur : modification ou suppression (les reçus déjà émis gardent leurs coordonnées)
+create or replace function fac_admin_donateur(pwd text, p jsonb) returns bigint
+language plpgsql security definer set search_path = public as $$
+declare did bigint := nullif(p->>'id', '')::bigint;
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  if (p->>'supprimer')::boolean then delete from fac_donateurs where id = did; return did; end if;
+  update fac_donateurs set nom = coalesce(nullif(trim(p->>'nom'), ''), nom), prenom = nullif(trim(p->>'prenom'), ''), adresse = nullif(trim(p->>'adresse'), ''),
+    cp = nullif(trim(p->>'cp'), ''), ville = nullif(trim(p->>'ville'), ''), email = nullif(trim(p->>'email'), '') where id = did;
+  return did;
+end $$;
+
 -- ---------- Droits ----------
 revoke execute on function fac_is_admin(text) from public, anon, authenticated;
 grant execute on function
@@ -675,6 +766,8 @@ grant execute on function
   fac_admin_reglage(text, text, jsonb),
   fac_admin_facture(text, jsonb),
   fac_admin_devis_facture(text, bigint),
+  fac_admin_recu(text, jsonb),
+  fac_admin_donateur(text, jsonb),
   fac_admin_ris(text, jsonb),
   fac_admin_rappel(text, jsonb),
   fac_admin_ris_item(text, jsonb),
@@ -877,6 +970,10 @@ update fac_articles set rubrique_ris = case
 insert into fac_reglages (cle, valeur) values
   ('facture_objet', '"Facture N° {numero} – Comité du Var de Volley-Ball"'),
   ('mention_tva', '"TVA non applicable – article 261-7-1° b du CGI (association sans but lucratif à gestion désintéressée)"'),
+  ('recu_objet_asso', '"Organiser, développer et promouvoir la pratique du volley-ball dans le département du Var"'),
+  ('recu_signataire', '"Gérald HENRY\nPrésident du Comité du Var de Volley-Ball"'),
+  ('recu_mail_objet', '"Reçu fiscal N° {numero} – Comité du Var de Volley-Ball"'),
+  ('recu_mail_modele', '"Bonjour {prenom},\n\nNous vous remercions chaleureusement pour votre don de {montant} au Comité du Var de Volley-Ball.\n\nVous trouverez ci-joint votre reçu fiscal N° {numero}, à conserver : il vous permet de bénéficier d''une réduction d''impôt sur le revenu de 66 % du montant de votre don, dans la limite de 20 % de votre revenu imposable.\n\nAvec toute notre reconnaissance,\n\nComité du Var de Volley-Ball"'),
   ('devis_objet', '"Devis N° {numero} – Comité du Var de Volley-Ball"'),
   ('devis_modele', '"Madame, Monsieur,\n\nVeuillez trouver ci-joint notre devis N° {numero} du {date}{objet}, d''un montant de {montant}, valable jusqu''au {validite}.\n\nPour l''accepter, il vous suffit de nous le retourner signé avec la mention « Bon pour accord », ou de nous répondre par mail. La facture correspondante vous sera alors adressée.\n\nEn cas de question, n''hésitez pas à nous contacter.\n\nCordialement,\n\nComité du Var de Volley-Ball"'),
   ('facture_modele', '"Madame, Monsieur,\n\nVeuillez trouver ci-joint la facture N° {numero} du {date}{objet}, d''un montant de {montant}.\n\nVous pouvez la régler par virement (coordonnées bancaires sur la facture) ou par chèque à l''ordre du Comité du Var de Volley-Ball, en rappelant le numéro de la facture.\n\nEn cas de question, n''hésitez pas à nous contacter.\n\nCordialement,\n\nEric CHASSAGNARD\nTrésorier\nComité du Var de Volley-Ball"')
