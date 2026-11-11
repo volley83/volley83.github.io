@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comité du Var de Volley-Ball</title>
+<meta name="description" content="Toutes les informations sur le volley-ball dans le Var : résultats et classements, tournois OPEN, stages des jeunes, Pitchoun' Volley, Tournoi International.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0B2149; --navy2: #14305F; --navy3: #091B3D; --blue: #1E4FA3; --accent: #F6C21B;
+    --bg: #F4F6FA; --card: #FFFFFF; --line: #E2E7F0; --line2: #EDF0F5; --lineN: #2B4A82;
+    --text: #14203A; --muted: #56627A; --pale: #C9D4EA;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; font-size: 15px; line-height: 1.5; min-height: 100vh; }
+  [hidden] { display: none !important; }
+  a { color: var(--blue); }
+  a:hover { color: var(--navy); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+  .cond { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: .5px; }
+  h1, h2, h3 { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: .5px; color: var(--navy); font-weight: 800; }
+  .muted { color: var(--muted); } .small { font-size: 14px; }
+
+  /* En-tête */
+  header { background: #fff; border-bottom: 1px solid var(--line); }
+  .head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding-top: 12px; padding-bottom: 12px; }
+  .head .side { flex: 1 1 160px; min-width: 0; display: flex; }
+  .head .side.r { justify-content: flex-end; }
+  .head img { height: 56px; width: auto; display: block; }
+  .head .name { flex: 0 1 auto; min-width: 0; text-align: center; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 34px; line-height: 1; text-transform: uppercase; letter-spacing: .5px; color: var(--navy); }
+  .head nav { flex: 1 1 100%; display: flex; flex-wrap: wrap; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .navbtn { display: inline-flex; align-items: center; height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: #fff; color: var(--text); font-weight: 600; font-size: 14px; text-decoration: none; white-space: nowrap; }
+  .navbtn:hover { border-color: var(--navy); color: var(--navy); }
+  .navbtn.cta { background: var(--accent); border-color: var(--accent); color: var(--navy); font-weight: 700; padding: 0 18px; }
+
+  /* Bandeau */
+  .hero { background: var(--navy); color: #fff; }
+  .hero .in { display: flex; flex-wrap: wrap; align-items: center; gap: 28px 56px; padding-top: 40px; padding-bottom: 36px; }
+  .hero .txt { flex: 999 1 480px; min-width: 0; }
+  .hero .k { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-size: 16px; margin-bottom: 10px; }
+  .hero h1 { color: #fff; font-size: 68px; line-height: .98; }
+  .hero h1 span { display: block; font-size: 30px; font-weight: 700; line-height: 1.1; color: var(--pale); margin-bottom: 6px; }
+  .hero p { margin-top: 16px; max-width: 620px; color: var(--pale); font-size: 17px; }
+  .acts { flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+  .act { display: flex; align-items: center; gap: 14px; min-height: 68px; padding: 10px 18px; border-radius: 12px; background: var(--navy2); border: 1px solid var(--lineN); color: #fff; text-decoration: none; }
+  .act:hover { border-color: var(--accent); color: #fff; }
+  .act b { display: block; font-size: 17px; }
+  .act span span { display: block; font-size: 14px; color: var(--pale); }
+  .act > span { flex: 1 1 auto; min-width: 0; }
+  .act.main { background: var(--accent); border-color: var(--accent); color: var(--navy); }
+  .act.main:hover { color: var(--navy); border-color: #fff; }
+  .act.main span span { color: var(--navy); }
+  .next { border-top: 1px solid var(--lineN); background: var(--navy3); }
+  .next .in { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; padding-top: 8px; padding-bottom: 8px; }
+  .next .l { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); font-size: 15px; }
+  .next .w { flex: 1 1 320px; min-width: 0; }
+  .next a { display: inline-flex; align-items: center; min-height: 44px; color: #fff; font-weight: 600; }
+
+  /* Contenu */
+  main.wrap { padding-top: 32px; padding-bottom: 64px; display: flex; flex-direction: column; gap: 36px; }
+  .cols { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+  .news { flex: 1 1 500px; max-width: 548px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+  .side-col { flex: 999 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+  .ttl { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
+  .ttl h2 { font-size: 34px; line-height: 1; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+  .card h2 { font-size: 26px; line-height: 1.05; margin-bottom: 6px; }
+
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tab { min-height: 44px; padding: 0 18px; border-radius: 22px; border: 1px solid #C5CEDD; background: #fff; color: var(--text); font-family: inherit; font-weight: 700; font-size: 14px; cursor: pointer; }
+  .tab[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .fb { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .fb .ask { padding: 36px 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+  .fb .ask b { font-size: 17px; color: var(--navy); }
+  .fb .ask p { max-width: 460px; color: var(--muted); font-size: 14px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border-radius: 10px; border: 0; background: var(--navy); color: #fff; font-family: inherit; font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: none; }
+  .btn:hover { background: var(--navy2); color: #fff; }
+  .lnk { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; font-size: 14px; }
+  .fb .frame { display: flex; justify-content: center; background: #F8FAFD; min-height: 300px; }
+  .fb iframe { border: 0; display: block; max-width: 100%; }
+  .fb .foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 16px; padding: 4px 18px; border-top: 1px solid var(--line); background: #F8FAFD; }
+  .fb .foot button { background: none; border: 0; color: var(--muted); font-family: inherit; font-size: 13px; text-decoration: underline; cursor: pointer; min-height: 44px; }
+
+  .ev { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line2); }
+  .ev:last-of-type { border-bottom: 0; }
+  .ev .d { flex: 0 0 76px; white-space: nowrap; text-align: center; background: var(--navy); color: #fff; border-radius: 10px; padding: 8px 4px; align-self: flex-start; }
+  .ev .d b { display: block; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 22px; line-height: 1; }
+  .ev .d span { display: block; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); }
+  .ev .w { min-width: 0; }
+  .ev .w b { display: block; }
+  .ev .w a { display: block; font-weight: 700; color: var(--text); text-decoration: none; }
+  .ev .w span { display: block; }
+  .ev .w a:hover { text-decoration: underline; }
+  .we { background: #FFF4D6; border-color: #F0D98A; }
+  .we p { color: #4A3A0A; font-size: 14px; }
+  .we .lnk { color: var(--navy); }
+
+  .grid { display: flex; flex-wrap: wrap; gap: 16px; }
+  .tile { flex: 1 1 250px; min-width: 0; display: flex; flex-direction: column; gap: 6px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; text-decoration: none; color: var(--text); }
+  a.tile:hover { border-color: var(--navy); color: var(--text); }
+  .tile svg { color: var(--blue); }
+  .tile .t { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 26px; line-height: 1.05; text-transform: uppercase; color: var(--navy); }
+  .tile.s { gap: 4px; padding: 20px 22px; }
+  .tile.s .t { font-family: inherit; font-size: 17px; font-weight: 700; text-transform: none; line-height: 1.4; letter-spacing: 0; }
+  .tile .x { color: var(--muted); font-size: 14px; }
+  .soon { align-self: flex-start; margin-top: 4px; padding: 2px 10px; border-radius: 12px; background: #EDF0F5; color: #3F4B63; font-size: 12px; font-weight: 700; }
+
+  /* Pied de page */
+  footer { background: var(--navy); color: var(--pale); }
+  footer .in { display: flex; flex-wrap: wrap; gap: 24px 48px; padding-top: 36px; padding-bottom: 36px; }
+  footer .c1 { flex: 2 1 300px; min-width: 0; }
+  footer .c { flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; }
+  footer .n { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 24px; text-transform: uppercase; letter-spacing: .5px; color: #fff; }
+  footer .h { font-weight: 700; color: #fff; }
+  footer a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: #fff; }
+  footer a:hover { color: var(--accent); }
+  footer .row { display: flex; flex-wrap: wrap; align-items: center; gap: 0 28px; margin-top: 4px; }
+  footer .row a { font-weight: 700; }
+  footer .row a.y { color: var(--accent); }
+
+  @media (max-width: 760px) {
+    .wrap { padding: 0 16px; }
+    .head .name { font-size: 24px; flex: 1 1 100%; order: 3; }
+    .head img { height: 46px; }
+    .head nav { order: 4; }
+    .hero h1 { font-size: 44px; }
+    .hero h1 span { font-size: 22px; }
+    .hero .in { padding-top: 28px; padding-bottom: 28px; }
+    .news { max-width: none; }
+    .ttl h2 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap head">
+    <div class="side"><a href="#accueil" aria-label="Accueil"><img src="logo-comite-var.jpg" alt=""></a></div>
+    <div class="name">Comité du Var de Volley-Ball</div>
+    <div class="side r"><a class="navbtn cta" href="#contact">Nous contacter</a></div>
+    <nav aria-label="Rubriques">
+      <a class="navbtn" href="../championnats/">Championnats</a>
+      <a class="navbtn" href="../stages/">Stages</a>
+      <a class="navbtn" href="../pitchounvolley/">Pitchoun' Volley</a>
+      <a class="navbtn" href="../tip/">Tournoi International</a>
+      <a class="navbtn" href="#le-comite">Clubs</a>
+      <a class="navbtn" href="#le-comite">Documents</a>
+      <a class="navbtn" href="#actualites">Actualités</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="accueil">
+  <div class="wrap in">
+    <div class="txt">
+      <div class="k">Saison 2026-2027</div>
+      <h1><span>Toutes les informations sur</span>le volley-ball dans le Var</h1>
+      <p>Résultats et classements, inscriptions aux tournois, stages des jeunes, documents des clubs, réunis au même endroit.</p>
+    </div>
+    <div class="acts">
+      <a class="act main" href="../championnats/">
+        <span><b>Résultats et classements</b><span>Tous les championnats départementaux</span></span>
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+      <a class="act" href="../championnats/#inscription">
+        <span><b>Inscrire une équipe en OPEN</b><span>M15 et M18 4x4, OPEN 2x2 et 4x4</span></span>
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+      <a class="act" href="../stages/#parents">
+        <span><b>Espace parents</b><span>Stages : réponse, documents, paiement</span></span>
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+  <div class="next" id="next" hidden>
+    <div class="wrap in">
+      <span class="l">Prochain rendez-vous</span>
+      <span class="w" id="next-txt"></span>
+      <a id="next-lnk" href="#"></a>
+    </div>
+  </div>
+</section>
+
+<main class="wrap">
+
+  <div class="cols">
+    <section class="news" id="actualites" aria-labelledby="t-actus">
+      <div class="ttl">
+        <h2 id="t-actus">Actualités</h2>
+        <span class="muted small">Les dernières publications de nos pages Facebook</span>
+      </div>
+      <div class="tabs" role="group" aria-label="Choisir la page">
+        <button type="button" class="tab" id="tab-comite" aria-pressed="true" onclick="choisir('comite')">Comité</button>
+        <button type="button" class="tab" id="tab-beach" aria-pressed="false" onclick="choisir('beach')">Beach-volley</button>
+      </div>
+      <div class="fb">
+        <div class="ask" id="fb-ask">
+          <b>Voir les actualités du Comité</b>
+          <p>Les publications sont chargées depuis Facebook, qui peut déposer des cookies. Elles ne s'affichent qu'après votre accord.</p>
+          <button type="button" class="btn" onclick="accepter()">Afficher les publications</button>
+          <a class="lnk" id="fb-open" href="https://www.facebook.com/varvolley" target="_blank" rel="noopener">Ou ouvrir la page Facebook</a>
+        </div>
+        <div id="fb-on" hidden>
+          <div class="frame" id="fb-frame"></div>
+          <div class="foot">
+            <a class="lnk" id="fb-all" href="https://www.facebook.com/varvolley" target="_blank" rel="noopener">Voir toutes les publications sur Facebook</a>
+            <button type="button" onclick="refuser()">Ne plus afficher Facebook</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side-col">
+      <section class="card" aria-labelledby="t-agenda" id="agenda" hidden>
+        <h2 id="t-agenda">À venir</h2>
+        <div id="agenda-list"></div>
+        <a class="lnk" href="../championnats/#open">Calendrier des tournois OPEN</a>
+      </section>
+      <section class="card we" aria-labelledby="t-we">
+        <h2 id="t-we">Ce week-end</h2>
+        <p>Les matchs et les tournois du week-end sont dans la rubrique Championnats, avec les résultats mis à jour au fil de la journée.</p>
+        <a class="lnk" href="../championnats/">Voir le programme</a>
+      </section>
+    </aside>
+  </div>
+
+  <section class="grid" aria-label="Accès rapides">
+    <a class="tile" href="../championnats/">
+      <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3a3 3 0 0 1-3 4"/><path d="M7 5H4a3 3 0 0 0 3 4"/></svg>
+      <span class="t">Championnats</span>
+      <span class="x">Calendriers, résultats et classements. Compétitions OPEN et Coupe de France.</span>
+    </a>
+    <a class="tile" href="../stages/">
+      <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 3v4"/><path d="M16 3v4"/></svg>
+      <span class="t">Stages</span>
+      <span class="x">Centre Départemental, beach-volley, stages d'été. Espace parents.</span>
+    </a>
+    <a class="tile" href="../pitchounvolley/">
+      <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 6 15"/><path d="M3.5 9.5A9 9 0 0 1 14 12"/><path d="M9 20.5A9 9 0 0 1 12 12"/></svg>
+      <span class="t">Pitchoun' Volley</span>
+      <span class="x">Plateaux des plus jeunes : calendrier, inscriptions, niveaux et classement.</span>
+    </a>
+    <a class="tile" href="../tip/">
+      <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18"/><path d="M12 3a14 14 0 0 0 0 18"/></svg>
+      <span class="t">Tournoi International</span>
+      <span class="x">Poussins et Poussines, les 22 et 23 mai 2027 à Hyères.</span>
+    </a>
+  </section>
+
+  <section id="le-comite" aria-labelledby="t-infos" style="display:flex;flex-direction:column;gap:14px">
+    <div class="ttl"><h2 id="t-infos">Le Comité</h2></div>
+    <div class="grid">
+      <div class="tile s">
+        <span class="t">Documents</span>
+        <span class="x">Règlements, tarifs de la saison, formulaires et feuilles de match à télécharger.</span>
+        <span class="soon">Bientôt disponible</span>
+      </div>
+      <div class="tile s">
+        <span class="t">Clubs du Var</span>
+        <span class="x">Trouver un club près de chez soi : villes, contacts et catégories accueillies.</span>
+        <span class="soon">Bientôt disponible</span>
+      </div>
+      <div class="tile s">
+        <span class="t">Formations</span>
+        <span class="x">Arbitres, marqueurs et entraîneurs : dates et inscriptions.</span>
+        <span class="soon">Bientôt disponible</span>
+      </div>
+      <div class="tile s">
+        <span class="t">Bénévoles</span>
+        <span class="x">Informations pratiques pour les bénévoles et les intervenants du Comité.</span>
+        <span class="soon">Bientôt disponible</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap in">
+    <div class="c1">
+      <div class="n">Comité du Var de Volley-Ball</div>
+      <div style="margin-top:6px">Maison des sports du Var · 133, boulevard du Général Brosset · 83200 Toulon</div>
+      <div class="row">
+        <a class="y" href="tel:+33613303425">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
+          06 13 30 34 25</a>
+        <a class="y" href="mailto:contact@volley83.fr">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          contact@volley83.fr</a>
+        <a href="https://www.google.com/maps/dir//Comit%C3%A9+du+Var+de+Volley-Ball,+133+Bd+G%C3%A9n%C3%A9ral+Brosset,+83200+Toulon/data=!4m8!4m7!1m0!1m5!1m1!1s0x12c91b31c013049f:0x82306741c4f521a7!2m2!1d5.9050835!2d43.1281773" target="_blank" rel="noopener">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          Itinéraire</a>
+      </div>
+    </div>
+    <div class="c">
+      <div class="h">Nous suivre</div>
+      <a href="https://www.facebook.com/varvolley" target="_blank" rel="noopener">Facebook · Comité</a>
+      <a href="https://www.facebook.com/beachvolley83" target="_blank" rel="noopener">Facebook · Beach-volley</a>
+      <a href="https://www.instagram.com/comite_var_volley/" target="_blank" rel="noopener">Instagram</a>
+    </div>
+    <div class="c">
+      <div class="h">Accès réservés</div>
+      <a href="../championnats/#club">Espace club</a>
+      <a href="../stages/#parents">Espace parents</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------- À venir : liste à tenir à jour ici (les dates passées disparaissent toutes seules) ----------
+   debut / fin : AAAA-MM-JJ · jour et mois : ce qui s'affiche dans la pastille · lien : page à ouvrir */
+const AGENDA = [
+  { debut: '2026-12-21', fin: '2026-12-23', jour: '21-23', mois: 'Déc.', titre: 'Stage du Centre Départemental', detail: 'M11 et M13, sur convocation', quand: 'du 21 au 23 décembre 2026', lien: '../stages/', lienTxt: 'Voir les stages' },
+  { debut: '2027-01-02', fin: '2027-01-03', jour: '2-3', mois: 'Janv.', titre: 'Stage de beach-volley', detail: 'Inscription en ligne', quand: 'les 2 et 3 janvier 2027', lien: '../stages/#beach', lienTxt: 'Voir les stages' },
+  { debut: '2027-01-15', fin: '2027-01-15', jour: '15', mois: 'Janv.', titre: 'Tournoi International', detail: 'Ouverture des inscriptions', quand: 'le 15 janvier 2027', lien: '../tip/', lienTxt: 'Voir le tournoi' },
+  { debut: '2027-05-22', fin: '2027-05-23', jour: '22-23', mois: 'Mai', titre: 'Tournoi International Poussins / Poussines', detail: 'Hyères', quand: 'les 22 et 23 mai 2027', lien: '../tip/', lienTxt: 'Voir le tournoi' }
+];
+
+/* ---------- Pages Facebook affichées dans les onglets ---------- */
+const PAGES = {
+  comite: { nom: 'Comité du Var de Volley-Ball', url: 'https://www.facebook.com/varvolley' },
+  beach: { nom: 'Comité du Var de Beach-Volley', url: 'https://www.facebook.com/beachvolley83' }
+};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function agenda() {
+  const d = new Date(), auj = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  const liste = AGENDA.filter(e => e.fin >= auj).sort((a, b) => a.debut < b.debut ? -1 : 1);
+  if (!liste.length) return;
+  $('agenda-list').innerHTML = liste.slice(0, 5).map(e => `<div class="ev"><div class="d"><b>${esc(e.jour)}</b><span>${esc(e.mois)}</span></div><div class="w"><a href="${esc(e.lien)}">${esc(e.titre)}</a><span class="muted small">${esc(e.detail)}</span></div></div>`).join('');
+  $('agenda').hidden = false;
+  const p = liste[0];
+  $('next-txt').innerHTML = `<b>${esc(p.titre)}</b> · ${esc(p.detail)} · ${esc(p.quand)}`;
+  $('next-lnk').textContent = p.lienTxt; $('next-lnk').href = p.lien;
+  $('next').hidden = false;
+}
+
+let page = 'comite', accord = false;
+try { accord = localStorage.getItem('fb_ok') === '1'; } catch (e) {}
+
+function cadre() {
+  const p = PAGES[page], boite = $('fb-frame');
+  const w = Math.max(180, Math.min(500, Math.floor(boite.clientWidth || 500)));
+  const h = 720;
+  const src = 'https://www.facebook.com/plugins/page.php?href=' + encodeURIComponent(p.url) + '&tabs=timeline&width=' + w + '&height=' + h + '&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=false&locale=fr_FR';
+  boite.innerHTML = `<iframe title="Publications Facebook – ${esc(p.nom)}" src="${src}" width="${w}" height="${h}" scrolling="no" allow="encrypted-media; picture-in-picture; web-share" loading="lazy"></iframe>`;
+}
+function affiche() {
+  const p = PAGES[page];
+  $('tab-comite').setAttribute('aria-pressed', page === 'comite');
+  $('tab-beach').setAttribute('aria-pressed', page === 'beach');
+  $('fb-open').href = p.url; $('fb-all').href = p.url;
+  $('fb-ask').hidden = accord; $('fb-on').hidden = !accord;
+  if (accord) cadre(); else $('fb-frame').innerHTML = '';
+}
+function choisir(p) { page = p; affiche(); }
+function accepter() { accord = true; try { localStorage.setItem('fb_ok', '1'); } catch (e) {} affiche(); }
+function refuser() { accord = false; try { localStorage.removeItem('fb_ok'); } catch (e) {} affiche(); }
+
+agenda();
+affiche();
+</script>
+</body>
+</html>

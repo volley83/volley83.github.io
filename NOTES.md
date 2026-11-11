@@ -127,6 +127,16 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - **2 onglets** : « Frais de déplacement » (par défaut) et « Note de frais » (`/frais/#note`) pour les autres dépenses (billet, achat de matériel…) : date, **famille** (liste `FAMILLES` [libellé, code compta] en haut du script, + « Autre » sans code), précisions, montant ; pas de « Vous intervenez en tant que » ; justificatifs toujours obligatoires (case à cocher) ; remboursement uniquement ; PDF A4 portrait reprenant le modèle Word « Note de frais » (colonne Code, 8 lignes mini, récapitulatif des totaux par code comptable, Le demandeur / Le président : constante `PRESIDENT` = Gérald HENRY).
 - Taux kilométrique selon l'imputation (objet `IMPUT` en haut du script) : 0,25 €/km bénévoles et intervenants, 0,60 €/km salariés (abandon de frais impossible pour un salarié : option grisée).
 
+## Page d'accueil du portail — `accueil/index.html` (adresse provisoire)
+
+- **Adresse** : https://volley83.github.io/accueil/ (non indexée). La racine `index.html` redirige toujours vers www.volley83.fr : ne la remplacer que sur demande de Clément.
+- Maquette validée par Clément le 11/11/2026 (artifact Design « Portail Comité du Var – maquette accueil »).
+- En-tête blanc : logo, nom du Comité centré, « Nous contacter » ; menu sur une 2e ligne. Bandeau bleu : « Toutes les informations sur le volley-ball dans le Var », 3 gros boutons, bande « Prochain rendez-vous ».
+- **Actualités** = publications Facebook (Page Plugin officiel, iframe `plugins/page.php`, largeur 180 à 500 px), 2 onglets : Comité (facebook.com/varvolley) et Beach-volley (facebook.com/beachvolley83), objet `PAGES` en haut du script. Chargées seulement après clic « Afficher les publications » (cookies Facebook) ; accord mémorisé dans localStorage `fb_ok`, bouton « Ne plus afficher Facebook ».
+- **À venir** : tableau `AGENDA` en haut du script, à tenir à jour à la main ; les dates passées disparaissent et la première à venir alimente « Prochain rendez-vous ».
+- Cartes Documents, Clubs, Formations, Bénévoles : « Bientôt disponible » (pages à construire). Pas de lien public vers `facturation/` ni `frais/`.
+- Pied de page : adresse, 06 13 30 34 25, contact@volley83.fr, itinéraire Google Maps (fiche du Comité), Facebook ×2, Instagram `comite_var_volley`.
+
 ## Scripts SQL — dossier `sql/`
 
 - `sql/stages/supabase-stages.sql`, `sql/championnats/supabase-championnats.sql` et `sql/facturation/supabase-facturation.sql` : installation complète. Ils contiennent les dernières versions des fonctions.
@@ -145,4 +155,4 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
   - passage de la phase 1 à la phase 2 ;
   - verrouillage des scores ;
   - palmarès manquants.
-- **Portail** : accueil, documents, contact, clubs, formations, bénévoles, actualités ; puis transfert du domaine volley83.fr.
+- **Portail** : accueil fait (adresse provisoire `accueil/`, actualités = Facebook). Restent : documents, clubs, formations, bénévoles ; « Ce week-end » à alimenter depuis `championnats/data/ffvb.json` ; puis mettre l'accueil à la racine et transférer le domaine volley83.fr.
