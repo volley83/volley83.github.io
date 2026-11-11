@@ -1,0 +1,38 @@
+name: Actualités Facebook - mise à jour
+# Récupère les dernières publications des pages Facebook du Comité
+# et met à jour accueil/data/actus.json (lu par la page d'accueil).
+# Clés d'accès : secrets FB_TOKEN_COMITE et FB_TOKEN_BEACH (Settings > Secrets and variables > Actions).
+on:
+  schedule:
+    - cron: '41 5-21/2 * * *'       # toutes les 2 heures en journée (heure UTC)
+  workflow_dispatch:                # bouton « Run workflow » pour lancer à la main
+permissions:
+  contents: write
+concurrency:
+  group: facebook
+  cancel-in-progress: false
+jobs:
+  maj:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Récupérer les publications Facebook
+        env:
+          FB_TOKEN_COMITE: ${{ secrets.FB_TOKEN_COMITE }}
+          FB_TOKEN_BEACH: ${{ secrets.FB_TOKEN_BEACH }}
+        run: python3 scripts/facebook.py
+      - name: Enregistrer si quelque chose a changé
+        run: |
+          if [ -n "$(git status --porcelain accueil/data)" ]; then
+            git config user.name "volley83"
+            git config user.email "volley83@users.noreply.github.com"
+            git add accueil/data
+            git commit -m "Accueil : mise à jour des actualités Facebook"
+            git pull --rebase -q && git push
+          else
+            echo "Pas de changement"
+          fi

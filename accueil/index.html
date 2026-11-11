@@ -65,8 +65,8 @@
   /* Contenu */
   main.wrap { padding-top: 32px; padding-bottom: 64px; display: flex; flex-direction: column; gap: 36px; }
   .cols { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
-  .news { flex: 1 1 500px; max-width: 548px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
-  .side-col { flex: 999 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+  .news { flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+  .side-col { flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
   .ttl { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
   .ttl h2 { font-size: 34px; line-height: 1; }
   .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
@@ -75,17 +75,21 @@
   .tabs { display: flex; flex-wrap: wrap; gap: 8px; }
   .tab { min-height: 44px; padding: 0 18px; border-radius: 22px; border: 1px solid #C5CEDD; background: #fff; color: var(--text); font-family: inherit; font-weight: 700; font-size: 14px; cursor: pointer; }
   .tab[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
-  .fb { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
-  .fb .ask { padding: 36px 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
-  .fb .ask b { font-size: 17px; color: var(--navy); }
-  .fb .ask p { max-width: 460px; color: var(--muted); font-size: 14px; }
-  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border-radius: 10px; border: 0; background: var(--navy); color: #fff; font-family: inherit; font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: none; }
-  .btn:hover { background: var(--navy2); color: #fff; }
+  .posts { display: flex; flex-direction: column; gap: 16px; }
+  .post { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .post .top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 16px 20px 0; }
+  .post .pg { padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; background: #E9EFFA; color: #17407F; }
+  .post .pg.beach { background: #FFF4D6; color: #6B4700; }
+  .post .dt { color: var(--muted); font-size: 13px; }
+  .post p { padding: 10px 20px 0; white-space: pre-line; overflow-wrap: anywhere; }
+  .post img { display: block; width: 100%; max-height: 520px; object-fit: cover; margin-top: 14px; background: var(--line2); }
+  .post .bas { padding: 4px 20px 6px; }
+  .vide { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 28px 24px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+  .vide b { font-size: 17px; color: var(--navy); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border-radius: 10px; border: 1px solid #C5CEDD; background: #fff; color: var(--navy); font-family: inherit; font-weight: 700; font-size: 15px; cursor: pointer; align-self: center; }
+  .btn:hover { border-color: var(--navy); }
   .lnk { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; font-size: 14px; }
-  .fb .frame { display: flex; justify-content: center; background: #F8FAFD; min-height: 300px; }
-  .fb iframe { border: 0; display: block; max-width: 100%; }
-  .fb .foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 16px; padding: 4px 18px; border-top: 1px solid var(--line); background: #F8FAFD; }
-  .fb .foot button { background: none; border: 0; color: var(--muted); font-family: inherit; font-size: 13px; text-decoration: underline; cursor: pointer; min-height: 44px; }
+  .liens { display: flex; flex-wrap: wrap; gap: 0 24px; }
 
   .ev { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line2); }
   .ev:last-of-type { border-bottom: 0; }
@@ -132,7 +136,6 @@
     .hero h1 { font-size: 44px; }
     .hero h1 span { font-size: 22px; }
     .hero .in { padding-top: 28px; padding-bottom: 28px; }
-    .news { max-width: none; }
     .ttl h2 { font-size: 28px; }
   }
 </style>
@@ -193,26 +196,18 @@
     <section class="news" id="actualites" aria-labelledby="t-actus">
       <div class="ttl">
         <h2 id="t-actus">Actualités</h2>
-        <span class="muted small">Les dernières publications de nos pages Facebook</span>
+        <span class="muted small">Nos dernières publications Facebook</span>
       </div>
-      <div class="tabs" role="group" aria-label="Choisir la page">
-        <button type="button" class="tab" id="tab-comite" aria-pressed="true" onclick="choisir('comite')">Comité</button>
+      <div class="tabs" role="group" aria-label="Filtrer les actualités">
+        <button type="button" class="tab" id="tab-tout" aria-pressed="true" onclick="choisir('tout')">Toutes</button>
+        <button type="button" class="tab" id="tab-comite" aria-pressed="false" onclick="choisir('comite')">Comité</button>
         <button type="button" class="tab" id="tab-beach" aria-pressed="false" onclick="choisir('beach')">Beach-volley</button>
       </div>
-      <div class="fb">
-        <div class="ask" id="fb-ask">
-          <b>Voir les actualités du Comité</b>
-          <p>Les publications sont chargées depuis Facebook, qui peut déposer des cookies. Elles ne s'affichent qu'après votre accord.</p>
-          <button type="button" class="btn" onclick="accepter()">Afficher les publications</button>
-          <a class="lnk" id="fb-open" href="https://www.facebook.com/varvolley" target="_blank" rel="noopener">Ou ouvrir la page Facebook</a>
-        </div>
-        <div id="fb-on" hidden>
-          <div class="frame" id="fb-frame"></div>
-          <div class="foot">
-            <a class="lnk" id="fb-all" href="https://www.facebook.com/varvolley" target="_blank" rel="noopener">Voir toutes les publications sur Facebook</a>
-            <button type="button" onclick="refuser()">Ne plus afficher Facebook</button>
-          </div>
-        </div>
+      <div class="posts" id="posts" aria-live="polite"></div>
+      <button type="button" class="btn" id="plus" onclick="plus()" hidden>Voir plus d'actualités</button>
+      <div class="liens">
+        <a class="lnk" href="https://www.facebook.com/varvolley" target="_blank" rel="noopener">Page Facebook du Comité</a>
+        <a class="lnk" href="https://www.facebook.com/beachvolley83" target="_blank" rel="noopener">Page Facebook Beach-volley</a>
       </div>
     </section>
 
@@ -322,12 +317,6 @@ const AGENDA = [
   { debut: '2027-05-22', fin: '2027-05-23', jour: '22-23', mois: 'Mai', titre: 'Tournoi International Poussins / Poussines', detail: 'Hyères', quand: 'les 22 et 23 mai 2027', lien: '../tip/', lienTxt: 'Voir le tournoi' }
 ];
 
-/* ---------- Pages Facebook affichées dans les onglets ---------- */
-const PAGES = {
-  comite: { nom: 'Comité du Var de Volley-Ball', url: 'https://www.facebook.com/varvolley' },
-  beach: { nom: 'Comité du Var de Beach-Volley', url: 'https://www.facebook.com/beachvolley83' }
-};
-
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -343,30 +332,56 @@ function agenda() {
   $('next').hidden = false;
 }
 
-let page = 'comite', accord = false;
-try { accord = localStorage.getItem('fb_ok') === '1'; } catch (e) {}
+/* ---------- Actualités : publications Facebook récupérées par le robot (scripts/facebook.py -> data/actus.json) ---------- */
+const PAGES = {
+  comite: { nom: 'Comité', url: 'https://www.facebook.com/varvolley' },
+  beach: { nom: 'Beach-volley', url: 'https://www.facebook.com/beachvolley83' }
+};
+const LONG = 420, PAS = 4;
+let POSTS = [], filtre = 'tout', montre = PAS;
 
-function cadre() {
-  const p = PAGES[page], boite = $('fb-frame');
-  const w = Math.max(180, Math.min(500, Math.floor(boite.clientWidth || 500)));
-  const h = 720;
-  const src = 'https://www.facebook.com/plugins/page.php?href=' + encodeURIComponent(p.url) + '&tabs=timeline&width=' + w + '&height=' + h + '&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=false&locale=fr_FR';
-  boite.innerHTML = `<iframe title="Publications Facebook – ${esc(p.nom)}" src="${src}" width="${w}" height="${h}" scrolling="no" allow="encrypted-media; picture-in-picture; web-share" loading="lazy"></iframe>`;
+function dateFr(iso) {
+  const d = new Date(iso);
+  if (isNaN(d)) return '';
+  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 }
-function affiche() {
-  const p = PAGES[page];
-  $('tab-comite').setAttribute('aria-pressed', page === 'comite');
-  $('tab-beach').setAttribute('aria-pressed', page === 'beach');
-  $('fb-open').href = p.url; $('fb-all').href = p.url;
-  $('fb-ask').hidden = accord; $('fb-on').hidden = !accord;
-  if (accord) cadre(); else $('fb-frame').innerHTML = '';
+function coupe(t) {
+  if (t.length <= LONG) return [t, false];
+  const c = t.slice(0, LONG), k = c.lastIndexOf(' ');
+  return [c.slice(0, k > 200 ? k : LONG) + '…', true];
 }
-function choisir(p) { page = p; affiche(); }
-function accepter() { accord = true; try { localStorage.setItem('fb_ok', '1'); } catch (e) {} affiche(); }
-function refuser() { accord = false; try { localStorage.removeItem('fb_ok'); } catch (e) {} affiche(); }
+function actus() {
+  const liste = POSTS.filter(p => filtre === 'tout' || p.page === filtre);
+  ['tout', 'comite', 'beach'].forEach(k => $('tab-' + k).setAttribute('aria-pressed', filtre === k));
+  if (!liste.length) {
+    $('posts').innerHTML = `<div class="vide"><b>Suivez l'actualité du Comité</b><span class="muted small">Les dernières publications sont à retrouver sur nos pages Facebook.</span></div>`;
+    $('plus').hidden = true;
+    return;
+  }
+  $('posts').innerHTML = liste.slice(0, montre).map(p => {
+    const pg = PAGES[p.page] || PAGES.comite, [txt, long] = coupe(p.texte || '');
+    return `<article class="post">
+      <div class="top"><span class="pg ${p.page === 'beach' ? 'beach' : ''}">${esc(pg.nom)}</span><span class="dt">${esc(dateFr(p.date))}</span></div>
+      ${txt ? `<p>${esc(txt)}</p>` : ''}
+      ${p.image ? `<img src="${esc(p.image)}" alt="" loading="lazy">` : ''}
+      <div class="bas"><a class="lnk" href="${esc(p.lien)}" target="_blank" rel="noopener">${long ? 'Lire la suite sur Facebook' : 'Voir sur Facebook'}</a></div>
+    </article>`;
+  }).join('');
+  $('plus').hidden = liste.length <= montre;
+}
+function choisir(f) { filtre = f; montre = PAS; actus(); }
+function plus() { montre += PAS; actus(); }
+async function chargeActus() {
+  try {
+    const r = await fetch('data/actus.json', { cache: 'no-cache' });
+    if (r.ok) POSTS = ((await r.json()).posts || []).filter(p => p && p.lien);
+  } catch (e) {}
+  actus();
+}
 
 agenda();
-affiche();
+actus();
+chargeActus();
 </script>
 </body>
 </html>
