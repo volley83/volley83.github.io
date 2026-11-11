@@ -233,7 +233,7 @@ function renderLogin(err) {
     <div class="field"><label for="pwd">Mot de passe</label><input id="pwd" type="password" autocomplete="current-password" required></div>
     <div id="lg-err" class="msg err" ${err ? '' : 'hidden'}>${esc(err || '')}</div>
     <button class="btn primary" type="submit">Entrer</button>
-    <a class="btn ghost" href="../frais/" style="margin-top:6px">🚗 Bénévoles, intervenants, salariés : frais de déplacement et notes de frais</a></form></div>`;
+    <a class="btn ghost" href="../frais/" style="margin-top:6px;white-space:normal;height:auto;min-height:48px;padding:10px 14px;line-height:1.35;text-align:center;font-size:14.5px">🚗 Bénévoles, intervenants, salariés :<br>frais de déplacement et notes de frais</a></form></div>`;
   $('pwd').focus();
   $('lg').onsubmit = async ev => {
     ev.preventDefault();
