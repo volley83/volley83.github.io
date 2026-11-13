@@ -466,7 +466,7 @@ async function chargeWeekend() {
       for (const c of (await r.json()).categories || []) {
         const g = {};
         for (const p of c.poules || []) for (const jn of p.journees || []) for (const m of jn.matchs || []) {
-          if (!m.date) continue;
+          if (!m.date || /^x+$/i.test(m.dom || '') || /^x+$/i.test(m.ext || '')) continue;   // « xxxxx » = équipe exempte : pas un vrai match
           if (!(m.date in parJour)) { apres(m.date); continue; }
           const x = g[m.date] || (g[m.date] = { n: 0, joues: 0, h: '' });
           x.n++; if (m.sd != null && m.se != null) x.joues++;
