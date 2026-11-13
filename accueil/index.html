@@ -319,28 +319,70 @@
 </footer>
 
 <script>
-/* ---------- À venir : liste à tenir à jour ici (les dates passées disparaissent toutes seules) ----------
-   debut / fin : AAAA-MM-JJ · jour et mois : ce qui s'affiche dans la pastille · lien : page à ouvrir */
+/* ---------- À venir : rempli automatiquement avec les stages (Espace Comité des stages) et les tournois OPEN / M15-M18 4x4.
+   Ne mettre ici que les rendez-vous qui n'existent nulle part ailleurs (les dates passées disparaissent toutes seules).
+   debut / fin : AAAA-MM-JJ · lien : page à ouvrir */
 const AGENDA = [
-  { debut: '2026-12-21', fin: '2026-12-23', jour: '21-23', mois: 'Déc.', titre: 'Stage du Centre Départemental', detail: 'M11 et M13, sur convocation', quand: 'du 21 au 23 décembre 2026', lien: '../stages/', lienTxt: 'Voir les stages' },
-  { debut: '2027-01-02', fin: '2027-01-03', jour: '2-3', mois: 'Janv.', titre: 'Stage de beach-volley', detail: 'Inscription en ligne', quand: 'les 2 et 3 janvier 2027', lien: '../stages/#beach', lienTxt: 'Voir les stages' },
-  { debut: '2027-01-15', fin: '2027-01-15', jour: '15', mois: 'Janv.', titre: 'Tournoi International', detail: 'Ouverture des inscriptions', quand: 'le 15 janvier 2027', lien: '../tip/', lienTxt: 'Voir le tournoi' },
-  { debut: '2027-05-22', fin: '2027-05-23', jour: '22-23', mois: 'Mai', titre: 'Tournoi International Poussins / Poussines', detail: 'Hyères', quand: 'les 22 et 23 mai 2027', lien: '../tip/', lienTxt: 'Voir le tournoi' }
+  { debut: '2027-01-15', fin: '2027-01-15', titre: 'Tournoi International', detail: 'Ouverture des inscriptions', lien: '../tip/', lienTxt: 'Voir le tournoi' },
+  { debut: '2027-05-22', fin: '2027-05-23', titre: 'Tournoi International Poussins / Poussines', detail: 'Hyères', lien: '../tip/', lienTxt: 'Voir le tournoi' }
 ];
+let CHP = null, STG = null, PIT = null;     // données lues dans Supabase par chargeWeekend()
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+const isoJ = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const MOIS = ['Janv.', 'Févr.', 'Mars', 'Avr.', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'];
+const dJ = iso => new Date(iso + 'T12:00:00');
+function pastille(e) {          // « 21-23 » + « Déc. »
+  const a = dJ(e.debut), b = dJ(e.fin);
+  return [e.fin !== e.debut && a.getMonth() === b.getMonth() ? a.getDate() + '-' + b.getDate() : String(a.getDate()), MOIS[a.getMonth()]];
+}
+function quand(e) {             // « du 21 au 23 décembre 2026 »
+  const a = dJ(e.debut), b = dJ(e.fin), long = d => d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  if (e.fin === e.debut) return 'le ' + long(a);
+  const debut = a.getMonth() === b.getMonth() ? String(a.getDate()) : a.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+  return (b - a <= 864e5 * 1.5 ? 'les ' + debut + ' et ' : 'du ' + debut + ' au ') + long(b);
+}
+function evenements() {
+  const ev = AGENDA.map(e => ({ ...e }));
+  for (const st of STG || []) {
+    if (!st.date_debut) continue;
+    ev.push({ debut: st.date_debut, fin: st.date_fin || st.date_debut, titre: st.titre || 'Stage', detail: [st.categorie, st.lieu].filter(Boolean).join(' · '), lien: '../stages/', lienTxt: 'Voir les stages' });
+  }
+  for (const pl of PIT || [])
+    ev.push({ debut: pl.date, fin: pl.date, titre: "Plateau Pitchoun' Volley", detail: [pl.ville || pl.lieu, heureFr(pl.heure)].filter(Boolean).join(' · '), lien: '../pitchounvolley/', lienTxt: "Voir le Pitchoun' Volley" });
+  if (CHP) {                    // tournois regroupés par date et par famille (OPEN / M15-M18 4x4)
+    const comp = {}, g = {};
+    (CHP.competitions || []).forEach(c => comp[c.code] = c);
+    for (const t of CHP.tournois || []) {
+      if (!t.date || t.statut === 'annule') continue;
+      const c = comp[t.competition] || {}, fam = c.famille === 'open' ? 'open' : '4x4', k = t.date + fam;
+      const x = g[k] || (g[k] = { date: t.date, fam, noms: [], villes: [] });
+      if (c.nom && !x.noms.includes(c.nom)) x.noms.push(c.nom);
+      if (t.ville && !x.villes.includes(t.ville)) x.villes.push(t.ville);
+    }
+    for (const x of Object.values(g)) {
+      const titre = x.noms.length === 1 ? 'Tournoi ' + x.noms[0] : x.fam === 'open' ? 'Tournois OPEN' : 'Tournois M15 et M18 4x4';
+      ev.push({ debut: x.date, fin: x.date, titre, detail: x.villes.join(', '), lien: '../championnats/#' + x.fam, lienTxt: 'Voir les tournois' });
+    }
+  }
+  const auj = isoJ(new Date());
+  return ev.filter(e => e.fin >= auj).sort((a, b) => a.debut < b.debut ? -1 : a.debut > b.debut ? 1 : 0);
+}
 function agenda() {
-  const d = new Date(), auj = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-  const liste = AGENDA.filter(e => e.fin >= auj).sort((a, b) => a.debut < b.debut ? -1 : 1);
-  if (!liste.length) return;
-  $('agenda-list').innerHTML = liste.slice(0, 5).map(e => `<div class="ev"><div class="d"><b>${esc(e.jour)}</b><span>${esc(e.mois)}</span></div><div class="w"><a href="${esc(e.lien)}">${esc(e.titre)}</a><span class="muted small">${esc(e.detail)}</span></div></div>`).join('');
-  $('agenda').hidden = false;
-  const p = liste[0];
-  $('next-txt').innerHTML = `<b>${esc(p.titre)}</b> · ${esc(p.detail)} · ${esc(p.quand)}`;
+  const tous = evenements(), we = weekEnd();
+  const liste = tous.filter(e => !(e.debut >= we[0] && e.fin <= we[1]));   // ce qui tombe ce week-end est déjà dans « Ce week-end »
+  $('agenda').hidden = !liste.length;
+  $('agenda-list').innerHTML = liste.slice(0, 6).map(e => {
+    const [j, m] = pastille(e);
+    return `<div class="ev"><div class="d"><b>${esc(j)}</b><span>${esc(m)}</span></div><div class="w"><a href="${esc(e.lien)}">${esc(e.titre)}</a><span class="muted small">${esc(e.detail || '')}</span></div></div>`;
+  }).join('');
+  const p = tous[0];
+  $('next').hidden = !p;
+  if (!p) return;
+  $('next-txt').innerHTML = `<b>${esc(p.titre)}</b>${p.detail ? ' · ' + esc(p.detail) : ''} · ${esc(quand(p))}`;
   $('next-lnk').textContent = p.lienTxt; $('next-lnk').href = p.lien;
-  $('next').hidden = false;
 }
 
 /* ---------- Actualités : publications Facebook récupérées par le robot (scripts/facebook.py -> data/actus.json) ---------- */
@@ -397,7 +439,6 @@ async function chargeActus() {
 /* ---------- Ce week-end : matchs FFVB (championnats/data/ffvb.json) + tournois OPEN et 4x4 (chp_public) + stages (stg_public_stages) ---------- */
 const SUPABASE_URL = 'https://nssdhgpvkdbgdewsnlgl.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_GeMMc45mQbDOq-ZkU5vXZw_lYJe9KXf';
-const isoJ = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 const jourFr = iso => new Date(iso + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
 function heureFr(h) {
   const m = /^(\d{1,2})[:h](\d{2})/.exec(h || '');
@@ -444,6 +485,7 @@ async function chargeWeekend() {
     if (r.ok) {
       lu = true;
       const D = await r.json(), comp = {};
+      CHP = D;
       (D.competitions || []).forEach(c => comp[c.code] = c);
       for (const t of D.tournois || []) {
         if (!t.date || t.statut === 'annule') continue;
@@ -457,7 +499,8 @@ async function chargeWeekend() {
     const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/stg_public_stages', { method: 'POST', headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' }, body: '{}' });
     if (r.ok) {
       lu = true;
-      for (const st of await r.json() || []) {
+      STG = await r.json() || [];
+      for (const st of STG) {
         if (!st.date_debut) continue;
         const fin = st.date_fin || st.date_debut;
         if (st.date_debut > jours[1]) { apres(st.date_debut); continue; }
@@ -466,11 +509,24 @@ async function chargeWeekend() {
       }
     }
   } catch (e) {}
+  try {                         // plateaux Pitchoun' Volley (table pitchoun_plateaux, lecture publique)
+    const r = await fetch(SUPABASE_URL + '/rest/v1/pitchoun_plateaux?select=code,date,heure,lieu,ville&date=gte.' + jours[0].slice(0, 8) + '01&order=date', { headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY } });
+    if (r.ok) {
+      lu = true;
+      PIT = (await r.json() || []).filter(x => x && x.date);
+      for (const pl of PIT) {
+        if (!(pl.date in parJour)) { apres(pl.date); continue; }
+        const ou = [pl.ville || pl.lieu, heureFr(pl.heure)].filter(Boolean).join(' · ');
+        parJour[pl.date].push({ h: pl.heure || '99', html: `<li class="tn"><a href="../pitchounvolley/">Plateau Pitchoun' Volley</a><span>${esc(ou)}</span></li>` });
+      }
+    }
+  } catch (e) {}
+  agenda();                     // « À venir » complété avec les stages et les tournois
   if (!lu) return;              // rien n'a pu être lu : on laisse le texte par défaut
   const blocs = jours.filter(j => parJour[j].length).map(j =>
     `<div class="jour">${esc(jourFr(j))}</div><ul>${parJour[j].sort((a, b) => a.h < b.h ? -1 : a.h > b.h ? 1 : 0).map(x => x.html).join('')}</ul>`);
   $('we').innerHTML = blocs.length ? blocs.join('')
-    : `<p>Pas de match, de tournoi ni de stage départemental ce week-end.${suivant ? ' Prochain rendez-vous : ' + esc(jourFr(suivant)) + '.' : ''}</p>`;
+    : `<p>Pas de match, de tournoi, de plateau ni de stage départemental ce week-end.${suivant ? ' Prochain rendez-vous : ' + esc(jourFr(suivant)) + '.' : ''}</p>`;
 }
 
 agenda();
