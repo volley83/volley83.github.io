@@ -88,3 +88,16 @@ Composition de la poule :
 
 3 rotations de matchs.$t$
 where not exists (select 1 from chp_formules where famille = '4x4' and nb_equipes = 4);
+
+-- 3 équipes (M15 / M18 4x4)
+insert into chp_formules (famille, nb_equipes, nom, poules, texte)
+select '4x4', 3, '1 poule de 3', '3',
+$t$3 équipes engagées. 1 poule de 3.
+Matchs en 3 sets de 25 points (on joue les 3 sets quel que soit le score).
+
+Composition de la poule :
+
+{POULES}
+
+3 rotations de matchs.$t$
+where not exists (select 1 from chp_formules where famille = '4x4' and nb_equipes = 3);
