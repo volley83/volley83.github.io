@@ -493,10 +493,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261112T210000
 DTEND;TZID=Europe/Paris:20261112T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 3 – Volley-Ball 
- Ollioulais 1
-LOCATION:Complexe Sportif du Verger
-DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/competlib/M4G
+ Ollioulais 1 (3-0)
+DESCRIPTION:Résultat : 3-0 (25:13\, 25:17\, 25:11)\nPoule M4G – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/competlib/M4G
 END:VEVENT
 BEGIN:VEVENT
 UID:M4G007@volley83.github.io
