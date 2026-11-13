@@ -96,7 +96,8 @@ async function login(code, mem) {
 function logout() { store.set('ris_code', null); CODE = ''; D = null; renderLogin(); }
 
 function optionsNature() {
-  const pen = D.natures.filter(n => n.categorie === 'Pénalités');
+  // engagements et implantations : facturés par le Comité, pas signalés (filtré aussi côté serveur)
+  const pen = D.natures.filter(n => n.categorie === 'Pénalités' && !/ENGAGEMENT NON CONFORME|IMPLANTATION/i.test(n.designation));
   return `<option value="">— Choisir —</option>
     <optgroup label="Forfait ou pénalité (décision du Comité)">${DECISION.map(t => `<option value="t:${esc(t)}">${esc(t)}</option>`).join('')}</optgroup>
     ${pen.length ? `<optgroup label="Pénalités">${pen.map(n => `<option value="${n.id}">${esc(intitule(n.designation))}</option>`).join('')}</optgroup>` : ''}
