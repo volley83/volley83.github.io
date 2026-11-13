@@ -1355,16 +1355,19 @@ function adminTournois() {
 // ----- Ouverture d'un mail Gmail « mis en forme » (police Garamond + logo du Comité sous la signature) -----
 // Gmail n'accepte que du texte brut dans le lien : le mail mis en forme est copié, puis collé (Ctrl+V) dans Gmail.
 const LOGO_MAIL = SITE_URL + 'logo-comite-var.jpg';
+// La signature Gmail (Sportivement, nom, logo) est ajoutée par Gmail lui-même : on ne la colle pas une 2e fois.
+const sansSignature = txt => { const k = txt.lastIndexOf('Sportivement,'); return (k >= 0 ? txt.slice(0, k) : txt).replace(/\s+$/, ''); };
 function mailHTML(txt) {
   const lien = s => s.replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)])/g, '<a href="$1">$1</a>').replace(/([\w.+-]+@[\w-]+\.[\w.-]+)/g, m => m.includes('href') ? m : `<a href="mailto:${m}">${m}</a>`);
   const corps = esc(txt).split('\n').map(l => lien(l) || '&nbsp;').join('<br>');
-  return `<div style="font-family: Garamond, 'EB Garamond', 'Times New Roman', serif; font-size: 13pt; color: #1a1a1a">${corps}<br><br><img src="${LOGO_MAIL}" alt="Comité du Var de Volley-Ball" width="180" style="width:180px;height:auto"></div>`;
+  return `<div style="font-family: Garamond, 'EB Garamond', 'Times New Roman', serif; font-size: 13pt; color: #1a1a1a">${corps}<br><br></div>`;
 }
 async function gmailMisEnForme({ to = '', bcc = '', su = '', body = '' }) {
   const base = `https://mail.google.com/mail/?view=cm&fs=1${to ? '&to=' + encodeURIComponent(to) : ''}${bcc ? '&bcc=' + encodeURIComponent(bcc) : ''}&su=${encodeURIComponent(su)}`;
   try {
-    await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([mailHTML(body)], { type: 'text/html' }), 'text/plain': new Blob([body], { type: 'text/plain' }) })]);
-    window.open(base, '_blank');
+    const court = sansSignature(body);
+    await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([mailHTML(court)], { type: 'text/html' }), 'text/plain': new Blob([court], { type: 'text/plain' }) })]);
+    window.open(base + '&body=' + encodeURIComponent('>>> Le texte du mail est copié : sélectionnez cette ligne et faites Ctrl+V pour le coller à sa place <<<'), '_blank');
     saveMark('ok', '✓ Mail mis en forme copié : dans Gmail, cliquez dans le message puis Ctrl+V');
   } catch(e) {
     const url = base + '&body=' + encodeURIComponent(body);
