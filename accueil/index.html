@@ -105,6 +105,16 @@
   .we { background: #FFF4D6; border-color: #F0D98A; }
   .we p { color: #4A3A0A; font-size: 14px; }
   .we .lnk { color: var(--navy); }
+  .we .jour { font-weight: 700; color: var(--navy); margin-top: 10px; }
+  .we .jour:first-child { margin-top: 2px; }
+  .we .jour::first-letter { text-transform: uppercase; }
+  .we ul { list-style: none; }
+  .we li { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid #F0D98A; font-size: 14px; color: #4A3A0A; }
+  .we li:last-child { border-bottom: 0; }
+  .we li a { color: var(--navy); font-weight: 600; text-decoration: none; }
+  .we li a:hover { text-decoration: underline; }
+  .we li span { text-align: right; white-space: nowrap; }
+  .we li.tn span { white-space: normal; }
 
   .grid { display: flex; flex-wrap: wrap; gap: 16px; }
   .tile { flex: 1 1 250px; min-width: 0; display: flex; flex-direction: column; gap: 6px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; text-decoration: none; color: var(--text); }
@@ -220,8 +230,8 @@
       </section>
       <section class="card we" aria-labelledby="t-we">
         <h2 id="t-we">Ce week-end</h2>
-        <p>Les matchs et les tournois du week-end sont dans la rubrique Championnats, avec les résultats mis à jour au fil de la journée.</p>
-        <a class="lnk" href="../championnats/">Voir le programme</a>
+        <div id="we"><p>Les matchs et les tournois du week-end sont dans la rubrique Championnats, avec les résultats mis à jour au fil de la journée.</p></div>
+        <a class="lnk" href="../championnats/">Voir le programme et les résultats</a>
       </section>
     </aside>
   </div>
@@ -384,9 +394,76 @@ async function chargeActus() {
   actus();
 }
 
+/* ---------- Ce week-end : matchs FFVB (championnats/data/ffvb.json) + tournois OPEN et 4x4 (Supabase, chp_public) ---------- */
+const SUPABASE_URL = 'https://nssdhgpvkdbgdewsnlgl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_GeMMc45mQbDOq-ZkU5vXZw_lYJe9KXf';
+const isoJ = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const jourFr = iso => new Date(iso + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+function heureFr(h) {
+  const m = /^(\d{1,2})[:h](\d{2})/.exec(h || '');
+  return m ? Number(m[1]) + '\u00a0h' + (m[2] === '00' ? '' : '\u00a0' + m[2]) : '';
+}
+function nomCat(t) {
+  let n = String(t || '').toLowerCase().replace(/\s+-\s+/g, ' · ');
+  n = n.replace(/competlib'?/g, "Compet'Lib").replace(/coupe de france/g, 'Coupe de France').replace(/\bm(\d+)\b/g, 'M$1');
+  return n.charAt(0).toUpperCase() + n.slice(1);
+}
+function weekEnd() {            // samedi et dimanche de la semaine en cours (le dimanche : ceux du week-end en cours)
+  const d = new Date(); d.setHours(12, 0, 0, 0);
+  const j = d.getDay(), sam = new Date(d); sam.setDate(d.getDate() + (j === 0 ? -1 : 6 - j));
+  const dim = new Date(sam); dim.setDate(sam.getDate() + 1);
+  return [isoJ(sam), isoJ(dim)];
+}
+async function chargeWeekend() {
+  const jours = weekEnd(), parJour = { [jours[0]]: [], [jours[1]]: [] };
+  let suivant = '', lu = false;
+  const apres = dt => { if (dt > jours[1] && (!suivant || dt < suivant)) suivant = dt; };
+  try {
+    const r = await fetch('../championnats/data/ffvb.json?h=' + Math.floor(Date.now() / 6e5), { cache: 'no-store' });
+    if (r.ok) {
+      lu = true;
+      for (const c of (await r.json()).categories || []) {
+        const g = {};
+        for (const p of c.poules || []) for (const jn of p.journees || []) for (const m of jn.matchs || []) {
+          if (!m.date) continue;
+          if (!(m.date in parJour)) { apres(m.date); continue; }
+          const x = g[m.date] || (g[m.date] = { n: 0, joues: 0, h: '' });
+          x.n++; if (m.sd != null && m.se != null) x.joues++;
+          if (m.heure && (!x.h || m.heure < x.h)) x.h = m.heure;
+        }
+        for (const dt in g) {
+          const x = g[dt], nb = x.n + (x.n > 1 ? ' matchs' : ' match');
+          const info = x.joues === x.n ? 'résultats en ligne' : (heureFr(x.h) ? (x.n > 1 ? 'dès ' : 'à ') + heureFr(x.h) : '');
+          parJour[dt].push({ h: x.h || '99', html: `<li><a href="../championnats/">${esc(nomCat(c.titre))}</a><span>${nb}${info ? ' · ' + info : ''}</span></li>` });
+        }
+      }
+    }
+  } catch (e) {}
+  try {
+    const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/chp_public', { method: 'POST', headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' }, body: '{}' });
+    if (r.ok) {
+      lu = true;
+      const D = await r.json(), comp = {};
+      (D.competitions || []).forEach(c => comp[c.code] = c);
+      for (const t of D.tournois || []) {
+        if (!t.date || t.statut === 'annule') continue;
+        if (!(t.date in parJour)) { apres(t.date); continue; }
+        const c = comp[t.competition] || {}, ou = [t.ville || t.lieu, heureFr(t.heure)].filter(Boolean).join(' · ');
+        parJour[t.date].push({ h: t.heure || '99', html: `<li class="tn"><a href="../championnats/#${c.famille === 'open' ? 'open' : '4x4'}">Tournoi ${esc(c.nom || t.competition)}</a><span>${esc(ou)}</span></li>` });
+      }
+    }
+  } catch (e) {}
+  if (!lu) return;              // rien n'a pu être lu : on laisse le texte par défaut
+  const blocs = jours.filter(j => parJour[j].length).map(j =>
+    `<div class="jour">${esc(jourFr(j))}</div><ul>${parJour[j].sort((a, b) => a.h < b.h ? -1 : a.h > b.h ? 1 : 0).map(x => x.html).join('')}</ul>`);
+  $('we').innerHTML = blocs.length ? blocs.join('')
+    : `<p>Pas de match ni de tournoi départemental ce week-end.${suivant ? ' Prochain rendez-vous : ' + esc(jourFr(suivant)) + '.' : ''}</p>`;
+}
+
 agenda();
 actus();
 chargeActus();
+chargeWeekend();
 </script>
 </body>
 </html>

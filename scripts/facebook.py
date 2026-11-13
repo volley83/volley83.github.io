@@ -100,7 +100,7 @@ def main():
         except Exception:
             anciennes = []
 
-    posts, vues = [], 0
+    posts, vues, erreurs = [], 0, 0
     for cle, var in PAGES:
         jeton = os.environ.get(var, '').strip()
         if not jeton:
@@ -110,13 +110,14 @@ def main():
         res = publications(cle, jeton)
         if res is None:      # erreur : on garde ce qu'on avait pour cette page
             posts += [p for p in anciennes if p.get('page') == cle]
+            erreurs += 1
             continue
         vues += 1
         posts += res
 
     if not vues:
         print('Aucune page lue : rien à mettre à jour.')
-        return 0
+        return 1 if erreurs else 0
 
     os.makedirs(IMG, exist_ok=True)
     posts.sort(key=lambda p: p.get('date', ''), reverse=True)
@@ -134,7 +135,8 @@ def main():
         json.dump({'posts': posts}, f, ensure_ascii=False, indent=1)
         f.write('\n')
     print(f'{len(posts)} publication(s) écrites')
-    return 0
+    # Une clé refusée fait échouer l'exécution (croix rouge + mail GitHub) pour que ce soit visible.
+    return 1 if erreurs else 0
 
 
 if __name__ == '__main__':

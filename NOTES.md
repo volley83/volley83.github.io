@@ -137,6 +137,8 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
   - Secrets GitHub : `FB_TOKEN_COMITE` (facebook.com/varvolley) et `FB_TOKEN_BEACH` (facebook.com/beachvolley83). Jetons de Page obtenus depuis un jeton utilisateur longue durée (application Meta en mode développement, permissions `pages_show_list` + `pages_read_engagement`). Jamais dans le dépôt ni dans une conversation. Sans secret ou en cas d'erreur, le robot garde l'existant.
   - Page : filtres Toutes / Comité / Beach-volley, texte coupé à 420 caractères avec « Lire la suite sur Facebook », 4 publications puis « Voir plus ». Sans `actus.json` : encadré renvoyant vers les 2 pages. Plus aucun contenu chargé depuis Facebook, donc pas de bandeau cookies.
 - **À venir** : tableau `AGENDA` en haut du script, à tenir à jour à la main ; les dates passées disparaissent et la première à venir alimente « Prochain rendez-vous ».
+- **Ce week-end** (`chargeWeekend`) : samedi et dimanche de la semaine en cours. Matchs FFVB lus dans `championnats/data/ffvb.json`, résumés par catégorie et par jour (nombre de matchs, première heure, « résultats en ligne » quand tout est joué) ; tournois OPEN et M15/M18 4x4 lus par `chp_public` (hors annulés). Sans rien ce week-end : « Pas de match… Prochain rendez-vous : <date> ». Si rien n'est lisible, le texte par défaut reste.
+- Robot Facebook : une clé refusée fait échouer l'exécution (croix rouge + mail GitHub), les anciennes actualités restent affichées.
 - Cartes Documents, Clubs, Formations, Bénévoles : « Bientôt disponible » (pages à construire). Pas de lien public vers `facturation/` ni `frais/`.
 - Pied de page : adresse, 06 13 30 34 25, contact@volley83.fr, itinéraire Google Maps (fiche du Comité), Facebook ×2, Instagram `comite_var_volley`.
 
@@ -164,7 +166,7 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
   - passage de la phase 1 à la phase 2 ;
   - verrouillage des scores ;
   - palmarès manquants.
-- **Portail** : accueil fait (adresse provisoire `accueil/`, actualités = Facebook). Restent : documents, clubs, formations, bénévoles ; « Ce week-end » à alimenter depuis `championnats/data/ffvb.json` ; puis mettre l'accueil à la racine et transférer le domaine volley83.fr.
+- **Portail** : accueil fait (adresse provisoire `accueil/`, actualités = Facebook). Restent : documents, clubs, formations, bénévoles ; puis mettre l'accueil à la racine et transférer le domaine volley83.fr.
 
 ### Formules sportives (M15/M18 4x4 et OPEN)
 - Table `chp_formules` (famille, nb_equipes, nom, poules « 4 (remarque), 3 », texte avec `{POULES}`) ; RPC `chp_admin_formules` / `chp_admin_formule` (fid null = création, p null = suppression). Script : `sql/championnats/supabase-championnats-formules.sql`.

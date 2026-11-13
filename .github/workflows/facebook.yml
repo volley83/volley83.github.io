@@ -26,6 +26,7 @@ jobs:
           FB_TOKEN_BEACH: ${{ secrets.FB_TOKEN_BEACH }}
         run: python3 scripts/facebook.py
       - name: Enregistrer si quelque chose a changé
+        if: always()
         run: |
           if [ -n "$(git status --porcelain accueil/data)" ]; then
             git config user.name "volley83"
