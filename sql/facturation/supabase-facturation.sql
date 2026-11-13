@@ -132,6 +132,8 @@ create table if not exists fac_signalements (
 );
 alter table fac_ris_items add column if not exists commentaire text;   -- remarque interne (signalement…)
 alter table fac_ris_items add column if not exists note text;          -- note explicative, imprimée sur le RIS et la facture
+alter table fac_ris_items add column if not exists detail text;        -- précision nominative (joueur, licence…) : facture seulement, jamais sur le RIS
+alter table fac_signalements add column if not exists details text;    -- précisions du vérificateur (nom, licence…) : non publiées sur le RIS
 alter table fac_ris_items add column if not exists signalement_id bigint;
 
 -- Rappels envoyés aux clubs pour les bordereaux non réglés
@@ -524,6 +526,7 @@ begin
     sans_sanction = coalesce((p->>'sans_sanction')::boolean, sans_sanction),
     commentaire = case when p ? 'commentaire' then nullif(trim(p->>'commentaire'), '') else commentaire end,
     note        = case when p ? 'note' then nullif(left(trim(p->>'note'), 300), '') else note end,
+    detail      = case when p ? 'detail' then nullif(left(trim(p->>'detail'), 300), '') else detail end,
     ordre      = coalesce(nullif(p->>'ordre', '')::int, ordre)
   where id = iid;
   return iid;
@@ -548,7 +551,7 @@ begin
                 -- liste proposée aux vérificateurs : pénalités constatables sur le terrain ou la feuille de match seulement
                 -- (forfaits, arbitrage, engagements et implantations sont décidés / facturés par le Comité)
                 from fac_articles a where a.actif and a.categorie = 'Pénalités' and a.designation !~* '(ENGAGEMENT NON CONFORME|IMPLANTATION)'),
-    'mes', (select coalesce(jsonb_agg(jsonb_build_object('id', g.id, 'date_match', g.date_match, 'match', g.match, 'club', g.club, 'nature', g.nature,
+    'mes', (select coalesce(jsonb_agg(jsonb_build_object('id', g.id, 'date_match', g.date_match, 'match', g.match, 'club', g.club, 'nature', g.nature, 'details', g.details,
               'commentaire', g.commentaire, 'statut', g.statut, 'motif_rejet', g.motif_rejet, 'created_at', g.created_at) order by g.created_at desc), '[]')
             from fac_signalements g where g.saisisseur_id = u.id and g.created_at > now() - interval '1 year'));
 end $$;
@@ -566,12 +569,12 @@ begin
   if coalesce(trim(p->>'nature'), '') = '' then raise exception 'Indiquez la nature de l''infraction'; end if;
   if coalesce(trim(p->>'club'), '') = '' then raise exception 'Indiquez le club concerné'; end if;
   if d is null then raise exception 'Indiquez la date du match'; end if;
-  insert into fac_signalements (saison, saisisseur_id, auteur, date_match, match, club, article_id, nature, commentaire)
+  insert into fac_signalements (saison, saisisseur_id, auteur, date_match, match, club, article_id, nature, commentaire, details)
   values (case when extract(month from d) >= 7 then extract(year from d)::int || '-' || (extract(year from d)::int + 1)
                else (extract(year from d)::int - 1) || '-' || extract(year from d)::int end,
           u.id, u.nom, d, nullif(left(trim(p->>'match'), 80), ''), upper(left(trim(p->>'club'), 20)),
           (select id from fac_articles where id = nullif(p->>'article_id', '')::bigint),
-          left(trim(p->>'nature'), 200), nullif(left(trim(p->>'commentaire'), 2000), ''))
+          left(trim(p->>'nature'), 200), nullif(left(trim(p->>'commentaire'), 2000), ''), nullif(left(trim(p->>'details'), 300), ''))
   returning id into gid;
   return gid;
 end $$;
@@ -623,7 +626,7 @@ begin
   elsif p->>'action' = 'integrer' then
     if g.statut = 'integre' and g.ris_item_id is not null then raise exception 'Déjà intégré à un RIS'; end if;
     iid := fac_admin_ris_item(pwd, jsonb_build_object('ris_id', p->>'ris_id', 'rubrique', it->>'rubrique', 'match', it->>'match', 'club', it->>'club',
-             'article_id', it->>'article_id', 'intitule', it->>'intitule', 'montant', it->>'montant', 'ordre', 999));
+             'article_id', it->>'article_id', 'intitule', it->>'intitule', 'montant', it->>'montant', 'detail', it->>'detail', 'ordre', 999));
     update fac_ris_items set commentaire = nullif(trim(it->>'commentaire'), ''), signalement_id = p_id where id = iid;
     update fac_signalements set statut = 'integre', ris_item_id = iid, traite_le = now() where id = p_id;
     return iid;

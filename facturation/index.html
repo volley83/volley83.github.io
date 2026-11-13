@@ -898,14 +898,15 @@ function sectionSignalements() {
   return `<div class="card stack"><div class="ttl"><div><h3>📨 Signalements à vérifier (${sn.length})</h3><p class="small muted">Envoyés depuis la page de signalement. Vérifiez, corrigez si besoin, puis validez pour les ajouter à un RIS (ils seront facturés à la génération du RIS).</p></div></div>
     ${sn.length ? sn.map(g => { const a = art(g.article_id);
       return `<div class="card stack" data-sig="${g.id}" style="background:#FAFBFD;gap:10px">
-        <div class="small"><b>${esc(g.auteur || '?')}</b> · envoyé le ${fmtD(g.created_at)} · match du ${fmtD(g.date_match)}${g.commentaire ? `<div style="margin-top:6px;padding:8px 10px;background:#fff;border:1px solid var(--line);border-radius:8px;white-space:pre-wrap">💬 ${esc(g.commentaire)}</div>` : ''}</div>
+        <div class="small"><b>${esc(g.auteur || '?')}</b> · envoyé le ${fmtD(g.created_at)} · match du ${fmtD(g.date_match)}${g.details ? ` · 🔒 <b>${esc(g.details)}</b>` : ''}${g.commentaire ? `<div style="margin-top:6px;padding:8px 10px;background:#fff;border:1px solid var(--line);border-radius:8px;white-space:pre-wrap">💬 ${esc(g.commentaire)}</div>` : ''}</div>
         <div class="grid" style="grid-template-columns:150px 150px 110px minmax(0,1fr) 100px;gap:8px">
           <div class="field"><label>Rubrique</label><select data-f="rubrique">${RUBRIQUES.map((t, k) => `<option value="${k + 1}" ${(a ? rubriqueArticle(a) : 5) === k + 1 ? 'selected' : ''}>${k + 1}- ${t}</option>`).join('')}</select></div>
           <div class="field"><label>N° match</label><input data-f="match" value="${esc(g.match || '')}"></div>
           <div class="field"><label>Club</label><select data-f="club">${clubs.map(c => `<option ${c.code === g.club ? 'selected' : ''}>${esc(c.code)}</option>`).join('')}</select></div>
-          <div class="field"><label>Infraction relevée</label><input data-f="intitule" value="${esc(g.nature)}"></div>
+          <div class="field"><label>Infraction relevée (texte du RIS)</label><input data-f="intitule" value="${esc(g.nature)}"></div>
           <div class="field"><label>Montant €</label><input data-f="montant" class="n" value="${a && num(a.prix) ? fmtN(a.prix) : ''}" inputmode="decimal"></div>
         </div>
+        <div class="field"><label>🔒 Précision pour la facture uniquement (nom, licence… – jamais sur le RIS)</label><input data-f="detail" value="${esc(g.details || '')}" placeholder="Ex. : DUPONT Léa, licence 1234567"></div>
         <div class="grid" style="grid-template-columns:minmax(0,1fr) 220px auto auto;gap:8px;align-items:end">
           <div class="field"><label>Tarif appliqué</label><select data-f="article_id"><option value="">— Saisie libre —</option>${as.map(x => `<option value="${x.id}" ${a && a.id === x.id ? 'selected' : ''}>${esc(intituleArticle(x))}${num(x.prix) ? ` (${euros(x.prix)})` : ' (montant à saisir)'}</option>`).join('')}</select></div>
           <div class="field"><label>Ajouter au RIS</label><select data-f="ris_id">${rs.map(r => `<option value="${r.id}">RIS n° ${r.numero} (au ${fmtD(r.date)})</option>`).join('')}<option value="nouveau" ${rs.length ? '' : 'selected'}>+ Nouveau RIS</option></select></div>
@@ -927,7 +928,7 @@ function brancherSignalements() {
         let rid = f('ris_id').value;
         if (rid === 'nouveau') rid = await rpc('fac_admin_ris', { pwd: PWD, p: { saison: SAISON, date: today() } });
         await rpc('fac_admin_signalement', { pwd: PWD, p_id: id, p: { action: 'integrer', ris_id: String(rid), item: { rubrique: f('rubrique').value, match: f('match').value.trim(), club: f('club').value,
-          article_id: f('article_id').value || null, intitule: f('intitule').value.trim(), montant: String(num(f('montant').value)), commentaire: `${g.auteur || ''} : ${g.commentaire || ''}`.replace(/ : $/, '') } } });
+          article_id: f('article_id').value || null, intitule: f('intitule').value.trim(), montant: String(num(f('montant').value)), detail: f('detail').value.trim(), commentaire: `${g.auteur || ''} : ${g.commentaire || ''}`.replace(/ : $/, '') } } });
         await load(); toast('✓ Ajouté au RIS'); renderRisListe();
       } catch(e) { fail(e); }
     };
@@ -980,7 +981,8 @@ function renderRis(r) {
       <td><input data-k="match" value="${esc(i.match || '')}" ${lock ? 'disabled' : ''} style="width:150px"></td>
       <td><select data-k="club" ${lock ? 'disabled' : ''} style="width:100px">${clubs.map(c => `<option ${c.code === i.club ? 'selected' : ''}>${esc(c.code)}</option>`).join('')}</select></td>
       <td><input data-k="intitule" value="${esc(i.intitule)}" ${lock ? 'disabled' : ''} style="min-width:320px">
-        <input data-k="note" value="${esc(i.note || '')}" ${lock ? 'disabled' : ''} placeholder="Note explicative (facultatif)" style="margin-top:4px;font-size:12.5px;padding:5px 8px;color:var(--muted)">${i.commentaire ? `<div class="small muted" style="margin-top:3px;white-space:pre-wrap">💬 ${esc(i.commentaire)}</div>` : ''}</td>
+        <input data-k="note" value="${esc(i.note || '')}" ${lock ? 'disabled' : ''} placeholder="Note explicative (facultatif, imprimée sur le RIS)" style="margin-top:4px;font-size:12.5px;padding:5px 8px;color:var(--muted)">
+        <input data-k="detail" value="${esc(i.detail || '')}" ${lock ? 'disabled' : ''} placeholder="🔒 Précision facture seulement : nom, licence… (jamais sur le RIS)" style="margin-top:4px;font-size:12.5px;padding:5px 8px;color:var(--muted)">${i.commentaire ? `<div class="small muted" style="margin-top:3px;white-space:pre-wrap">💬 ${esc(i.commentaire)}</div>` : ''}</td>
       <td><input data-k="montant" class="n" value="${fmtN(i.montant)}" ${lock ? 'disabled' : ''} style="width:80px" inputmode="decimal"></td>
       <td>${l ? `<a class="badge b-ok" href="#b/${b.id}/${encodeURIComponent(i.club)}">✓ Bordereau n° ${b.numero}</a>` : num(i.montant) ? '<span class="badge b-warn">À facturer</span>'
         : `<label class="small" style="display:flex;gap:6px;align-items:center;white-space:nowrap"><input type="checkbox" data-k="sans_sanction" ${i.sans_sanction ? 'checked' : ''}> Pas de sanction financière</label>${i.sans_sanction ? '' : '<span class="badge b-bad">Montant à saisir</span>'}`}</td>
@@ -1015,11 +1017,12 @@ function renderRis(r) {
       <div class="field"><label>Infraction relevée (texte du RIS et de la facture)</label><input data-r="int" placeholder="Licence non présentée – 1 joueuse"></div>
       <div class="field"><label>Montant €</label><input data-r="mt" class="n" inputmode="decimal"></div>
       <button class="x" title="Retirer cette ligne" style="height:40px">✕</button>
-      <div class="field" style="grid-column:1 / -1"><input data-r="note" placeholder="Note explicative (facultatif, imprimée sur le RIS et la facture) : ex. 2ᵉ demande pour la même rencontre"></div>`;
+      <div class="field" style="grid-column:1 / 3"><input data-r="note" placeholder="Note explicative (facultatif, imprimée sur le RIS et la facture) : ex. 2ᵉ demande"></div>
+      <div class="field" style="grid-column:3 / -1"><input data-r="detail" placeholder="🔒 Précision facture seulement : nom, licence… (jamais sur le RIS)"></div>`;
     const q = k => d.querySelector(`[data-r="${k}"]`);
     q('rub').onchange = () => { const v = q('art').value; q('art').innerHTML = optArt(+q('rub').value); if ([...q('art').options].some(o => o.value === v)) q('art').value = v; q('art').focus(); };
     q('art').onchange = () => { const a = art(q('art').value); if (a) { q('int').value = intituleArticle(a); q('mt').value = num(a.prix) ? fmtN(a.prix) : ''; if (!num(a.prix)) q('mt').focus(); if (!q('rub').value) q('rub').value = rubriqueArticle(a); } else if (q('art').value === 'libre') { q('int').value = ''; q('mt').value = ''; q('int').focus(); } };
-    d.querySelector('.x').onclick = () => { if (document.querySelectorAll('.ri-row').length > 1) d.remove(); else { q('art').value = ''; q('int').value = ''; q('mt').value = ''; q('note').value = ''; } };
+    d.querySelector('.x').onclick = () => { if (document.querySelectorAll('.ri-row').length > 1) d.remove(); else { q('art').value = ''; q('int').value = ''; q('mt').value = ''; q('note').value = ''; q('detail').value = ''; } };
     $('ri-rows').appendChild(d); return d;
   };
   addRow();
@@ -1028,7 +1031,7 @@ function renderRis(r) {
     const match = $('ri-match').value.trim(), club = $('ri-club').value;
     if (!club) return alert('Choisissez le club.');
     const rows = [...document.querySelectorAll('.ri-row')].map(d => { const q = k => d.querySelector(`[data-r="${k}"]`);
-      return { rubrique: +q('rub').value || 5, article_id: art(q('art').value) ? String(art(q('art').value).id) : null, intitule: q('int').value.trim(), montant: String(num(q('mt').value)), note: q('note').value.trim() }; })
+      return { rubrique: +q('rub').value || 5, article_id: art(q('art').value) ? String(art(q('art').value).id) : null, intitule: q('int').value.trim(), montant: String(num(q('mt').value)), note: q('note').value.trim(), detail: q('detail').value.trim() }; })
       .filter(x => x.intitule);
     if (!rows.length) return alert('Indiquez au moins une infraction.');
     // même infraction déjà saisie pour ce match (même club ou autre club) : confirmation
@@ -1069,7 +1072,7 @@ async function genererRis(id) {
       const n = {};
       const lignes = afact.map(i => { const a = art(i.article_id) || {}; n[i.club] = n[i.club] == null ? lignesDe(cible.id, i.club).length : n[i.club] + 1;
         return { bordereau_id: cible.id, club: i.club, article_id: a.id || null, date_ligne: r.date, code_compta: a.code_compta || '771001',
-          designation: String(i.intitule).toUpperCase(), precisions: `RIS n° ${r.numero} du ${fmtD(r.date)}${i.match ? ' – ' + i.match : ''}${i.note ? ' – ' + i.note : ''}`, quantite: 1, prix: num(i.montant), source: 'ris:' + i.id, ordre: n[i.club] }; });
+          designation: String(i.intitule).toUpperCase(), precisions: `RIS n° ${r.numero} du ${fmtD(r.date)}${i.match ? ' – ' + i.match : ''}${i.note ? ' – ' + i.note : ''}${i.detail ? ' – ' + i.detail : ''}`, quantite: 1, prix: num(i.montant), source: 'ris:' + i.id, ordre: n[i.club] }; });
       await enregistrerLignes(lignes); await load();
       toast(`✓ ${lignes.length} infraction(s) ajoutée(s) au bordereau n° ${cible.numero}`);
     }

@@ -110,7 +110,8 @@ function ligneInf() {
   d.innerHTML = `<span class="num"></span><button type="button" class="linkbtn red x">Retirer</button>
     <div class="field"><label>Club concerné <span class="req">*</span></label><select data-k="club"><option value="">— Choisir —</option>${D.clubs.map(c => `<option value="${esc(c.code)}">${esc(c.code)} – ${esc(c.nom)}</option>`).join('')}</select></div>
     <div class="field"><label>Nature de l'infraction <span class="req">*</span></label><select data-k="nat">${optionsNature()}</select></div>
-    <div class="field"><label>Précisez l'infraction <span class="req">*</span></label><input data-k="int" placeholder="Ex. : Licence non présentée – 1 joueuse"><span class="small muted">Pré-rempli selon la nature choisie : complétez-le si besoin (nombre de joueurs, nom, n° de licence…).</span></div>`;
+    <div class="field"><label>Intitulé de l'infraction (publié sur le RIS) <span class="req">*</span></label><input data-k="int" placeholder="Ex. : Licence non présentée – 2 joueuses"><span class="small muted">Pré-rempli selon la nature choisie. Restez général : <b>pas de nom</b> ici.</span></div>
+    <div class="field"><label>Précisions : nom du joueur, n° de licence…</label><input data-k="det" placeholder="Ex. : DUPONT Léa, licence 1234567"><span class="small muted">🔒 Transmises au Comité et reprises sur la facture du club, mais <b>jamais publiées sur le RIS</b>.</span></div>`;
   if (prec) d.querySelector('[data-k=club]').value = prec.value;
   d.querySelector('[data-k=nat]').onchange = e => { const v = e.target.value, n = D.natures.find(x => String(x.id) === v), inp = d.querySelector('[data-k=int]');
     inp.value = n ? intitule(n.designation) : v.startsWith('t:') ? v.slice(2) : ''; if (!inp.value) inp.focus(); };
@@ -137,7 +138,7 @@ function render(okMsg) {
     <button class="btn primary" type="submit" id="f-ok">Envoyer au Comité</button>
   </form>
   <div class="card"><h2>Mes signalements</h2>
-    ${D.mes.length ? D.mes.map(g => `<div class="sig"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>${esc(g.club)} · ${esc(g.nature)}</b>${etat(g)}</div>
+    ${D.mes.length ? D.mes.map(g => `<div class="sig"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>${esc(g.club)} · ${esc(g.nature)}</b>${etat(g)}</div>${g.details ? `<span class="small">🔒 ${esc(g.details)}</span>` : ''}
       <span class="small muted">Match ${esc(g.match || '—')} du ${fmtD(g.date_match)} · envoyé le ${fmtD(g.created_at)}</span>
       ${g.commentaire ? `<span class="small">${esc(g.commentaire)}</span>` : ''}
       ${g.statut === 'rejete' && g.motif_rejet ? `<span class="small muted">Motif : ${esc(g.motif_rejet)}</span>` : ''}
@@ -150,7 +151,7 @@ function render(okMsg) {
     const err = m => { $('f-err').textContent = m; $('f-err').hidden = false; };
     const date_match = $('f-date').value, match = $('f-match').value.trim(), commentaire = $('f-com').value.trim();
     const ps = [...document.querySelectorAll('.inf')].map(d => { const g = k => d.querySelector(`[data-k=${k}]`).value.trim(), nat = g('nat');
-      return { date_match, match, club: g('club'), article_id: /^\d+$/.test(nat) ? nat : null, nature: g('int'), commentaire }; });
+      return { date_match, match, club: g('club'), article_id: /^\d+$/.test(nat) ? nat : null, nature: g('int'), details: g('det'), commentaire }; });
     if (!date_match) return err('Indiquez la date du match.');
     for (const [k, p] of ps.entries()) {
       if (!p.club) return err(`Infraction ${k + 1} : choisissez le club concerné.`);
