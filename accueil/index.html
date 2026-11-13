@@ -33,11 +33,12 @@
   .head .side { flex: 1 1 160px; min-width: 0; display: flex; }
   .head .side.r { justify-content: flex-end; }
   .head img { height: 56px; width: auto; display: block; }
+  .head img.ff { height: 72px; }
   .head .name { flex: 0 1 auto; min-width: 0; text-align: center; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 34px; line-height: 1; text-transform: uppercase; letter-spacing: .5px; color: var(--navy); }
   .head nav { flex: 1 1 100%; display: flex; flex-wrap: wrap; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); }
   .navbtn { display: inline-flex; align-items: center; height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: #fff; color: var(--text); font-weight: 600; font-size: 14px; text-decoration: none; white-space: nowrap; }
   .navbtn:hover { border-color: var(--navy); color: var(--navy); }
-  .navbtn.cta { background: var(--accent); border-color: var(--accent); color: var(--navy); font-weight: 700; padding: 0 18px; }
+  .navbtn.cta { background: var(--accent); border-color: var(--accent); color: var(--navy); font-weight: 700; padding: 0 18px; margin-left: auto; }
 
   /* Bandeau */
   .hero { background: var(--navy); color: #fff; }
@@ -141,8 +142,9 @@
 
   @media (max-width: 760px) {
     .wrap { padding: 0 16px; }
-    .head .name { font-size: 24px; flex: 1 1 100%; order: 3; }
+    .head .name { font-size: 21px; flex: 1 1 100%; order: 3; }
     .head img { height: 46px; }
+    .head img.ff { height: 58px; }
     .head nav { order: 4; }
     .hero h1 { font-size: 44px; }
     .hero h1 span { font-size: 22px; }
@@ -157,7 +159,7 @@
   <div class="wrap head">
     <div class="side"><a href="#accueil" aria-label="Accueil"><img src="logo-comite-var.jpg" alt=""></a></div>
     <div class="name">Comité du Var de Volley-Ball</div>
-    <div class="side r"><a class="navbtn cta" href="#contact">Nous contacter</a></div>
+    <div class="side r"><img class="ff" src="logo-ffvolley.jpg" alt="Fédération Française de Volley"></div>
     <nav aria-label="Rubriques">
       <a class="navbtn" href="../championnats/">Championnats</a>
       <a class="navbtn" href="../stages/">Stages</a>
@@ -166,6 +168,7 @@
       <a class="navbtn" href="#le-comite">Clubs</a>
       <a class="navbtn" href="#le-comite">Documents</a>
       <a class="navbtn" href="#actualites">Actualités</a>
+      <a class="navbtn cta" href="#contact">Nous contacter</a>
     </nav>
   </div>
 </header>

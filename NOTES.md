@@ -131,7 +131,7 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 
 - **Adresse** : https://volley83.github.io/accueil/ (non indexée). La racine `index.html` redirige toujours vers www.volley83.fr : ne la remplacer que sur demande de Clément.
 - Maquette validée par Clément le 11/11/2026 (artifact Design « Portail Comité du Var – maquette accueil »).
-- En-tête blanc : logo, nom du Comité centré, « Nous contacter » ; menu sur une 2e ligne. Bandeau bleu : « Toutes les informations sur le volley-ball dans le Var », 3 gros boutons, bande « Prochain rendez-vous ».
+- En-tête blanc : logo du Comité à gauche, nom centré, logo FFvolley à droite ; menu sur une 2e ligne avec « Nous contacter » à droite. Bandeau bleu : « Toutes les informations sur le volley-ball dans le Var », 3 gros boutons, bande « Prochain rendez-vous ».
 - **Actualités** = publications Facebook récupérées par un robot (le Page Plugin officiel de Meta n'affiche plus les publications, seulement l'en-tête : abandonné le 11/11/2026).
   - `scripts/facebook.py`, lancé par `.github/workflows/facebook.yml` (toutes les 2 h en journée + bouton « Run workflow ») : lit `graph.facebook.com/me/posts` avec un jeton de Page par page, écrit `accueil/data/actus.json` (12 publications au plus, les 2 pages mélangées par date) et copie les images dans `accueil/data/img/` (les adresses d'images Facebook expirent).
   - Secrets GitHub : `FB_TOKEN_COMITE` (facebook.com/varvolley) et `FB_TOKEN_BEACH` (facebook.com/beachvolley83). Jetons de Page obtenus depuis un jeton utilisateur longue durée (application Meta en mode développement, permissions `pages_show_list` + `pages_read_engagement`). Jamais dans le dépôt ni dans une conversation. Sans secret ou en cas d'erreur, le robot garde l'existant.
