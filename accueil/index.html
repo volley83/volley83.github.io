@@ -393,8 +393,8 @@ const PAGES = {
   comite: { nom: 'Comité', url: 'https://www.facebook.com/varvolley' },
   beach: { nom: 'Beach-volley', url: 'https://www.facebook.com/beachvolley83' }
 };
-const LONG = 420, PAS = 4;
-let POSTS = [], filtre = 'tout', montre = PAS;
+const LONG = 420, DEBUT = 2, PAS = 4;   // DEBUT : publications affichées à l'ouverture · PAS : ajoutées par « Voir plus »
+let POSTS = [], filtre = 'tout', montre = DEBUT;
 
 function dateFr(iso) {
   const d = new Date(iso);
@@ -429,7 +429,7 @@ function actus() {
   }).join('');
   $('plus').hidden = liste.length <= montre;
 }
-function choisir(f) { filtre = f; montre = PAS; actus(); }
+function choisir(f) { filtre = f; montre = DEBUT; actus(); }
 function plus() { montre += PAS; actus(); }
 async function chargeActus() {
   try {
