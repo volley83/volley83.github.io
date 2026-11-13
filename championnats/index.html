@@ -1153,7 +1153,7 @@ async function renderAdmin(tab) {
   if (!ADMIN_PWD) { location.hash = '4x4'; return; }
   if (tab) ATAB = tab;
   if (!A) await loadAdmin();
-  const aTitre = { inscriptions: 'Inscriptions', rappel: 'Rappel week-end', participations: 'Participations', classements: 'Classements', tournois: 'Calendrier et codes', clubs: 'Clubs', coupe: 'Coupe de France' };
+  const aTitre = { inscriptions: 'Inscriptions', rappel: 'Rappel week-end', formules: 'Formules sportives', participations: 'Participations', classements: 'Classements', tournois: 'Calendrier et codes', clubs: 'Clubs', coupe: 'Coupe de France' };
   const aValider = A.tournois.filter(t => t.statut === 'saisi').length;
   $('app').innerHTML = `
   <div class="hero"><div class="wrap"><div class="k">Espace Comité</div><h1>Gestion des championnats</h1></div></div>
@@ -1162,7 +1162,7 @@ async function renderAdmin(tab) {
       <span><span id="a-save" class="save"></span> <button class="linkbtn" onclick="ADMIN_PWD='';A=null;try{sessionStorage.removeItem('chp_admin')}catch(e){};location.hash='4x4'">Se déconnecter</button></span></div>
     <div id="a-body"></div>
   </main>`;
-  ({ inscriptions: adminInscriptions, rappel: adminRappel, participations: adminParticipations, classements: adminClassements, tournois: adminTournois, clubs: adminClubs, coupe: adminCoupe })[ATAB]();
+  ({ inscriptions: adminInscriptions, rappel: adminRappel, formules: adminFormules, participations: adminParticipations, classements: adminClassements, tournois: adminTournois, clubs: adminClubs, coupe: adminCoupe })[ATAB]();
 }
 const tSel = (list, cur, id = 'a-t') => `<select id="${id}" style="max-width:560px">${A.competitions.map(c => { const l = list.filter(t => t.competition === c.code); return l.length ? `<optgroup label="${esc(c.nom)}">${l.map(t => `<option value="${t.id}" ${t.id === cur ? 'selected' : ''}>${esc(c.nom)} · ${tNom(t)} · ${esc(fmtShort(t.date))}${t.ville ? ' · ' + esc(t.ville) : ''}${t.statut === 'saisi' ? ' · À VALIDER' : ''}</option>`).join('')}</optgroup>` : ''; }).join('')}</select>`;
 
@@ -1201,6 +1201,7 @@ function adminInscriptions() {
       <textarea id="a-mails" readonly style="min-height:56px;font-size:13px" placeholder="Aucune adresse">${esc(mails.join(', '))}</textarea>
       <div id="a-mailbox" class="stack" hidden>
         <div class="rank-head" style="margin:0"><h2>Mail aux inscrits</h2><span class="muted small">${mails.length} destinataires en Cci · complétez les [crochets], le texte est gardé sur cet ordinateur</span></div>
+        <div class="field"><label for="a-mail-f">Formule sportive</label><select id="a-mail-f"><option value="">Modèle libre (à compléter)</option></select><span class="muted small" id="a-mail-fnote"></span></div>
         <div class="field"><label for="a-mail-su">Objet</label><input id="a-mail-su"></div>
         <textarea id="a-mail-body" style="min-height:520px;font-family:ui-monospace,Consolas,monospace;font-size:13px;line-height:1.45"></textarea>
         <div class="btnrow" style="margin:0"><button class="btn primary" id="a-mail-go">✉ Ouvrir dans Gmail</button><button class="btn ghost" id="a-mail-copy">📋 Copier le texte</button><button class="btn ghost" id="a-mail-reset">↺ Repartir du modèle</button></div>
@@ -1228,13 +1229,27 @@ function adminInscriptions() {
   $('a-t').onchange = () => { ATID = +$('a-t').value; adminInscriptions(); };
   // ----- Mail type aux inscrits (formule sportive) -----
   const cleMail = 'chp_mail_' + t.id;
+  const nbEq = ins.reduce((s, i) => s + i.nb_equipes, 0);
+  const formuleChoisie = () => (FORMULES || []).find(f => String(f.id) === $('a-mail-f').value) || null;
   const remplirMail = (force) => {
     const sv = !force && store.get(cleMail, null);
     $('a-mail-su').value = sv ? sv.su : `Formule sportive – ${c.nom} – ${cap(fmtD(t.date, true, false))}${t.ville ? ' à ' + t.ville : ''}`;
-    $('a-mail-body').value = sv ? sv.body : mailFormule(t, c, ins);
+    $('a-mail-body').value = sv ? sv.body : mailFormule(t, c, ins, formuleChoisie());
   };
-  const garderMail = () => store.set(cleMail, { su: $('a-mail-su').value, body: $('a-mail-body').value });
-  $('a-mail').onclick = () => { const b = $('a-mailbox'); b.hidden = !b.hidden; if (!b.hidden) { remplirMail(false); $('a-mail-body').focus(); b.scrollIntoView({ behavior: 'smooth', block: 'start' }); } };
+  const garderMail = () => store.set(cleMail, { su: $('a-mail-su').value, body: $('a-mail-body').value, f: $('a-mail-f').value });
+  const listeFormules = () => {
+    const fs = (FORMULES || []).filter(f => f.famille === c.famille), ok = fs.filter(f => f.nb_equipes === nbEq), autres = fs.filter(f => f.nb_equipes !== nbEq);
+    const sv = store.get(cleMail, null);
+    $('a-mail-f').innerHTML = `<option value="">Modèle libre (à compléter)</option>${ok.length ? `<optgroup label="Pour ${nbEq} équipes">${ok.map(f => `<option value="${f.id}">${f.nb_equipes} équipes – ${esc(f.nom)}</option>`).join('')}</optgroup>` : ''}${autres.length ? `<optgroup label="Autres formules">${autres.map(f => `<option value="${f.id}">${f.nb_equipes} équipes – ${esc(f.nom)}</option>`).join('')}</optgroup>` : ''}`;
+    $('a-mail-f').value = sv && sv.f !== undefined ? sv.f : (ok[0] ? String(ok[0].id) : '');
+    $('a-mail-fnote').textContent = FORMULES === null ? ' Chargement des formules…' : FORMULES === false ? ' Formules indisponibles (script SQL « formules » à lancer dans Supabase).' : ok.length ? ` ${ok.length} formule(s) enregistrée(s) pour ${nbEq} équipes : les poules sont faites en serpentin d'après le classement.` : ` Aucune formule enregistrée pour ${nbEq} équipes (onglet « Formules sportives »).`;
+  };
+  $('a-mail-f').onchange = () => { $('a-mail-body').value = mailFormule(t, c, ins, formuleChoisie()); garderMail(); };
+  $('a-mail').onclick = async () => {
+    const b = $('a-mailbox'); b.hidden = !b.hidden; if (b.hidden) return;
+    if (!FORMULES) { listeFormules(); await chargerFormules(); }
+    listeFormules(); remplirMail(false); $('a-mail-body').focus(); b.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
   $('a-mail-su').oninput = $('a-mail-body').oninput = garderMail;
   $('a-mail-reset').onclick = () => { if (confirm('Remplacer le texte par le modèle vierge ?')) { remplirMail(true); garderMail(); } };
   $('a-mail-copy').onclick = async () => { try { await navigator.clipboard.writeText($('a-mail-body').value); saveMark('ok', '✓ Texte copié'); } catch(e) { $('a-mail-body').select(); document.execCommand('copy'); saveMark('ok', '✓ Copié'); } };
@@ -1352,6 +1367,46 @@ function adminTournois() {
   $('a-add').onclick = async () => { const n = Math.max(0, ...ts.map(t => t.numero)) + 1, d = today(); await put(null, { competition: ACOMP, numero: n, date: d, date_limite: jeudiAvant(d), heure_limite: '12:00' }); adminTournois(); };
 }
 
+// ----- Onglet « Formules sportives » : bibliothèque des formules -----
+async function adminFormules() {
+  if (!FORMULES) { $('a-body').innerHTML = '<div class="card muted">Chargement des formules…</div>'; await chargerFormules(); }
+  if (FORMULES === false) { $('a-body').innerHTML = `<div class="card stack"><h2>Formules sportives</h2><div class="msg warn" style="margin:0">Les formules ne sont pas encore disponibles : lancez une fois le script <b>supabase-championnats-formules.sql</b> dans Supabase (SQL Editor › coller › Run), puis rechargez la page.</div></div>`; return; }
+  const fs = [...FORMULES].sort((a, b) => a.famille.localeCompare(b.famille) || a.nb_equipes - b.nb_equipes || coll.compare(a.nom, b.nom));
+  const carte = f => `<div class="card stack fcard" data-id="${f.id || ''}">
+      <div class="tr-l">
+        <label class="tf" style="width:170px"><span>Compétition</span><select data-f="famille"><option value="4x4" ${f.famille === '4x4' ? 'selected' : ''}>M15 · M18 4x4</option><option value="open" ${f.famille === 'open' ? 'selected' : ''}>OPEN 2x2 · 4x4</option></select></label>
+        <label class="tf" style="width:110px"><span>Nb d'équipes</span><input data-f="nb_equipes" type="number" min="2" max="40" value="${f.nb_equipes || ''}"></label>
+        <label class="tf grow"><span>Nom de la formule</span><input data-f="nom" value="${esc(f.nom || '')}" placeholder="ex. 2 poules de 4 + 1 poule de 3"></label>
+        <label class="tf" style="width:300px"><span>Poules de la 1re phase (taille, remarque)</span><input data-f="poules" value="${esc(f.poules || '')}" placeholder="4 (joue sur 2 terrains), 4, 3"></label>
+      </div>
+      <label class="tf"><span>Texte de la formule · {POULES} = composition des poules faite automatiquement</span><textarea data-f="texte" style="min-height:300px;font-family:ui-monospace,Consolas,monospace;font-size:13px;line-height:1.45">${esc(f.texte || '')}</textarea></label>
+      <div class="btnrow" style="margin:0"><button class="btn ok sm" data-save>${f.id ? 'Enregistrer' : 'Créer la formule'}</button>${f.id ? '<button class="linkbtn red" data-del>Supprimer</button>' : ''}</div>
+    </div>`;
+  $('a-body').innerHTML = `<div class="stack">
+    <div class="card stack"><div class="rank-head" style="margin:0"><h2>Formules sportives</h2><span class="muted small">${fs.length} formule(s)</span></div>
+      <p class="muted small" style="margin:0">Dans <b>Inscriptions › ✉ Écrire aux inscrits</b>, le site propose les formules qui correspondent au nombre d'équipes engagées. Il remplace <b>{POULES}</b> par la composition des poules : serpentin d'après le classement général (équipes non classées à la fin, dans l'ordre d'inscription), en répartissant les équipes d'un même club (jamais 2 de plus dans une poule que dans une autre). Le début du mail (tournoi, horaire, équipes inscrites) et la fin (club recevant, signature) sont ajoutés automatiquement.</p>
+      <div><button class="btn primary sm" id="f-new">+ Nouvelle formule</button></div></div>
+    <div id="f-list" class="stack">${fs.map(carte).join('') || '<div class="card muted">Aucune formule enregistrée.</div>'}</div>
+  </div>`;
+  $('f-new').onclick = () => { $('f-list').insertAdjacentHTML('afterbegin', carte({ famille: '4x4', texte: '1ERE PHASE\n\n[poules et format des matchs]\n\nComposition des poules :\n\n{POULES}\n\n2EME PHASE\n\n' })); lier(); $('f-list').querySelector('.fcard [data-f="nb_equipes"]').focus(); };
+  const lier = () => $('f-list').querySelectorAll('.fcard').forEach(card => {
+    const val = () => Object.fromEntries([...card.querySelectorAll('[data-f]')].map(el => [el.dataset.f, el.value]));
+    card.querySelector('[data-save]').onclick = async () => {
+      const p = val(); if (!(+p.nb_equipes > 1)) { saveMark('err', '⚠ Indiquez le nombre d\'équipes'); return; }
+      const tot = lirePoules(p.poules).reduce((s, x) => s + x.n, 0);
+      if (tot && tot !== +p.nb_equipes && !confirm(`Les poules totalisent ${tot} équipes pour une formule à ${p.nb_equipes} équipes. Enregistrer quand même ?`)) return;
+      saveMark('wait', 'Enregistrement…');
+      try { await rpc('chp_admin_formule', { pwd: ADMIN_PWD, fid: card.dataset.id ? +card.dataset.id : null, p }); await chargerFormules(); adminFormules(); saveMark('ok', '✓ Formule enregistrée'); }
+      catch(e) { saveMark('err', '⚠ ' + e.message); }
+    };
+    const d = card.querySelector('[data-del]'); if (d) d.onclick = async () => {
+      if (!confirm('Supprimer cette formule ?')) return;
+      try { await rpc('chp_admin_formule', { pwd: ADMIN_PWD, fid: +card.dataset.id, p: null }); await chargerFormules(); adminFormules(); saveMark('ok', '✓ Formule supprimée'); } catch(e) { saveMark('err', '⚠ ' + e.message); }
+    };
+  });
+  lier();
+}
+
 // ----- Ouverture d'un mail Gmail « mis en forme » (police Garamond + logo du Comité sous la signature) -----
 // Gmail n'accepte que du texte brut dans le lien : le mail mis en forme est copié, puis collé (Ctrl+V) dans Gmail.
 const LOGO_MAIL = SITE_URL + 'logo-comite-var.jpg';
@@ -1442,14 +1497,59 @@ function adminRappel() {
 }
 
 // Modèle du mail « formule sportive » envoyé aux inscrits
+// ----- Formules sportives enregistrées (table chp_formules) -----
+let FORMULES = null;   // null = pas encore chargées, false = indisponibles
+async function chargerFormules() { try { FORMULES = await rpc('chp_admin_formules', { pwd: ADMIN_PWD }) || []; } catch(e) { FORMULES = false; } return FORMULES; }
+// « 4 (joue sur 2 terrains), 3 » → [{ n: 4, note: '(joue sur 2 terrains)' }, { n: 3, note: '' }]
+const lirePoules = s => String(s || '').split(/[,;+]/).map(x => x.trim()).filter(Boolean).map(x => { const m = x.match(/^(\d+)\s*(.*)$/); return m ? { n: +m[1], note: m[2].trim() } : null; }).filter(Boolean);
+// Poules en serpentin d'après le classement général (équipes non classées à la fin, dans l'ordre d'inscription),
+// puis équilibrage des clubs : un club n'a jamais 2 équipes de plus dans une poule que dans une autre.
+function poulesSerpentin(t, eq, spec) {
+  const rows = (typeof classement === 'function' && D && D.tournois) ? classement(t.competition).rows : [];
+  const pos = new Map(rows.map(r => [String(r.equipe).toUpperCase().trim(), r.pos]));
+  const rang = e => { const n = e.nom.toUpperCase(); return pos.get(n) ?? pos.get(n + ' 1') ?? (/ 1$/.test(n) ? pos.get(n.replace(/ 1$/, '')) : undefined); };
+  const ordre = eq.map((e, i) => ({ ...e, rg: rang(e), i })).sort((a, b) => (a.rg ?? 1e6) - (b.rg ?? 1e6) || String(a.created_at).localeCompare(String(b.created_at)) || a.i - b.i);
+  ordre.forEach((e, k) => e.seed = k);
+  const P = spec.map(s => ({ ...s, eq: [] })), cap = P.reduce((s, p) => s + p.n, 0);
+  let i = 0, dir = 1;
+  ordre.slice(0, cap).forEach(e => {
+    let tries = 0;
+    while (P[i].eq.length >= P[i].n && tries++ < 2 * P.length) { i += dir; if (i >= P.length) { i = P.length - 1; dir = -1; } else if (i < 0) { i = 0; dir = 1; } }
+    P[i].eq.push(e);
+    i += dir; if (i >= P.length) { i = P.length - 1; dir = -1; } else if (i < 0) { i = 0; dir = 1; }
+  });
+  const ecart = club => { const n = P.map(p => p.eq.filter(e => e.club === club).length); return Math.max(...n) - Math.min(...n); };
+  for (let it = 0; it < 60; it++) {
+    let fait = false;
+    for (const club of [...new Set(ordre.map(e => e.club))]) {
+      const n = P.map(p => p.eq.filter(e => e.club === club).length), hi = n.indexOf(Math.max(...n)), lo = n.indexOf(Math.min(...n));
+      if (n[hi] - n[lo] < 2) continue;
+      let best = null;
+      P[hi].eq.filter(e => e.club === club).forEach(x => P[lo].eq.filter(y => y.club !== club).forEach(y => {
+        const avant = ecart(y.club);
+        const sw = () => { P[hi].eq[P[hi].eq.indexOf(x)] = y; P[lo].eq[P[lo].eq.indexOf(y)] = x; };
+        sw(); const apres = ecart(y.club); P[hi].eq[P[hi].eq.indexOf(y)] = x; P[lo].eq[P[lo].eq.indexOf(x)] = y;
+        if (apres > Math.max(1, avant)) return;
+        const d = Math.abs(x.seed - y.seed); if (!best || d < best.d || (d === best.d && x.seed > best.x.seed)) best = { x, y, d };   // à écart égal, on déplace l'équipe la moins bien classée
+      }));
+      if (best) { P[hi].eq[P[hi].eq.indexOf(best.x)] = best.y; P[lo].eq[P[lo].eq.indexOf(best.y)] = best.x; fait = true; }
+    }
+    if (!fait) break;
+  }
+  P.forEach(p => p.eq.sort((a, b) => a.seed - b.seed));
+  const lettres = 'ABCDEFGHIJ';
+  let txt = P.map((p, k) => `Poule ${lettres[k]} :${p.note ? ' ' + p.note : ''}\n${p.eq.map((e, j) => `${j + 1} - ${e.nom}`).join('\n')}`).join('\n\n');
+  if (ordre.length !== cap) txt = `[ATTENTION : cette formule prévoit ${cap} équipes, il y en a ${ordre.length}${ordre.length > cap ? ' – non placées : ' + ordre.slice(cap).map(e => e.nom).join(', ') : ''}]\n\n` + txt;
+  return txt;
+}
 function equipesInscrites(ins) {
   const n = {}, out = [];
   [...ins].sort((a, b) => coll.compare(a.club, b.club) || String(a.created_at).localeCompare(String(b.created_at))).forEach(i => {
-    for (let k = 0; k < i.nb_equipes; k++) { n[i.club] = (n[i.club] || 0) + 1; out.push({ club: i.club, k: n[i.club], niveau: i.niveau, sexe: i.sexe }); }
+    for (let k = 0; k < i.nb_equipes; k++) { n[i.club] = (n[i.club] || 0) + 1; out.push({ club: i.club, k: n[i.club], niveau: i.niveau, sexe: i.sexe, created_at: i.created_at }); }
   });
   return out.map(e => ({ ...e, nom: (n[e.club] > 1 ? `${e.club} ${e.k}` : e.club) }));
 }
-function mailFormule(t, c, ins) {
+function mailFormule(t, c, ins, f) {
   const eq = equipesInscrites(ins), q4 = c.famille === '4x4';
   const jour = JOURS[parseD(t.date).getDay()], orga = t.organisateur ? clubNom(t.organisateur) : '[club recevant]';
   let liste;
@@ -1461,15 +1561,7 @@ function mailFormule(t, c, ins) {
     liste = Object.keys(g).sort((a, b) => rg(c.niveaux, a.split(' ')[0]) - rg(c.niveaux, b.split(' ')[0]) || a.localeCompare(b)).map(k => `- ${k} (${g[k].length}) : ${g[k].join(', ')}`).join('\n');
   }
   const poules = ['A', 'B', 'C'].map(p => `Poule ${p} :\n1 - \n2 - \n3 - \n4 - `).join('\n\n');
-  return `Bonjour à tous,
-
-voici la formule sportive pour le tournoi ${c.nom} de ${jour} à ${t.ville || '[ville]'}${t.lieu ? ' (' + t.lieu + ')' : ''}.
-Attention l'heure indiquée${t.heure ? ' (' + fmtH(t.heure) + ')' : ''} est l'heure de début des rencontres et non pas l'heure de rendez-vous.
-
-Équipes inscrites (${eq.length}) :
-${liste}
-
-1ERE PHASE
+  const libre = `1ERE PHASE
 
 [nombre de poules, ex. 2 poules de 4 et 1 poule de 3].
 Matchs en 1 set de [15] points.
@@ -1494,7 +1586,17 @@ Places 5 à 8 - Poule E : Matchs en 1 set de [21]
 1 - 
 2 - 
 3 - 
-4 - 
+4 - `;
+  const milieu = f ? (f.texte.includes('{POULES}') ? f.texte.replace('{POULES}', poulesSerpentin(t, eq, lirePoules(f.poules))) : f.texte + '\n\n' + poulesSerpentin(t, eq, lirePoules(f.poules))) : libre;
+  return `Bonjour à tous,
+
+voici la formule sportive pour le tournoi ${c.nom} de ${jour} à ${t.ville || '[ville]'}${t.lieu ? ' (' + t.lieu + ')' : ''}.
+Attention l'heure indiquée${t.heure ? ' (' + fmtH(t.heure) + ')' : ''} est l'heure de début des rencontres et non pas l'heure de rendez-vous.
+
+Équipes inscrites (${eq.length}) :
+${liste}
+
+${milieu.trim()}
 
 Pour le club recevant (${orga}) :
 En vous connectant à l'espace club organisateurs sur le nouveau site des championnats (${SITE_URL}#club), vous pouvez télécharger les feuilles de poule et de composition d'équipes. Vous allez recevoir vos identifiants dans un mail séparé.

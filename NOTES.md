@@ -165,3 +165,9 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
   - verrouillage des scores ;
   - palmarès manquants.
 - **Portail** : accueil fait (adresse provisoire `accueil/`, actualités = Facebook). Restent : documents, clubs, formations, bénévoles ; « Ce week-end » à alimenter depuis `championnats/data/ffvb.json` ; puis mettre l'accueil à la racine et transférer le domaine volley83.fr.
+
+### Formules sportives (M15/M18 4x4 et OPEN)
+- Table `chp_formules` (famille, nb_equipes, nom, poules « 4 (remarque), 3 », texte avec `{POULES}`) ; RPC `chp_admin_formules` / `chp_admin_formule` (fid null = création, p null = suppression). Script : `sql/championnats/supabase-championnats-formules.sql`.
+- Admin › « Formules sportives » : bibliothèque modifiable. Admin › Inscriptions › Écrire aux inscrits : menu des formules (celles du nombre d'équipes engagées en premier), `{POULES}` remplacé par `poulesSerpentin()`.
+- Serpentin d'après `classement()` ; non classées à la fin (ordre d'inscription) ; équilibrage des clubs : écart max 1 entre poules (échange avec l'équipe la plus proche au classement, à écart égal on déplace la moins bien classée). Le serpentin exact de Clément reste à recevoir.
+
