@@ -158,6 +158,8 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 
 ## À faire / idées
 
+- **Stages d'été (demande de Clément du 13/11)** : présentation illustrée avec des photos montrant ce qu'on y fait (vérifier l'autorisation de droit à l'image pour les enfants reconnaissables ; le dépôt est public) et un renvoi vers la page Facebook des stages d'été (lien à demander ; possibilité d'afficher ses publications avec le robot `scripts/facebook.py` en ajoutant une 3e clé de Page).
+
 - **Stages d'été** : le type `ete` est déjà prévu, avec l'inscription en ligne comme pour le beach.
 - **Stages** : documents des points travaillés (lien `points_url`, déjà géré).
 - **Possible** : un mail automatique avec le code après une inscription en ligne. Il faudrait une fonction edge Supabase et un service d'envoi (Brevo ou Resend).
