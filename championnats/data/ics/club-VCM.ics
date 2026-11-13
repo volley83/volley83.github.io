@@ -288,10 +288,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261113T211500
 DTEND;TZID=Europe/Paris:20261113T231500
 SUMMARY:COMPET'LIB 4X4 MIXTE · Union Athlétique Valettoise 1 – Volley
-  Club Méditerranée
-LOCATION:Santoni
-DESCRIPTION:Poule M4H – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/competlib/M4H
+  Club Méditerranée (3-0)
+DESCRIPTION:Résultat : 3-0 (25:22\, 25:19\, 25:21)\nPoule M4H – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/competlib/M4H
 END:VEVENT
 BEGIN:VEVENT
 UID:M4H007@volley83.github.io
