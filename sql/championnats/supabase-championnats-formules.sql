@@ -64,13 +64,13 @@ Ne pas perdre de temps entre les rencontres avec de longs échauffements au file
 
 2EME PHASE
 
-Places 1 à 4 - Poule D : Matchs en 2 sets de 15 - Tie Break en 11 (joue sur 2 terrains)
+Places 1 à 4 - Poule D : Matchs en 2 sets gagnants de 15 points - Tie-break en 11 points (joue sur 2 terrains)
 1 - 1er poule A
 2 - 1er poule B
 3 - 2ème poule A
 4 - 2ème poule B
 
-Places 5 à 7 - Poule E : Matchs en 2 sets de 15 - Tie Break en 11
+Places 5 à 7 - Poule E : Matchs en 2 sets gagnants de 15 points - Tie-break en 11 points
 1 - 3ème poule A
 2 - 3ème poule B
 3 - 4ème poule A$t$
@@ -80,7 +80,7 @@ where not exists (select 1 from chp_formules where famille = '4x4' and nb_equipe
 insert into chp_formules (famille, nb_equipes, nom, poules, texte)
 select '4x4', 4, '1 poule de 4', '4',
 $t$4 équipes engagées. 1 poule de 4.
-Matchs en 2 sets de 25 points - Tie-Break en 15 points.
+Matchs en 2 sets gagnants de 25 points - Tie-break en 15 points.
 
 Composition de la poule :
 
@@ -101,3 +101,7 @@ Composition de la poule :
 
 3 rotations de matchs.$t$
 where not exists (select 1 from chp_formules where famille = '4x4' and nb_equipes = 3);
+
+-- Correction des intitulés déjà enregistrés : « 2 sets gagnants » + points du tie-break
+update chp_formules set texte = replace(texte, 'Matchs en 2 sets de 15 - Tie Break en 11', 'Matchs en 2 sets gagnants de 15 points - Tie-break en 11 points') where texte like '%2 sets de 15 - Tie Break en 11%';
+update chp_formules set texte = replace(texte, 'Matchs en 2 sets de 25 points - Tie-Break en 15 points', 'Matchs en 2 sets gagnants de 25 points - Tie-break en 15 points') where texte like '%2 sets de 25 points - Tie-Break en 15%';

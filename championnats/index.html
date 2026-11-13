@@ -1394,6 +1394,7 @@ async function adminFormules() {
     card.querySelector('[data-save]').onclick = async () => {
       const p = val(); if (!(+p.nb_equipes > 1)) { saveMark('err', '⚠ Indiquez le nombre d\'équipes'); return; }
       const tot = lirePoules(p.poules).reduce((s, x) => s + x.n, 0);
+      if (/tie.?break/i.test(p.texte) && /\b2 sets(?! gagnants)/i.test(p.texte) && !confirm('Le texte parle de tie-break mais pas de « 2 sets gagnants ». Écrire plutôt par exemple : « Matchs en 2 sets gagnants de 25 points - Tie-break en 15 points ». Enregistrer quand même ?')) return;
       if (tot && tot !== +p.nb_equipes && !confirm(`Les poules totalisent ${tot} équipes pour une formule à ${p.nb_equipes} équipes. Enregistrer quand même ?`)) return;
       saveMark('wait', 'Enregistrement…');
       try { await rpc('chp_admin_formule', { pwd: ADMIN_PWD, fid: card.dataset.id ? +card.dataset.id : null, p }); await chargerFormules(); adminFormules(); saveMark('ok', '✓ Formule enregistrée'); }
