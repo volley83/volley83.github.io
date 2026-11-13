@@ -140,6 +140,11 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - Cartes Documents, Clubs, Formations, Bénévoles : « Bientôt disponible » (pages à construire). Pas de lien public vers `facturation/` ni `frais/`.
 - Pied de page : adresse, 06 13 30 34 25, contact@volley83.fr, itinéraire Google Maps (fiche du Comité), Facebook ×2, Instagram `comite_var_volley`.
 
+## Signalement d'infractions — `ris/index.html` (mise à jour 13/11)
+
+- Plusieurs infractions par rencontre (date + n° de match communs, puis club / nature / précision par infraction ; envoi d'un signalement par infraction).
+- Natures proposées : « Forfait ou pénalité (décision du Comité) » = Équipe absente, Joueur non réglementairement licencié, Absence du surclassement requis × Senior / Compet'Lib / Jeunes (sans article : la sanction est choisie à l'intégration) ; Pénalités du catalogue sauf engagements non conformes et implantations (filtre dans `fac_signal_login`) ; Marqueur non réglementairement licencié, Marqueur invalide ; Autre. Forfaits et arbitrage retirés de la liste.
+
 ## Scripts SQL — dossier `sql/`
 
 - `sql/stages/supabase-stages.sql`, `sql/championnats/supabase-championnats.sql` et `sql/facturation/supabase-facturation.sql` : installation complète. Ils contiennent les dernières versions des fonctions.

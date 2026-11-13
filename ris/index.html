@@ -40,6 +40,9 @@
   .linkbtn.red { color: var(--bad); }
   .sig { border-top: 1px solid var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 3px; }
   .sig:first-child { border-top: 0; padding-top: 0; }
+  .inf { border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: #FAFBFD; display: flex; flex-direction: column; gap: 10px; position: relative; }
+  .inf .num { position: absolute; top: -10px; left: 12px; background: var(--navy); color: #fff; font-size: 12px; font-weight: 700; border-radius: 10px; padding: 1px 9px; }
+  .inf .x { position: absolute; top: 8px; right: 8px; }
   .badge { display: inline-flex; padding: 2px 9px; border-radius: 20px; font-size: 12px; font-weight: 700; }
   .b-new { background: var(--warn-bg); color: var(--warn); } .b-ok { background: var(--ok-bg); color: var(--ok); } .b-no { background: #EEF1F5; color: var(--muted); }
   .chk { display: flex; gap: 8px; align-items: center; font-weight: 500; font-size: 14px; }
@@ -68,6 +71,10 @@ function intitule(des) {
   const t = String(des || '').replace(/^PÉNALITÉ (RIS N°\s*\d+\s*)?-\s*/i, '').replace(/\s*\([^)]*€[^)]*\)\s*$/, '').toLowerCase();
   return (t.charAt(0).toUpperCase() + t.slice(1)).replace(/\bj-(\d+)/g, 'J-$1').replace(/\bm(\d+)/g, 'M$1').replace(/compet'lib/g, "Compet'Lib");
 }
+// Infractions dont la sanction (forfait ou pénalité) est décidée par le Comité : pas d'article associé
+const DECISION = ['Équipe absente', 'Joueur non réglementairement licencié', 'Absence du surclassement requis']
+  .flatMap(t => ['Senior', "Compet'Lib", 'Jeunes'].map(c => `${t} – ${c}`));
+const MARQUEUR = ['Marqueur non réglementairement licencié', 'Marqueur invalide'];
 let CODE = '', D = null, GARDE = { date: today(), match: '' };
 
 function renderLogin(err) {
@@ -88,22 +95,42 @@ async function login(code, mem) {
 }
 function logout() { store.set('ris_code', null); CODE = ''; D = null; renderLogin(); }
 
+function optionsNature() {
+  const pen = D.natures.filter(n => n.categorie === 'Pénalités');
+  return `<option value="">— Choisir —</option>
+    <optgroup label="Forfait ou pénalité (décision du Comité)">${DECISION.map(t => `<option value="t:${esc(t)}">${esc(t)}</option>`).join('')}</optgroup>
+    ${pen.length ? `<optgroup label="Pénalités">${pen.map(n => `<option value="${n.id}">${esc(intitule(n.designation))}</option>`).join('')}</optgroup>` : ''}
+    <optgroup label="Marqueur">${MARQUEUR.map(t => `<option value="t:${esc(t)}">${esc(t)}</option>`).join('')}</optgroup>
+    <option value="autre">Autre infraction</option>`;
+}
+function ligneInf() {
+  const d = document.createElement('div'); d.className = 'inf';
+  const prec = [...document.querySelectorAll('.inf [data-k=club]')].pop();
+  d.innerHTML = `<span class="num"></span><button type="button" class="linkbtn red x">Retirer</button>
+    <div class="field"><label>Club concerné <span class="req">*</span></label><select data-k="club"><option value="">— Choisir —</option>${D.clubs.map(c => `<option value="${esc(c.code)}">${esc(c.code)} – ${esc(c.nom)}</option>`).join('')}</select></div>
+    <div class="field"><label>Nature de l'infraction <span class="req">*</span></label><select data-k="nat">${optionsNature()}</select></div>
+    <div class="field"><label>Précisez l'infraction <span class="req">*</span></label><input data-k="int" placeholder="Ex. : Licence non présentée – 1 joueuse"><span class="small muted">Pré-rempli selon la nature choisie : complétez-le si besoin (nombre de joueurs, nom, n° de licence…).</span></div>`;
+  if (prec) d.querySelector('[data-k=club]').value = prec.value;
+  d.querySelector('[data-k=nat]').onchange = e => { const v = e.target.value, n = D.natures.find(x => String(x.id) === v), inp = d.querySelector('[data-k=int]');
+    inp.value = n ? intitule(n.designation) : v.startsWith('t:') ? v.slice(2) : ''; if (!inp.value) inp.focus(); };
+  d.querySelector('.x').onclick = () => { if (document.querySelectorAll('.inf').length > 1) { d.remove(); numeroter(); } };
+  $('infs').appendChild(d); numeroter(); return d;
+}
+function numeroter() { const l = document.querySelectorAll('.inf'); l.forEach((d, k) => { d.querySelector('.num').textContent = 'Infraction ' + (k + 1); d.querySelector('.x').hidden = l.length < 2; }); }
 function render(okMsg) {
   $('who').innerHTML = `${esc(D.nom)}<br><button class="linkbtn" onclick="logout()">Se déconnecter</button>`;
-  const cats = ['Pénalités', 'Forfaits', 'Arbitrage'];
   const etat = g => g.statut === 'integre' ? '<span class="badge b-ok">Pris en compte</span>' : g.statut === 'rejete' ? '<span class="badge b-no">Non retenu</span>' : '<span class="badge b-new">En attente de validation</span>';
   $('app').innerHTML = `
   ${okMsg ? `<div class="msg ok">${esc(okMsg)}</div>` : ''}
   <form class="card" id="f">
-    <h2>Nouvelle infraction</h2>
+    <h2>Nouveau signalement</h2>
     <div class="g2">
       <div class="field"><label for="f-date">Date du match <span class="req">*</span></label><input id="f-date" type="date" value="${esc(GARDE.date)}" max="${today()}" required></div>
       <div class="field"><label for="f-match">N° du match ou tournoi</label><input id="f-match" value="${esc(GARDE.match)}" placeholder="DFB007, OPEN 2x2 – T1…"></div>
     </div>
-    <div class="field"><label for="f-club">Club concerné <span class="req">*</span></label><select id="f-club" required><option value="">— Choisir —</option>${D.clubs.map(c => `<option value="${esc(c.code)}">${esc(c.code)} – ${esc(c.nom)}</option>`).join('')}</select></div>
-    <div class="field"><label for="f-nat">Nature de l'infraction <span class="req">*</span></label>
-      <select id="f-nat" required><option value="">— Choisir —</option>${cats.map(cat => { const l = D.natures.filter(n => n.categorie === cat); return l.length ? `<optgroup label="${cat}">${l.map(n => `<option value="${n.id}">${esc(intitule(n.designation))}</option>`).join('')}</optgroup>` : ''; }).join('')}<option value="autre">Autre infraction</option></select></div>
-    <div class="field"><label for="f-int">Précisez l'infraction <span class="req">*</span></label><input id="f-int" placeholder="Ex. : Licence non présentée – 1 joueuse"><span class="small muted">Pré-rempli selon la nature choisie : complétez-le si besoin (nombre de joueurs, équipe…).</span></div>
+    <p class="small muted">Vous pouvez signaler <b>plusieurs infractions pour la même rencontre</b> (pour un club ou pour les deux) : ajoutez-les avec le bouton ci-dessous.</p>
+    <div id="infs" style="display:flex;flex-direction:column;gap:18px;padding-top:6px"></div>
+    <div><button type="button" class="btn ghost" id="f-plus">+ Ajouter une autre infraction sur ce match</button></div>
     <div class="field"><label for="f-com">Commentaires</label><textarea id="f-com" placeholder="Tout ce qui peut aider le Comité : circonstances, joueur ou équipe concernés, numéros de licence, horaires…"></textarea></div>
     <div id="f-err" class="msg err" hidden></div>
     <button class="btn primary" type="submit" id="f-ok">Envoyer au Comité</button>
@@ -115,19 +142,26 @@ function render(okMsg) {
       ${g.statut === 'rejete' && g.motif_rejet ? `<span class="small muted">Motif : ${esc(g.motif_rejet)}</span>` : ''}
       ${g.statut === 'nouveau' ? `<div><button class="linkbtn red" onclick="suppr(${g.id})">Supprimer ce signalement</button></div>` : ''}</div>`).join('')
     : '<p class="muted">Aucun signalement pour le moment.</p>'}</div>`;
-  $('f-nat').onchange = () => { const n = D.natures.find(x => String(x.id) === $('f-nat').value); $('f-int').value = n ? intitule(n.designation) : ''; if (!n) $('f-int').focus(); };
+  ligneInf();
+  $('f-plus').onclick = () => ligneInf().querySelector('[data-k=nat]').focus();
   $('f').onsubmit = async ev => {
     ev.preventDefault();
     const err = m => { $('f-err').textContent = m; $('f-err').hidden = false; };
-    const p = { date_match: $('f-date').value, match: $('f-match').value.trim(), club: $('f-club').value,
-      article_id: /^\d+$/.test($('f-nat').value) ? $('f-nat').value : null, nature: $('f-int').value.trim(), commentaire: $('f-com').value.trim() };
-    if (!p.date_match) return err('Indiquez la date du match.');
-    if (!p.club) return err('Choisissez le club concerné.');
-    if (!p.nature) return err('Précisez l\'infraction.');
+    const date_match = $('f-date').value, match = $('f-match').value.trim(), commentaire = $('f-com').value.trim();
+    const ps = [...document.querySelectorAll('.inf')].map(d => { const g = k => d.querySelector(`[data-k=${k}]`).value.trim(), nat = g('nat');
+      return { date_match, match, club: g('club'), article_id: /^\d+$/.test(nat) ? nat : null, nature: g('int'), commentaire }; });
+    if (!date_match) return err('Indiquez la date du match.');
+    for (const [k, p] of ps.entries()) {
+      if (!p.club) return err(`Infraction ${k + 1} : choisissez le club concerné.`);
+      if (!p.nature) return err(`Infraction ${k + 1} : choisissez ou précisez l'infraction.`);
+    }
     $('f-ok').disabled = true;
-    try { await rpc('fac_signal_envoyer', { p_code: CODE, p }); GARDE = { date: p.date_match, match: p.match }; D = await rpc('fac_signal_login', { p_code: CODE });
-      render('✓ Signalement envoyé au Comité. Vous pouvez en saisir un autre pour le même match.'); window.scrollTo(0, 0); }
-    catch(e) { $('f-ok').disabled = false; err(e.message); }
+    let n = 0;
+    try { for (const p of ps) { await rpc('fac_signal_envoyer', { p_code: CODE, p }); n++; }
+      GARDE = { date: date_match, match }; D = await rpc('fac_signal_login', { p_code: CODE });
+      render(n > 1 ? `✓ ${n} infractions envoyées au Comité.` : '✓ Signalement envoyé au Comité. Vous pouvez en saisir un autre pour le même match.'); window.scrollTo(0, 0); }
+    catch(e) { $('f-ok').disabled = false; err((n ? `${n} infraction(s) envoyée(s), mais la suivante a échoué : ` : '') + e.message);
+      if (n) { [...document.querySelectorAll('.inf')].slice(0, n).forEach(d => d.remove()); numeroter(); } }
   };
 }
 async function suppr(id) {

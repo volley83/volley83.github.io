@@ -545,7 +545,9 @@ begin
     'nom', u.nom,
     'clubs', (select coalesce(jsonb_agg(jsonb_build_object('code', c.code, 'nom', c.nom) order by c.code), '[]') from fac_clubs c where c.actif),
     'natures', (select coalesce(jsonb_agg(jsonb_build_object('id', a.id, 'designation', a.designation, 'categorie', a.categorie) order by a.ordre), '[]')
-                from fac_articles a where a.actif and a.categorie in ('Pénalités', 'Forfaits', 'Arbitrage')),
+                -- liste proposée aux vérificateurs : pénalités constatables sur le terrain ou la feuille de match seulement
+                -- (forfaits, arbitrage, engagements et implantations sont décidés / facturés par le Comité)
+                from fac_articles a where a.actif and a.categorie = 'Pénalités' and a.designation !~* '(ENGAGEMENT NON CONFORME|IMPLANTATION)'),
     'mes', (select coalesce(jsonb_agg(jsonb_build_object('id', g.id, 'date_match', g.date_match, 'match', g.match, 'club', g.club, 'nature', g.nature,
               'commentaire', g.commentaire, 'statut', g.statut, 'motif_rejet', g.motif_rejet, 'created_at', g.created_at) order by g.created_at desc), '[]')
             from fac_signalements g where g.saisisseur_id = u.id and g.created_at > now() - interval '1 year'));
