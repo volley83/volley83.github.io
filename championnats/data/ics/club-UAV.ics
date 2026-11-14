@@ -558,10 +558,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261114T203000
 DTEND;TZID=Europe/Paris:20261114T223000
 SUMMARY:SENIORS M · Union Athlétique Valettoise 2 – Volley Club Hyèr
- es / Pierrefeu La Londe
-LOCATION:Santoni
-DESCRIPTION:Poule DMC – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DMC
+ es / Pierrefeu La Londe (0-3)
+DESCRIPTION:Résultat : 0-3 (18:25\, 18:25\, 19:25)\nPoule DMC – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DMC
 END:VEVENT
 BEGIN:VEVENT
 UID:DMC006@volley83.github.io
