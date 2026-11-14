@@ -277,10 +277,10 @@ UID:MFA010@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261114T140000
 DTEND;TZID=Europe/Paris:20261114T160000
-SUMMARY:M15 F · Fréjus Var Volley – Volley Pradétan Gardéen
-LOCATION:Les Bosquettes (Sainte-Maxime)
-DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/MFA
+SUMMARY:M15 F · Fréjus Var Volley – Volley Pradétan Gardéen (0-2)
+DESCRIPTION:Résultat : 0-2 (6:25\, 23:25)\nPoule MFA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MFA
 END:VEVENT
 BEGIN:VEVENT
 UID:MFA011@volley83.github.io
