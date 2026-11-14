@@ -853,10 +853,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261114T190000
 DTEND;TZID=Europe/Paris:20261114T210000
 SUMMARY:SENIORS F · Sainte-Maxime Cogolin Volley (M21) – Volley Club H
- yères / Pierrefeu La Londe
-LOCATION:Les Bosquettes
-DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DFA
+ yères / Pierrefeu La Londe (3-0)
+DESCRIPTION:Résultat : 3-0 (25:9\, 25:14\, 25:20)\nPoule DFA – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/seniors/DFA
 END:VEVENT
 BEGIN:VEVENT
 UID:DFA012@volley83.github.io

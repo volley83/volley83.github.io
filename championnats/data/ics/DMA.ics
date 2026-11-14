@@ -93,10 +93,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261114T180000
 DTEND;TZID=Europe/Paris:20261114T200000
 SUMMARY:SENIORS M · Volley-Ball Ollioulais 2 – Volley Pradétan Gardé
- en 1
-LOCATION:Piemontesi
-DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DMA
+ en 1 (3-1)
+DESCRIPTION:Résultat : 3-1 (25:17\, 21:25\, 26:24\, 25:19)\nPoule DMA 
+ – classement et résultats : https://volley83.github.io/championnats/#
+ championnats/seniors/DMA
 END:VEVENT
 BEGIN:VEVENT
 UID:DMA008@volley83.github.io

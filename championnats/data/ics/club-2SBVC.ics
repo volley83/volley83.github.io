@@ -246,10 +246,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261114T170000
 DTEND;TZID=Europe/Paris:20261114T190000
 SUMMARY:SENIORS F · Sud Sainte-Baume Volley Club – Volley Club Médite
- rranée
-LOCATION:Gymnase du College le Vigneret
-DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DFB
+ rranée (0-3)
+DESCRIPTION:Résultat : 0-3 (17:25\, 11:25\, 14:25)\nPoule DFB – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DFB
 END:VEVENT
 BEGIN:VEVENT
 UID:DFB012@volley83.github.io
@@ -353,10 +353,11 @@ UID:DMB008@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261114T191500
 DTEND;TZID=Europe/Paris:20261114T211500
-SUMMARY:SENIORS M · Sud Sainte-Baume Volley Club – Vidauban Volley-Ball
-LOCATION:Gymnase du College le Vigneret
-DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DMB
+SUMMARY:SENIORS M · Sud Sainte-Baume Volley Club – Vidauban Volley-Bal
+ l (3-1)
+DESCRIPTION:Résultat : 3-1 (25:12\, 25:10\, 24:26\, 25:20)\nPoule DMB 
+ – classement et résultats : https://volley83.github.io/championnats/#
+ championnats/seniors/DMB
 END:VEVENT
 BEGIN:VEVENT
 UID:DMB011@volley83.github.io
