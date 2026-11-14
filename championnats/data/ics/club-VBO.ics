@@ -113,20 +113,22 @@ UID:MFA007@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261114T140000
 DTEND;TZID=Europe/Paris:20261114T160000
-SUMMARY:M15 F · Volley-Ball Ollioulais – Draguignan Union Club Var VB
-LOCATION:Les Bosquettes (Sainte-Maxime)
-DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/MFA
+SUMMARY:M15 F · Volley-Ball Ollioulais – Draguignan Union Club Var VB 
+ (1-2)
+DESCRIPTION:Résultat : 1-2 (25:21\, 20:25\, 13:15)\nPoule MFA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/jeunes/MFA
 END:VEVENT
 BEGIN:VEVENT
 UID:MFA009@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261114T140000
 DTEND;TZID=Europe/Paris:20261114T160000
-SUMMARY:M15 F · Volley-Ball Ollioulais – Sainte-Maxime Cogolin Volley
-LOCATION:Les Bosquettes (Sainte-Maxime)
-DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/MFA
+SUMMARY:M15 F · Volley-Ball Ollioulais – Sainte-Maxime Cogolin Volley 
+ (0-2)
+DESCRIPTION:Résultat : 0-2 (10:25\, 11:25)\nPoule MFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/MFA
 END:VEVENT
 BEGIN:VEVENT
 UID:MFA013@volley83.github.io

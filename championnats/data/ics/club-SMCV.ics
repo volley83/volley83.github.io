@@ -411,20 +411,21 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261114T140000
 DTEND;TZID=Europe/Paris:20261114T160000
 SUMMARY:M15 F · Sainte-Maxime Cogolin Volley – Volley Pradétan Gardé
- en
-LOCATION:Les Bosquettes (Sainte-Maxime)
-DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/MFA
+ en (2-0)
+DESCRIPTION:Résultat : 2-0 (25:9\, 25:6)\nPoule MFA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /MFA
 END:VEVENT
 BEGIN:VEVENT
 UID:MFA009@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261114T140000
 DTEND;TZID=Europe/Paris:20261114T160000
-SUMMARY:M15 F · Volley-Ball Ollioulais – Sainte-Maxime Cogolin Volley
-LOCATION:Les Bosquettes (Sainte-Maxime)
-DESCRIPTION:Poule MFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/MFA
+SUMMARY:M15 F · Volley-Ball Ollioulais – Sainte-Maxime Cogolin Volley 
+ (0-2)
+DESCRIPTION:Résultat : 0-2 (10:25\, 11:25)\nPoule MFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/MFA
 END:VEVENT
 BEGIN:VEVENT
 UID:MFA012@volley83.github.io
