@@ -119,10 +119,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261115T160000
 DTEND;TZID=Europe/Paris:20261115T180000
 SUMMARY:SENIORS F · Volley Pradétan Gardéen (M21) – Volley-Ball Olli
- oulais
-LOCATION:Jacques Troin
-DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DFA
+ oulais (0-3)
+DESCRIPTION:Résultat : 0-3 (7:25\, 6:25\, 9:25)\nPoule DFA – classemen
+ t et résultats : https://volley83.github.io/championnats/#championnats/
+ seniors/DFA
 END:VEVENT
 BEGIN:VEVENT
 UID:DFA010@volley83.github.io

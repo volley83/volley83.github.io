@@ -118,10 +118,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261115T100000
 DTEND;TZID=Europe/Paris:20261115T120000
 SUMMARY:SENIORS F · Volley Pradétan Gardéen – Union Athlétique Vale
- ttoise
-LOCATION:Jacques Troin
-DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DFB
+ ttoise (0-3)
+DESCRIPTION:Résultat : 0-3 (21:25\, 20:25\, 17:25)\nPoule DFB – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DFB
 END:VEVENT
 BEGIN:VEVENT
 UID:DFB010@volley83.github.io
