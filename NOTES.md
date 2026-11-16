@@ -157,7 +157,8 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - **Vues** : annuaire public (recherche ville/club, filtre catégorie ; fiches remplies en tête, dans l'ordre de la base, puis les clubs sans fiche dans une liste compacte « Autres clubs du Var ») ; formulaire du club ; `#comite` (Accès Comité en pied de page) : état de chaque club, « Voir et valider », « Envoyer le lien » (brouillon Gmail, adresse prise dans `fac_clubs.email`, date d'envoi notée), « Copier le lien », export CSV des liens pour publipostage, « Autres… » (nom, masquer, changer le lien, retirer la fiche).
 - **GSD du Var** (sigle `GSD83`, script `sql/clubs/supabase-clubs-gsd.sql`) : dans l'annuaire à la demande de Clément (licences des arbitres, entraîneurs et personnes d'associations non affiliées ; sport santé), placé après les clubs (`ordre` 100). Fiche remplie par Clément depuis l'Espace Comité. Toujours absent de la facturation.
 - Liens envoyés aux clubs le 16/11/2026 ; en attente des premières fiches.
-- **Reste à faire** : carte des clubs (les adresses des lieux sont structurées pour être géolocalisées), lien depuis l'accueil (carte « Clubs du Var » et menu) au moment de la bascule, retirer `noindex`.
+- **Carte (décidée le 16/11/2026, à faire quand environ la moitié des clubs aura répondu)** : uniquement sur la page Clubs, pas sur l'accueil. En haut de la page, entre la recherche et les fiches, pleine largeur (moins haute sur téléphone). Un repère par lieu de pratique ; au clic : club, gymnase, lien « Voir la fiche » qui descend jusqu'à la carte du club. Filtrée en même temps que la liste (ville, catégorie).
+- **Reste à faire** : carte des clubs (voir ci-dessus), lien depuis l'accueil (carte « Clubs du Var » et menu) au moment de la bascule, retirer `noindex`.
 
 ## Scripts SQL — dossier `sql/`
 
