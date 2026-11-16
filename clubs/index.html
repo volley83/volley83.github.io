@@ -66,7 +66,12 @@
   .club h2 { font-size: 24px; line-height: 1.05; }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .chip { padding: 3px 10px; border-radius: 14px; background: #E9EFFA; color: #17407F; font-size: 12px; font-weight: 700; }
-  .lbl { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 14px; font-size: 12px; font-weight: 700; border: 1px solid transparent; }
+  .lbl { display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px; border-radius: 16px; font-size: 14px; font-weight: 700; border: 1px solid transparent; }
+  .lbl svg { flex: 0 0 auto; }
+  .club .plus { display: flex; flex-direction: column; gap: 12px; }
+  .club .tog { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #C9D2E2; background: #fff; color: var(--navy); font-family: inherit; font-weight: 700; font-size: 14px; cursor: pointer; }
+  .club .tog:hover { border-color: var(--navy); }
+  .club .tog[aria-expanded="true"] svg { transform: rotate(180deg); }
   .lbl.or { background: #FFF1C2; color: #5E4500; border-color: #E7C65A; } .lbl.argent { background: #ECEFF3; color: #3A4558; border-color: #BFC7D4; } .lbl.bronze { background: #F6E3D3; color: #6F3C13; border-color: #D9A77E; }
   .club .bloc { border-top: 1px solid #EDF0F5; padding-top: 10px; display: flex; flex-direction: column; gap: 6px; }
   .club .bloc b.t { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
@@ -135,20 +140,24 @@ function carteClub(c) {
   if (f.email) contacts.push(`<a href="mailto:${esc(f.email)}">${esc(f.email)}</a>`);
   if (f.tel) contacts.push(`<a href="tel:${esc(String(f.tel).replace(/[^\d+]/g, ''))}">${esc(f.tel)}</a>`);
   [['site', 'Site internet'], ['facebook', 'Facebook'], ['instagram', 'Instagram']].forEach(([k, t]) => { const u = lienWeb(f[k]); if (u) contacts.push(`<a href="${esc(u)}" target="_blank" rel="noopener">${t}</a>`); });
+  const details = !!(f.presentation || lieux.length || contacts.length || f.contact_nom);
   return `<article class="club">
     <div class="tete">
       <div class="lg">${logoOk(c.logo) ? `<img src="${esc(c.logo)}" alt="">` : esc(c.code)}</div>
       <div><h2>${esc(c.nom)}</h2>${f.villes ? `<div class="muted">${esc(f.villes)}</div>` : ''}</div>
     </div>
     ${c.fiche ? '' : '<div class="muted small">Fiche à venir.</div>'}
-    ${f.presentation ? `<p class="pre">${esc(f.presentation)}</p>` : ''}
+    ${labs.length ? `<div class="chips" aria-label="Labels fédéraux">${labs.map(l => `<span class="lbl ${l.n[0]}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8"/></svg>Label ${esc(l.t)} · ${esc(l.n[1])}</span>`).join('')}</div>` : ''}
     ${cats.length ? `<div class="chips">${cats.map(([, t]) => `<span class="chip">${esc(t)}</span>`).join('')}</div>` : ''}
-    ${labs.length ? `<div class="chips" aria-label="Labels fédéraux">${labs.map(l => `<span class="lbl ${l.n[0]}">Label ${esc(l.t)} · ${esc(l.n[1])}</span>`).join('')}</div>` : ''}
+    ${details ? `<button type="button" class="tog" aria-expanded="false" aria-controls="det-${esc(c.code)}">Voir la présentation, les gymnases et le contact <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+    <div class="plus" id="det-${esc(c.code)}" hidden>
+    ${f.presentation ? `<p class="pre">${esc(f.presentation)}</p>` : ''}
     ${lieux.length ? `<div class="bloc"><b class="t">Où jouer</b>${lieux.map(l => {
       const adr = [l.adresse, [l.cp, l.ville].filter(Boolean).join(' ')].filter(Boolean).join(', ');
       return `<div><b>${esc(l.nom || 'Lieu de pratique')}</b>${adr ? ` · ${esc(adr)} · <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([l.nom, adr].filter(Boolean).join(', '))}" target="_blank" rel="noopener">Itinéraire</a>` : ''}${l.creneaux ? `<div class="pre muted small">${esc(l.creneaux)}</div>` : ''}</div>`;
     }).join('')}</div>` : ''}
     ${contacts.length || f.contact_nom ? `<div class="bloc"><b class="t">Contact</b>${f.contact_nom ? `<div>${esc(f.contact_nom)}${f.contact_role ? ` <span class="muted">· ${esc(f.contact_role)}</span>` : ''}</div>` : ''}<div class="contacts">${contacts.join('')}</div></div>` : ''}
+    </div>` : ''}
   </article>`;
 }
 function filtrer() {
@@ -181,6 +190,12 @@ async function vuePublique() {
       <ul id="autres-liste"></ul>
     </section>`;
   $('q').oninput = filtrer; $('cat').onchange = filtrer;
+  $('liste').onclick = ev => {
+    const b = ev.target.closest('.tog'); if (!b) return;
+    const ouvert = b.getAttribute('aria-expanded') !== 'true', d = $(b.getAttribute('aria-controls'));
+    b.setAttribute('aria-expanded', ouvert); d.hidden = !ouvert;
+    b.firstChild.textContent = ouvert ? 'Masquer les détails ' : 'Voir la présentation, les gymnases et le contact ';
+  };
   try { CLUBS = await rpc('clb_public') || []; filtrer(); }
   catch (e) { $('liste').innerHTML = '<div class="msg info">L\'annuaire des clubs est en cours de préparation. Revenez bientôt.</div>'; }
 }
