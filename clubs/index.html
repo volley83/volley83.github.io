@@ -66,6 +66,8 @@
   .club h2 { font-size: 24px; line-height: 1.05; }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .chip { padding: 3px 10px; border-radius: 14px; background: #E9EFFA; color: #17407F; font-size: 12px; font-weight: 700; }
+  .lbl { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 14px; font-size: 12px; font-weight: 700; border: 1px solid transparent; }
+  .lbl.or { background: #FFF1C2; color: #5E4500; border-color: #E7C65A; } .lbl.argent { background: #ECEFF3; color: #3A4558; border-color: #BFC7D4; } .lbl.bronze { background: #F6E3D3; color: #6F3C13; border-color: #D9A77E; }
   .club .bloc { border-top: 1px solid #EDF0F5; padding-top: 10px; display: flex; flex-direction: column; gap: 6px; }
   .club .bloc b.t { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
   .pre { white-space: pre-line; overflow-wrap: anywhere; }
@@ -107,6 +109,10 @@ const CATS = [
   ['senf', 'Seniors féminines'], ['senm', 'Seniors masculins'], ['loisir', "Loisir / Compet'Lib"], ['beach', 'Beach-volley'],
   ['sante', 'Volley santé / soft volley'], ['assis', 'Volley assis']
 ];
+/* ---------- Labels fédéraux (FFvolley) : un niveau par label ---------- */
+const LABELS = [['formateur', 'Club Formateur'], ['sante', 'Volley Santé'], ['assis', 'Volley Assis']];
+const NIVEAUX = [['or', 'Or'], ['argent', 'Argent'], ['bronze', 'Bronze']];
+const labelsDe = f => LABELS.map(([k, t]) => { const n = NIVEAUX.find(x => x[0] === ((f && f.labels) || {})[k]); return n ? { k, t, n } : null; }).filter(Boolean);
 const MAX_LIEUX = 5;
 // N'accepte que de vraies adresses web (http ou https, avec un nom de domaine) : tout le reste est ignoré
 const lienWeb = u => {
@@ -122,7 +128,7 @@ const logoOk = l => typeof l === 'string' && /^data:image\/(png|jpeg|webp);base6
 let CLUBS = [];
 function carteClub(c) {
   const f = c.fiche || {}, cats = CATS.filter(([k]) => (f.categories || []).includes(k));
-  const lieux = (f.lieux || []).filter(l => l && (l.nom || l.adresse || l.ville));
+  const lieux = (f.lieux || []).filter(l => l && (l.nom || l.adresse || l.ville)), labs = labelsDe(f);
   const contacts = [];
   if (f.email) contacts.push(`<a href="mailto:${esc(f.email)}">${esc(f.email)}</a>`);
   if (f.tel) contacts.push(`<a href="tel:${esc(String(f.tel).replace(/[^\d+]/g, ''))}">${esc(f.tel)}</a>`);
@@ -135,6 +141,7 @@ function carteClub(c) {
     ${c.fiche ? '' : '<div class="muted small">Fiche à venir.</div>'}
     ${f.presentation ? `<p class="pre">${esc(f.presentation)}</p>` : ''}
     ${cats.length ? `<div class="chips">${cats.map(([, t]) => `<span class="chip">${esc(t)}</span>`).join('')}</div>` : ''}
+    ${labs.length ? `<div class="chips" aria-label="Labels fédéraux">${labs.map(l => `<span class="lbl ${l.n[0]}">Label ${esc(l.t)} · ${esc(l.n[1])}</span>`).join('')}</div>` : ''}
     ${lieux.length ? `<div class="bloc"><b class="t">Où jouer</b>${lieux.map(l => {
       const adr = [l.adresse, [l.cp, l.ville].filter(Boolean).join(' ')].filter(Boolean).join(', ');
       return `<div><b>${esc(l.nom || 'Lieu de pratique')}</b>${adr ? ` · ${esc(adr)} · <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([l.nom, adr].filter(Boolean).join(', '))}" target="_blank" rel="noopener">Itinéraire</a>` : ''}${l.creneaux ? `<div class="pre muted small">${esc(l.creneaux)}</div>` : ''}</div>`;
@@ -233,6 +240,11 @@ function formHtml(f, comite) {
       <div class="cats">${CATS.map(([k, t]) => `<label class="chk"><input type="checkbox" data-cat="${k}" ${(f.categories || []).includes(k) ? 'checked' : ''}> ${esc(t)}</label>`).join('')}</div>
     </div>
     <div class="card">
+      <h2>Labels fédéraux</h2>
+      <p class="muted small">Si le club a obtenu un label de la FFvolley, indiquez son niveau. Sinon, laissez « Aucun ».</p>
+      <div class="g2" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">${LABELS.map(([k, t]) => `<div class="field"><label for="f-lab-${k}">${esc(t)}</label><select id="f-lab-${k}" data-lab="${k}"><option value="">Aucun</option>${NIVEAUX.map(([n, nt]) => `<option value="${n}" ${((f.labels || {})[k]) === n ? 'selected' : ''}>${nt}</option>`).join('')}</select></div>`).join('')}</div>
+    </div>
+    <div class="card">
       <h2>Gymnases et lieux de pratique</h2>
       <p class="muted small">Indiquez l'adresse complète : elle servira à situer le club et à proposer l'itinéraire. ${MAX_LIEUX} lieux au plus.</p>
       <div id="lieux" style="display:flex;flex-direction:column;gap:12px"></div>
@@ -271,6 +283,7 @@ function lireForm() {
   const t = id => ($(id) ? $(id).value.trim() : '');
   const f = { villes: t('f-villes'), presentation: t('f-presentation'),
     categories: [...document.querySelectorAll('[data-cat]')].filter(x => x.checked).map(x => x.dataset.cat),
+    labels: Object.fromEntries([...document.querySelectorAll('[data-lab]')].filter(x => x.value).map(x => [x.dataset.lab, x.value])),
     lieux: [...document.querySelectorAll('#lieux .lieu')].map(d => { const o = {}; d.querySelectorAll('[data-k]').forEach(i => o[i.dataset.k] = i.value.trim()); return o; }).filter(o => o.nom || o.adresse || o.ville),
     contact_nom: t('f-contact_nom'), contact_role: t('f-contact_role'), email: t('f-email'), tel: t('f-tel'), site: t('f-site'), facebook: t('f-facebook'), instagram: t('f-instagram') };
   if ($('f-auteur')) f._auteur = t('f-auteur');
@@ -359,7 +372,9 @@ function mailClub(c) {
 
 Le Comité du Var de Volley-Ball prépare son nouveau site internet. Il comprendra un annuaire des clubs du Var, pour aider les familles et les joueurs à trouver un club près de chez eux.
 
-Pour que la fiche de votre club soit exacte, nous vous proposons de la remplir vous-même : ville(s), gymnases et créneaux, catégories accueillies, contact à afficher et logo du club. Vous choisissez ce que vous souhaitez publier.
+L'objectif est de faire une page beaucoup plus complète et lisible que celle sur le site de la Fédération, merci de votre coopération.
+
+Pour que la fiche de votre club soit exacte, nous vous proposons de la remplir vous-même : ville(s), gymnases et créneaux, catégories accueillies, labels fédéraux, contact à afficher et logo du club. Vous choisissez ce que vous souhaitez publier.
 
 Voici le lien personnel de ${c.nom} :
 ${lienClub(c)}
