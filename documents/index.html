@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Documents – Comité du Var de Volley-Ball</title>
+<meta name="description" content="Règlements, calendriers, feuilles de match et formulaires du Comité du Var de Volley-Ball.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --navy: #0B2149; --blue: #1E4FA3; --accent: #F6C21B; --bg: #F4F6FA; --line: #E2E7F0; --text: #14203A; --muted: #56627A;
+    --ok: #11672F; --ok-bg: #E7F6EC; --warn: #8A5A00; --warn-bg: #FFF4D6; --bad: #A3231D; --bad-bg: #FCE9E8; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; font-size: 15px; line-height: 1.5; min-height: 100vh; }
+  [hidden] { display: none !important; }
+  a { color: var(--blue); } a:hover { color: var(--navy); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  header { background: #fff; border-bottom: 1px solid var(--line); }
+  .head { display: flex; align-items: center; gap: 14px; padding-top: 10px; padding-bottom: 10px; }
+  .head img { height: 48px; display: block; }
+  .head .t { flex: 1 1 auto; min-width: 0; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 28px; text-transform: uppercase; letter-spacing: .5px; color: var(--navy); line-height: 1; }
+  .head .back { font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; min-height: 44px; }
+  main.wrap { padding-top: 26px; padding-bottom: 56px; display: flex; flex-direction: column; gap: 18px; }
+  h1, h2, h3 { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; color: var(--navy); letter-spacing: .5px; font-weight: 800; }
+  h1 { font-size: 36px; line-height: 1; } h2 { font-size: 24px; line-height: 1.1; }
+  @media (max-width: 620px) { .head .t { font-size: 22px; } h1 { font-size: 30px; } }
+  .muted { color: var(--muted); } .small { font-size: 13px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  label, .lab { font-size: 14px; font-weight: 700; }
+  input, select, textarea { font-family: inherit; font-size: 16px; color: var(--text); background: #fff; border: 1px solid #C9D2E2; border-radius: 10px; padding: 10px 12px; width: 100%; outline: none; }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(30,79,163,.15); }
+  textarea { min-height: 70px; resize: vertical; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid transparent; font-weight: 700; font-size: 14px; font-family: inherit; cursor: pointer; text-decoration: none; white-space: nowrap; }
+  .btn.primary { background: var(--navy); color: #fff; } .btn.ghost { background: #fff; border-color: #C9D2E2; color: var(--navy); } .btn.red { background: #fff; border-color: #E5B5B2; color: var(--bad); }
+  .btn.sm { min-height: 38px; padding: 0 12px; font-size: 13px; }
+  .btn[disabled] { opacity: .5; cursor: default; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .msg { border-radius: 10px; padding: 12px 14px; }
+  .msg.ok { background: var(--ok-bg); color: var(--ok); } .msg.err { background: var(--bad-bg); color: var(--bad); } .msg.info { background: #E9EFFA; color: var(--navy); } .msg.warn { background: var(--warn-bg); color: var(--warn); }
+  .linkbtn { background: none; border: 0; color: var(--blue); font-weight: 600; cursor: pointer; font-family: inherit; font-size: 14px; text-decoration: underline; padding: 0; min-height: 32px; }
+  .badge { display: inline-flex; padding: 2px 9px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .b-new { background: var(--warn-bg); color: var(--warn); } .b-no { background: #EEF1F5; color: #3F4B63; } .b-bad { background: var(--bad-bg); color: var(--bad); }
+
+  /* Public */
+  .card.outils { gap: 14px; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tab { min-height: 40px; padding: 0 14px; border-radius: 20px; border: 1px solid #C5CEDD; background: #fff; color: var(--text); font-family: inherit; font-weight: 700; font-size: 14px; cursor: pointer; }
+  .tab[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .cat { display: flex; flex-direction: column; gap: 10px; }
+  .cat .intro { font-size: 14px; }
+  .docs { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr)); gap: 10px; }
+  .doc { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: flex; gap: 14px; align-items: center; }
+  .doc.cible { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(246,194,27,.35); }
+  .doc .ic { flex: 0 0 46px; height: 54px; border-radius: 8px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px; font-size: 11px; font-weight: 800; color: #fff; letter-spacing: .5px; }
+  .ic.pdf { background: #C0392B; } .ic.word { background: #2B5797; } .ic.excel { background: #1D7044; } .ic.autre { background: #56627A; }
+  .doc .tx { flex: 1 1 auto; min-width: 0; }
+  .doc .tx b { display: block; overflow-wrap: anywhere; }
+  .doc .tx .muted { font-size: 13px; }
+  .liens { display: flex; flex-wrap: wrap; gap: 10px; }
+  .renvoi { flex: 1 1 300px; display: flex; flex-direction: column; gap: 4px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-decoration: none; color: var(--text); }
+  .renvoi:hover { border-color: var(--navy); color: var(--text); }
+  .renvoi b { color: var(--navy); }
+
+  /* Comité */
+  .adm { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; align-items: center; border-top: 1px solid #EDF0F5; padding-top: 10px; }
+  .adm.first { border-top: 0; padding-top: 0; }
+  @media (max-width: 760px) { .adm { grid-template-columns: 1fr; } }
+  .g2 { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+  @media (max-width: 620px) { .g2 { grid-template-columns: 1fr; } }
+  .chk { display: flex; gap: 9px; align-items: center; font-weight: 500; font-size: 14px; cursor: pointer; }
+  .chk input { width: 18px; height: 18px; }
+  footer { border-top: 1px solid var(--line); background: #fff; }
+  footer .wrap { padding-top: 14px; padding-bottom: 14px; display: flex; flex-wrap: wrap; gap: 6px 20px; justify-content: space-between; font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<header><div class="wrap head">
+  <a href="../accueil/" aria-label="Accueil du Comité"><img src="logo-comite-var.jpg" alt=""></a>
+  <div class="t">Documents</div>
+  <a class="back" href="../accueil/">← Accueil</a>
+</div></header>
+<main class="wrap" id="app"></main>
+<footer><div class="wrap"><span>Comité du Var de Volley-Ball · <a href="mailto:volley83@gmail.com">volley83@gmail.com</a></span><a href="#comite">Accès Comité</a></div></footer>
+
+<script>
+const SUPABASE_URL = 'https://nssdhgpvkdbgdewsnlgl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_GeMMc45mQbDOq-ZkU5vXZw_lYJe9KXf';
+const $ = id => document.getElementById(id);
+const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function rpc(fn, args) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, { method: 'POST', headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(args || {}) });
+  const txt = await res.text();
+  if (!res.ok) { let m = txt; try { m = JSON.parse(txt).message || txt; } catch(e) {} throw new Error(m); }
+  return txt ? JSON.parse(txt) : null;
+}
+const fmtD = s => s ? new Date(s).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+/* ---------- Catégories (l'identifiant est aussi contrôlé par la base : ne pas le renommer) ---------- */
+const CATS = [
+  ['reglements', 'Règlements', 'Règlements particuliers des épreuves (RPE) des championnats départementaux.'],
+  ['calendriers', 'Calendriers', 'Le calendrier général de la saison. Les calendriers et résultats à jour de chaque poule sont dans la rubrique <a href="../championnats/">Championnats</a>.'],
+  ['feuilles', 'Feuilles de match', 'Feuilles papier, à utiliser uniquement en cas de problème avec l\'application de saisie des matchs.'],
+  ['formulaires', 'Formulaires', 'Documents à remplir et à renvoyer au Comité.'],
+  ['formations', 'Formations', 'Présentation des formations d\'éducateurs et d\'encadrants.'],
+  ['comite', 'Vie du Comité', 'Organisation et fonctionnement du Comité.']
+];
+const NOUVEAU_JOURS = 30;
+function genre(d) {
+  const n = (d.nom || '').toLowerCase(), t = d.type || '';
+  if (/pdf/.test(t) || n.endsWith('.pdf')) return ['pdf', 'PDF'];
+  if (/word|msword/.test(t) || /\.docx?$/.test(n)) return ['word', 'WORD'];
+  if (/sheet|excel/.test(t) || /\.(xlsx?|csv|ods)$/.test(n)) return ['excel', 'EXCEL'];
+  return ['autre', (n.split('.').pop() || 'FICHIER').toUpperCase().slice(0, 5)];
+}
+const taille = o => !o ? '' : o < 1024 * 1024 ? Math.max(1, Math.round(o / 1024)) + ' Ko' : (o / 1024 / 1024).toFixed(1).replace('.', ',') + ' Mo';
+const recent = d => d.maj_le && (Date.now() - new Date(d.maj_le)) < NOUVEAU_JOURS * 864e5;
+
+/* ---------- Téléchargement (le fichier est lu dans la base puis remis au navigateur) ---------- */
+async function ouvrir(slug, bouton) {
+  const pdf = bouton && bouton.dataset.pdf === '1';
+  const fen = pdf ? window.open('', '_blank') : null;     // ouverte tout de suite pour ne pas être bloquée
+  const lib = bouton ? bouton.innerHTML : '';
+  if (bouton) { bouton.disabled = true; bouton.textContent = 'Chargement…'; }
+  try {
+    const f = await rpc('doc_fichier', { p_slug: slug });
+    if (!f) throw new Error('Document introuvable');
+    const bin = atob(f.data), u8 = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+    const url = URL.createObjectURL(new Blob([u8], { type: f.type || 'application/octet-stream' }));
+    if (fen) { fen.location.href = url; }
+    else { const a = document.createElement('a'); a.href = url; a.download = f.nom || 'document'; document.body.appendChild(a); a.click(); a.remove(); }
+    setTimeout(() => URL.revokeObjectURL(url), 120000);
+  } catch (e) {
+    if (fen) fen.close();
+    alert('Le document n\'a pas pu être chargé. Réessayez dans un instant.');
+  } finally { if (bouton) { bouton.disabled = false; bouton.innerHTML = lib; } }
+}
+
+/* =====================================================================
+   1. PAGE PUBLIQUE
+   ===================================================================== */
+let DOCS = [], FILTRE = 'tout';
+const CIBLE = new URLSearchParams(location.search).get('doc') || '';
+function ligneDoc(d) {
+  const [g, lib] = genre(d), pdf = g === 'pdf';
+  return `<div class="doc${d.slug === CIBLE ? ' cible' : ''}" id="d-${esc(d.slug)}">
+    <div class="ic ${g}" aria-hidden="true">${esc(lib)}</div>
+    <div class="tx"><b>${esc(d.titre)}</b>${d.description ? `<div class="small">${esc(d.description)}</div>` : ''}
+      <div class="muted">${esc(lib)} · ${esc(taille(d.taille))} · mis à jour le ${esc(fmtD(d.maj_le))} ${recent(d) ? '<span class="badge b-new">Nouveau</span>' : ''}</div></div>
+    <button type="button" class="btn ${pdf ? 'primary' : 'ghost'}" data-dl="${esc(d.slug)}" data-pdf="${pdf ? 1 : 0}" aria-label="${pdf ? 'Ouvrir' : 'Télécharger'} : ${esc(d.titre)}">${pdf ? 'Ouvrir' : 'Télécharger'}</button>
+  </div>`;
+}
+function rendu() {
+  const q = norm($('q').value);
+  document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-pressed', b.dataset.f === FILTRE));
+  const blocs = CATS.filter(([k]) => FILTRE === 'tout' || FILTRE === k).map(([k, t, intro]) => {
+    const l = DOCS.filter(d => d.categorie === k && (!q || norm(d.titre + ' ' + (d.description || '')).includes(q)));
+    if (!l.length) return '';
+    return `<section class="cat" aria-labelledby="c-${k}"><h2 id="c-${k}">${esc(t)}</h2><p class="intro muted">${intro}</p><div class="docs">${l.map(ligneDoc).join('')}</div></section>`;
+  }).join('');
+  $('liste').innerHTML = blocs || `<div class="msg info">${DOCS.length ? 'Aucun document ne correspond à cette recherche.' : 'Les documents sont en cours de mise en ligne. Revenez bientôt.'}</div>`;
+}
+async function vuePublique() {
+  $('app').innerHTML = `<div><h1>Documents du Comité</h1><p class="muted" style="margin-top:6px">Règlements, calendrier général, feuilles de match et formulaires à télécharger.</p></div>
+    <div class="card outils">
+      <div class="field"><label for="q">Rechercher un document</label><input id="q" type="search" placeholder="Ex. : M13, dérogation, feuille de tournoi…" autocomplete="off"></div>
+      <div class="tabs" role="group" aria-label="Catégories"><button type="button" class="tab" data-f="tout">Tous</button>${CATS.map(([k, t]) => `<button type="button" class="tab" data-f="${k}">${esc(t)}</button>`).join('')}</div>
+    </div>
+    <div id="liste" style="display:flex;flex-direction:column;gap:22px"><div class="muted">Chargement…</div></div>
+    <section aria-labelledby="t-aill" style="display:flex;flex-direction:column;gap:10px"><h2 id="t-aill">Ailleurs sur le site</h2>
+      <div class="liens">
+        <a class="renvoi" href="../pitchounvolley/"><b>Pitchoun' Volley</b><span class="small muted">Calendrier des plateaux, niveaux, inscriptions et documents des organisateurs.</span></a>
+        <a class="renvoi" href="../tip/"><b>Tournoi International Poussins / Poussines</b><span class="small muted">Présentation, règlement et inscriptions.</span></a>
+      </div></section>`;
+  $('q').oninput = rendu;
+  document.querySelector('.tabs').onclick = ev => { const b = ev.target.closest('.tab'); if (b) { FILTRE = b.dataset.f; rendu(); } };
+  $('liste').onclick = ev => { const b = ev.target.closest('[data-dl]'); if (b) ouvrir(b.dataset.dl, b); };
+  try { DOCS = await rpc('doc_public') || []; }
+  catch (e) { DOCS = []; }
+  rendu();
+  if (CIBLE && $('d-' + CIBLE)) $('d-' + CIBLE).scrollIntoView({ block: 'center' });
+}
+
+/* =====================================================================
+   2. ESPACE COMITÉ
+   ===================================================================== */
+let PWD = '', ADM = [];
+const MAX_MO = 8;
+const lienDoc = d => location.origin + location.pathname.replace(/index\.html$/, '') + '?doc=' + d.slug;
+function vueLogin(err) {
+  $('app').innerHTML = `<form class="card" id="lg" style="max-width:460px"><h2>Accès Comité</h2>
+    <div class="field"><label for="pwd">Mot de passe</label><input id="pwd" type="password" autocomplete="current-password" required></div>
+    ${err ? `<div class="msg err">${esc(err)}</div>` : ''}
+    <div class="row"><button class="btn primary" type="submit">Entrer</button><a href="./" class="small">Retour aux documents</a></div></form>`;
+  $('pwd').focus();
+  $('lg').onsubmit = async ev => { ev.preventDefault(); await entrer($('pwd').value); };
+}
+async function entrer(pwd) {
+  try { ADM = await rpc('doc_admin_get', { pwd }); PWD = pwd; try { sessionStorage.setItem('doc_admin', pwd); } catch (e) {} vueComite(); }
+  catch (e) { try { sessionStorage.removeItem('doc_admin'); } catch (x) {} vueLogin(/refus/i.test(e.message) ? 'Mot de passe incorrect.' : e.message); }
+}
+async function recharge(msg) { ADM = await rpc('doc_admin_get', { pwd: PWD }); vueComite(msg); }
+function vueComite(msg) {
+  const manquants = ADM.filter(d => !d.nom).length;
+  $('app').innerHTML = `<div class="row" style="justify-content:space-between"><h1>Gestion des documents</h1><button class="linkbtn" id="out">Se déconnecter</button></div>
+    ${msg ? `<div class="msg ok">${esc(msg)}</div>` : ''}
+    ${manquants ? `<div class="msg warn">${manquants} document(s) sans fichier : ils n'apparaissent pas sur la page publique tant que le fichier n'est pas déposé.</div>` : ''}
+    <div class="row"><button class="btn primary" id="add">+ Ajouter un document</button><a class="btn ghost" href="./" target="_blank" rel="noopener">Voir la page publique</a></div>
+    ${CATS.map(([k, t]) => { const l = ADM.filter(d => d.categorie === k); return `<div class="card"><h2>${esc(t)}</h2>${l.length ? l.map((d, i) => `<div class="adm${i ? '' : ' first'}" style="${d.visible ? '' : 'opacity:.6'}">
+        <div><b>${esc(d.titre)}</b> ${d.nom ? '' : '<span class="badge b-bad">Fichier à déposer</span>'} ${d.visible ? '' : '<span class="badge b-no">Masqué</span>'}
+          <div class="small muted">${d.nom ? `${esc(d.nom)} · ${esc(taille(d.taille))} · mis à jour le ${esc(fmtD(d.maj_le))}` : 'Aucun fichier'}</div></div>
+        <div class="row">
+          <label class="btn ${d.nom ? 'ghost' : 'primary'} sm" style="cursor:pointer">${d.nom ? 'Remplacer le fichier' : 'Déposer le fichier'}<input type="file" data-up="${d.id}" hidden></label>
+          <button class="btn ghost sm" data-ed="${d.id}">Modifier</button>
+          ${d.nom ? `<button class="btn ghost sm" data-cp="${d.id}">Copier le lien</button>` : ''}
+        </div></div>`).join('') : '<div class="muted small">Aucun document.</div>'}</div>`; }).join('')}`;
+  $('out').onclick = () => { PWD = ''; try { sessionStorage.removeItem('doc_admin'); } catch (e) {} location.hash = ''; route(); };
+  $('add').onclick = () => vueEdition(null);
+  $('app').onclick = async ev => {
+    const ed = ev.target.closest('[data-ed]'), cp = ev.target.closest('[data-cp]');
+    if (ed) return vueEdition(ADM.find(d => String(d.id) === ed.dataset.ed));
+    if (cp) { const d = ADM.find(x => String(x.id) === cp.dataset.cp); try { await navigator.clipboard.writeText(lienDoc(d)); cp.textContent = 'Lien copié'; } catch (e) { prompt('Lien du document :', lienDoc(d)); } }
+  };
+  $('app').onchange = ev => { const i = ev.target.closest('[data-up]'); if (i && i.files[0]) deposer(Number(i.dataset.up), i.files[0], i.closest('label')); };
+}
+function lireB64(file) {
+  return new Promise((ok, ko) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1] || ''); r.onerror = () => ko(new Error('Fichier illisible')); r.readAsDataURL(file); });
+}
+async function deposer(id, file, lab) {
+  if (file.size > MAX_MO * 1024 * 1024) { alert(`Ce fichier fait ${taille(file.size)} : ${MAX_MO} Mo au plus. Enregistrez-le en PDF plus léger, ou découpez-le.`); return; }
+  if (lab) { lab.firstChild.textContent = 'Envoi en cours…'; lab.style.pointerEvents = 'none'; }
+  try {
+    await rpc('doc_admin_fichier', { pwd: PWD, p_id: id, p_nom: file.name, p_type: file.type, p_data: await lireB64(file) });
+    await recharge('Fichier enregistré : ' + file.name);
+  } catch (e) { alert('Envoi impossible : ' + e.message); vueComite(); }
+}
+function vueEdition(d) {
+  d = d || { categorie: 'reglements', visible: true, ordre: 0 };
+  $('app').onclick = null; $('app').onchange = null;
+  $('app').innerHTML = `<form class="card" id="fm" style="max-width:720px"><h2>${d.id ? 'Modifier le document' : 'Nouveau document'}</h2>
+    <div class="field"><label for="e-titre">Titre</label><input id="e-titre" required maxlength="140" value="${esc(d.titre)}"></div>
+    <div class="g2">
+      <div class="field"><label for="e-cat">Catégorie</label><select id="e-cat">${CATS.map(([k, t]) => `<option value="${k}" ${d.categorie === k ? 'selected' : ''}>${esc(t)}</option>`).join('')}</select></div>
+      <div class="field"><label for="e-ordre">Ordre dans la catégorie</label><input id="e-ordre" type="number" min="0" max="999" value="${esc(d.ordre || 0)}"></div>
+    </div>
+    <div class="field"><label for="e-desc">Description <span class="muted" style="font-weight:500">(facultative, une ligne)</span></label><textarea id="e-desc" maxlength="300">${esc(d.description)}</textarea></div>
+    ${d.id ? '' : '<div class="field"><label for="e-file">Fichier</label><input id="e-file" type="file"></div>'}
+    <label class="chk"><input type="checkbox" id="e-vis" ${d.visible ? 'checked' : ''}> Visible sur la page publique</label>
+    <div class="msg err" id="err" hidden></div>
+    <div class="row"><button class="btn primary" type="submit" id="ok">Enregistrer</button><button type="button" class="btn ghost" id="ann">Annuler</button>
+      ${d.id ? '<button type="button" class="btn red" id="sup" style="margin-left:auto">Supprimer le document</button>' : ''}</div></form>`;
+  $('e-titre').focus();
+  $('ann').onclick = () => vueComite();
+  if ($('sup')) $('sup').onclick = async () => {
+    if (!confirm('Supprimer définitivement « ' + d.titre + ' » et son fichier ?\nPour le retirer seulement de la page publique, décochez plutôt « Visible ».')) return;
+    try { await rpc('doc_admin_suppr', { pwd: PWD, p_id: d.id }); await recharge('Document supprimé.'); } catch (e) { alert(e.message); }
+  };
+  $('fm').onsubmit = async ev => {
+    ev.preventDefault(); $('err').hidden = true;
+    const f = $('e-file') && $('e-file').files[0];
+    if (f && f.size > MAX_MO * 1024 * 1024) { $('err').textContent = `Ce fichier fait ${taille(f.size)} : ${MAX_MO} Mo au plus.`; $('err').hidden = false; return; }
+    $('ok').disabled = true; $('ok').textContent = 'Enregistrement…';
+    try {
+      const id = await rpc('doc_admin_save', { pwd: PWD, p: { id: d.id || null, titre: $('e-titre').value, categorie: $('e-cat').value, description: $('e-desc').value, ordre: Number($('e-ordre').value) || 0, visible: $('e-vis').checked } });
+      if (f) await rpc('doc_admin_fichier', { pwd: PWD, p_id: id, p_nom: f.name, p_type: f.type, p_data: await lireB64(f) });
+      await recharge('Document enregistré.');
+    } catch (e) { $('err').textContent = 'Enregistrement impossible : ' + e.message; $('err').hidden = false; $('ok').disabled = false; $('ok').textContent = 'Enregistrer'; }
+  };
+}
+
+/* ---------- Aiguillage ---------- */
+async function route() {
+  $('app').onclick = null; $('app').onchange = null;
+  if (location.hash === '#comite') {
+    if (PWD) return vueComite();
+    let mem = ''; try { mem = sessionStorage.getItem('doc_admin') || ''; } catch (e) {}
+    return mem ? entrer(mem) : vueLogin();
+  }
+  vuePublique();
+}
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>

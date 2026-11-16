@@ -160,6 +160,14 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - **Carte (décidée le 16/11/2026, à faire quand environ la moitié des clubs aura répondu)** : uniquement sur la page Clubs, pas sur l'accueil. En haut de la page, entre la recherche et les fiches, pleine largeur (moins haute sur téléphone). Un repère par lieu de pratique ; au clic : club, gymnase, lien « Voir la fiche » qui descend jusqu'à la carte du club. Filtrée en même temps que la liste (ville, catégorie).
 - **Reste à faire** : carte des clubs (voir ci-dessus), lien depuis l'accueil (carte « Clubs du Var » et menu) au moment de la bascule, retirer `noindex`.
 
+## Documents — `documents/index.html` (https://volley83.github.io/documents/, non indexée, pas encore liée depuis l'accueil)
+
+- Reprise de volley83.fr/documents (33 fichiers relevés le 16/11/2026). Décisions de Clément : **feuilles électroniques abandonnées** (on garde les feuilles papier, à utiliser en cas de problème avec l'application) ; Pitchoun' Volley et TIP : renvoi vers leurs sites, pas de doublon ; documents ajoutés et remplacés par Clément lui-même dans l'Espace Comité.
+- Catégories (identifiants contrôlés par la base, ne pas renommer) : `reglements`, `calendriers`, `feuilles`, `formulaires`, `formations`, `comite` (« Vie du Comité »).
+- **Base** (script `sql/documents/supabase-documents.sql`) : `doc_documents` (slug stable, titre, catégorie, description, ordre, visible) et `doc_fichiers` (fichier en bytea, **8 Mo au plus**). RLS sans accès direct ; `doc_public`, `doc_fichier(slug)` (public), `doc_admin_get / _save / _fichier / _suppr` (mot de passe admin commun). Le script pré-crée les 23 documents à reprendre, **sans fichier** : ils n'apparaissent sur la page publique qu'une fois le fichier déposé.
+- **Page publique** : recherche, filtres par catégorie, badge « Nouveau » 30 jours après un dépôt, PDF ouverts dans un nouvel onglet, autres fichiers téléchargés ; lien direct `documents/?doc=<slug>` (document mis en évidence ; « Copier le lien » dans l'Espace Comité).
+- À vérifier par Clément au dépôt : la présentation TIP était celle de 2026 (non reprise, renvoi vers le site du TIP).
+
 ## Scripts SQL — dossier `sql/`
 
 - `sql/stages/supabase-stages.sql`, `sql/championnats/supabase-championnats.sql` et `sql/facturation/supabase-facturation.sql` : installation complète. Ils contiennent les dernières versions des fonctions.
@@ -180,7 +188,7 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
   - passage de la phase 1 à la phase 2 ;
   - verrouillage des scores ;
   - palmarès manquants.
-- **Portail** : accueil fait (adresse provisoire `accueil/`) ; clubs : formulaire et annuaire faits, fiches à collecter auprès des clubs. Restent : documents, formations, bénévoles. Plan de Clément (16/11) : faire Documents et Clubs, puis mettre l'accueil à la racine, basculer volley83.fr et faire **une seule annonce** aux clubs.
+- **Portail** : accueil fait (adresse provisoire `accueil/`) ; clubs : formulaire et annuaire faits, fiches à collecter auprès des clubs ; documents : rubrique faite, fichiers à déposer par Clément. Restent : formations, bénévoles. Plan de Clément (16/11) : faire Documents et Clubs, puis mettre l'accueil à la racine, basculer volley83.fr et faire **une seule annonce** aux clubs.
 
 ### Formules sportives (M15/M18 4x4 et OPEN)
 - Table `chp_formules` (famille, nb_equipes, nom, poules « 4 (remarque), 3 », texte avec `{POULES}`) ; RPC `chp_admin_formules` / `chp_admin_formule` (fid null = création, p null = suppression). Script : `sql/championnats/supabase-championnats-formules.sql`.
