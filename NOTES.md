@@ -148,6 +148,15 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - Natures proposées : « Forfait ou pénalité (décision du Comité) » = Équipe absente, Joueur non réglementairement licencié, Absence du surclassement requis × Senior / Compet'Lib / Jeunes (sans article : la sanction est choisie à l'intégration) ; Pénalités du catalogue sauf engagements non conformes et implantations (filtre dans `fac_signal_login`) ; Marqueur non réglementairement licencié, Marqueur invalide ; Autre. Forfaits et arbitrage retirés de la liste.
 - Confidentialité : champ « Précisions : nom du joueur, n° de licence… » (`fac_signalements.details` → `fac_ris_items.detail`). Jamais imprimé sur le RIS ; ajouté aux précisions de la ligne de facture du club. L'intitulé (publié sur le RIS) reste général.
 
+## Clubs du Var — `clubs/index.html` (https://volley83.github.io/clubs/, non indexée, pas encore liée depuis l'accueil)
+
+- **Principe (décidé le 16/11/2026)** : chaque club remplit lui-même sa fiche par un **lien personnel** (`clubs/?club=CODE`, code de 8 caractères), le Comité **valide** avant publication. Pas d'espace club à mot de passe.
+- **Base** : table `clb_clubs` (script `sql/clubs/supabase-clubs.sql`) : `fiche` et `logo` = publiés ; `proposition` et `logo_propose` = envoyés par le club, en attente. Clubs repris de `fac_clubs` (actifs) à l'installation. RLS sans accès direct ; fonctions `clb_public`, `clb_fiche`, `clb_proposer` (club), `clb_admin_get / _publier / _refuser / _club` (Comité, mot de passe admin commun).
+- **Fiche** (jsonb, donc champs modifiables sans toucher à la base) : `villes` (seul champ obligatoire), `presentation` (500 car.), `categories` (identifiants de la liste `CATS` en haut du script : ne pas les renommer une fois des fiches remplies), `lieux` (5 au plus : nom, adresse, cp, ville, creneaux), contact public (`contact_nom`, `contact_role`, `email`, `tel`, `site`, `facebook`, `instagram`). `_auteur` (nom du déclarant) n'existe que dans la proposition, jamais publié.
+- **Logo** : réduit dans le navigateur à 360 px (PNG, ou JPEG si trop lourd) et stocké dans la base en « data:image/… » (400 000 caractères au plus côté serveur). Pas de Supabase Storage.
+- **Vues** : annuaire public (recherche ville/club, filtre catégorie, « Fiche à venir » pour les clubs sans fiche) ; formulaire du club ; `#comite` (Accès Comité en pied de page) : état de chaque club, « Voir et valider », « Envoyer le lien » (brouillon Gmail, adresse prise dans `fac_clubs.email`, date d'envoi notée), « Copier le lien », export CSV des liens pour publipostage, « Autres… » (nom, masquer, changer le lien, retirer la fiche).
+- **Reste à faire** : carte des clubs (les adresses des lieux sont structurées pour être géolocalisées), lien depuis l'accueil (carte « Clubs du Var » et menu) au moment de la bascule, retirer `noindex`.
+
 ## Scripts SQL — dossier `sql/`
 
 - `sql/stages/supabase-stages.sql`, `sql/championnats/supabase-championnats.sql` et `sql/facturation/supabase-facturation.sql` : installation complète. Ils contiennent les dernières versions des fonctions.
@@ -168,7 +177,7 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
   - passage de la phase 1 à la phase 2 ;
   - verrouillage des scores ;
   - palmarès manquants.
-- **Portail** : accueil fait (adresse provisoire `accueil/`, actualités = Facebook). Restent : documents, clubs, formations, bénévoles ; puis mettre l'accueil à la racine et transférer le domaine volley83.fr.
+- **Portail** : accueil fait (adresse provisoire `accueil/`) ; clubs : formulaire et annuaire faits, fiches à collecter auprès des clubs. Restent : documents, formations, bénévoles. Plan de Clément (16/11) : faire Documents et Clubs, puis mettre l'accueil à la racine, basculer volley83.fr et faire **une seule annonce** aux clubs.
 
 ### Formules sportives (M15/M18 4x4 et OPEN)
 - Table `chp_formules` (famille, nb_equipes, nom, poules « 4 (remarque), 3 », texte avec `{POULES}`) ; RPC `chp_admin_formules` / `chp_admin_formule` (fid null = création, p null = suppression). Script : `sql/championnats/supabase-championnats-formules.sql`.

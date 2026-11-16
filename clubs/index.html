@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Clubs du Var – Comité du Var de Volley-Ball</title>
+<meta name="description" content="Les clubs de volley-ball du Var : villes, gymnases, catégories accueillies et contacts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --navy: #0B2149; --blue: #1E4FA3; --accent: #F6C21B; --bg: #F4F6FA; --line: #E2E7F0; --text: #14203A; --muted: #56627A;
+    --ok: #11672F; --ok-bg: #E7F6EC; --warn: #8A5A00; --warn-bg: #FFF4D6; --bad: #A3231D; --bad-bg: #FCE9E8; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; font-size: 15px; line-height: 1.5; min-height: 100vh; }
+  [hidden] { display: none !important; }
+  a { color: var(--blue); } a:hover { color: var(--navy); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  header { background: #fff; border-bottom: 1px solid var(--line); }
+  .head { display: flex; align-items: center; gap: 14px; padding-top: 10px; padding-bottom: 10px; }
+  .head img { height: 48px; display: block; }
+  .head .t { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 28px; text-transform: uppercase; letter-spacing: .5px; color: var(--navy); line-height: 1; }
+  .head .t { flex: 1 1 auto; min-width: 0; }
+  .head .back { font-weight: 600; font-size: 14px; text-align: right; display: inline-flex; align-items: center; min-height: 44px; }
+  main.wrap { padding-top: 26px; padding-bottom: 56px; display: flex; flex-direction: column; gap: 18px; }
+  h1, h2, h3 { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; color: var(--navy); letter-spacing: .5px; font-weight: 800; }
+  h1 { font-size: 36px; line-height: 1; } h2 { font-size: 24px; } h3 { font-size: 19px; }
+  .muted { color: var(--muted); } .small { font-size: 13px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  label, .lab { font-size: 14px; font-weight: 700; }
+  .req { color: var(--bad); }
+  input, select, textarea { font-family: inherit; font-size: 16px; color: var(--text); background: #fff; border: 1px solid #C9D2E2; border-radius: 10px; padding: 10px 12px; width: 100%; outline: none; }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(30,79,163,.15); }
+  textarea { min-height: 84px; resize: vertical; }
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .g3 { display: grid; grid-template-columns: 2fr 1fr 1.4fr; gap: 12px; }
+  @media (max-width: 620px) { .g2, .g3 { grid-template-columns: 1fr; } .head .t { font-size: 22px; } h1 { font-size: 30px; } }
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 18px; border-radius: 10px; border: 1px solid transparent; font-weight: 700; font-size: 15px; font-family: inherit; cursor: pointer; text-decoration: none; }
+  .btn.primary { background: var(--navy); color: #fff; } .btn.ghost { background: #fff; border-color: #C9D2E2; color: var(--text); } .btn.red { background: #fff; border-color: #E5B5B2; color: var(--bad); }
+  .btn.sm { min-height: 38px; padding: 0 12px; font-size: 13px; }
+  .btn[disabled] { opacity: .5; cursor: default; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .msg { border-radius: 10px; padding: 12px 14px; }
+  .msg.ok { background: var(--ok-bg); color: var(--ok); } .msg.err { background: var(--bad-bg); color: var(--bad); } .msg.info { background: #E9EFFA; color: var(--navy); } .msg.warn { background: var(--warn-bg); color: var(--warn); }
+  .linkbtn { background: none; border: 0; color: var(--blue); font-weight: 600; cursor: pointer; font-family: inherit; font-size: 14px; text-decoration: underline; padding: 0; min-height: 32px; }
+  .linkbtn.red { color: var(--bad); }
+  .badge { display: inline-flex; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .b-new { background: var(--warn-bg); color: var(--warn); } .b-ok { background: var(--ok-bg); color: var(--ok); } .b-no { background: #EEF1F5; color: #3F4B63; }
+  .chk { display: flex; gap: 9px; align-items: flex-start; font-weight: 500; font-size: 14px; cursor: pointer; }
+  .chk input { width: 18px; height: 18px; flex: 0 0 18px; margin-top: 2px; }
+  .cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px 14px; }
+  .lieu { border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: #FAFBFD; display: flex; flex-direction: column; gap: 10px; }
+  .lieu .top { display: flex; justify-content: space-between; align-items: center; }
+  .logobox { width: 120px; height: 120px; border: 1px dashed #9FB3D9; border-radius: 12px; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; color: var(--muted); font-size: 12px; text-align: center; flex: 0 0 120px; }
+  .logobox img { max-width: 100%; max-height: 100%; }
+
+  /* Annuaire public */
+  .card.filtres { flex-direction: row; flex-wrap: wrap; gap: 12px; }
+  .filtres .field { flex: 1 1 240px; }
+  .liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr)); gap: 16px; align-items: start; }
+  .club { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .club .tete { display: flex; gap: 14px; align-items: center; }
+  .club .lg { width: 76px; height: 76px; flex: 0 0 76px; border-radius: 12px; border: 1px solid var(--line); background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 20px; color: var(--navy); }
+  .club .lg img { max-width: 100%; max-height: 100%; }
+  .club h2 { font-size: 24px; line-height: 1.05; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { padding: 3px 10px; border-radius: 14px; background: #E9EFFA; color: #17407F; font-size: 12px; font-weight: 700; }
+  .club .bloc { border-top: 1px solid #EDF0F5; padding-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .club .bloc b.t { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+  .pre { white-space: pre-line; overflow-wrap: anywhere; }
+  .contacts { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+  .contacts a { display: inline-flex; align-items: center; min-height: 36px; font-weight: 600; overflow-wrap: anywhere; }
+  footer { border-top: 1px solid var(--line); background: #fff; }
+  footer .wrap { padding-top: 14px; padding-bottom: 14px; display: flex; flex-wrap: wrap; gap: 6px 20px; justify-content: space-between; font-size: 13px; color: var(--muted); }
+  /* Comité */
+  .adm { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; align-items: center; border-top: 1px solid #EDF0F5; padding-top: 12px; }
+  .adm:first-of-type { border-top: 0; padding-top: 0; }
+  @media (max-width: 760px) { .adm { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header><div class="wrap head">
+  <a href="../accueil/" aria-label="Accueil du Comité"><img src="logo-comite-var.jpg" alt=""></a>
+  <div class="t">Clubs du Var</div>
+  <a class="back" href="../accueil/">← Accueil</a>
+</div></header>
+<main class="wrap" id="app"></main>
+<footer><div class="wrap"><span>Comité du Var de Volley-Ball · <a href="mailto:volley83@gmail.com">volley83@gmail.com</a></span><a href="#comite">Accès Comité</a></div></footer>
+
+<script>
+const SUPABASE_URL = 'https://nssdhgpvkdbgdewsnlgl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_GeMMc45mQbDOq-ZkU5vXZw_lYJe9KXf';
+const $ = id => document.getElementById(id);
+const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function rpc(fn, args) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, { method: 'POST', headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(args || {}) });
+  const txt = await res.text();
+  if (!res.ok) { let m = txt; try { m = JSON.parse(txt).message || txt; } catch(e) {} throw new Error(m); }
+  return txt ? JSON.parse(txt) : null;
+}
+const fmtD = s => s ? new Date(s).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+
+/* ---------- Catégories proposées aux clubs (l'identifiant ne doit plus changer une fois des fiches remplies) ---------- */
+const CATS = [
+  ['baby', 'Baby volley (3-6 ans)'], ['ecole', 'École de volley (M7 à M11)'], ['m13', 'M13'], ['m15', 'M15'], ['m18', 'M18'], ['m21', 'M21'],
+  ['senf', 'Seniors féminines'], ['senm', 'Seniors masculins'], ['loisir', "Loisir / Compet'Lib"], ['beach', 'Beach-volley'],
+  ['sante', 'Volley santé / soft volley'], ['assis', 'Volley assis']
+];
+const MAX_LIEUX = 5;
+// N'accepte que de vraies adresses web (http ou https, avec un nom de domaine) : tout le reste est ignoré
+const lienWeb = u => {
+  u = String(u || '').trim(); if (!u || /\s/.test(u)) return '';
+  if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
+  try { const x = new URL(u); return /^https?:$/.test(x.protocol) && /^[a-z0-9.-]+\.[a-z]{2,}$/i.test(x.hostname) ? x.href : ''; } catch (e) { return ''; }
+};
+const logoOk = l => typeof l === 'string' && /^data:image\/(png|jpeg|webp);base64,/.test(l);
+
+/* =====================================================================
+   1. ANNUAIRE PUBLIC
+   ===================================================================== */
+let CLUBS = [];
+function carteClub(c) {
+  const f = c.fiche || {}, cats = CATS.filter(([k]) => (f.categories || []).includes(k));
+  const lieux = (f.lieux || []).filter(l => l && (l.nom || l.adresse || l.ville));
+  const contacts = [];
+  if (f.email) contacts.push(`<a href="mailto:${esc(f.email)}">${esc(f.email)}</a>`);
+  if (f.tel) contacts.push(`<a href="tel:${esc(String(f.tel).replace(/[^\d+]/g, ''))}">${esc(f.tel)}</a>`);
+  [['site', 'Site internet'], ['facebook', 'Facebook'], ['instagram', 'Instagram']].forEach(([k, t]) => { const u = lienWeb(f[k]); if (u) contacts.push(`<a href="${esc(u)}" target="_blank" rel="noopener">${t}</a>`); });
+  return `<article class="club">
+    <div class="tete">
+      <div class="lg">${logoOk(c.logo) ? `<img src="${esc(c.logo)}" alt="">` : esc(c.code)}</div>
+      <div><h2>${esc(c.nom)}</h2>${f.villes ? `<div class="muted">${esc(f.villes)}</div>` : ''}</div>
+    </div>
+    ${c.fiche ? '' : '<div class="muted small">Fiche à venir.</div>'}
+    ${f.presentation ? `<p class="pre">${esc(f.presentation)}</p>` : ''}
+    ${cats.length ? `<div class="chips">${cats.map(([, t]) => `<span class="chip">${esc(t)}</span>`).join('')}</div>` : ''}
+    ${lieux.length ? `<div class="bloc"><b class="t">Où jouer</b>${lieux.map(l => {
+      const adr = [l.adresse, [l.cp, l.ville].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+      return `<div><b>${esc(l.nom || 'Lieu de pratique')}</b>${adr ? ` · ${esc(adr)} · <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([l.nom, adr].filter(Boolean).join(', '))}" target="_blank" rel="noopener">Itinéraire</a>` : ''}${l.creneaux ? `<div class="pre muted small">${esc(l.creneaux)}</div>` : ''}</div>`;
+    }).join('')}</div>` : ''}
+    ${contacts.length || f.contact_nom ? `<div class="bloc"><b class="t">Contact</b>${f.contact_nom ? `<div>${esc(f.contact_nom)}${f.contact_role ? ` <span class="muted">· ${esc(f.contact_role)}</span>` : ''}</div>` : ''}<div class="contacts">${contacts.join('')}</div></div>` : ''}
+  </article>`;
+}
+function filtrer() {
+  const q = ($('q').value || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''), cat = $('cat').value;
+  const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const l = CLUBS.filter(c => {
+    const f = c.fiche || {};
+    if (cat && !(f.categories || []).includes(cat)) return false;
+    if (!q) return true;
+    return norm([c.nom, c.code, f.villes, ...(f.lieux || []).map(x => x.ville)].join(' ')).includes(q);
+  });
+  $('liste').innerHTML = l.length ? l.map(carteClub).join('') : '<div class="msg info">Aucun club ne correspond à cette recherche.</div>';
+}
+async function vuePublique() {
+  $('app').innerHTML = `<div><h1>Les clubs de volley-ball du Var</h1><p class="muted" style="margin-top:6px">Trouvez un club près de chez vous : villes, lieux de pratique, catégories accueillies et contacts.</p></div>
+    <div class="card filtres">
+      <div class="field"><label for="q">Rechercher une ville ou un club</label><input id="q" type="search" placeholder="Ex. : Toulon, Fréjus…" autocomplete="off"></div>
+      <div class="field"><label for="cat">Catégorie</label><select id="cat"><option value="">Toutes les catégories</option>${CATS.map(([k, t]) => `<option value="${k}">${esc(t)}</option>`).join('')}</select></div>
+    </div>
+    <div class="liste" id="liste"><div class="muted">Chargement…</div></div>`;
+  $('q').oninput = filtrer; $('cat').onchange = filtrer;
+  try { CLUBS = await rpc('clb_public') || []; filtrer(); }
+  catch (e) { $('liste').innerHTML = '<div class="msg info">L\'annuaire des clubs est en cours de préparation. Revenez bientôt.</div>'; }
+}
+
+/* =====================================================================
+   2. FORMULAIRE DE LA FICHE (club par lien personnel, ou Comité)
+   ===================================================================== */
+let LOGO = '', LOGO_CHANGE = false;
+function blocLieu(l) {
+  l = l || {};
+  const d = document.createElement('div'); d.className = 'lieu';
+  d.innerHTML = `<div class="top"><b class="lab ttl"></b><button type="button" class="linkbtn red">Retirer ce lieu</button></div>
+    <div class="field"><label>Nom du gymnase ou du lieu</label><input data-k="nom" maxlength="120" placeholder="Ex. : Gymnase des Rougières" value="${esc(l.nom)}"></div>
+    <div class="g3">
+      <div class="field"><label>Adresse</label><input data-k="adresse" maxlength="160" placeholder="N° et rue" value="${esc(l.adresse)}"></div>
+      <div class="field"><label>Code postal</label><input data-k="cp" maxlength="5" inputmode="numeric" value="${esc(l.cp)}"></div>
+      <div class="field"><label>Ville</label><input data-k="ville" maxlength="80" value="${esc(l.ville)}"></div>
+    </div>
+    <div class="field"><label>Créneaux d'entraînement sur ce lieu <span class="muted" style="font-weight:500">(facultatif)</span></label><textarea data-k="creneaux" maxlength="600" placeholder="Ex. : M13 : mercredi 14 h – 15 h 30&#10;Seniors : mardi et jeudi 20 h – 22 h">${esc(l.creneaux)}</textarea></div>`;
+  d.querySelector('.linkbtn').onclick = () => { d.remove(); numLieux(); };
+  return d;
+}
+function numLieux() {
+  const all = [...document.querySelectorAll('#lieux .lieu')];
+  all.forEach((d, i) => d.querySelector('.ttl').textContent = 'Lieu ' + (i + 1));
+  $('add-lieu').hidden = all.length >= MAX_LIEUX;
+}
+function majLogo() {
+  $('logobox').innerHTML = logoOk(LOGO) ? `<img src="${esc(LOGO)}" alt="Logo du club">` : 'Pas de logo';
+  $('logo-del').hidden = !LOGO;
+}
+function lireLogo(file) {
+  return new Promise((ok, ko) => {
+    if (!/^image\//.test(file.type)) return ko(new Error("Ce fichier n'est pas une image."));
+    const url = URL.createObjectURL(file), im = new Image();
+    im.onload = () => {
+      const max = 360, W = im.naturalWidth || max, H = im.naturalHeight || max, k = Math.min(1, max / Math.max(W, H));
+      const cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(W * k)); cv.height = Math.max(1, Math.round(H * k));
+      const cx = cv.getContext('2d'); cx.drawImage(im, 0, 0, cv.width, cv.height);
+      let d = cv.toDataURL('image/png');
+      if (d.length > 300000) { cx.globalCompositeOperation = 'destination-over'; cx.fillStyle = '#fff'; cx.fillRect(0, 0, cv.width, cv.height); d = cv.toDataURL('image/jpeg', .85); }
+      URL.revokeObjectURL(url); ok(d);
+    };
+    im.onerror = () => { URL.revokeObjectURL(url); ko(new Error('Image illisible. Essayez un fichier PNG ou JPG.')); };
+    im.src = url;
+  });
+}
+// f : fiche à afficher · comite : true dans l'Espace Comité (pas de case d'accord ni de nom du déclarant)
+function formHtml(f, comite) {
+  f = f || {};
+  const v = k => esc(f[k]);
+  return `<div class="card">
+      <h2>Le club</h2>
+      <div class="field"><label for="f-villes">Ville(s) du club <span class="req">*</span></label><input id="f-villes" maxlength="160" required placeholder="Ex. : Hyères, Pierrefeu, La Londe" value="${v('villes')}"></div>
+      <div class="field"><label for="f-presentation">Présentation du club <span class="muted" style="font-weight:500">(facultatif, 500 caractères au plus)</span></label><textarea id="f-presentation" maxlength="500" placeholder="Quelques lignes pour présenter le club à une famille ou à un joueur qui le découvre.">${v('presentation')}</textarea></div>
+      <div class="field"><span class="lab">Logo du club</span>
+        <div class="row" style="align-items:flex-start">
+          <div class="logobox" id="logobox"></div>
+          <div style="display:flex;flex-direction:column;gap:8px;flex:1 1 220px">
+            <input type="file" id="logo-file" accept="image/png,image/jpeg,image/webp,image/svg+xml,image/gif" aria-label="Choisir le logo du club">
+            <span class="small muted">Format PNG ou JPG, de préférence sur fond blanc ou transparent. L'image est réduite automatiquement.</span>
+            <button type="button" class="linkbtn red" id="logo-del" style="align-self:flex-start">Retirer le logo</button>
+            <div class="msg err small" id="logo-err" hidden></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Catégories accueillies</h2>
+      <div class="cats">${CATS.map(([k, t]) => `<label class="chk"><input type="checkbox" data-cat="${k}" ${(f.categories || []).includes(k) ? 'checked' : ''}> ${esc(t)}</label>`).join('')}</div>
+    </div>
+    <div class="card">
+      <h2>Gymnases et lieux de pratique</h2>
+      <p class="muted small">Indiquez l'adresse complète : elle servira à situer le club et à proposer l'itinéraire. ${MAX_LIEUX} lieux au plus.</p>
+      <div id="lieux" style="display:flex;flex-direction:column;gap:12px"></div>
+      <button type="button" class="btn ghost" id="add-lieu" style="align-self:flex-start">+ Ajouter un lieu</button>
+    </div>
+    <div class="card">
+      <h2>Contact à afficher</h2>
+      <p class="muted small">Ces coordonnées seront visibles de tous. Indiquez de préférence une adresse et un téléphone du club plutôt que des coordonnées personnelles. Tous les champs sont facultatifs.</p>
+      <div class="g2">
+        <div class="field"><label for="f-contact_nom">Nom du contact</label><input id="f-contact_nom" maxlength="80" value="${v('contact_nom')}"></div>
+        <div class="field"><label for="f-contact_role">Fonction</label><input id="f-contact_role" maxlength="60" placeholder="Ex. : Secrétaire" value="${v('contact_role')}"></div>
+        <div class="field"><label for="f-email">Adresse mail</label><input id="f-email" type="email" maxlength="120" value="${v('email')}"></div>
+        <div class="field"><label for="f-tel">Téléphone</label><input id="f-tel" type="tel" maxlength="20" value="${v('tel')}"></div>
+        <div class="field"><label for="f-site">Site internet</label><input id="f-site" maxlength="200" placeholder="www.monclub.fr" value="${v('site')}"></div>
+        <div class="field"><label for="f-facebook">Page Facebook</label><input id="f-facebook" maxlength="200" placeholder="facebook.com/monclub" value="${v('facebook')}"></div>
+        <div class="field"><label for="f-instagram">Compte Instagram</label><input id="f-instagram" maxlength="200" placeholder="instagram.com/monclub" value="${v('instagram')}"></div>
+      </div>
+    </div>
+    ${comite ? '' : `<div class="card">
+      <div class="field"><label for="f-auteur">Vos nom et fonction dans le club <span class="req">*</span> <span class="muted" style="font-weight:500">(non publiés)</span></label><input id="f-auteur" maxlength="100" required value="${esc(f._auteur)}"></div>
+      <label class="chk"><input type="checkbox" id="f-ok" required> <span>Je suis habilité(e) par le club à transmettre ces informations et j'accepte qu'elles soient publiées sur le site du Comité du Var de Volley-Ball. <span class="req">*</span></span></label>
+    </div>`}`;
+}
+function initForm(f, logo) {
+  LOGO = logoOk(logo) ? logo : ''; LOGO_CHANGE = false; majLogo();
+  const L = $('lieux'); ((f && f.lieux && f.lieux.length) ? f.lieux : [{}]).slice(0, MAX_LIEUX).forEach(l => L.appendChild(blocLieu(l))); numLieux();
+  $('add-lieu').onclick = () => { L.appendChild(blocLieu()); numLieux(); };
+  $('logo-del').onclick = () => { LOGO = ''; LOGO_CHANGE = true; $('logo-file').value = ''; majLogo(); };
+  $('logo-file').onchange = async ev => {
+    const file = ev.target.files[0]; $('logo-err').hidden = true; if (!file) return;
+    try { LOGO = await lireLogo(file); LOGO_CHANGE = true; majLogo(); }
+    catch (e) { $('logo-err').textContent = e.message; $('logo-err').hidden = false; ev.target.value = ''; }
+  };
+}
+function lireForm() {
+  const t = id => ($(id) ? $(id).value.trim() : '');
+  const f = { villes: t('f-villes'), presentation: t('f-presentation'),
+    categories: [...document.querySelectorAll('[data-cat]')].filter(x => x.checked).map(x => x.dataset.cat),
+    lieux: [...document.querySelectorAll('#lieux .lieu')].map(d => { const o = {}; d.querySelectorAll('[data-k]').forEach(i => o[i.dataset.k] = i.value.trim()); return o; }).filter(o => o.nom || o.adresse || o.ville),
+    contact_nom: t('f-contact_nom'), contact_role: t('f-contact_role'), email: t('f-email'), tel: t('f-tel'), site: t('f-site'), facebook: t('f-facebook'), instagram: t('f-instagram') };
+  if ($('f-auteur')) f._auteur = t('f-auteur');
+  return f;
+}
+
+let ACCES = '';
+async function vueClub(code) {
+  ACCES = code;
+  $('app').innerHTML = '<div class="muted">Chargement…</div>';
+  let d;
+  try { d = await rpc('clb_fiche', { p_code: code }); }
+  catch (e) { $('app').innerHTML = `<div class="card"><h2>Lien non reconnu</h2><p>Ce lien n'est pas valide ou n'est plus actif. Vérifiez qu'il est complet, ou demandez-en un nouveau au Comité : <a href="mailto:volley83@gmail.com">volley83@gmail.com</a>.</p><a class="btn ghost" href="./" style="align-self:flex-start">Voir l'annuaire des clubs</a></div>`; return; }
+  $('app').innerHTML = `<div><h1>${esc(d.nom)}</h1><p class="muted" style="margin-top:6px">Fiche du club pour l'annuaire du site du Comité du Var de Volley-Ball. Remplissez ce que vous souhaitez afficher : seule la ville est obligatoire.</p></div>
+    ${d.en_attente ? `<div class="msg warn">Votre fiche a bien été reçue le ${esc(fmtD(d.propose_le))}. Elle sera publiée après validation par le Comité. Vous pouvez encore la modifier ci-dessous.</div>` : d.publiee ? '<div class="msg ok">Votre fiche est en ligne. Vous pouvez la mettre à jour : les modifications seront publiées après validation par le Comité.</div>' : ''}
+    <form id="fm" style="display:flex;flex-direction:column;gap:18px">${formHtml(d.fiche, false)}
+      <div class="msg err" id="err" hidden></div>
+      <div class="row"><button class="btn primary" type="submit" id="send">Envoyer la fiche au Comité</button><span class="small muted">Vous pourrez revenir la modifier avec le même lien.</span></div>
+    </form>`;
+  initForm(d.fiche, d.logo);
+  $('fm').onsubmit = async ev => {
+    ev.preventDefault(); $('err').hidden = true; $('send').disabled = true;
+    try {
+      await rpc('clb_proposer', { p_code: ACCES, p_fiche: lireForm(), p_logo: LOGO_CHANGE ? LOGO : null });
+      $('app').innerHTML = `<div class="card"><h2>Merci, votre fiche est bien envoyée</h2><p>Elle apparaîtra dans l'annuaire des clubs après validation par le Comité. Vous pouvez la modifier à tout moment avec le même lien : gardez-le.</p><div class="row"><button class="btn ghost" id="again">Revoir ma fiche</button><a class="btn ghost" href="./">Voir l'annuaire des clubs</a></div></div>`;
+      $('again').onclick = () => vueClub(ACCES); window.scrollTo(0, 0);
+    } catch (e) { $('err').textContent = /lourd|valide/i.test(e.message) ? 'Le logo est trop lourd ou dans un format non accepté. Essayez une autre image.' : 'Envoi impossible : ' + e.message; $('err').hidden = false; $('send').disabled = false; }
+  };
+}
+
+/* =====================================================================
+   3. ESPACE COMITÉ
+   ===================================================================== */
+let PWD = '', ADM = [];
+const lienClub = c => location.origin + location.pathname.replace(/index\.html$/, '') + '?club=' + c.acces;
+const etat = c => c.proposition ? ['b-new', c.fiche ? 'Modification à valider' : 'Fiche à valider'] : c.fiche ? ['b-ok', 'Publiée'] : ['b-no', 'Pas de réponse'];
+function vueLogin(err) {
+  $('app').innerHTML = `<form class="card" id="lg" style="max-width:460px"><h2>Accès Comité</h2>
+    <div class="field"><label for="pwd">Mot de passe</label><input id="pwd" type="password" autocomplete="current-password" required></div>
+    ${err ? `<div class="msg err">${esc(err)}</div>` : ''}
+    <div class="row"><button class="btn primary" type="submit">Entrer</button><a href="./" class="small">Retour à l'annuaire</a></div></form>`;
+  $('pwd').focus();
+  $('lg').onsubmit = async ev => { ev.preventDefault(); await entrer($('pwd').value); };
+}
+async function entrer(pwd) {
+  try { ADM = await rpc('clb_admin_get', { pwd }); PWD = pwd; try { sessionStorage.setItem('clb_admin', pwd); } catch (e) {} vueComite(); }
+  catch (e) { try { sessionStorage.removeItem('clb_admin'); } catch (x) {} vueLogin(/refus/i.test(e.message) ? 'Mot de passe incorrect.' : e.message); }
+}
+async function recharge() { ADM = await rpc('clb_admin_get', { pwd: PWD }); vueComite(); }
+function vueComite(msg) {
+  const n = k => ADM.filter(c => c.actif && etat(c)[0] === k).length;
+  $('app').innerHTML = `<div class="row" style="justify-content:space-between"><h1>Fiches des clubs</h1><button class="linkbtn" id="out">Se déconnecter</button></div>
+    ${msg ? `<div class="msg ok">${esc(msg)}</div>` : ''}
+    <div class="card">
+      <div class="row"><span class="badge b-new">${n('b-new')} à valider</span><span class="badge b-ok">${n('b-ok')} publiée(s)</span><span class="badge b-no">${n('b-no')} sans réponse</span></div>
+      <div class="row"><button class="btn ghost sm" id="csv">Exporter les liens (CSV pour publipostage)</button><button class="btn ghost sm" id="add">+ Ajouter un club</button><a class="btn ghost sm" href="./" target="_blank" rel="noopener">Voir l'annuaire public</a></div>
+      <p class="small muted">Chaque club a un lien personnel pour remplir sa fiche. Rien n'est publié sans votre validation. « Envoyer le lien » prépare un brouillon Gmail.</p>
+    </div>
+    <div class="card" id="rows">${ADM.map(c => { const [k, t] = etat(c); return `<div class="adm" style="${c.actif ? '' : 'opacity:.55'}">
+        <div><b>${esc(c.nom)}</b> <span class="muted">· ${esc(c.code)}</span> <span class="badge ${k}">${t}</span>${c.actif ? '' : ' <span class="badge b-no">Masqué</span>'}
+          <div class="small muted">${c.email ? esc(c.email) : 'Pas de mail connu'}${c.lien_envoye_le ? ' · lien envoyé le ' + esc(fmtD(c.lien_envoye_le)) : ''}${c.propose_le ? ' · fiche reçue le ' + esc(fmtD(c.propose_le)) : ''}${c.publie_le ? ' · publiée le ' + esc(fmtD(c.publie_le)) : ''}</div></div>
+        <div class="row">
+          <button class="btn ${c.proposition ? 'primary' : 'ghost'} sm" data-a="voir" data-c="${esc(c.code)}">${c.proposition ? 'Voir et valider' : c.fiche ? 'Modifier la fiche' : 'Remplir la fiche'}</button>
+          <button class="btn ghost sm" data-a="mail" data-c="${esc(c.code)}">Envoyer le lien</button>
+          <button class="btn ghost sm" data-a="copie" data-c="${esc(c.code)}">Copier le lien</button>
+          <button class="btn ghost sm" data-a="plus" data-c="${esc(c.code)}">Autres…</button>
+        </div></div>`; }).join('') || '<div class="muted">Aucun club.</div>'}</div>`;
+  $('out').onclick = () => { PWD = ''; try { sessionStorage.removeItem('clb_admin'); } catch (e) {} location.hash = ''; route(); };
+  $('csv').onclick = exportCsv;
+  $('add').onclick = async () => {
+    const code = (prompt('Sigle du nouveau club (ex. : VCM) :') || '').trim(); if (!code) return;
+    const nom = (prompt('Nom complet du club :') || '').trim(); if (!nom) return;
+    try { await rpc('clb_admin_club', { pwd: PWD, p: { code, nom } }); await recharge(); } catch (e) { alert(e.message); }
+  };
+  $('rows').onclick = async ev => {
+    const b = ev.target.closest('[data-a]'); if (!b) return;
+    const c = ADM.find(x => x.code === b.dataset.c); if (!c) return;
+    if (b.dataset.a === 'voir') return vueValider(c);
+    if (b.dataset.a === 'copie') { try { await navigator.clipboard.writeText(lienClub(c)); b.textContent = 'Lien copié'; } catch (e) { prompt('Lien du club :', lienClub(c)); } return; }
+    if (b.dataset.a === 'mail') { mailClub(c); try { await rpc('clb_admin_club', { pwd: PWD, p: { code: c.code, lien_envoye: true } }); c.lien_envoye_le = new Date().toISOString(); } catch (e) {} return; }
+    if (b.dataset.a === 'plus') return vuePlus(c);
+  };
+}
+function mailClub(c) {
+  const corps = `Bonjour,
+
+Le Comité du Var de Volley-Ball prépare son nouveau site internet. Il comprendra un annuaire des clubs du Var, pour aider les familles et les joueurs à trouver un club près de chez eux.
+
+Pour que la fiche de votre club soit exacte, nous vous proposons de la remplir vous-même : ville(s), gymnases et créneaux, catégories accueillies, contact à afficher et logo du club. Vous choisissez ce que vous souhaitez publier.
+
+Voici le lien personnel de ${c.nom} :
+${lienClub(c)}
+
+Cela prend environ cinq minutes. Votre fiche sera mise en ligne après validation par le Comité, et vous pourrez la modifier à tout moment avec ce même lien. Merci de ne pas le diffuser en dehors du club.
+
+Merci d'avance, et bonne journée.
+
+Clément ROBEAU
+Comité du Var de Volley-Ball`;
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(c.email || '') + '&su=' + encodeURIComponent('Votre fiche club sur le nouveau site du Comité du Var – ' + c.nom) + '&body=' + encodeURIComponent(corps), '_blank', 'noopener');
+}
+function exportCsv() {
+  const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const lignes = [['Club', 'Sigle', 'Email', 'Lien', 'Etat']].concat(ADM.filter(c => c.actif).map(c => [c.nom, c.code, c.email || '', lienClub(c), etat(c)[1]]));
+  const blob = new Blob(['﻿' + lignes.map(l => l.map(q).join(';')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'liens-fiches-clubs.csv'; document.body.appendChild(a); a.click(); a.remove();
+}
+function vuePlus(c) {
+  $('app').innerHTML = `<div class="card"><h2>${esc(c.nom)} <span class="muted">· ${esc(c.code)}</span></h2>
+    <div class="field"><label for="p-nom">Nom affiché</label><input id="p-nom" value="${esc(c.nom)}" maxlength="120"></div>
+    <div class="field"><label>Lien personnel du club</label><input readonly value="${esc(lienClub(c))}" onfocus="this.select()"></div>
+    <label class="chk"><input type="checkbox" id="p-actif" ${c.actif ? 'checked' : ''}> Club visible dans l'annuaire (décocher pour un club en sommeil)</label>
+    <div class="row"><button class="btn primary" id="p-ok">Enregistrer</button><button class="btn ghost" id="p-ann">Retour</button></div>
+    <div class="row" style="border-top:1px solid var(--line);padding-top:12px">
+      <button class="btn red sm" id="p-code">Changer le lien (l'ancien ne marchera plus)</button>
+      ${c.fiche ? '<button class="btn red sm" id="p-dep">Retirer la fiche publiée</button>' : ''}
+    </div></div>`;
+  const maj = async (p, m) => { try { await rpc('clb_admin_club', { pwd: PWD, p: { code: c.code, ...p } }); ADM = await rpc('clb_admin_get', { pwd: PWD }); vueComite(m); } catch (e) { alert(e.message); } };
+  $('p-ann').onclick = () => vueComite();
+  $('p-ok').onclick = () => maj({ nom: $('p-nom').value.trim(), actif: $('p-actif').checked }, 'Club enregistré.');
+  $('p-code').onclick = () => { if (confirm('Créer un nouveau lien pour ce club ? L\'ancien lien ne fonctionnera plus.')) maj({ nouveau_code: true }, 'Nouveau lien créé pour ' + c.nom + '.'); };
+  if ($('p-dep')) $('p-dep').onclick = () => { if (confirm('Retirer la fiche publiée de ' + c.nom + ' ? Le club restera dans l\'annuaire, avec la mention « Fiche à venir ».')) maj({ depublier: true }, 'Fiche retirée.'); };
+}
+function vueValider(c) {
+  const prop = c.proposition, f = prop || c.fiche || {};
+  $('app').innerHTML = `<div><h1>${esc(c.nom)}</h1><p class="muted" style="margin-top:6px">${prop ? `Fiche envoyée par le club le ${esc(fmtD(c.propose_le))}${prop._auteur ? ' par ' + esc(prop._auteur) : ''}. Vous pouvez la corriger avant de la publier.` : c.fiche ? 'Fiche publiée : vos modifications seront en ligne tout de suite.' : 'Ce club n\'a pas encore répondu : vous pouvez remplir sa fiche vous-même.'}</p></div>
+    ${prop && c.fiche ? '<div class="msg warn">Une fiche est déjà en ligne pour ce club. Publier remplace la fiche actuelle par celle-ci.</div>' : ''}
+    <form id="fm" style="display:flex;flex-direction:column;gap:18px">${formHtml(f, true)}
+      <div class="msg err" id="err" hidden></div>
+      <div class="row"><button class="btn primary" type="submit" id="send">Publier la fiche</button>${prop ? '<button type="button" class="btn red" id="refus">Refuser cette proposition</button>' : ''}<button type="button" class="btn ghost" id="ann">Retour sans publier</button></div>
+    </form>`;
+  initForm(f, prop ? c.logo_propose : c.logo);
+  window.scrollTo(0, 0);
+  $('ann').onclick = () => vueComite();
+  if ($('refus')) $('refus').onclick = async () => { if (!confirm('Écarter la fiche envoyée par le club ?' + (c.fiche ? ' La fiche en ligne ne changera pas.' : ''))) return; try { await rpc('clb_admin_refuser', { pwd: PWD, p_club: c.code }); ADM = await rpc('clb_admin_get', { pwd: PWD }); vueComite('Proposition écartée.'); } catch (e) { alert(e.message); } };
+  $('fm').onsubmit = async ev => {
+    ev.preventDefault(); $('err').hidden = true; $('send').disabled = true;
+    try { await rpc('clb_admin_publier', { pwd: PWD, p_club: c.code, p_fiche: lireForm(), p_logo: LOGO }); ADM = await rpc('clb_admin_get', { pwd: PWD }); vueComite('Fiche de ' + c.nom + ' publiée.'); window.scrollTo(0, 0); }
+    catch (e) { $('err').textContent = 'Publication impossible : ' + e.message; $('err').hidden = false; $('send').disabled = false; }
+  };
+}
+
+/* ---------- Aiguillage ---------- */
+async function route() {
+  const code = new URLSearchParams(location.search).get('club');
+  if (code) return vueClub(code);
+  if (location.hash === '#comite') {
+    if (PWD) return vueComite();
+    let mem = ''; try { mem = sessionStorage.getItem('clb_admin') || ''; } catch (e) {}
+    return mem ? entrer(mem) : vueLogin();
+  }
+  vuePublique();
+}
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
