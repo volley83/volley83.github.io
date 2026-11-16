@@ -73,6 +73,8 @@
   .pre { white-space: pre-line; overflow-wrap: anywhere; }
   .contacts { display: flex; flex-wrap: wrap; gap: 4px 18px; }
   .contacts a { display: inline-flex; align-items: center; min-height: 36px; font-weight: 600; overflow-wrap: anywhere; }
+  .autres ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 0 24px; }
+  .autres li { padding: 8px 0; border-bottom: 1px solid #EDF0F5; }
   footer { border-top: 1px solid var(--line); background: #fff; }
   footer .wrap { padding-top: 14px; padding-bottom: 14px; display: flex; flex-wrap: wrap; gap: 6px 20px; justify-content: space-between; font-size: 13px; color: var(--muted); }
   /* Comité */
@@ -158,7 +160,13 @@ function filtrer() {
     if (!q) return true;
     return norm([c.nom, c.code, f.villes, ...(f.lieux || []).map(x => x.ville)].join(' ')).includes(q);
   });
-  $('liste').innerHTML = l.length ? l.map(carteClub).join('') : '<div class="msg info">Aucun club ne correspond à cette recherche.</div>';
+  // Fiches remplies d'abord (ordre alphabétique, structures particulières comme le GSD à la fin), puis les autres clubs en liste compacte
+  // (l'ordre de la base est déjà alphabétique, avec le GSD placé après les clubs : on le garde)
+  const avec = l.filter(c => c.fiche), sans = l.filter(c => !c.fiche);
+  $('liste').innerHTML = avec.length ? avec.map(carteClub).join('') : (sans.length ? '' : '<div class="msg info">Aucun club ne correspond à cette recherche.</div>');
+  $('autres').hidden = !sans.length;
+  $('autres-titre').textContent = avec.length ? 'Autres clubs du Var' : 'Clubs du Var';
+  $('autres-liste').innerHTML = sans.map(c => `<li><b>${esc(c.nom)}</b> <span class="muted">· ${esc(c.code)}</span></li>`).join('');
 }
 async function vuePublique() {
   $('app').innerHTML = `<div><h1>Les clubs de volley-ball du Var</h1><p class="muted" style="margin-top:6px">Trouvez un club près de chez vous : villes, lieux de pratique, catégories accueillies et contacts.</p></div>
@@ -166,7 +174,12 @@ async function vuePublique() {
       <div class="field"><label for="q">Rechercher une ville ou un club</label><input id="q" type="search" placeholder="Ex. : Toulon, Fréjus…" autocomplete="off"></div>
       <div class="field"><label for="cat">Catégorie</label><select id="cat"><option value="">Toutes les catégories</option>${CATS.map(([k, t]) => `<option value="${k}">${esc(t)}</option>`).join('')}</select></div>
     </div>
-    <div class="liste" id="liste"><div class="muted">Chargement…</div></div>`;
+    <div class="liste" id="liste"><div class="muted">Chargement…</div></div>
+    <section class="card autres" id="autres" hidden aria-labelledby="autres-titre">
+      <h2 id="autres-titre">Autres clubs du Var</h2>
+      <p class="muted small">Leur fiche détaillée sera bientôt disponible.</p>
+      <ul id="autres-liste"></ul>
+    </section>`;
   $('q').oninput = filtrer; $('cat').onchange = filtrer;
   try { CLUBS = await rpc('clb_public') || []; filtrer(); }
   catch (e) { $('liste').innerHTML = '<div class="msg info">L\'annuaire des clubs est en cours de préparation. Revenez bientôt.</div>'; }
