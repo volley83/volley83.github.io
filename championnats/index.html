@@ -1512,13 +1512,16 @@ function poulesSerpentin(t, eq, spec) {
   const ordre = eq.map((e, i) => ({ ...e, rg: rang(e), i })).sort((a, b) => (a.rg ?? 1e6) - (b.rg ?? 1e6) || String(a.created_at).localeCompare(String(b.created_at)) || a.i - b.i);
   ordre.forEach((e, k) => e.seed = k);
   const P = spec.map(s => ({ ...s, eq: [] })), cap = P.reduce((s, p) => s + p.n, 0);
-  let i = 0, dir = 1;
-  ordre.slice(0, cap).forEach(e => {
-    let tries = 0;
-    while (P[i].eq.length >= P[i].n && tries++ < 2 * P.length) { i += dir; if (i >= P.length) { i = P.length - 1; dir = -1; } else if (i < 0) { i = 0; dir = 1; } }
-    P[i].eq.push(e);
-    i += dir; if (i >= P.length) { i = P.length - 1; dir = -1; } else if (i < 0) { i = 0; dir = 1; }
-  });
+  // Serpentin du Comité, ligne par ligne : ligne 1 A→D, ligne 2 D→A, ligne 3 A→D, ligne 4 D→A…
+  // Variante poules de 3 : la 3e ligne repart dans le même sens que la 2e (ex. 3 poules de 3 : A 1-6-9, B 2-5-8, C 3-4-7).
+  const tous3 = P.every(p => p.n === 3);
+  const reste = ordre.slice(0, cap);
+  for (let r = 0; reste.length && r < Math.max(...P.map(p => p.n)); r++) {
+    let ligne = P.filter(p => p.n > r);
+    const inverse = r % 2 === 1 || (r === 2 && tous3);
+    if (inverse) ligne = [...ligne].reverse();
+    ligne.forEach(p => { if (reste.length) p.eq.push(reste.shift()); });
+  }
   const ecart = club => { const n = P.map(p => p.eq.filter(e => e.club === club).length); return Math.max(...n) - Math.min(...n); };
   for (let it = 0; it < 60; it++) {
     let fait = false;
