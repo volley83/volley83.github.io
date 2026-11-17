@@ -58,7 +58,8 @@
   /* Annuaire public */
   .card.filtres { flex-direction: row; flex-wrap: wrap; gap: 12px; }
   .filtres .field { flex: 1 1 240px; }
-  .liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr)); gap: 16px; align-items: start; }
+  .liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr)); gap: 16px; align-items: stretch; grid-auto-flow: dense; }
+  .club.ouvert { grid-column: 1 / -1; }   /* une fiche dépliée prend toute la ligne : les autres gardent des hauteurs égales */
   .club { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
   .club .tete { display: flex; gap: 14px; align-items: center; }
   .club .lg { width: 76px; height: 76px; flex: 0 0 76px; border-radius: 12px; border: 1px solid var(--line); background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 20px; color: var(--navy); }
@@ -69,7 +70,7 @@
   .lbl { display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px; border-radius: 16px; font-size: 14px; font-weight: 700; border: 1px solid transparent; }
   .lbl svg { flex: 0 0 auto; }
   .club .plus { display: flex; flex-direction: column; gap: 12px; }
-  .club .tog { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #C9D2E2; background: #fff; color: var(--navy); font-family: inherit; font-weight: 700; font-size: 14px; cursor: pointer; }
+  .club .tog { margin-top: auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #C9D2E2; background: #fff; color: var(--navy); font-family: inherit; font-weight: 700; font-size: 14px; cursor: pointer; }
   .club .tog:hover { border-color: var(--navy); }
   .club .tog[aria-expanded="true"] svg { transform: rotate(180deg); }
   .lbl.or { background: #FFF1C2; color: #5E4500; border-color: #E7C65A; } .lbl.argent { background: #ECEFF3; color: #3A4558; border-color: #BFC7D4; } .lbl.bronze { background: #F6E3D3; color: #6F3C13; border-color: #D9A77E; }
@@ -193,7 +194,7 @@ async function vuePublique() {
   $('liste').onclick = ev => {
     const b = ev.target.closest('.tog'); if (!b) return;
     const ouvert = b.getAttribute('aria-expanded') !== 'true', d = $(b.getAttribute('aria-controls'));
-    b.setAttribute('aria-expanded', ouvert); d.hidden = !ouvert;
+    b.setAttribute('aria-expanded', ouvert); d.hidden = !ouvert; b.closest('.club').classList.toggle('ouvert', ouvert);
     b.firstChild.textContent = ouvert ? 'Masquer les détails ' : 'Voir la présentation, les gymnases et le contact ';
   };
   try { CLUBS = await rpc('clb_public') || []; filtrer(); }
