@@ -1761,7 +1761,7 @@ function renderRecu(r, donId) {
           <div class="field"><label>Remarque interne</label><input id="rc-remarque" value="${esc(r ? r.remarque || '' : '')}"></div></div>
       </div>
     </div>
-    ${r && r.annule ? '' : `<div class="btnrow"><button class="btn primary" id="rc-ok">${nouveau ? '✓ Enregistrer et créer le PDF' : '✓ Enregistrer et régénérer le PDF'}</button>${nouveau ? '<a class="btn ghost" href="#dons">Annuler</a>' : ''}</div>`}
+    ${r && r.annule ? '' : `<div class="btnrow"><button class="btn primary" id="rc-ok">${nouveau ? '✓ Enregistrer le reçu' : '✓ Enregistrer les modifications'}</button>${nouveau ? '<a class="btn ghost" href="#dons">Annuler</a>' : ''}</div>`}
     <p class="small muted">Rappel : un reçu fiscal ne peut être délivré que pour un don <b>sans contrepartie</b> (pas en paiement d'un stage, d'une licence…).</p>
   </div>`);
   const majType = () => { const ab = document.querySelector('input[name=rc-type]:checked').value === 'abandon'; $('rc-mode-f').hidden = ab; $('rc-ab-info').hidden = !ab; };
@@ -1788,7 +1788,7 @@ async function enregistrerRecu(r) {
   try {
     const id = await rpc('fac_admin_recu', { pwd: PWD, p }); await load();
     toast(r ? '✓ Reçu mis à jour' : `✓ Reçu ${recuNum(recuDe(id))} enregistré`);
-    location.hash = 'd/' + id; await pdfRecu(id);
+    location.hash = 'd/' + id;
   } catch(err) { fail(err); }
 }
 async function annulerRecu(id, annule) {
