@@ -180,7 +180,8 @@ alter table fac_factures drop constraint if exists fac_factures_saison_numero_ke
 alter table fac_factures drop constraint if exists fac_factures_statut_check;
 alter table fac_factures drop constraint if exists fac_factures_type_check;
 alter table fac_factures add constraint fac_factures_statut_check check (statut in ('brouillon', 'envoyee', 'accepte', 'refuse'));
-alter table fac_factures add constraint fac_factures_type_check check (type in ('facture', 'devis'));
+alter table fac_factures add constraint fac_factures_type_check check (type in ('facture', 'devis', 'memoire'));   -- mémoire = remboursement par le Comité
+alter table fac_factures add column if not exists modalite text;   -- mémoire : modalité de remboursement imprimée
 create unique index if not exists fac_factures_numero_uk on fac_factures (saison, type, numero);
 
 -- Reçus fiscaux de dons (Cerfa 11580) : donateurs mémorisés, reçus numérotés par année civile (2026-001…)
@@ -704,7 +705,8 @@ begin
     regle_date     = case when p ? 'regle_date'     then nullif(p->>'regle_date', '')::date     else f.regle_date end,
     regle_mode     = case when p ? 'regle_mode'     then nullif(trim(p->>'regle_mode'), '')     else f.regle_mode end,
     remarque       = case when p ? 'remarque'       then nullif(trim(p->>'remarque'), '')       else f.remarque end,
-    validite       = case when p ? 'validite'       then nullif(p->>'validite', '')::date       else f.validite end
+    validite       = case when p ? 'validite'       then nullif(p->>'validite', '')::date       else f.validite end,
+    modalite       = case when p ? 'modalite'       then nullif(trim(p->>'modalite'), '')       else f.modalite end
   where f.id = fid;
   return fid;
 end $$;
@@ -1005,6 +1007,8 @@ insert into fac_reglages (cle, valeur) values
   ('recu_signataire', '"Gérald HENRY\nPrésident du Comité du Var de Volley-Ball"'),
   ('recu_mail_objet', '"Reçu fiscal N° {numero} – Comité du Var de Volley-Ball"'),
   ('recu_mail_modele', '"Bonjour {prenom},\n\nNous vous remercions chaleureusement pour votre don de {montant} au Comité du Var de Volley-Ball.\n\nVous trouverez ci-joint votre reçu fiscal N° {numero}, à conserver : il vous permet de bénéficier d''une réduction d''impôt sur le revenu de 66 % du montant de votre don, dans la limite de 20 % de votre revenu imposable.\n\nAvec toute notre reconnaissance,\n\nComité du Var de Volley-Ball"'),
+  ('memoire_objet', '"Remboursement – Comité du Var de Volley-Ball"'),
+  ('memoire_modele', '"Bonjour,\n\nVeuillez trouver ci-joint le mémoire de remboursement{objet} d''un montant de {montant}.\n\nPour que nous puissions procéder au virement, merci de nous retourner un RIB (relevé d''identité bancaire) si vous ne nous l''avez pas déjà transmis.\n\nCordialement,\n\nComité du Var de Volley-Ball"'),
   ('devis_objet', '"Devis N° {numero} – Comité du Var de Volley-Ball"'),
   ('devis_modele', '"Madame, Monsieur,\n\nVeuillez trouver ci-joint notre devis N° {numero} du {date}{objet}, d''un montant de {montant}, valable jusqu''au {validite}.\n\nPour l''accepter, il vous suffit de nous le retourner signé avec la mention « Bon pour accord », ou de nous répondre par mail. La facture correspondante vous sera alors adressée.\n\nEn cas de question, n''hésitez pas à nous contacter.\n\nCordialement,\n\nComité du Var de Volley-Ball"'),
   ('facture_modele', '"Madame, Monsieur,\n\nVeuillez trouver ci-joint la facture N° {numero} du {date}{objet}, d''un montant de {montant}.\n\nVous pouvez la régler par virement (coordonnées bancaires sur la facture) ou par chèque à l''ordre du Comité du Var de Volley-Ball, en rappelant le numéro de la facture.\n\nEn cas de question, n''hésitez pas à nous contacter.\n\nCordialement,\n\nEric CHASSAGNARD\nTrésorier\nComité du Var de Volley-Ball"')

@@ -816,6 +816,11 @@ function renderReglages() {
     <div class="field"><label>Objet du mail</label><input id="r-rmo" value="${esc(reglage('recu_mail_objet', ''))}"></div>
     <div class="field"><label>Texte du mail (champs : {prenom}, {nom}, {montant}, {numero}, {date})</label><textarea id="r-rmm" rows="9">${esc(reglage('recu_mail_modele', ''))}</textarea></div>
     <div class="btnrow"><button class="btn primary" id="r-ok7">Enregistrer</button></div></div>
+  <div class="card stack"><h3>Mail des mémoires (remboursements)</h3>
+    <p class="small muted">Champs : <span class="code">{numero}</span>, <span class="code">{date}</span>, <span class="code">{montant}</span>, <span class="code">{client}</span> (bénéficiaire), <span class="code">{objet}</span>.</p>
+    <div class="field"><label>Objet</label><input id="r-mo" value="${esc(reglage('memoire_objet', ''))}"></div>
+    <div class="field"><label>Texte du mail</label><textarea id="r-mm" rows="9">${esc(reglage('memoire_modele', ''))}</textarea></div>
+    <div class="btnrow"><button class="btn primary" id="r-ok8">Enregistrer</button></div></div>
   <div class="card stack"><h3>Mail des devis</h3>
     <p class="small muted">Mêmes champs, plus <span class="code">{validite}</span> (date de fin de validité du devis).</p>
     <div class="field"><label>Objet</label><input id="r-do" value="${esc(reglage('devis_objet', ''))}"></div>
@@ -827,6 +832,7 @@ function renderReglages() {
     <div class="btnrow"><button class="btn primary" id="r-ok2">Enregistrer</button></div></div>`);
   $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mention_tva', p_valeur: $('r-tva').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_pied', p_valeur: $('r-rp').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok3').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_total', p_valeur: $('r-at').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_partiel', p_valeur: $('r-ap').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+  $('r-ok8').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'memoire_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'memoire_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok7').onclick = async () => { try { for (const [k, i] of [['recu_objet_asso', 'r-ro2'], ['recu_signataire', 'r-sg'], ['recu_rna', 'r-rna'], ['recu_mail_objet', 'r-rmo'], ['recu_mail_modele', 'r-rmm']]) await rpc('fac_admin_reglage', { pwd: PWD, p_cle: k, p_valeur: $(i).value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-sigf').onchange = async e => { const f = e.target.files[0]; if (!f) return; try { const u = await chargerSignature(f); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'recu_signature', p_valeur: u }); await load(); route(); toast('✓ Signature enregistrée'); } catch(err) { fail(err); } };
   if ($('r-sigx')) $('r-sigx').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'recu_signature', p_valeur: '' }); await load(); route(); } catch(err) { fail(err); } };
@@ -1382,12 +1388,18 @@ async function mailClub(bid, code) {
 // Club extérieur, mairie, entreprise… : les coordonnées et les lignes sont dans la facture elle-même
 const facDe = id => D.factures.find(f => String(f.id) === String(id));
 const estDevis = f => f.type === 'devis';
-const facLibreNum = f => `${f.saison.slice(2, 4)}${f.saison.slice(7, 9)}-${estDevis(f) ? 'D' : 'F'}${String(f.numero).padStart(3, '0')}`;
-const nomDoc = f => estDevis(f) ? 'Devis' : 'Facture';
-const facDuDevis = d => D.factures.find(f => !estDevis(f) && String(f.devis_id) === String(d.id));
+const estMemoire = f => f.type === 'memoire';
+const estFacture = f => !estDevis(f) && !estMemoire(f);
+const facLibreNum = f => `${f.saison.slice(2, 4)}${f.saison.slice(7, 9)}-${estDevis(f) ? 'D' : estMemoire(f) ? 'M' : 'F'}${String(f.numero).padStart(3, '0')}`;
+const nomDoc = f => estDevis(f) ? 'Devis' : estMemoire(f) ? 'Mémoire' : 'Facture';
+const leDoc = f => estDevis(f) ? 'du devis' : estMemoire(f) ? 'du mémoire' : 'de la facture';
+const MODALITE_DEF = 'À régler par virement sur le RIB ci-joint';
+const facDuDevis = d => D.factures.find(f => estFacture(f) && String(f.devis_id) === String(d.id));
 const validiteDef = d => { const x = parseD(d || today()); x.setDate(x.getDate() + 30); return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); };
 const facLibreTot = f => r2((f.lignes || []).reduce((s, l) => s + montant(l), 0));
 function facLibreEtat(f) {
+  if (estMemoire(f)) { const t = facLibreTot(f), rg = num(f.regle_montant);
+    return t > 0 && rg >= t - 0.005 ? ['b-ok', 'Remboursé'] : rg > 0 ? ['b-warn', 'Remboursé ' + euros(rg)] : f.statut === 'envoyee' ? ['b-bad', 'À rembourser'] : ['b-draft', 'Brouillon']; }
   if (estDevis(f)) return f.statut === 'accepte' ? ['b-ok', 'Accepté'] : f.statut === 'refuse' ? ['b-bad', 'Refusé'] : f.statut === 'envoyee' ? ['b-sent', 'Envoyé'] : ['b-draft', 'Brouillon'];
   const t = facLibreTot(f), rg = num(f.regle_montant);
   if (t > 0 && rg >= t - 0.005) return ['b-ok', 'Réglée'];
@@ -1395,7 +1407,8 @@ function facLibreEtat(f) {
   return f.statut === 'envoyee' ? ['b-bad', 'À régler'] : ['b-draft', 'Brouillon'];
 }
 function renderFactures() {
-  const fs = D.factures.filter(f => !estDevis(f)).sort((a, b) => b.numero - a.numero), ds = D.factures.filter(estDevis).sort((a, b) => b.numero - a.numero);
+  const fs = D.factures.filter(estFacture).sort((a, b) => b.numero - a.numero), ds = D.factures.filter(estDevis).sort((a, b) => b.numero - a.numero), ms = D.factures.filter(estMemoire).sort((a, b) => b.numero - a.numero);
+  const mTot = r2(ms.reduce((s, f) => s + facLibreTot(f), 0)), mRg = r2(ms.reduce((s, f) => s + num(f.regle_montant), 0));
   const tot = r2(fs.reduce((s, f) => s + facLibreTot(f), 0)), rg = r2(fs.reduce((s, f) => s + num(f.regle_montant), 0));
   const enCours = ds.filter(d => d.statut === 'brouillon' || d.statut === 'envoyee');
   const ligne = f => { const [cl, et] = facLibreEtat(f), lie = estDevis(f) ? facDuDevis(f) : (f.devis_id && facDe(f.devis_id));
@@ -1405,8 +1418,8 @@ function renderFactures() {
       <td class="r nw" onclick="event.stopPropagation()"><button class="btn sm ghost" onclick="pdfFactureLibre(${f.id})">PDF</button> <button class="btn sm ghost" onclick="mailFactureLibre(${f.id})">✉ Mail</button>${estDevis(f) && !lie && f.statut !== 'refuse' ? ` <button class="btn sm ok" onclick="accepterDevis(${f.id})">✓ Accepté</button>` : ''}</td></tr>`; };
   const table = (xs, vide, pied) => xs.length ? `<div class="tablebox"><table class="t"><thead><tr><th>N°</th><th>Date</th><th>Client</th><th>Objet</th><th class="r">Montant</th><th>État</th><th></th></tr></thead><tbody>${xs.map(ligne).join('')}</tbody>${pied || ''}</table></div>` : `<div class="card msg info">${vide}</div>`;
   shell('factures', `
-  <div class="ttl"><div><h1 style="font-size:34px">Hors clubs ${esc(SAISON)}</h1><p class="muted">Devis et factures pour un club extérieur, une mairie, une entreprise… Un devis accepté se transforme en facture en un clic.</p></div>
-    <div class="btnrow"><button class="btn ghost" onclick="nouvelleFactureLibre('devis')">+ Nouveau devis</button><button class="btn primary" onclick="nouvelleFactureLibre('facture')">+ Nouvelle facture</button></div></div>
+  <div class="ttl"><div><h1 style="font-size:34px">Hors clubs ${esc(SAISON)}</h1><p class="muted">Devis et factures pour un club extérieur, une mairie, une entreprise… Un devis accepté se transforme en facture en un clic. Les mémoires servent aux remboursements faits par le Comité (parent, club extérieur…).</p></div>
+    <div class="btnrow"><button class="btn ghost" onclick="nouvelleFactureLibre('memoire')">+ Mémoire (remboursement)</button><button class="btn ghost" onclick="nouvelleFactureLibre('devis')">+ Nouveau devis</button><button class="btn primary" onclick="nouvelleFactureLibre('facture')">+ Nouvelle facture</button></div></div>
   <div class="kpis">
     <div class="kpi"><b>${euros(tot)}</b><span>facturés</span></div>
     <div class="kpi ok"><b>${euros(rg)}</b><span>encaissés</span></div>
@@ -1416,10 +1429,12 @@ function renderFactures() {
   <h2 class="cond" style="font-size:24px">Factures</h2>
   ${table(fs, `Aucune facture hors clubs pour la saison ${esc(SAISON)}.`, `<tfoot><tr><td colspan="4">Total</td><td class="num">${euros(tot)}</td><td></td><td></td></tr></tfoot>`)}
   <h2 class="cond" style="font-size:24px">Devis</h2>
-  ${table(ds, `Aucun devis pour la saison ${esc(SAISON)}. Créez-en un avec « Nouveau devis » ; une fois accepté, il deviendra une facture.`)}`);
+  ${table(ds, `Aucun devis pour la saison ${esc(SAISON)}. Créez-en un avec « Nouveau devis » ; une fois accepté, il deviendra une facture.`)}
+  <h2 class="cond" style="font-size:24px">Mémoires (remboursements)${ms.length ? ` <span class="muted" style="font-size:16px">· ${euros(mTot)} dont ${euros(mTot - mRg)} restant à rembourser</span>` : ''}</h2>
+  ${table(ms, `Aucun mémoire pour la saison ${esc(SAISON)}. Créez-en un avec « Mémoire (remboursement) » quand le Comité doit rembourser une personne ou un club.`, ms.length ? `<tfoot><tr><td colspan="4">Total</td><td class="num">${euros(mTot)}</td><td></td><td></td></tr></tfoot>` : '')}`);
 }
 async function nouvelleFactureLibre(type = 'facture') {
-  try { const id = await rpc('fac_admin_facture', { pwd: PWD, p: { saison: SAISON, type, date: today(), client_nom: 'Nouveau client', lignes: [], ...(type === 'devis' ? { validite: validiteDef() } : {}) } }); await load(); location.hash = 'f/' + id; } catch(e) { fail(e); }
+  try { const id = await rpc('fac_admin_facture', { pwd: PWD, p: { saison: SAISON, type, date: today(), client_nom: 'Nouveau client', lignes: [], ...(type === 'devis' ? { validite: validiteDef() } : {}), ...(type === 'memoire' ? { modalite: MODALITE_DEF } : {}) } }); await load(); location.hash = 'f/' + id; } catch(e) { fail(e); }
 }
 let FL_PICK = '';
 async function majFactureLibre(f, p, redessiner) {
@@ -1433,7 +1448,7 @@ function majTotauxFL(f) {
   document.querySelectorAll('#fl-t tr[data-i]').forEach(tr => { const l = f.lignes[+tr.dataset.i]; if (l) tr.querySelector('[data-tot]').innerHTML = `<b>${fmtN(montant(l))}</b>`; });
 }
 function renderFactureLibre(f) {
-  const dv = estDevis(f), lock = f.statut !== 'brouillon', [cl, et] = facLibreEtat(f), dis = lock ? 'disabled' : '', fd = dv ? facDuDevis(f) : null, od = !dv && f.devis_id ? facDe(f.devis_id) : null;
+  const dv = estDevis(f), mm = estMemoire(f), lock = f.statut !== 'brouillon', [cl, et] = facLibreEtat(f), dis = lock ? 'disabled' : '', fd = dv ? facDuDevis(f) : null, od = !dv && f.devis_id ? facDe(f.devis_id) : null;
   f.lignes = f.lignes || [];
   const ligne = (l, i) => `<tr data-i="${i}">
       <td><input type="date" value="${esc(l.date || '')}" data-k="date" ${dis} style="width:132px"></td>
@@ -1449,17 +1464,18 @@ function renderFactureLibre(f) {
   <div class="card stack">
     <div class="ttl"><div><h2>${nomDoc(f)} ${esc(facLibreNum(f))}</h2><p class="muted"><span class="badge ${cl}">${et}</span> ${
       dv ? (f.statut === 'accepte' ? `Devis accepté${fd ? ` : <a href="#f/${fd.id}">facture ${esc(facLibreNum(fd))}</a>` : ''}.` : f.statut === 'refuse' ? 'Devis refusé.' : lock ? 'Envoyé : le devis n\'est plus modifiable (vous pouvez le rouvrir). Dès qu\'il est accepté, cliquez sur « Devis accepté ».' : 'Complétez le devis, préparez le mail puis marquez-le comme envoyé.')
+      : mm ? (lock ? 'Envoyé : le mémoire n\'est plus modifiable (vous pouvez le rouvrir). Indiquez le remboursement quand il est fait.' : 'Complétez le mémoire (bénéficiaire, montant à rembourser), téléchargez-le ou préparez le mail, puis marquez-le comme envoyé.')
       : (lock ? 'Envoyée : la facture n\'est plus modifiable (vous pouvez la rouvrir).' : 'Complétez la facture, préparez le mail puis marquez-la comme envoyée.')}${od ? ` · établie d'après le <a href="#f/${od.id}">devis ${esc(facLibreNum(od))}</a>` : ''}</p></div>
       <div class="btnrow"><button class="btn ghost" onclick="pdfFactureLibre(${f.id})">⬇ PDF</button><button class="btn ghost" onclick="mailFactureLibre(${f.id})">✉ Préparer le mail</button>
         ${dv && !fd && f.statut !== 'refuse' ? `<button class="btn ok" onclick="accepterDevis(${f.id})">✓ Devis accepté → créer la facture</button>` : ''}
         ${dv && fd ? `<a class="btn ok" href="#f/${fd.id}">Voir la facture ${esc(facLibreNum(fd))}</a>` : ''}
         ${dv && f.statut === 'envoyee' ? `<button class="btn ghost" onclick="majFactureLibre(facDe(${f.id}),{statut:'refuse'},true)">Refusé</button>` : ''}
-        ${lock ? (fd ? '' : `<button class="btn ghost" onclick="majFactureLibre(facDe(${f.id}),{statut:'brouillon'},true)">Rouvrir pour modifier</button>`) : `<button class="btn ${dv ? 'primary' : 'ok'}" onclick="envoyerFactureLibre(${f.id})">✓ Marquer comme envoyé${dv ? '' : 'e'}</button>`}
+        ${lock ? (fd ? '' : `<button class="btn ghost" onclick="majFactureLibre(facDe(${f.id}),{statut:'brouillon'},true)">Rouvrir pour modifier</button>`) : `<button class="btn ${dv ? 'primary' : 'ok'}" onclick="envoyerFactureLibre(${f.id})">✓ Marquer comme envoyé${dv || mm ? '' : 'e'}</button>`}
         <button class="btn danger" onclick="supprFactureLibre(${f.id})">Supprimer</button></div></div>
     <div class="grid g2">
       <div class="stack" style="gap:10px">
-        <h3 class="cond" style="font-size:19px">Client</h3>
-        <div class="field"><label>Nom (club, mairie, société…) *</label><input id="fl-nom" list="fl-clients" value="${esc(f.client_nom === 'Nouveau client' ? '' : f.client_nom)}" ${dis} placeholder="Ex. : Mairie de Draguignan" autocomplete="off">
+        <h3 class="cond" style="font-size:19px">${mm ? 'Bénéficiaire du remboursement' : 'Client'}</h3>
+        <div class="field"><label>${mm ? 'Nom (parent, club…)' : 'Nom (club, mairie, société…)'} *</label><input id="fl-nom" list="fl-clients" value="${esc(f.client_nom === 'Nouveau client' ? '' : f.client_nom)}" ${dis} placeholder="${mm ? 'Ex. : Delphine GIORGETTI' : 'Ex. : Mairie de Draguignan'}" autocomplete="off">
           <datalist id="fl-clients">${D.clients.map(c => `<option value="${esc(c.client_nom)}">`).join('')}</datalist>
           ${D.clients.length ? '<span class="small muted">Un client déjà facturé ? Choisissez-le dans la liste : ses coordonnées sont reprises.</span>' : ''}</div>
         <div class="field"><label>À l'attention de / service</label><input data-f="client_contact" value="${esc(f.client_contact || '')}" ${dis} placeholder="Service des sports, M. Dupont…"></div>
@@ -1469,10 +1485,11 @@ function renderFactureLibre(f) {
       <div class="stack" style="gap:10px">
         <h3 class="cond" style="font-size:19px">${nomDoc(f)}</h3>
         <div class="grid g2"><div class="field"><label>Numéro</label><input data-f="numero" type="number" min="1" value="${f.numero}" ${dis}><span class="small muted">${esc(facLibreNum(f))}</span></div>
-          <div class="field"><label>Date ${dv ? 'du devis' : 'de la facture'}</label><input data-f="date" type="date" value="${esc(f.date || '')}" ${dis}></div></div>
+          <div class="field"><label>Date ${leDoc(f)}</label><input data-f="date" type="date" value="${esc(f.date || '')}" ${dis}></div></div>
         ${dv ? `<div class="field"><label>Valable jusqu'au</label><input data-f="validite" type="date" value="${esc(f.validite || '')}" ${dis}></div>` : ''}
-        <div class="field"><label>Objet (en tête ${dv ? 'du devis' : 'de la facture'})</label><input data-f="objet" value="${esc(f.objet || '')}" ${dis} placeholder="Ex. : Mise à disposition d'arbitres – tournoi du 12/12"></div>
-        <div class="field"><label>Remarque interne (n'apparaît pas sur la facture)</label><input data-f="remarque" value="${esc(f.remarque || '')}"></div>
+        <div class="field"><label>Objet (en tête ${leDoc(f)}${mm ? ', facultatif' : ''})</label><input data-f="objet" value="${esc(f.objet || '')}" ${dis} placeholder="${mm ? 'Ex. : Annulation du stage Voll\'été 2026' : 'Ex. : Mise à disposition d\'arbitres – tournoi du 12/12'}"></div>
+        ${mm ? `<div class="field"><label>Modalité de remboursement (imprimée sur le mémoire)</label><input data-f="modalite" list="fl-modal" value="${esc(f.modalite || '')}" ${dis}><datalist id="fl-modal"><option value="${MODALITE_DEF}"><option value="Remboursement par chèque"><option value="Remboursement par virement"></datalist></div>` : ''}
+        <div class="field"><label>Remarque interne (n'apparaît pas sur le document)</label><input data-f="remarque" value="${esc(f.remarque || '')}"></div>
       </div>
     </div>
     <h3 class="cond" style="font-size:19px">Articles</h3>
@@ -1480,13 +1497,13 @@ function renderFactureLibre(f) {
       <button class="btn ghost" onclick="ajoutLigneFL(${f.id})">+ Ligne libre</button></div><div id="fl-list" class="picker-list"></div></div>`}
     <div class="tablebox"><table class="t" id="fl-t"><thead><tr><th>Date</th><th>Compte</th><th>Désignation</th><th class="r">Qté</th><th class="r">P.U. €</th><th class="r">Total €</th><th></th></tr></thead>
       <tbody>${f.lignes.map(ligne).join('') || `<tr><td colspan="7" class="muted c" style="padding:22px">Aucune ligne. Choisissez un article ci-dessus ou ajoutez une ligne libre.</td></tr>`}</tbody></table></div>
-    <div class="fac-total"><span>Total ${dv ? 'du devis' : 'de la facture'}</span><span class="big" id="fl-tot">${euros(facLibreTot(f))}</span><span class="small muted" id="fl-reste"></span></div>
-    ${dv ? '' : `<h3 class="cond" style="font-size:19px">Règlement</h3>
+    <div class="fac-total"><span>${mm ? 'Total à rembourser' : 'Total ' + leDoc(f)}</span><span class="big" id="fl-tot">${euros(facLibreTot(f))}</span><span class="small muted" id="fl-reste"></span></div>
+    ${dv ? '' : `<h3 class="cond" style="font-size:19px">${mm ? 'Remboursement effectué' : 'Règlement'}</h3>
     <div class="grid g4" style="grid-template-columns:repeat(4,minmax(0,1fr))">
-      <div class="field"><label>Montant réglé €</label><input data-f="regle_montant" value="${f.regle_montant != null ? fmtN(f.regle_montant) : ''}" inputmode="decimal" placeholder="0,00"></div>
+      <div class="field"><label>Montant ${mm ? 'remboursé' : 'réglé'} €</label><input data-f="regle_montant" value="${f.regle_montant != null ? fmtN(f.regle_montant) : ''}" inputmode="decimal" placeholder="0,00"></div>
       <div class="field"><label>Date</label><input data-f="regle_date" type="date" value="${esc(f.regle_date || '')}"></div>
       <div class="field"><label>Mode</label><select data-f="regle_mode"><option value=""></option>${MODES.map(m => `<option ${f.regle_mode === m ? 'selected' : ''}>${m}</option>`).join('')}</select></div>
-      <div class="field"><label>&nbsp;</label><button class="btn ghost" onclick="regleTotalFL(${f.id})">Réglée en totalité aujourd'hui</button></div>
+      <div class="field"><label>&nbsp;</label><button class="btn ghost" onclick="regleTotalFL(${f.id})">${mm ? 'Remboursé en totalité aujourd\'hui' : 'Réglée en totalité aujourd\'hui'}</button></div>
     </div>`}
   </div>`);
   majTotauxFL(f);
@@ -1545,15 +1562,16 @@ async function supprFactureLibre(fid) {
   try { await rpc('fac_admin_facture', { pwd: PWD, p: { id: f.id, supprimer: true } }); await load(); location.hash = 'factures'; } catch(e) { fail(e); }
 }
 function verifFactureLibre(f) {
-  if (!f.client_nom || f.client_nom === 'Nouveau client') return 'Indiquez le nom du client.';
-  if (!(f.lignes || []).length) return `Ajoutez au moins une ligne ${estDevis(f) ? 'au devis' : 'à la facture'}.`;
+  if (!f.client_nom || f.client_nom === 'Nouveau client') return estMemoire(f) ? 'Indiquez le nom du bénéficiaire.' : 'Indiquez le nom du client.';
+  if (!(f.lignes || []).length) return `Ajoutez au moins une ligne ${estDevis(f) ? 'au devis' : estMemoire(f) ? 'au mémoire' : 'à la facture'}.`;
   if ((f.lignes || []).some(l => !String(l.designation || '').trim())) return 'Une ligne n\'a pas de désignation.';
   return '';
 }
 async function envoyerFactureLibre(fid) {
   const f = facDe(fid), err = verifFactureLibre(f); if (err) return alert(err);
   const t = today(), change = f.date !== t;
-  if (!confirm(`Marquer ${estDevis(f) ? 'le devis' : 'la facture'} ${facLibreNum(f)} comme envoyé${estDevis(f) ? '' : 'e'} ?${change ? `\n\nSa date passera du ${fmtD(f.date)} au ${fmtD(t)} (date d'envoi).` : ''}\n${estDevis(f) ? 'Il' : 'Elle'} ne sera plus modifiable (vous pourrez ${estDevis(f) ? 'le' : 'la'} rouvrir).`)) return;
+  const m = !estFacture(f);
+  if (!confirm(`Marquer ${m ? 'le ' + nomDoc(f).toLowerCase() : 'la facture'} ${facLibreNum(f)} comme envoyé${m ? '' : 'e'} ?${change ? `\n\nSa date passera du ${fmtD(f.date)} au ${fmtD(t)} (date d'envoi).` : ''}\n${m ? 'Il' : 'Elle'} ne sera plus modifiable (vous pourrez ${m ? 'le' : 'la'} rouvrir).`)) return;
   const p = { statut: 'envoyee' };
   if (estDevis(f) && change && f.validite) { const v = parseD(f.validite), d0 = parseD(f.date), n = Math.round((v - d0) / 864e5); if (n > 0) { const x = parseD(t); x.setDate(x.getDate() + n); p.validite = x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); } }
   if (change) { p.date = t; f.lignes.forEach(l => { if (l.date === f.date) l.date = t; }); p.lignes = f.lignes; }
@@ -1562,6 +1580,7 @@ async function envoyerFactureLibre(fid) {
 async function pdfFactureLibre(fid) {
   if (!window.jspdf) { alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.'); return; }
   const f = facDe(fid), err = verifFactureLibre(f); if (err) return alert(err);
+  if (estMemoire(f)) return pdfMemoire(f);
   const img = await logo(), { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' }), t = facLibreTot(f), rg = num(f.regle_montant);
   const dv = estDevis(f), extra = !dv && rg > 0 ? [{ t: 'Déjà réglé : ' + euros(rg) }, { t: 'Reste à payer : ' + euros(Math.max(0, t - rg)), b: 1 }] : [];
   const od = !dv && f.devis_id ? facDe(f.devis_id) : null;
@@ -1573,7 +1592,7 @@ async function pdfFactureLibre(fid) {
 }
 async function mailFactureLibre(fid) {
   const f0 = facDe(fid), err = verifFactureLibre(f0); if (err) return alert(err);
-  if (f0.statut === 'brouillon' && f0.date !== today() && confirm(`Mettre la date ${estDevis(f0) ? 'du devis' : 'de la facture'} au ${fmtD(today())} (date d'envoi) avant de préparer le mail ?\n\nElle est actuellement au ${fmtD(f0.date)}.`)) {
+  if (f0.statut === 'brouillon' && f0.date !== today() && confirm(`Mettre la date ${leDoc(f0)} au ${fmtD(today())} (date d'envoi) avant de préparer le mail ?\n\nElle est actuellement au ${fmtD(f0.date)}.`)) {
     const p = { date: today() }; f0.lignes.forEach(l => { if (l.date === f0.date) l.date = p.date; }); p.lignes = f0.lignes;
     await majFactureLibre(f0, p, true);
   }
@@ -1581,8 +1600,61 @@ async function mailFactureLibre(fid) {
   const rep = t => String(t || '').replace(/\{(\w+)\}/g, (m, k) => vars[k] != null ? vars[k] : m);
   await pdfFactureLibre(fid);
   const to = (f.client_email || '').trim();
+  if (estMemoire(f)) {
+    window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to) + '&su=' + encodeURIComponent(rep(reglage('memoire_objet', 'Remboursement – Comité du Var de Volley-Ball'))) + '&body=' + encodeURIComponent(rep(reglage('memoire_modele', ''))), '_blank');
+    return toast(to ? '✓ PDF téléchargé : pensez à le joindre au mail' : 'Pas de mail indiqué : complétez le destinataire', to ? 'ok' : 'err');
+  }
   window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to) + '&su=' + encodeURIComponent(rep(reglage(dv ? 'devis_objet' : 'facture_objet', (dv ? 'Devis' : 'Facture') + ' N° {numero} – Comité du Var de Volley-Ball'))) + '&body=' + encodeURIComponent(rep(reglage(dv ? 'devis_modele' : 'facture_modele', 'Madame, Monsieur,\n\nVeuillez trouver ci-joint la facture N° {numero} du {date}{objet}, d\'un montant de {montant}.\n\nCordialement,\n\nComité du Var de Volley-Ball'))), '_blank');
   toast(to ? '✓ PDF téléchargé : pensez à le joindre au mail' : 'Pas de mail indiqué pour ce client : complétez le destinataire', to ? 'ok' : 'err');
+}
+
+// Mémoire : document de remboursement fait par le Comité (modèle Word « Mémoire à régler »)
+async function pdfMemoire(f) {
+  const { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' }), W = 210, M = 18, NAVY = [11, 33, 73], TXT = [20, 32, 58], GRIS = [100, 112, 135], LIGNE = [200, 208, 222];
+  const put = (img, x, y, h, maxW, right) => { if (!img) return; try { const ip = doc.getImageProperties(img); let w = h * ip.width / ip.height; if (w > maxW) { h = h * maxW / w; w = maxW; } doc.addImage(img, img.startsWith('data:image/png') ? 'PNG' : 'JPEG', right ? x - w : x, y, w, h); } catch(e) {} };
+  put(await logoFF(), M, 10, 22, 28); put((await logoCarre()) || (await logo()), W - M, 10, 24, 34, true);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(26); doc.setTextColor(...NAVY); doc.text('MÉMOIRE', W / 2, 28, { align: 'center' });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...GRIS); doc.text(pdfTxt('N° ' + facLibreNum(f)), W / 2, 34, { align: 'center' });
+  // date + bénéficiaire
+  doc.setTextColor(...TXT); doc.setFontSize(10); doc.text(pdfTxt('Toulon, le ' + new Date((f.date || today()) + 'T12:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })), W - M - 70, 50);
+  let y = 60; doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5);
+  doc.splitTextToSize(pdfTxt(f.client_nom), 70).forEach(t => { doc.text(t, W - M - 70, y); y += 5; });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5);
+  [f.client_contact, ...String(f.client_adresse || '').split('\n')].map(x => String(x || '').trim()).filter(Boolean).forEach(t => doc.splitTextToSize(pdfTxt(t), 70).forEach(u => { doc.text(u, W - M - 70, y); y += 4.6; }));
+  y = Math.max(y + 8, 88);
+  if (f.objet) { doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.text(doc.splitTextToSize(pdfTxt('Objet : ' + f.objet), W - 2 * M), M, y); y += 9; }
+  // tableau
+  const cols = [{ t: 'Désignation', w: W - 2 * M - 82, a: 'left' }, { t: 'Quantité', w: 22 }, { t: 'Prix unitaire', w: 30 }, { t: 'Total', w: 30 }];
+  const xs = cols.reduce((a, c) => [...a, a[a.length - 1] + c.w], [M]);
+  doc.setFillColor(220, 234, 247); doc.setDrawColor(...LIGNE); doc.setLineWidth(0.25); doc.rect(M, y, W - 2 * M, 8, 'FD');
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5);
+  cols.forEach((c, k) => { doc.text(pdfTxt(c.t), xs[k] + c.w / 2, y + 5.4, { align: 'center' }); if (k) doc.line(xs[k], y, xs[k], y + 8); });
+  y += 8; doc.setFont('helvetica', 'normal');
+  f.lignes.forEach(l => {
+    const t = doc.splitTextToSize(pdfTxt(l.designation + (l.precisions ? ' – ' + l.precisions : '')), cols[0].w - 5), h = Math.max(8, 3.8 + t.length * 4.3);
+    if (y + h > 240) { doc.addPage(); y = 20; }
+    doc.rect(M, y, W - 2 * M, h); xs.slice(1, -1).forEach(x => doc.line(x, y, x, y + h));
+    doc.text(t, M + 2.5, y + 5.3); doc.text(qte(num(l.quantite)), xs[1] + cols[1].w / 2, y + 5.3, { align: 'center' });
+    doc.text(pdfTxt(euros(l.prix)), xs[3] - 2.5, y + 5.3, { align: 'right' }); doc.text(pdfTxt(euros(montant(l))), xs[4] - 2.5, y + 5.3, { align: 'right' });
+    y += h;
+  });
+  doc.setFillColor(253, 235, 216); doc.rect(M, y, W - 2 * M, 10, 'FD'); doc.line(xs[3], y, xs[3], y + 10);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(11.5); doc.setTextColor(...NAVY);
+  doc.text('TOTAL À RECEVOIR EN EUROS', xs[3] - 4, y + 6.7, { align: 'right' }); doc.text(pdfTxt(euros(facLibreTot(f))), xs[4] - 2.5, y + 6.7, { align: 'right' });
+  y += 22; doc.setTextColor(...TXT); doc.setFontSize(10);
+  if (f.modalite) { doc.setFont('helvetica', 'bold'); doc.text(doc.splitTextToSize(pdfTxt(String(f.modalite).toUpperCase()), W - 2 * M), M, y); y += 10; }
+  // signature
+  y = Math.max(y + 8, 200); if (y > 250) { doc.addPage(); y = 40; }
+  const sl = String(reglage('recu_signataire', 'Gérald HENRY\nPrésident du Comité du Var de Volley-Ball')).split('\n').filter(Boolean), sx = W - M - 45;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.text(pdfTxt(sl[0] || ''), sx, y, { align: 'center' });
+  doc.setFontSize(9); sl.slice(1).forEach((t, k) => doc.text(pdfTxt(t), sx, y + 4.6 + k * 4.4, { align: 'center' }));
+  const sig = reglage('recu_signature', ''); if (sig) put(sig, sx - 20, y + 6 + 4.4 * Math.max(0, sl.length - 1), 20, 40);
+  // pied
+  doc.setDrawColor(31, 95, 168); doc.setLineWidth(0.4); doc.line(M, 276, W - M, 276);
+  doc.setTextColor(...TXT); doc.setFontSize(7.5);
+  ['Maison des sports du Var – 133, Boulevard Général Brosset - 83200 TOULON', 'Téléphone : 06-13-30-34-25 / e-mail : contact@volley83.fr / www.volley83.fr', 'N° Siret : 42463014300024 / Code APE : 9312 Z']
+    .forEach((t, k) => { doc.setFont('helvetica', k ? 'normal' : 'bold'); doc.text(pdfTxt(t), W / 2, 280 + k * 3.6, { align: 'center' }); });
+  doc.save(`Memoire-${facLibreNum(f)}-${slug(f.client_nom)}.pdf`);
 }
 
 // ======================== REÇUS DE DONS (Cerfa 11580) ========================
@@ -1824,9 +1896,9 @@ async function exportExcel() {
   XLSX.utils.book_append_sheet(wb, ws(det, [10, 12, 18, 8, 11, 9, 60, 40, 9, 11, 11]), 'Détail des factures');
   XLSX.utils.book_append_sheet(wb, ws(pay, [11, 8, 11, 10, 16, 11, 30]), 'Paiements');
   XLSX.utils.book_append_sheet(wb, ws(cpt, [16, 12]), 'Par compte');
-  if (D.factures.some(f => !estDevis(f))) {
+  if (D.factures.some(estFacture)) {
     const hc = [['Facture', 'Date', 'Client', 'Objet', 'Compte', 'Désignation', 'Précisions', 'Quantité', 'Prix unitaire', 'Montant', 'État', 'Réglé', 'Date règlement', 'Mode']];
-    D.factures.filter(f => !estDevis(f)).sort((a, b) => a.numero - b.numero).forEach(f => (f.lignes || []).forEach((l, k) => hc.push([facLibreNum(f), fmtD(f.date), f.client_nom, f.objet || '', l.code_compta || '', l.designation || '', l.precisions || '', num(l.quantite), num(l.prix), montant(l),
+    D.factures.filter(estFacture).sort((a, b) => a.numero - b.numero).forEach(f => (f.lignes || []).forEach((l, k) => hc.push([facLibreNum(f), fmtD(f.date), f.client_nom, f.objet || '', l.code_compta || '', l.designation || '', l.precisions || '', num(l.quantite), num(l.prix), montant(l),
       k ? '' : facLibreEtat(f)[1], k ? '' : num(f.regle_montant), k ? '' : fmtD(f.regle_date), k ? '' : f.regle_mode || ''])));
     XLSX.utils.book_append_sheet(wb, ws(hc, [12, 11, 30, 30, 9, 50, 30, 9, 11, 11, 14, 10, 12, 10]), 'Hors clubs');
   }
