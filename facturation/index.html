@@ -1613,15 +1613,17 @@ async function pdfMemoire(f) {
   const { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' }), W = 210, M = 18, NAVY = [11, 33, 73], TXT = [20, 32, 58], GRIS = [100, 112, 135], LIGNE = [200, 208, 222];
   const put = (img, x, y, h, maxW, right) => { if (!img) return; try { const ip = doc.getImageProperties(img); let w = h * ip.width / ip.height; if (w > maxW) { h = h * maxW / w; w = maxW; } doc.addImage(img, img.startsWith('data:image/png') ? 'PNG' : 'JPEG', right ? x - w : x, y, w, h); } catch(e) {} };
   put(await logoFF(), M, 10, 22, 28); put((await logoCarre()) || (await logo()), W - M, 10, 24, 34, true);
-  doc.setFont('helvetica', 'bold'); doc.setFontSize(26); doc.setTextColor(...NAVY); doc.text('MÉMOIRE', W / 2, 28, { align: 'center' });
-  doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...GRIS); doc.text(pdfTxt('N° ' + facLibreNum(f)), W / 2, 34, { align: 'center' });
+  doc.setFont('helvetica', 'bold'); doc.setTextColor(31, 79, 163); doc.setFontSize(15); doc.text('Fédération Française de Volley Ball', W / 2, 18, { align: 'center' });
+  doc.setFontSize(13.5); doc.text('Comité Départemental du Var', W / 2, 25, { align: 'center' });
+  doc.setFontSize(26); doc.setTextColor(...NAVY); doc.text('MÉMOIRE', W / 2, 45, { align: 'center' });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...GRIS); doc.text(pdfTxt('N° ' + facLibreNum(f)), W / 2, 51, { align: 'center' });
   // date + bénéficiaire
-  doc.setTextColor(...TXT); doc.setFontSize(10); doc.text(pdfTxt('Toulon, le ' + new Date((f.date || today()) + 'T12:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })), W - M - 70, 50);
-  let y = 60; doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5);
+  doc.setTextColor(...TXT); doc.setFontSize(10); doc.text(pdfTxt('Toulon, le ' + new Date((f.date || today()) + 'T12:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })), W - M - 70, 62);
+  let y = 72; doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5);
   doc.splitTextToSize(pdfTxt(f.client_nom), 70).forEach(t => { doc.text(t, W - M - 70, y); y += 5; });
   doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5);
   [f.client_contact, ...String(f.client_adresse || '').split('\n')].map(x => String(x || '').trim()).filter(Boolean).forEach(t => doc.splitTextToSize(pdfTxt(t), 70).forEach(u => { doc.text(u, W - M - 70, y); y += 4.6; }));
-  y = Math.max(y + 8, 88);
+  y = Math.max(y + 8, 98);
   if (f.objet) { doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.text(doc.splitTextToSize(pdfTxt('Objet : ' + f.objet), W - 2 * M), M, y); y += 9; }
   // tableau
   const cols = [{ t: 'Désignation', w: W - 2 * M - 82, a: 'left' }, { t: 'Quantité', w: 22 }, { t: 'Prix unitaire', w: 30 }, { t: 'Total', w: 30 }];
