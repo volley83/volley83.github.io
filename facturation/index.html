@@ -1366,11 +1366,15 @@ async function rappelClub(code) {
   const vars = { club: c.nom, sigle: code, saison: SAISON.replace('-', '/'), reste: euros(reste),
     impayes: imp.map(i => `* Bordereau N° ${i.b.numero} du ${fmtD(i.b.date)} (facture ${facNum(i.b, code)}) : ${euros(i.du)}${num(i.du) < totalDe(i.b.id, code) - 0.005 ? ` restant sur ${euros(totalDe(i.b.id, code))}` : ''}`).join('\n') };
   const rep = t => String(t || '').replace(/\{(\w+)\}/g, (m, k) => vars[k] != null ? vars[k] : m);
-  for (const i of imp) await pdfClubs(i.b.id, [code]);
+  // un seul PDF avec toutes les factures impayées (le navigateur bloque souvent plusieurs téléchargements d'affilée)
+  if (!window.jspdf) { alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.'); return; }
+  { const img = await logo(), { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    imp.forEach((i, k) => { if (k) doc.addPage(); pageFacture(doc, i.b, code, img); });
+    doc.save(imp.length === 1 ? `Facture-${facNum(imp[0].b, code)}.pdf` : `Rappel-${code}-factures-${imp.map(i => 'n' + i.b.numero).join('-')}.pdf`); }
   const to = c.email_finances || c.email || '', cc = c.email_finances ? (c.email || '') : '';
   window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to) + (cc ? '&cc=' + encodeURIComponent(cc) : '') + '&su=' + encodeURIComponent(rep(reglage('rappel_objet', 'Rappel – facturation non réglée – {club}'))) + '&body=' + encodeURIComponent(rep(reglage('rappel_modele', '{impayes}'))), '_blank');
   if (!to) toast('Pas de mail enregistré pour ce club (onglet Clubs)', 'err');
-  try { await rpc('fac_admin_rappel', { pwd: PWD, p: { club: code, saison: SAISON, bordereaux: imp.map(i => i.b.numero), montant: String(reste) } }); await load(); toast('✓ Rappel préparé (pensez à joindre le PDF)'); route(); } catch(e) { fail(e); }
+  try { await rpc('fac_admin_rappel', { pwd: PWD, p: { club: code, saison: SAISON, bordereaux: imp.map(i => i.b.numero), montant: String(reste) } }); await load(); toast(imp.length > 1 ? `✓ Rappel préparé : les ${imp.length} factures sont dans un seul PDF, à joindre au mail` : '✓ Rappel préparé (pensez à joindre le PDF)'); route(); } catch(e) { fail(e); }
 }
 async function mailClub(bid, code) {
   const b0 = bord(bid);
