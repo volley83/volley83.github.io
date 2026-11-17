@@ -75,6 +75,7 @@ function intitule(des) {
 const DECISION = ['Équipe absente', 'Joueur non réglementairement licencié', 'Absence du surclassement requis']
   .flatMap(t => ['Senior', "Compet'Lib", 'Jeunes'].map(c => `${t} – ${c}`));
 const MARQUEUR = ['Marqueur non réglementairement licencié', 'Marqueur invalide'];
+let EDIT = null;   // signalement en cours de modification
 let CODE = '', D = null, GARDE = { date: today(), match: '' };
 
 function renderLogin(err) {
@@ -104,7 +105,7 @@ function optionsNature() {
     <optgroup label="Marqueur">${MARQUEUR.map(t => `<option value="t:${esc(t)}">${esc(t)}</option>`).join('')}</optgroup>
     <option value="autre">Autre infraction</option>`;
 }
-function ligneInf() {
+function ligneInf(v) {
   const d = document.createElement('div'); d.className = 'inf';
   const prec = [...document.querySelectorAll('.inf [data-k=club]')].pop();
   d.innerHTML = `<span class="num"></span><button type="button" class="linkbtn red x">Retirer</button>
@@ -113,6 +114,12 @@ function ligneInf() {
     <div class="field"><label>Intitulé de l'infraction (publié sur le RIS) <span class="req">*</span></label><input data-k="int" placeholder="Ex. : Licence non présentée – 2 joueuses"><span class="small muted">Pré-rempli selon la nature choisie. Restez général : <b>pas de nom</b> ici.</span></div>
     <div class="field"><label>Précisions : nom du joueur, n° de licence…</label><input data-k="det" placeholder="Ex. : DUPONT Léa, licence 1234567"><span class="small muted">🔒 Transmises au Comité et reprises sur la facture du club, mais <b>jamais publiées sur le RIS</b>.</span></div>`;
   if (prec) d.querySelector('[data-k=club]').value = prec.value;
+  if (v) {   // modification : formulaire pré-rempli
+    const sel = d.querySelector('[data-k=nat]'), ok = x => [...sel.options].some(o => o.value === x);
+    d.querySelector('[data-k=club]').value = v.club || '';
+    sel.value = v.article_id && ok(String(v.article_id)) ? String(v.article_id) : ok('t:' + v.nature) ? 't:' + v.nature : 'autre';
+    d.querySelector('[data-k=int]').value = v.nature || ''; d.querySelector('[data-k=det]').value = v.details || '';
+  }
   d.querySelector('[data-k=nat]').onchange = e => { const v = e.target.value, n = D.natures.find(x => String(x.id) === v), inp = d.querySelector('[data-k=int]');
     inp.value = n ? intitule(n.designation) : v.startsWith('t:') ? v.slice(2) : ''; if (!inp.value) inp.focus(); };
   d.querySelector('.x').onclick = () => { if (document.querySelectorAll('.inf').length > 1) { d.remove(); numeroter(); } };
@@ -125,26 +132,29 @@ function render(okMsg) {
   $('app').innerHTML = `
   ${okMsg ? `<div class="msg ok">${esc(okMsg)}</div>` : ''}
   <form class="card" id="f">
-    <h2>Nouveau signalement</h2>
+    <h2>${EDIT ? 'Modifier le signalement' : 'Nouveau signalement'}</h2>
+    ${EDIT ? '<div class="msg info">Corrigez ce qui doit l\'être puis enregistrez. Le Comité verra directement la version corrigée.</div>' : ''}
     <div class="g2">
-      <div class="field"><label for="f-date">Date du match <span class="req">*</span></label><input id="f-date" type="date" value="${esc(GARDE.date)}" max="${today()}" required></div>
-      <div class="field"><label for="f-match">N° du match ou tournoi</label><input id="f-match" value="${esc(GARDE.match)}" placeholder="DFB007, OPEN 2x2 – T1…"></div>
+      <div class="field"><label for="f-date">Date du match <span class="req">*</span></label><input id="f-date" type="date" value="${esc(EDIT ? EDIT.date_match : GARDE.date)}" max="${today()}" required></div>
+      <div class="field"><label for="f-match">N° du match ou tournoi</label><input id="f-match" value="${esc(EDIT ? EDIT.match || '' : GARDE.match)}" placeholder="DFB007, OPEN 2x2 – T1…"></div>
     </div>
-    <p class="small muted">Vous pouvez signaler <b>plusieurs infractions pour la même rencontre</b> (pour un club ou pour les deux) : ajoutez-les avec le bouton ci-dessous.</p>
+    <p class="small muted" ${EDIT ? 'hidden' : ''}>Vous pouvez signaler <b>plusieurs infractions pour la même rencontre</b> (pour un club ou pour les deux) : ajoutez-les avec le bouton ci-dessous.</p>
     <div id="infs" style="display:flex;flex-direction:column;gap:18px;padding-top:6px"></div>
-    <div><button type="button" class="btn ghost" id="f-plus">+ Ajouter une autre infraction sur ce match</button></div>
-    <div class="field"><label for="f-com">Commentaires</label><textarea id="f-com" placeholder="Tout ce qui peut aider le Comité : circonstances, joueur ou équipe concernés, numéros de licence, horaires…"></textarea></div>
+    <div ${EDIT ? 'hidden' : ''}><button type="button" class="btn ghost" id="f-plus">+ Ajouter une autre infraction sur ce match</button></div>
+    <div class="field"><label for="f-com">Commentaires</label><textarea id="f-com" placeholder="Tout ce qui peut aider le Comité : circonstances, joueur ou équipe concernés, numéros de licence, horaires…">${esc(EDIT ? EDIT.commentaire || '' : '')}</textarea></div>
     <div id="f-err" class="msg err" hidden></div>
-    <button class="btn primary" type="submit" id="f-ok">Envoyer au Comité</button>
+    <button class="btn primary" type="submit" id="f-ok">${EDIT ? 'Enregistrer la correction' : 'Envoyer au Comité'}</button>
+    ${EDIT ? '<button class="btn ghost" type="button" id="f-annul">Annuler la modification</button>' : ''}
   </form>
   <div class="card"><h2>Mes signalements</h2>
     ${D.mes.length ? D.mes.map(g => `<div class="sig"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>${esc(g.club)} · ${esc(g.nature)}</b>${etat(g)}</div>${g.details ? `<span class="small">🔒 ${esc(g.details)}</span>` : ''}
       <span class="small muted">Match ${esc(g.match || '—')} du ${fmtD(g.date_match)} · envoyé le ${fmtD(g.created_at)}</span>
       ${g.commentaire ? `<span class="small">${esc(g.commentaire)}</span>` : ''}
       ${g.statut === 'rejete' && g.motif_rejet ? `<span class="small muted">Motif : ${esc(g.motif_rejet)}</span>` : ''}
-      ${g.statut === 'nouveau' ? `<div><button class="linkbtn red" onclick="suppr(${g.id})">Supprimer ce signalement</button></div>` : ''}</div>`).join('')
+      ${g.statut === 'nouveau' ? `<div style="display:flex;gap:16px"><button class="linkbtn" onclick="modifier(${g.id})">Modifier</button><button class="linkbtn red" onclick="suppr(${g.id})">Supprimer ce signalement</button></div>` : ''}</div>`).join('')
     : '<p class="muted">Aucun signalement pour le moment.</p>'}</div>`;
-  ligneInf();
+  ligneInf(EDIT);
+  if (EDIT) { document.querySelector('.inf .x').hidden = true; $('f-annul').onclick = () => { EDIT = null; render(); }; }
   $('f-plus').onclick = () => ligneInf().querySelector('[data-k=nat]').focus();
   $('f').onsubmit = async ev => {
     ev.preventDefault();
@@ -158,6 +168,12 @@ function render(okMsg) {
       if (!p.nature) return err(`Infraction ${k + 1} : choisissez ou précisez l'infraction.`);
     }
     $('f-ok').disabled = true;
+    if (EDIT) {
+      try { await rpc('fac_signal_modifier', { p_code: CODE, p_id: EDIT.id, p: ps[0] }); EDIT = null; D = await rpc('fac_signal_login', { p_code: CODE });
+        render('✓ Signalement corrigé.'); window.scrollTo(0, 0); }
+      catch(e) { $('f-ok').disabled = false; err(e.message); }
+      return;
+    }
     let n = 0;
     try { for (const p of ps) { await rpc('fac_signal_envoyer', { p_code: CODE, p }); n++; }
       GARDE = { date: date_match, match }; D = await rpc('fac_signal_login', { p_code: CODE });
@@ -165,6 +181,9 @@ function render(okMsg) {
     catch(e) { $('f-ok').disabled = false; err((n ? `${n} infraction(s) envoyée(s), mais la suivante a échoué : ` : '') + e.message);
       if (n) { [...document.querySelectorAll('.inf')].slice(0, n).forEach(d => d.remove()); numeroter(); } }
   };
+}
+function modifier(id) {
+  EDIT = D.mes.find(g => g.id === id) || null; render(); window.scrollTo(0, 0);
 }
 async function suppr(id) {
   if (!confirm('Supprimer ce signalement ?')) return;

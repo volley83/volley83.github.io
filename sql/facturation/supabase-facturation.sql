@@ -551,7 +551,7 @@ begin
                 -- liste proposée aux vérificateurs : pénalités constatables sur le terrain ou la feuille de match seulement
                 -- (forfaits, arbitrage, engagements et implantations sont décidés / facturés par le Comité)
                 from fac_articles a where a.actif and a.categorie = 'Pénalités' and a.designation !~* '(ENGAGEMENT NON CONFORME|IMPLANTATION)'),
-    'mes', (select coalesce(jsonb_agg(jsonb_build_object('id', g.id, 'date_match', g.date_match, 'match', g.match, 'club', g.club, 'nature', g.nature, 'details', g.details,
+    'mes', (select coalesce(jsonb_agg(jsonb_build_object('id', g.id, 'date_match', g.date_match, 'match', g.match, 'club', g.club, 'nature', g.nature, 'details', g.details, 'article_id', g.article_id,
               'commentaire', g.commentaire, 'statut', g.statut, 'motif_rejet', g.motif_rejet, 'created_at', g.created_at) order by g.created_at desc), '[]')
             from fac_signalements g where g.saisisseur_id = u.id and g.created_at > now() - interval '1 year'));
 end $$;
@@ -586,6 +586,31 @@ begin
   u := fac_signal_qui(p_code);
   if u.id is null then raise exception 'Code incorrect'; end if;
   delete from fac_signalements where id = p_id and saisisseur_id = u.id and statut = 'nouveau';
+end $$;
+
+-- Correction d'un signalement par son auteur, tant que le Comité ne l'a pas traité
+create or replace function fac_signal_modifier(p_code text, p_id bigint, p jsonb) returns bigint
+language plpgsql security definer set search_path = public as $$
+declare u fac_saisisseurs; d date := nullif(p->>'date_match', '')::date;
+begin
+  u := fac_signal_qui(p_code);
+  if u.id is null then raise exception 'Code incorrect'; end if;
+  if not exists (select 1 from fac_signalements where id = p_id and saisisseur_id = u.id) then raise exception 'Signalement introuvable'; end if;
+  if not exists (select 1 from fac_signalements where id = p_id and statut = 'nouveau') then
+    raise exception 'Ce signalement a déjà été traité par le Comité : il ne peut plus être modifié';
+  end if;
+  if coalesce(trim(p->>'nature'), '') = '' then raise exception 'Indiquez la nature de l''infraction'; end if;
+  if coalesce(trim(p->>'club'), '') = '' then raise exception 'Indiquez le club concerné'; end if;
+  if d is null then raise exception 'Indiquez la date du match'; end if;
+  update fac_signalements set
+    saison = case when extract(month from d) >= 7 then extract(year from d)::int || '-' || (extract(year from d)::int + 1)
+                  else (extract(year from d)::int - 1) || '-' || extract(year from d)::int end,
+    date_match = d, match = nullif(left(trim(p->>'match'), 80), ''), club = upper(left(trim(p->>'club'), 20)),
+    article_id = (select id from fac_articles where id = nullif(p->>'article_id', '')::bigint),
+    nature = left(trim(p->>'nature'), 200), details = nullif(left(trim(p->>'details'), 300), ''),
+    commentaire = nullif(left(trim(p->>'commentaire'), 2000), '')
+  where id = p_id;
+  return p_id;
 end $$;
 
 -- Personnes habilitées : p = {id?, nom, email, actif} ; {id, supprimer:true}. Le code est créé automatiquement.
@@ -780,7 +805,8 @@ grant execute on function
   fac_admin_signalement(text, bigint, jsonb),
   fac_signal_login(text),
   fac_signal_envoyer(text, jsonb),
-  fac_signal_supprimer(text, bigint)
+  fac_signal_supprimer(text, bigint),
+  fac_signal_modifier(text, bigint, jsonb)
 to anon;
 revoke execute on function fac_signal_qui(text) from public, anon, authenticated;
 

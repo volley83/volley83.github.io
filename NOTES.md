@@ -146,6 +146,7 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 
 - Plusieurs infractions par rencontre (date + n° de match communs, puis club / nature / précision par infraction ; envoi d'un signalement par infraction).
 - Natures proposées : « Forfait ou pénalité (décision du Comité) » = Équipe absente, Joueur non réglementairement licencié, Absence du surclassement requis × Senior / Compet'Lib / Jeunes (sans article : la sanction est choisie à l'intégration) ; Pénalités du catalogue sauf engagements non conformes et implantations (filtre dans `fac_signal_login`) ; Marqueur non réglementairement licencié, Marqueur invalide ; Autre. Forfaits et arbitrage retirés de la liste.
+- Correction : bouton « Modifier » sur les signalements en attente (`fac_signal_modifier`, refusé dès que le Comité a validé ou rejeté).
 - Confidentialité : champ « Précisions : nom du joueur, n° de licence… » (`fac_signalements.details` → `fac_ris_items.detail`). Jamais imprimé sur le RIS ; ajouté aux précisions de la ligne de facture du club. L'intitulé (publié sur le RIS) reste général.
 
 ## Clubs du Var — `clubs/index.html` (https://volley83.github.io/clubs/, non indexée, pas encore liée depuis l'accueil)
