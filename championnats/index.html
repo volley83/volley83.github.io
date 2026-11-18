@@ -185,6 +185,7 @@
   .we-c.F .we-cat { color: var(--fem); } .we-c.M .we-cat { color: var(--mas); } .we-c.O .we-cat { color: var(--open); }
   .we-c b { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 24px; color: var(--navy); line-height: 1.1; }
   .we-l { font-size: 14px; font-weight: 600; }
+  .we-n { font-size: 14px; color: var(--text); font-weight: 600; } .we-n b { font-size: 17px; color: var(--navy); }
   .we-s { font-size: 13px; color: var(--muted); } .we-s em { font-style: normal; color: var(--ok); font-weight: 600; }
 
   /* Calendrier */
@@ -803,7 +804,8 @@ function weekendHTML() {
       <span class="we-cat">${esc(c.nom)}</span>
       <b>${JOURS[d.getDay()][0].toUpperCase() + JOURS[d.getDay()].slice(1)} ${d.getDate()}${t.heure ? ' · ' + esc(fmtH(t.heure)) : ''}</b>
       <span class="we-l">${t.lieu ? '📍 ' + esc(lieuTxt(t)) : 'Lieu à confirmer'}</span>
-      <span class="we-s">${tNom(t)}${t.ouvert ? ` · <em>inscriptions jusqu'au ${esc(fmtD(t.date_limite, true, false))} ${esc(fmtH(t.heure_limite))}</em>` : t.nb_inscrits ? ` · ${t.nb_inscrits} équipe${t.nb_inscrits > 1 ? 's' : ''}` : ''}</span>
+      <span class="we-n">${t.nb_inscrits ? `<b>${t.nb_inscrits}</b> équipe${t.nb_inscrits > 1 ? 's' : ''} inscrite${t.nb_inscrits > 1 ? 's' : ''}` : (t.ouvert ? 'Aucune équipe inscrite pour l\'instant' : 'Aucune équipe inscrite')}</span>
+      <span class="we-s">${tNom(t)}${t.ouvert ? ` · <em>inscriptions jusqu'au ${esc(fmtD(t.date_limite, true, false))} ${esc(fmtH(t.heure_limite))}</em>` : ' · inscriptions closes'}</span>
     </a>`; }).join('')}</div>
   </section>`;
 }
