@@ -7,6 +7,8 @@
 <title>Clubs du Var – Comité du Var de Volley-Ball</title>
 <meta name="description" content="Les clubs de volley-ball du Var : villes, gymnases, catégories accueillies et contacts.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="leaflet/leaflet.css">
+<script src="leaflet/leaflet.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root { --navy: #0B2149; --blue: #1E4FA3; --accent: #F6C21B; --bg: #F4F6FA; --line: #E2E7F0; --text: #14203A; --muted: #56627A;
@@ -81,6 +83,16 @@
   .contacts a { display: inline-flex; align-items: center; min-height: 36px; font-weight: 600; overflow-wrap: anywhere; }
   .autres ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 0 24px; }
   .autres li { padding: 8px 0; border-bottom: 1px solid #EDF0F5; }
+  .carte-wrap { padding: 0; overflow: hidden; gap: 0; }
+  #carte { height: 440px; width: 100%; background: #E9EFFA; z-index: 0; }
+  @media (max-width: 620px) { #carte { height: 300px; } }
+  .carte-pied { display: flex; flex-wrap: wrap; gap: 4px 16px; justify-content: space-between; padding: 8px 14px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
+  .leaflet-popup-content { margin: 12px 14px; font-family: Inter, system-ui, sans-serif; font-size: 14px; line-height: 1.4; }
+  .pop { display: flex; flex-direction: column; gap: 4px; min-width: 190px; }
+  .pop .n { display: flex; gap: 8px; align-items: center; font-weight: 700; color: var(--navy); }
+  .pop .n img { width: 34px; height: 34px; object-fit: contain; flex: 0 0 34px; }
+  .pop button { margin-top: 6px; align-self: flex-start; min-height: 36px; padding: 0 12px; border-radius: 8px; border: 0; background: var(--navy); color: #fff; font-family: inherit; font-weight: 700; font-size: 13px; cursor: pointer; }
+  .club.vise { box-shadow: 0 0 0 3px rgba(246,194,27,.6); border-color: var(--accent); }
   footer { border-top: 1px solid var(--line); background: #fff; }
   footer .wrap { padding-top: 14px; padding-bottom: 14px; display: flex; flex-wrap: wrap; gap: 6px 20px; justify-content: space-between; font-size: 13px; color: var(--muted); }
   /* Comité */
@@ -142,7 +154,7 @@ function carteClub(c) {
   if (f.tel) contacts.push(`<a href="tel:${esc(String(f.tel).replace(/[^\d+]/g, ''))}">${esc(f.tel)}</a>`);
   [['site', 'Site internet'], ['facebook', 'Facebook'], ['instagram', 'Instagram']].forEach(([k, t]) => { const u = lienWeb(f[k]); if (u) contacts.push(`<a href="${esc(u)}" target="_blank" rel="noopener">${t}</a>`); });
   const details = !!(f.presentation || lieux.length || contacts.length || f.contact_nom);
-  return `<article class="club">
+  return `<article class="club" id="club-${esc(c.code)}">
     <div class="tete">
       <div class="lg">${logoOk(c.logo) ? `<img src="${esc(c.logo)}" alt="">` : esc(c.code)}</div>
       <div><h2>${esc(c.nom)}</h2>${f.villes ? `<div class="muted">${esc(f.villes)}</div>` : ''}</div>
@@ -177,6 +189,77 @@ function filtrer() {
   $('autres').hidden = !sans.length;
   $('autres-titre').textContent = avec.length ? 'Autres clubs du Var' : 'Clubs du Var';
   $('autres-liste').innerHTML = sans.map(c => `<li><b>${esc(c.nom)}</b> <span class="muted">· ${esc(c.code)}</span></li>`).join('');
+  majCarte(avec);
+}
+
+/* ---------- Carte des clubs (Leaflet + fond OpenStreetMap ; adresses placées par le service de géocodage de l'IGN) ---------- */
+let CARTE = null, COUCHE = null;
+const GEO_URL = 'https://data.geopf.fr/geocodage/search';
+const geoCle = l => [l.adresse, l.cp, l.ville].map(x => String(x || '').trim()).filter(Boolean).join(' ');
+function geoCache(k, v) {
+  try { const m = JSON.parse(localStorage.getItem('clb_geo') || '{}'); if (v === undefined) return m[k]; m[k] = v; localStorage.setItem('clb_geo', JSON.stringify(m)); } catch (e) { return undefined; }
+}
+// Renvoie {lat, lon, approx} ou null. approx = seule la commune a été trouvée (pas l'adresse précise).
+async function geocoder(l) {
+  if (l && typeof l.lat === 'number' && typeof l.lon === 'number') return { lat: l.lat, lon: l.lon, approx: !!l.approx };
+  const q = geoCle(l || {}); if (!q) return null;
+  const c = geoCache(q); if (c !== undefined) return c;
+  try {
+    const r = await fetch(GEO_URL + '?limit=1&q=' + encodeURIComponent(q) + (/^\d{5}$/.test(l.cp || '') ? '&postcode=' + l.cp : ''));
+    if (!r.ok) return null;
+    const ft = ((await r.json()).features || [])[0];
+    let res = null;
+    if (ft && ft.geometry && (ft.properties || {}).score >= 0.35) {
+      const [lon, lat] = ft.geometry.coordinates;
+      res = { lat: Math.round(lat * 1e6) / 1e6, lon: Math.round(lon * 1e6) / 1e6, approx: !['housenumber', 'street', 'locality'].includes(ft.properties.type) };
+    }
+    geoCache(q, res); return res;
+  } catch (e) { return null; }
+}
+async function placerLieux(f) {     // ajoute lat / lon aux lieux d'une fiche (avant publication)
+  for (const l of (f.lieux || [])) { delete l.lat; delete l.lon; delete l.approx; const g = await geocoder(l); if (g) Object.assign(l, g); }
+  return f;
+}
+function initCarte() {
+  if (CARTE || typeof L === 'undefined') return !!CARTE;
+  // Molette désactivée (pour que la page défile normalement) ; sur téléphone, déplacement à deux doigts seulement via le zoom, pour ne pas bloquer le défilement
+  CARTE = L.map('carte', { scrollWheelZoom: false, dragging: !L.Browser.mobile, zoomSnap: 0.5 }).setView([43.42, 6.2], 9);
+  CARTE.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · adresses : IGN' }).addTo(CARTE);
+  COUCHE = L.featureGroup().addTo(CARTE);
+  CARTE.on('popupopen', e => { const b = e.popup.getElement().querySelector('[data-voir]'); if (b) b.onclick = () => voirClub(b.dataset.voir); });
+  return true;
+}
+let JETON = 0;
+async function majCarte(clubs) {
+  const tour = ++JETON;
+  const pts = [];
+  for (const c of clubs) for (const l of ((c.fiche || {}).lieux || [])) { const g = await geocoder(l); if (g) pts.push({ c, l, g }); }
+  if (tour !== JETON) return;                      // une recherche plus récente a été lancée entre-temps
+  $('carte-bloc').hidden = !pts.length && !CARTE;
+  if (!pts.length) { if (COUCHE) COUCHE.clearLayers(); $('carte-info').textContent = 'Aucun lieu à afficher pour cette recherche.'; return; }
+  $('carte-bloc').hidden = false;
+  if (!initCarte()) { $('carte-bloc').hidden = true; return; }
+  COUCHE.clearLayers();
+  for (const { c, l, g } of pts) {
+    const adr = [l.adresse, [l.cp, l.ville].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+    L.marker([g.lat, g.lon], { title: c.nom + (l.nom ? ' – ' + l.nom : ''), alt: c.nom }).addTo(COUCHE).bindPopup(
+      `<div class="pop"><div class="n">${logoOk(c.logo) ? `<img src="${esc(c.logo)}" alt="">` : ''}<span>${esc(c.nom)}</span></div>
+       ${l.nom ? `<div>${esc(l.nom)}</div>` : ''}${adr ? `<div class="small muted">${esc(adr)}</div>` : ''}${g.approx ? '<div class="small muted">Position approximative (commune)</div>' : ''}
+       <button type="button" data-voir="${esc(c.code)}">Voir la fiche du club</button></div>`);
+  }
+  const nbClubs = new Set(pts.map(p => p.c.code)).size;
+  $('carte-info').textContent = `${nbClubs} club${nbClubs > 1 ? 's' : ''} · ${pts.length} lieu${pts.length > 1 ? 'x' : ''} de pratique`;
+  CARTE.invalidateSize();
+  CARTE.fitBounds(COUCHE.getBounds(), { padding: [30, 30], maxZoom: 13 });
+}
+function voirClub(code) {
+  const a = $('club-' + code); if (!a) return;
+  const b = a.querySelector('.tog');
+  if (b && b.getAttribute('aria-expanded') !== 'true') b.click();
+  document.querySelectorAll('.club.vise').forEach(x => x.classList.remove('vise'));
+  a.classList.add('vise'); a.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(() => a.classList.remove('vise'), 4000);
 }
 async function vuePublique() {
   $('app').innerHTML = `<div><h1>Les clubs de volley-ball du Var</h1><p class="muted" style="margin-top:6px">Trouvez un club près de chez vous : villes, lieux de pratique, catégories accueillies et contacts.</p></div>
@@ -184,6 +267,10 @@ async function vuePublique() {
       <div class="field"><label for="q">Rechercher une ville ou un club</label><input id="q" type="search" placeholder="Ex. : Toulon, Fréjus…" autocomplete="off"></div>
       <div class="field"><label for="cat">Catégorie</label><select id="cat"><option value="">Toutes les catégories</option>${CATS.map(([k, t]) => `<option value="${k}">${esc(t)}</option>`).join('')}</select></div>
     </div>
+    <section class="card carte-wrap" id="carte-bloc" hidden aria-label="Carte des clubs">
+      <div id="carte" role="region" aria-label="Carte des lieux de pratique des clubs"></div>
+      <div class="carte-pied"><span id="carte-info"></span><span>Cliquez sur un repère pour voir le club.</span></div>
+    </section>
     <div class="liste" id="liste"><div class="muted">Chargement…</div></div>
     <section class="card autres" id="autres" hidden aria-labelledby="autres-titre">
       <h2 id="autres-titre">Autres clubs du Var</h2>
@@ -452,7 +539,7 @@ function vueValider(c) {
   if ($('refus')) $('refus').onclick = async () => { if (!confirm('Écarter la fiche envoyée par le club ?' + (c.fiche ? ' La fiche en ligne ne changera pas.' : ''))) return; try { await rpc('clb_admin_refuser', { pwd: PWD, p_club: c.code }); ADM = await rpc('clb_admin_get', { pwd: PWD }); vueComite('Proposition écartée.'); } catch (e) { alert(e.message); } };
   $('fm').onsubmit = async ev => {
     ev.preventDefault(); $('err').hidden = true; $('send').disabled = true;
-    try { await rpc('clb_admin_publier', { pwd: PWD, p_club: c.code, p_fiche: lireForm(), p_logo: LOGO }); ADM = await rpc('clb_admin_get', { pwd: PWD }); vueComite('Fiche de ' + c.nom + ' publiée.'); window.scrollTo(0, 0); }
+    try { await rpc('clb_admin_publier', { pwd: PWD, p_club: c.code, p_fiche: await placerLieux(lireForm()), p_logo: LOGO }); ADM = await rpc('clb_admin_get', { pwd: PWD }); vueComite('Fiche de ' + c.nom + ' publiée.'); window.scrollTo(0, 0); }
     catch (e) { $('err').textContent = 'Publication impossible : ' + e.message; $('err').hidden = false; $('send').disabled = false; }
   };
 }
