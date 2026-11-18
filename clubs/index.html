@@ -134,6 +134,7 @@ const LABELS = [['formateur', 'Club Formateur'], ['sante', 'Volley Santé'], ['a
 const NIVEAUX = [['or', 'Or'], ['argent', 'Argent'], ['bronze', 'Bronze']];
 const labelsDe = f => LABELS.map(([k, t]) => { const n = NIVEAUX.find(x => x[0] === ((f && f.labels) || {})[k]); return n ? { k, t, n } : null; }).filter(Boolean);
 const MAX_LIEUX = 5;
+const EN_TETE = ['GSD83'];     // structures affichées en premier dans l'annuaire, avant les clubs (demande de Clément du 18/11/2026)
 // N'accepte que de vraies adresses web (http ou https, avec un nom de domaine) : tout le reste est ignoré
 const lienWeb = u => {
   u = String(u || '').trim(); if (!u || /\s/.test(u)) return '';
@@ -183,8 +184,10 @@ function filtrer() {
     return norm([c.nom, c.code, f.villes, ...(f.lieux || []).map(x => x.ville)].join(' ')).includes(q);
   });
   // Fiches remplies d'abord (ordre alphabétique, structures particulières comme le GSD à la fin), puis les autres clubs en liste compacte
-  // (l'ordre de la base est déjà alphabétique, avec le GSD placé après les clubs : on le garde)
-  const avec = l.filter(c => c.fiche), sans = l.filter(c => !c.fiche);
+  // (l'ordre de la base est alphabétique ; les structures de EN_TETE, comme le GSD, passent devant les clubs)
+  const rang = c => { const i = EN_TETE.indexOf(c.code); return i < 0 ? EN_TETE.length : i; };
+  const l2 = l.map((c, i) => [c, i]).sort((a, b) => rang(a[0]) - rang(b[0]) || a[1] - b[1]).map(x => x[0]);
+  const avec = l2.filter(c => c.fiche), sans = l2.filter(c => !c.fiche);
   $('liste').innerHTML = avec.length ? avec.map(carteClub).join('') : (sans.length ? '' : '<div class="msg info">Aucun club ne correspond à cette recherche.</div>');
   $('autres').hidden = !sans.length;
   $('autres-titre').textContent = avec.length ? 'Autres clubs du Var' : 'Clubs du Var';
