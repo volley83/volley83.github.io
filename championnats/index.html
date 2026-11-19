@@ -1601,7 +1601,9 @@ Attention l'heure indiquée${t.heure ? ' (' + fmtH(t.heure) + ')' : ''} est l'he
 
 Équipes inscrites (${eq.length}) :
 ${liste}
-
+${f && q4 ? `
+Les poules ont été constituées en serpentin d'après le classement général provisoire (${SITE_URL}#4x4). Les équipes pas encore classées sont placées à la suite, et les équipes d'un même club sont réparties dans les différentes poules.
+` : ''}
 ${milieu.trim()}
 
 Pour le club recevant (${orga}) :
