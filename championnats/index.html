@@ -1202,7 +1202,7 @@ function adminInscriptions() {
       </div>
       <textarea id="a-mails" readonly style="min-height:56px;font-size:13px" placeholder="Aucune adresse">${esc(mails.join(', '))}</textarea>
       <div id="a-mailbox" class="stack" hidden>
-        <div class="rank-head" style="margin:0"><h2>Mail aux inscrits</h2><span class="muted small">${mails.length} destinataires en Cci · complétez les [crochets], le texte est gardé sur cet ordinateur</span></div>
+        <div class="rank-head" style="margin:0"><h2>Mail aux inscrits</h2><span class="muted small">${mails.length} destinataires en Cci · complétez les [crochets] · **texte** = gras, !!texte!! = rouge · le texte est gardé sur cet ordinateur</span></div>
         <div class="field"><label for="a-mail-f">Formule sportive</label><select id="a-mail-f"><option value="">Modèle libre (à compléter)</option></select><span class="muted small" id="a-mail-fnote"></span></div>
         <div class="field"><label for="a-mail-su">Objet</label><input id="a-mail-su"></div>
         <textarea id="a-mail-body" style="min-height:520px;font-family:ui-monospace,Consolas,monospace;font-size:13px;line-height:1.45"></textarea>
@@ -1230,7 +1230,7 @@ function adminInscriptions() {
   </div>`;
   $('a-t').onchange = () => { ATID = +$('a-t').value; adminInscriptions(); };
   // ----- Mail type aux inscrits (formule sportive) -----
-  const cleMail = 'chp_mail_' + t.id, VERSION_MODELE = 3;   // à augmenter quand le modèle change : les anciens brouillons sont alors ignorés
+  const cleMail = 'chp_mail_' + t.id, VERSION_MODELE = 4;   // à augmenter quand le modèle change : les anciens brouillons sont alors ignorés
   const nbEq = ins.reduce((s, i) => s + i.nb_equipes, 0);
   const formuleChoisie = () => (FORMULES || []).find(f => String(f.id) === $('a-mail-f').value) || null;
   const remplirMail = (force) => {
@@ -1415,20 +1415,22 @@ async function adminFormules() {
 const LOGO_MAIL = SITE_URL + 'logo-comite-var.jpg';
 // La signature Gmail (Sportivement, nom, logo) est ajoutée par Gmail lui-même : on ne la colle pas une 2e fois.
 const sansSignature = txt => { const k = txt.lastIndexOf('Sportivement,'); return (k >= 0 ? txt.slice(0, k) : txt).replace(/\s+$/, ''); };
+const sansMarques = s => s.replace(/\*\*([\s\S]+?)\*\*/g, '$1').replace(/!!([\s\S]+?)!!/g, '$1');
 function mailHTML(txt) {
   const lien = s => s.replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)])/g, '<a href="$1">$1</a>').replace(/([\w.+-]+@[\w-]+\.[\w.-]+)/g, m => m.includes('href') ? m : `<a href="mailto:${m}">${m}</a>`);
-  const corps = esc(txt).split('\n').map(l => lien(l) || '&nbsp;').join('<br>');
+  const corps = esc(txt).replace(/\*\*([\s\S]+?)\*\*/g, '<b>$1</b>').replace(/!!([\s\S]+?)!!/g, '<span style="color:#d00000">$1</span>')
+    .split('\n').map(l => lien(l) || '&nbsp;').join('<br>');
   return `<div style="font-family: Garamond, 'EB Garamond', 'Times New Roman', serif; font-size: 13pt; color: #1a1a1a">${corps}<br><br></div>`;
 }
 async function gmailMisEnForme({ to = '', bcc = '', su = '', body = '' }) {
   const base = `https://mail.google.com/mail/?view=cm&fs=1${to ? '&to=' + encodeURIComponent(to) : ''}${bcc ? '&bcc=' + encodeURIComponent(bcc) : ''}&su=${encodeURIComponent(su)}`;
   try {
     const court = sansSignature(body);
-    await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([mailHTML(court)], { type: 'text/html' }), 'text/plain': new Blob([court], { type: 'text/plain' }) })]);
+    await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([mailHTML(court)], { type: 'text/html' }), 'text/plain': new Blob([sansMarques(court)], { type: 'text/plain' }) })]);
     window.open(base + '&body=' + encodeURIComponent('>>> Le texte du mail est copié : sélectionnez cette ligne et faites Ctrl+V pour le coller à sa place <<<'), '_blank');
     saveMark('ok', '✓ Mail mis en forme copié : dans Gmail, cliquez dans le message puis Ctrl+V');
   } catch(e) {
-    const url = base + '&body=' + encodeURIComponent(body);
+    const url = base + '&body=' + encodeURIComponent(sansMarques(body));
     if (url.length > 7800) { alert('Le texte est trop long pour Gmail : copiez-le depuis cette page et collez-le dans le mail.'); window.open(base, '_blank'); }
     else window.open(url, '_blank');
     saveMark('err', '⚠ Copie mise en forme impossible dans ce navigateur : texte simple envoyé à Gmail');
@@ -1596,8 +1598,10 @@ Places 5 à 8 - Poule E : Matchs en 1 set de [21]
 4 - `;
   // OPEN 2x2 / 4x4 : la formule part en pièce jointe, le mail ne contient que les consignes
   const consignesOpen = `La 2ème phase dépendra de si des équipes souhaitent changer de niveau. C'est possible sans problème entre les 2 phases, l'objectif étant que les enfants jouent à leur niveau et ne soient pas en échec constant, ou que ce soit trop simple.
-Pour ne pas perdre trop de temps entre les phases, ne pas hésiter à utiliser un terrain qui s'est libéré pour terminer des matchs d'une poule qui aurait pris du retard, et ne pas perdre de temps avec des échauffements entre les rencontres.
-Je vous remets en pièce jointe le règlement pour chacun des niveaux, et je vous rappelle qu'il est important de le respecter. Ces règles sont là pour faire travailler et pour favoriser le jeu, la construction et l'apprentissage.`;
+
+**Pour ne pas perdre trop de temps entre les phases, ne pas hésiter à utiliser un terrain qui s'est libéré pour terminer des matchs d'une poule qui aurait pris du retard, et ne pas perdre de temps avec des échauffements entre les rencontres.**
+
+!!Je vous remets en pièce jointe le règlement pour chacun des niveaux, et je vous rappelle qu'il est important de le respecter. Ces règles sont là pour faire travailler et pour favoriser le jeu, la construction et l'apprentissage.!!`;
   const milieu = !q4 && !f ? consignesOpen : f ? (f.texte.includes('{POULES}') ? f.texte.replace('{POULES}', poulesSerpentin(t, eq, lirePoules(f.poules))) : f.texte + '\n\n' + poulesSerpentin(t, eq, lirePoules(f.poules))) : libre;
   return `Bonjour à tous,
 
