@@ -1593,10 +1593,14 @@ Places 5 à 8 - Poule E : Matchs en 1 set de [21]
 2 - 
 3 - 
 4 - `;
-  const milieu = f ? (f.texte.includes('{POULES}') ? f.texte.replace('{POULES}', poulesSerpentin(t, eq, lirePoules(f.poules))) : f.texte + '\n\n' + poulesSerpentin(t, eq, lirePoules(f.poules))) : libre;
+  // OPEN 2x2 / 4x4 : la formule part en pièce jointe, le mail ne contient que les consignes
+  const consignesOpen = `La 2ème phase dépendra de si des équipes souhaitent changer de niveau. C'est possible sans problème entre les 2 phases, l'objectif étant que les enfants jouent à leur niveau et ne soient pas en échec constant, ou que ce soit trop simple.
+Pour ne pas perdre trop de temps entre les phases, ne pas hésiter à utiliser un terrain qui s'est libéré pour terminer des matchs d'une poule qui aurait pris du retard, et ne pas perdre de temps avec des échauffements entre les rencontres.
+Je vous remets en pièce jointe le règlement pour chacun des niveaux, et je vous rappelle qu'il est important de le respecter. Ces règles sont là pour faire travailler et pour favoriser le jeu, la construction et l'apprentissage.`;
+  const milieu = !q4 && !f ? consignesOpen : f ? (f.texte.includes('{POULES}') ? f.texte.replace('{POULES}', poulesSerpentin(t, eq, lirePoules(f.poules))) : f.texte + '\n\n' + poulesSerpentin(t, eq, lirePoules(f.poules))) : libre;
   return `Bonjour à tous,
 
-voici la formule sportive pour le tournoi ${c.nom} de ${jour} à ${t.ville || '[ville]'}${t.lieu ? ' (' + t.lieu + ')' : ''}.
+voici ${!q4 && !f ? 'ci-joint ' : ''}la formule sportive pour le tournoi ${c.nom} de ${jour} à ${t.ville || '[ville]'}${t.lieu ? ' (' + t.lieu + ')' : ''}.
 Attention l'heure indiquée${t.heure ? ' (' + fmtH(t.heure) + ')' : ''} est l'heure de début des rencontres et non pas l'heure de rendez-vous.
 
 Équipes inscrites (${eq.length}) :
