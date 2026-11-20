@@ -1204,6 +1204,7 @@ function adminInscriptions() {
       <div id="a-mailbox" class="stack" hidden>
         <div class="rank-head" style="margin:0"><h2>Mail aux inscrits</h2><span class="muted small">${mails.length} destinataires en Cci · complétez les [crochets] · **texte** = gras, !!texte!! = rouge · le texte est gardé sur cet ordinateur</span></div>
         <div class="field"><label for="a-mail-f">Formule sportive</label><select id="a-mail-f"><option value="">Modèle libre (à compléter)</option></select><span class="muted small" id="a-mail-fnote"></span></div>
+        ${c.famille === 'open' ? `<div class="msg" style="margin:0;background:#F6F8FC;color:var(--text)">📄 <b>Formule en pièce jointe</b> : <button class="btn ghost sm" id="a-gen">Préparer la formule sportive (PDF)</button><div id="a-genbox" class="stack" hidden style="margin-top:12px"></div></div>` : ''}
         <div class="field"><label for="a-mail-su">Objet</label><input id="a-mail-su"></div>
         <textarea id="a-mail-body" style="min-height:520px;font-family:ui-monospace,Consolas,monospace;font-size:13px;line-height:1.45"></textarea>
         <div class="btnrow" style="margin:0"><button class="btn primary" id="a-mail-go">✉ Ouvrir dans Gmail</button><button class="btn ghost" id="a-mail-copy">📋 Copier le texte</button><button class="btn ghost" id="a-mail-reset">↺ Repartir du modèle</button></div>
@@ -1253,6 +1254,7 @@ function adminInscriptions() {
     listeFormules(); remplirMail(false); $('a-mail-body').focus(); b.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
   $('a-mail-su').oninput = $('a-mail-body').oninput = garderMail;
+  if ($('a-gen')) $('a-gen').onclick = () => { const b = $('a-genbox'); b.hidden = !b.hidden; if (!b.hidden) editeurFormuleOpen(b, t, c, ins); };
   $('a-mail-reset').onclick = () => { if (confirm('Remplacer le texte par le modèle vierge ?')) { remplirMail(true); garderMail(); } };
   $('a-mail-copy').onclick = async () => { try { await navigator.clipboard.writeText($('a-mail-body').value); saveMark('ok', '✓ Texte copié'); } catch(e) { $('a-mail-body').select(); document.execCommand('copy'); saveMark('ok', '✓ Copié'); } };
   $('a-mail-go').onclick = () => {
@@ -1509,12 +1511,8 @@ async function chargerFormules() { try { FORMULES = await rpc('chp_admin_formule
 const lirePoules = s => String(s || '').split(/[,;+]/).map(x => x.trim()).filter(Boolean).map(x => { const m = x.match(/^(\d+)\s*(.*)$/); return m ? { n: +m[1], note: m[2].trim() } : null; }).filter(Boolean);
 // Poules en serpentin d'après le classement général (équipes non classées à la fin, dans l'ordre d'inscription),
 // puis équilibrage des clubs : un club n'a jamais 2 équipes de plus dans une poule que dans une autre.
-function poulesSerpentin(t, eq, spec) {
-  const rows = (typeof classement === 'function' && D && D.tournois) ? classement(t.competition).rows : [];
-  const pos = new Map(rows.map(r => [String(r.equipe).toUpperCase().trim(), r.pos]));
-  const rang = e => { const n = e.nom.toUpperCase(); return pos.get(n) ?? pos.get(n + ' 1') ?? (/ 1$/.test(n) ? pos.get(n.replace(/ 1$/, '')) : undefined); };
-  const ordre = eq.map((e, i) => ({ ...e, rg: rang(e), i })).sort((a, b) => (a.rg ?? 1e6) - (b.rg ?? 1e6) || String(a.created_at).localeCompare(String(b.created_at)) || a.i - b.i);
-  ordre.forEach((e, k) => e.seed = k);
+// Répartition d'une liste ordonnée (champ seed) dans des poules : serpentin du Comité puis équilibrage des clubs
+function repartir(ordre, spec) {
   const P = spec.map(s => ({ ...s, eq: [] })), cap = P.reduce((s, p) => s + p.n, 0);
   // Serpentin du Comité, ligne par ligne : ligne 1 A→D, ligne 2 D→A, ligne 3 A→D, ligne 4 D→A…
   // Variante poules de 3 : la 3e ligne repart dans le même sens que la 2e (ex. 3 poules de 3 : A 1-6-9, B 2-5-8, C 3-4-7).
@@ -1545,11 +1543,172 @@ function poulesSerpentin(t, eq, spec) {
     if (!fait) break;
   }
   P.forEach(p => p.eq.sort((a, b) => a.seed - b.seed));
+  return P;
+}
+function poulesSerpentin(t, eq, spec) {
+  const rows = (typeof classement === 'function' && D && D.tournois) ? classement(t.competition).rows : [];
+  const pos = new Map(rows.map(r => [String(r.equipe).toUpperCase().trim(), r.pos]));
+  const rang = e => { const n = e.nom.toUpperCase(); return pos.get(n) ?? pos.get(n + ' 1') ?? (/ 1$/.test(n) ? pos.get(n.replace(/ 1$/, '')) : undefined); };
+  const ordre = eq.map((e, i) => ({ ...e, rg: rang(e), i })).sort((a, b) => (a.rg ?? 1e6) - (b.rg ?? 1e6) || String(a.created_at).localeCompare(String(b.created_at)) || a.i - b.i);
+  ordre.forEach((e, k) => e.seed = k);
+  const P = repartir(ordre, spec), cap = P.reduce((s, p) => s + p.n, 0);
+  P.forEach(p => p.eq.sort((a, b) => a.seed - b.seed));
   const lettres = 'ABCDEFGHIJ';
   let txt = P.map((p, k) => `Poule ${lettres[k]} :${p.note ? ' ' + p.note : ''}\n${p.eq.map((e, j) => `${j + 1} - ${e.nom}`).join('\n')}`).join('\n\n');
   if (ordre.length !== cap) txt = `[ATTENTION : cette formule prévoit ${cap} équipes, il y en a ${ordre.length}${ordre.length > cap ? ' – non placées : ' + ordre.slice(cap).map(e => e.nom).join(', ') : ''}]\n\n` + txt;
   return txt;
 }
+// ===== Formule sportive OPEN en pièce jointe (document A4 à enregistrer en PDF) =====
+// Tailles des poules du Comité selon le nombre d'équipes d'un groupe
+function taillesPoules(n) {
+  const fixe = { 1: [1], 2: [2], 3: [3], 4: [4], 5: [5], 6: [3, 3], 7: [4, 3], 8: [4, 4] };
+  if (fixe[n]) return fixe[n];
+  const k = Math.floor(n / 3), r = n % 3;                       // 9 → 3+3+3, 10 → 4+3+3, 11 → 4+4+3, 12 → 3×4, 13 → 4+3+3+3…
+  return Array.from({ length: k }, (_, i) => i < r ? 4 : 3);
+}
+const LETTRES = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const place = k => k === 1 ? '1er' : k + 'ème';
+// 2e phase : on range par place (1ers, puis 2èmes…) dans l'ordre des poules, puis on remplit les poules dans l'ordre.
+// Poules toutes de même taille et au moins 3 poules : une poule par place (ex. 4 poules de 3 → 3 poules de 4).
+// Un seul 2ème (3ème…) pris dans une poule précédente : « Meilleur 2ème A ou B », puis « 2ème poule A ou B » pour l'autre.
+function phase2(P, lettresP) {
+  const tailles = P.map(p => p.n), memes = tailles.every(x => x === tailles[0]);
+  const sizes2 = P.length === 1 ? [tailles[0]] : memes && P.length >= 3 ? Array(tailles[0]).fill(P.length) : tailles;
+  const ordre = [];
+  for (let k = 1; k <= Math.max(...tailles); k++) P.forEach((p, i) => { if (p.n >= k) ordre.push({ k, i, n: p.n }); });
+  const out = []; let pos = 0;
+  sizes2.forEach(s => { out.push(ordre.slice(pos, pos + s)); pos += s; });
+  return out.map((poule, j) => poule.map(x => {
+    const rang = ordre.filter(o => o.k === x.k), avant = out.slice(0, j).flat().filter(o => o.k === x.k), ici = poule.filter(o => o.k === x.k);
+    const coupe = rang.some(o => !poule.includes(o)) && (rang.length > 1);
+    if (!coupe) return `${place(x.k)} poule ${lettresP[x.i]}`;
+    const nbGrands = rang.filter(o => o.n === Math.max(...rang.map(r => r.n))).length;
+    if (nbGrands < 2) return `${place(x.k)} poule ${lettresP[x.i]}`;
+    // rang coupé entre deux poules : formulation « meilleur » quand une seule équipe de ce rang part dans la poule précédente
+    const grands = rang.filter(o => o.n === Math.max(...rang.map(r => r.n))).map(o => lettresP[o.i]);
+    const ou = grands.join(' ou ');
+    if (ici.length === 1 && avant.length === 0 && rang.length - 1 >= 1 && grands.includes(lettresP[x.i])) return `Meilleur ${place(x.k)} ${ou}`;
+    if (avant.length === 1 && grands.includes(lettresP[x.i]) && ici.filter(o => grands.includes(lettresP[o.i])).length === grands.length - 1 && grands.length > 1) return ici.indexOf(x) === ici.findIndex(o => grands.includes(lettresP[o.i])) ? `${place(x.k)} poule ${ou}` : null;
+    return `${place(x.k)} poule ${lettresP[x.i]}`;
+  }).filter(Boolean));
+}
+// Ordre d'entrée dans les poules : les clubs alternent (le club qui a le plus d'équipes en premier)
+function ordreClubs(eq) {
+  const g = {}; eq.forEach(e => (g[e.club] = g[e.club] || []).push(e));
+  const clubs = Object.keys(g).sort((a, b) => g[b].length - g[a].length || coll.compare(a, b)), out = [];
+  for (let r = 0; out.length < eq.length; r++) clubs.forEach(k => { if (g[k][r]) out.push(g[k][r]); });
+  return out.map((e, i) => ({ ...e, seed: i }));
+}
+const NIV_PL = { 'Débrouillé': 'débrouillées', 'Intermédiaire': 'intermédiaires', 'Débutant': 'débutantes' };
+const NIV_POULE = { 'Débrouillé': 'débrouillés', 'Intermédiaire': 'intermédiaires', 'Débutant': 'débutants' };
+function groupesOpenDefaut(c, eq) {
+  const niv = [...(c.niveaux || [])].reverse().filter(n => eq.some(e => e.niveau === n));
+  const sans = eq.some(e => !niv.includes(e.niveau));
+  const lv = sans ? niv.concat(['(sans niveau)']) : niv;
+  const ensemble = c.code === 'O13';                                    // 4 contre 4 : tout le monde ensemble par défaut
+  let terr = 1;
+  return (ensemble ? [lv] : lv.map(n => [n])).map(ns => {
+    const n = eq.filter(e => ns.includes(e.niveau || '(sans niveau)')).length, nb = ensemble ? 3 : 2;
+    const g = { niveaux: ns, tailles: taillesPoules(n).join(', '), terrains: Array.from({ length: nb }, (_, i) => terr + i), c1: 'Matchs en 1 set de 25 points. Arbitrage par l\'équipe de la poule qui ne joue pas.', c2: 'Matchs en 1 set de 25 points. Arbitrage par l\'équipe de la poule qui ne joue pas.' };
+    terr += nb; g.terrains = g.terrains.length > 1 ? 'N°' + g.terrains.slice(0, -1).join(', ') + ' et ' + g.terrains.slice(-1) : 'N°' + g.terrains[0];
+    return g;
+  });
+}
+function editeurFormuleOpen(box, t, c, ins) {
+  const eq = equipesInscrites(ins, c.niveaux).map(e => ({ ...e, nom: e.nom }));
+  const cle = 'chp_gen_' + t.id;
+  let G = store.get(cle, null); if (!G || !Array.isArray(G.groupes)) G = { groupes: groupesOpenDefaut(c, equipesNommees(ins, c)) };
+  const tous = [...(c.niveaux || [])].reverse();
+  const draw = () => {
+    box.innerHTML = `<p class="muted small" style="margin:0">Un bloc par groupe de niveaux. Pour regrouper deux niveaux (ex. débrouillés + 1 intermédiaire), cochez-les dans le même bloc. Les poules se remplissent en alternant les clubs, la 2e phase se calcule toute seule.</p>
+      ${G.groupes.map((g, k) => `<div class="card stack" data-g="${k}" style="padding:12px">
+        <div class="tr-l">
+          <div class="tf"><span>Niveaux du bloc ${k + 1}</span><div style="display:flex;gap:10px;flex-wrap:wrap;padding:6px 0">${tous.map(n => `<label class="tf-chk"><input type="checkbox" data-niv="${esc(n)}" ${g.niveaux.includes(n) ? 'checked' : ''}> ${esc(n)} (${equipesNommees(ins, c).filter(e => e.niveau === n).length})</label>`).join('')}</div></div>
+          <label class="tf" style="width:150px"><span>Poules (tailles)</span><input data-k="tailles" value="${esc(g.tailles)}"></label>
+          <label class="tf grow"><span>Terrains</span><input data-k="terrains" value="${esc(g.terrains)}"></label>
+        </div>
+        <label class="tf"><span>Consignes 1re phase</span><textarea data-k="c1" style="min-height:44px">${esc(g.c1)}</textarea></label>
+        <label class="tf"><span>Consignes 2e phase</span><textarea data-k="c2" style="min-height:44px">${esc(g.c2)}</textarea></label>
+        <div><button class="linkbtn red" data-suppr>Supprimer ce bloc</button></div></div>`).join('')}
+      <div class="btnrow" style="margin:0"><button class="btn primary sm" id="g-doc">📄 Ouvrir la formule (à enregistrer en PDF)</button><button class="btn ghost sm" id="g-add">+ Ajouter un bloc</button><button class="btn ghost sm" id="g-reset">↺ Proposition automatique</button></div>`;
+    const save = () => store.set(cle, G);
+    box.querySelectorAll('[data-g]').forEach(el => {
+      const g = G.groupes[+el.dataset.g];
+      el.querySelectorAll('[data-k]').forEach(i => i.oninput = () => { g[i.dataset.k] = i.value; save(); });
+      el.querySelectorAll('[data-niv]').forEach(i => i.onchange = () => {
+        const n = i.dataset.niv;
+        G.groupes.forEach(x => x.niveaux = x.niveaux.filter(v => v !== n));
+        if (i.checked) g.niveaux.push(n);
+        G.groupes.forEach(x => { const nb = equipesNommees(ins, c).filter(e => x.niveaux.includes(e.niveau)).length; x.tailles = taillesPoules(nb).join(', '); });
+        G.groupes = G.groupes.filter(x => x.niveaux.length); save(); draw();
+      });
+      el.querySelector('[data-suppr]').onclick = () => { G.groupes.splice(+el.dataset.g, 1); save(); draw(); };
+    });
+    $('g-add').onclick = () => { G.groupes.push({ niveaux: [], tailles: '', terrains: '', c1: '', c2: '' }); save(); draw(); };
+    $('g-reset').onclick = () => { G = { groupes: groupesOpenDefaut(c, equipesNommees(ins, c)) }; save(); draw(); };
+    $('g-doc').onclick = () => {
+      const html = docFormuleOpen(t, c, ins, G.groupes);
+      const w = window.open('', '_blank'); if (!w) { alert('Autorisez les fenêtres pour ce site.'); return; }
+      w.document.open(); w.document.write(html); w.document.close();
+    };
+  };
+  draw();
+}
+// équipes avec leur nom (FVV 1…), numérotées des Débrouillés aux Débutants
+function equipesNommees(ins, c) { return equipesInscrites(ins, c.niveaux); }
+function docFormuleOpen(t, c, ins, groupes) {
+  const eq = equipesNommees(ins, c), d = parseD(t.date);
+  const nbNiv = [...(c.niveaux || [])].reverse().map(n => [n, eq.filter(e => e.niveau === n).length]).filter(x => x[1]);
+  const titre2 = c.code === 'O11' ? '2 CONTRE 2' : c.code === 'O13' ? '4 contre 4' : esc(c.nom);
+  let lettre = 0;
+  const blocs = groupes.filter(g => g.niveaux.length).map(g => {
+    const membres = eq.filter(e => g.niveaux.includes(e.niveau || '(sans niveau)'));
+    const spec = String(g.tailles).split(/[,;+]/).map(x => parseInt(x)).filter(x => x > 0).map(n => ({ n }));
+    const P = repartir(ordreClubs(membres), spec.length ? spec : taillesPoules(membres.length).map(n => ({ n })));
+    const L = P.map(() => LETTRES[lettre++]);
+    const nom = g.niveaux.length === (c.niveaux || []).length || c.code === 'O13' && g.niveaux.length > 1 ? '' : ' – ' + (g.niveaux.length > 1 ? 'Poules ' : 'Poule' + (P.length > 1 ? 's' : '') + ' ') + g.niveaux.map(n => `« ${NIV_POULE[n] || n} »`).join(' + ');
+    return { g, P, L, nom, membres };
+  });
+  blocs.forEach(b => { b.P2 = phase2(b.P, b.L); b.L2 = b.P2.map(() => LETTRES[lettre++]); });
+  const table = (L, cols) => `<table class="pl"><tr>${L.map(l => `<th>Poule ${l}</th>`).join('')}</tr>${Array.from({ length: Math.max(...cols.map(x => x.length)) }, (_, r) => `<tr>${cols.map(col => `<td>${col[r] ? esc(col[r]) : ''}</td>`).join('')}</tr>`).join('')}</table>`;
+  const bloc = (b, ph) => `<div class="bl"><h3>Terrains ${esc(b.g.terrains)}${esc(b.nom)}</h3>
+    ${ph === 1 ? table(b.L, b.P.map(p => p.eq.map(e => e.nom))) : table(b.L2, b.P2)}
+    <p>${esc(ph === 1 ? b.g.c1 : b.g.c2)}</p></div>`;
+  const detail = nbNiv.length ? ` (${nbNiv.map(([n, k]) => `${k} ${NIV_PL[n] || n}`).join(', ')})` : '';
+  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Formule sportive – ${esc(c.nom)} – Tournoi ${t.numero}</title>
+<style>
+  @page { size: A4; margin: 14mm 14mm 18mm; }
+  body { font-family: Calibri, 'Segoe UI', Arial, sans-serif; color: #111; margin: 0; }
+  .bar { position: sticky; top: 0; background: #0B2149; color: #fff; padding: 10px 16px; display: flex; gap: 12px; align-items: center; font-size: 14px; }
+  .bar button { background: #F6C21B; border: 0; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+  .page { max-width: 180mm; margin: 0 auto; padding: 8mm 0; }
+  .hd { display: flex; align-items: center; gap: 18px; } .hd img { width: 120px; }
+  .hd .t { flex: 1; text-align: center; } .hd h1 { margin: 0; font-size: 26px; letter-spacing: 1px; } .hd h2 { margin: 2px 0; font-size: 22px; }
+  .hd .s { font-size: 17px; font-weight: 700; } .hd .p { font-size: 18px; font-style: italic; margin-top: 4px; }
+  .nb { text-align: center; font-weight: 700; margin: 10px 0 4px; font-size: 15px; }
+  .ph { text-align: center; font-size: 20px; font-weight: 800; margin: 18px 0 6px; text-transform: uppercase; border-top: 2px solid #0B2149; padding-top: 8px; }
+  .ph2 { text-align: center; font-style: italic; margin: -2px 0 8px; }
+  .bl { break-inside: avoid; margin: 10px 0 14px; } .bl h3 { margin: 0 0 6px; font-size: 15px; text-decoration: underline; }
+  table.pl { border-collapse: collapse; margin: 0 auto 6px; } table.pl th, table.pl td { border: 1px solid #555; padding: 3px 14px; min-width: 110px; text-align: center; font-size: 14px; } table.pl th { background: #E8EDF7; }
+  .bl p { margin: 4px 0 0; font-size: 13.5px; }
+  .ft { margin-top: 18px; border-top: 1px solid #999; padding-top: 6px; text-align: center; font-size: 11px; color: #444; }
+  .p2 { break-before: page; }
+  @media print { .bar { display: none; } .page { padding: 0; } }
+</style></head><body>
+<div class="bar">Texte modifiable directement sur la page avant l'impression · <button onclick="window.print()">🖨 Imprimer / Enregistrer en PDF</button></div>
+<div class="page" contenteditable="true">
+  <div class="hd"><img src="${LOGO_MAIL}" alt=""><div class="t"><h1>CHAMPIONNAT OPEN</h1><h2>${titre2}</h2><div class="s">Tournoi N°${t.numero} le ${d.getDate() < 10 ? '0' : ''}${d.getDate()} ${capMots(MOIS[d.getMonth()])} à ${esc(t.ville || '')}</div><div class="p">Formule sportive prévisionnelle</div></div></div>
+  <div class="nb">${eq.length} équipes inscrites${detail}</div>
+  <div class="ph">1<sup>ère</sup> phase</div>
+  ${blocs.map(b => bloc(b, 1)).join('')}
+  <div class="p2"></div>
+  <div class="ph">2<sup>ème</sup> phase</div>
+  <div class="ph2">Formule si aucune équipe ne change de catégorie entre les 2 phases</div>
+  ${blocs.map(b => bloc(b, 2)).join('')}
+  <div class="ft">Maison des sports du Var – 133, Boulevard du Général Brosset – 83 200 TOULON<br>Téléphone : 06-13-30-34-25 / e-mail : contact@volley83.fr / www.volley83.fr<br>N° Siret : 42463014300024 / Code APE : 9312 Z</div>
+</div></body></html>`;
+}
+
 // Numérotation des équipes d'un club : en OPEN, du niveau le plus fort au plus faible (Débrouillé, Intermédiaire, Débutant)
 function equipesInscrites(ins, niveaux) {
   const n = {}, out = [], nv = niveaux || [], force = v => { const k = nv.indexOf(v); return k < 0 ? -1 : k; };

@@ -198,3 +198,8 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - Admin › « Formules sportives » : bibliothèque modifiable. Admin › Inscriptions › Écrire aux inscrits : menu des formules (celles du nombre d'équipes engagées en premier), `{POULES}` remplacé par `poulesSerpentin()`.
 - Serpentin d'après `classement()` ; non classées à la fin (ordre d'inscription) ; équilibrage des clubs : écart max 1 entre poules (échange avec l'équipe la plus proche au classement, à écart égal on déplace la moins bien classée). Serpentin de Clément (reçu le 16/11) : ligne par ligne, A→D puis D→A… ; si toutes les poules ont 3 équipes, la 3e ligne repart dans le même sens que la 2e (3 poules de 3 : A 1-6-9, B 2-5-8, C 3-4-7). Poules de tailles mixtes (4+3, 4+4+3) : serpentin normal, confirmé par Clément.
 
+### Formule sportive OPEN en pièce jointe (générateur)
+- Admin › Inscriptions › Écrire aux inscrits (OPEN) › « Préparer la formule sportive (PDF) » : blocs par niveau (cases à cocher pour regrouper), tailles des poules (`taillesPoules` : 3,4,5 = 1 poule ; 6 = 3+3 ; 7 = 4+3 ; 8 = 4+4 ; ≥9 = poules de 3 + autant de 4 que le reste), terrains et consignes modifiables, gardés par tournoi (`chp_gen_<id>`).
+- 1re phase : `ordreClubs` (clubs en alternance) + `repartir` (serpentin + équilibrage). 2e phase : `phase2` (tri par place, « Meilleur 2ème A ou B » quand un seul 2ème part dans la poule précédente ; poules égales et ≥3 poules → une poule par place). Vérifié sur les 9 formules PDF de Clément (2025-2026).
+- Document A4 dans une nouvelle fenêtre, modifiable (contenteditable), « Imprimer / Enregistrer en PDF » ; 2e phase sur une nouvelle page.
+
