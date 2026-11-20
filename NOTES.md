@@ -200,6 +200,6 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 
 ### Formule sportive OPEN en pièce jointe (générateur)
 - Admin › Inscriptions › Écrire aux inscrits (OPEN) › « Préparer la formule sportive (PDF) » : blocs par niveau (cases à cocher pour regrouper), tailles des poules (`taillesPoules` : 3,4,5 = 1 poule ; 6 = 3+3 ; 7 = 4+3 ; 8 = 4+4 ; ≥9 = poules de 3 + autant de 4 que le reste), terrains et consignes modifiables, gardés par tournoi (`chp_gen_<id>`).
-- 1re phase : `ordreClubs` (clubs en alternance) + `repartir` (serpentin + équilibrage). 2e phase : `phase2` (tri par place, « Meilleur 2ème A ou B » quand un seul 2ème part dans la poule précédente ; poules égales et ≥3 poules → une poule par place). Vérifié sur les 9 formules PDF de Clément (2025-2026).
+- 1re phase : `ordreClubs` (clubs en alternance) + `repartir(..., ['club', 'k'])` (serpentin + équilibrage des clubs ET des n° d'équipe). 2e phase : `phase2` (tri par place, « Meilleur 2ème A ou B » quand un seul 2ème part dans la poule précédente ; poules égales et ≥3 poules → une poule par place). Vérifié sur les 9 formules PDF de Clément (2025-2026).
 - Document A4 dans une nouvelle fenêtre, modifiable (contenteditable), « Imprimer / Enregistrer en PDF » ; 2e phase sur une nouvelle page.
 

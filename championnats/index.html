@@ -1512,7 +1512,7 @@ const lirePoules = s => String(s || '').split(/[,;+]/).map(x => x.trim()).filter
 // Poules en serpentin d'après le classement général (équipes non classées à la fin, dans l'ordre d'inscription),
 // puis équilibrage des clubs : un club n'a jamais 2 équipes de plus dans une poule que dans une autre.
 // Répartition d'une liste ordonnée (champ seed) dans des poules : serpentin du Comité puis équilibrage des clubs
-function repartir(ordre, spec) {
+function repartir(ordre, spec, cles = ['club']) {
   const P = spec.map(s => ({ ...s, eq: [] })), cap = P.reduce((s, p) => s + p.n, 0);
   // Serpentin du Comité, ligne par ligne : ligne 1 A→D, ligne 2 D→A, ligne 3 A→D, ligne 4 D→A…
   // Variante poules de 3 : la 3e ligne repart dans le même sens que la 2e (ex. 3 poules de 3 : A 1-6-9, B 2-5-8, C 3-4-7).
@@ -1524,21 +1524,24 @@ function repartir(ordre, spec) {
     if (inverse) ligne = [...ligne].reverse();
     ligne.forEach(p => { if (reste.length) p.eq.push(reste.shift()); });
   }
-  const ecart = club => { const n = P.map(p => p.eq.filter(e => e.club === club).length); return Math.max(...n) - Math.min(...n); };
-  for (let it = 0; it < 60; it++) {
+  // Équilibrage : pour chaque critère (club, et en OPEN le n° d'équipe), une valeur n'a jamais 2 équipes de plus dans une poule que dans une autre.
+  // On échange avec l'équipe la plus proche dans l'ordre, sans dégrader les autres critères.
+  const ecart = (cle, v) => { const n = P.map(p => p.eq.filter(e => e[cle] === v).length); return Math.max(...n) - Math.min(...n); };
+  const echange = (hi, lo, x, y) => { P[hi].eq[P[hi].eq.indexOf(x)] = y; P[lo].eq[P[lo].eq.indexOf(y)] = x; };
+  for (let it = 0; it < 120; it++) {
     let fait = false;
-    for (const club of [...new Set(ordre.map(e => e.club))]) {
-      const n = P.map(p => p.eq.filter(e => e.club === club).length), hi = n.indexOf(Math.max(...n)), lo = n.indexOf(Math.min(...n));
+    for (const cle of cles) for (const v of [...new Set(ordre.map(e => e[cle]))]) {
+      const n = P.map(p => p.eq.filter(e => e[cle] === v).length), hi = n.indexOf(Math.max(...n)), lo = n.indexOf(Math.min(...n));
       if (n[hi] - n[lo] < 2) continue;
       let best = null;
-      P[hi].eq.filter(e => e.club === club).forEach(x => P[lo].eq.filter(y => y.club !== club).forEach(y => {
-        const avant = ecart(y.club);
-        const sw = () => { P[hi].eq[P[hi].eq.indexOf(x)] = y; P[lo].eq[P[lo].eq.indexOf(y)] = x; };
-        sw(); const apres = ecart(y.club); P[hi].eq[P[hi].eq.indexOf(y)] = x; P[lo].eq[P[lo].eq.indexOf(x)] = y;
-        if (apres > Math.max(1, avant)) return;
-        const d = Math.abs(x.seed - y.seed); if (!best || d < best.d || (d === best.d && x.seed > best.x.seed)) best = { x, y, d };   // à écart égal, on déplace l'équipe la moins bien classée
+      P[hi].eq.filter(e => e[cle] === v).forEach(x => P[lo].eq.filter(y => y[cle] !== v).forEach(y => {
+        const touches = cles.flatMap(k => [[k, x[k]], [k, y[k]]]);
+        const avant = touches.map(([k, w]) => ecart(k, w));
+        echange(hi, lo, x, y); const apres = touches.map(([k, w]) => ecart(k, w)); echange(hi, lo, y, x);
+        if (apres.some((a, i) => a > Math.max(1, avant[i]))) return;
+        const d = Math.abs(x.seed - y.seed); if (!best || d < best.d || (d === best.d && x.seed > best.x.seed)) best = { x, y, d };   // à écart égal, on déplace l'équipe la moins bien placée
       }));
-      if (best) { P[hi].eq[P[hi].eq.indexOf(best.x)] = best.y; P[lo].eq[P[lo].eq.indexOf(best.y)] = best.x; fait = true; }
+      if (best) { echange(hi, lo, best.x, best.y); fait = true; }
     }
     if (!fait) break;
   }
@@ -1664,7 +1667,7 @@ function docFormuleOpen(t, c, ins, groupes) {
   const blocs = groupes.filter(g => g.niveaux.length).map(g => {
     const membres = eq.filter(e => g.niveaux.includes(e.niveau || '(sans niveau)'));
     const spec = String(g.tailles).split(/[,;+]/).map(x => parseInt(x)).filter(x => x > 0).map(n => ({ n }));
-    const P = repartir(ordreClubs(membres), spec.length ? spec : taillesPoules(membres.length).map(n => ({ n })));
+    const P = repartir(ordreClubs(membres), spec.length ? spec : taillesPoules(membres.length).map(n => ({ n })), ['club', 'k']);
     const L = P.map(() => LETTRES[lettre++]);
     const nom = g.niveaux.length === (c.niveaux || []).length || c.code === 'O13' && g.niveaux.length > 1 ? '' : ' – ' + (g.niveaux.length > 1 ? 'Poules ' : 'Poule' + (P.length > 1 ? 's' : '') + ' ') + g.niveaux.map(n => `« ${NIV_POULE[n] || n} »`).join(' + ');
     return { g, P, L, nom, membres };
