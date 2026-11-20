@@ -1230,18 +1230,18 @@ function adminInscriptions() {
   </div>`;
   $('a-t').onchange = () => { ATID = +$('a-t').value; adminInscriptions(); };
   // ----- Mail type aux inscrits (formule sportive) -----
-  const cleMail = 'chp_mail_' + t.id;
+  const cleMail = 'chp_mail_' + t.id, VERSION_MODELE = 3;   // à augmenter quand le modèle change : les anciens brouillons sont alors ignorés
   const nbEq = ins.reduce((s, i) => s + i.nb_equipes, 0);
   const formuleChoisie = () => (FORMULES || []).find(f => String(f.id) === $('a-mail-f').value) || null;
   const remplirMail = (force) => {
-    const sv = !force && store.get(cleMail, null);
+    let sv = !force && store.get(cleMail, null); if (sv && sv.v !== VERSION_MODELE) sv = null;
     $('a-mail-su').value = sv ? sv.su : `Formule sportive – ${c.nom} – ${cap(fmtD(t.date, true, false))}${t.ville ? ' à ' + t.ville : ''}`;
     $('a-mail-body').value = sv ? sv.body : mailFormule(t, c, ins, formuleChoisie());
   };
-  const garderMail = () => store.set(cleMail, { su: $('a-mail-su').value, body: $('a-mail-body').value, f: $('a-mail-f').value });
+  const garderMail = () => store.set(cleMail, { v: VERSION_MODELE, su: $('a-mail-su').value, body: $('a-mail-body').value, f: $('a-mail-f').value });
   const listeFormules = () => {
     const fs = (FORMULES || []).filter(f => f.famille === c.famille), ok = fs.filter(f => f.nb_equipes === nbEq), autres = fs.filter(f => f.nb_equipes !== nbEq);
-    const sv = store.get(cleMail, null);
+    let sv = store.get(cleMail, null); if (sv && sv.v !== VERSION_MODELE) sv = null;
     $('a-mail-f').innerHTML = `<option value="">Modèle libre (à compléter)</option>${ok.length ? `<optgroup label="Pour ${nbEq} équipes">${ok.map(f => `<option value="${f.id}">${f.nb_equipes} équipes – ${esc(f.nom)}</option>`).join('')}</optgroup>` : ''}${autres.length ? `<optgroup label="Autres formules">${autres.map(f => `<option value="${f.id}">${f.nb_equipes} équipes – ${esc(f.nom)}</option>`).join('')}</optgroup>` : ''}`;
     $('a-mail-f').value = sv && sv.f !== undefined ? sv.f : (ok[0] ? String(ok[0].id) : '');
     $('a-mail-fnote').textContent = FORMULES === null ? ' Chargement des formules…' : FORMULES === false ? ' Formules indisponibles (script SQL « formules » à lancer dans Supabase).' : ok.length ? ` ${ok.length} formule(s) enregistrée(s) pour ${nbEq} équipes : les poules sont faites en serpentin d'après le classement.` : ` Aucune formule enregistrée pour ${nbEq} équipes (onglet « Formules sportives »).`;
