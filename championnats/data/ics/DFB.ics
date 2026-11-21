@@ -129,10 +129,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T180000
 DTEND;TZID=Europe/Paris:20261121T200000
 SUMMARY:SENIORS F · Union Athlétique Valettoise – Volley Club Médite
- rranée
-LOCATION:Santoni
-DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DFB
+ rranée (0-3)
+DESCRIPTION:Résultat : 0-3 (22:25\, 8:25\, 13:25)\nPoule DFB – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/seniors/DFB
 END:VEVENT
 BEGIN:VEVENT
 UID:DFB011@volley83.github.io
