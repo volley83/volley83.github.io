@@ -280,10 +280,11 @@ UID:CFA012@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
-SUMMARY:M18 F · Volley-Ball Ollioulais – Volley Club Méditerranée 2
-LOCATION:Gymnase Costebelle (Hyeres)
-DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CFA
+SUMMARY:M18 F · Volley-Ball Ollioulais – Volley Club Méditerranée 2 
+ (2-0)
+DESCRIPTION:Résultat : 2-0 (25:19\, 25:10)\nPoule CFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CFA
 END:VEVENT
 BEGIN:VEVENT
 UID:CFA015@volley83.github.io
@@ -291,10 +292,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
 SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Volley-Ball
-  Ollioulais
-LOCATION:Gymnase Costebelle (Hyeres)
-DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CFA
+  Ollioulais (1-2)
+DESCRIPTION:Résultat : 1-2 (23:25\, 25:23\, 10:15)\nPoule CFA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/jeunes/CFA
 END:VEVENT
 BEGIN:VEVENT
 UID:CFA018@volley83.github.io
@@ -366,20 +367,21 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
 SUMMARY:M18 M · Volley-Ball Ollioulais – Volley Club Hyères / Pierref
- eu La Londe
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMA
+ eu La Londe (2-1)
+DESCRIPTION:Résultat : 2-1 (25:15\, 19:25\, 16:14)\nPoule CMA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/jeunes/CMA
 END:VEVENT
 BEGIN:VEVENT
 UID:CMA015@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
-SUMMARY:M18 M · Volley-Ball Ollioulais – Volley Pradétan Gardéen
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMA
+SUMMARY:M18 M · Volley-Ball Ollioulais – Volley Pradétan Gardéen (2-
+ 0)
+DESCRIPTION:Résultat : 2-0 (25:16\, 25:17)\nPoule CMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CMA
 END:VEVENT
 BEGIN:VEVENT
 UID:CMA017@volley83.github.io
@@ -784,10 +786,11 @@ UID:DMB012@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T170000
 DTEND;TZID=Europe/Paris:20261121T190000
-SUMMARY:SENIORS M · Vidauban Volley-Ball – Volley-Ball Ollioulais 1
-LOCATION:Collège P.E Victor
-DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DMB
+SUMMARY:SENIORS M · Vidauban Volley-Ball – Volley-Ball Ollioulais 1 (1
+ -3)
+DESCRIPTION:Résultat : 1-3 (17:25\, 20:25\, 27:25\, 16:25)\nPoule DMB 
+ – classement et résultats : https://volley83.github.io/championnats/#
+ championnats/seniors/DMB
 END:VEVENT
 BEGIN:VEVENT
 UID:DMB014@volley83.github.io

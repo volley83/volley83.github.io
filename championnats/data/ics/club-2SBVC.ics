@@ -256,10 +256,11 @@ UID:DFB012@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T170000
 DTEND;TZID=Europe/Paris:20261121T190000
-SUMMARY:SENIORS F · Vidauban Volley-Ball – Sud Sainte-Baume Volley Club
-LOCATION:Collège P.E Victor
-DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DFB
+SUMMARY:SENIORS F · Vidauban Volley-Ball – Sud Sainte-Baume Volley Clu
+ b (2-3)
+DESCRIPTION:Résultat : 2-3 (15:25\, 10:25\, 25:17\, 25:23\, 12:15)\nPoul
+ e DFB – classement et résultats : https://volley83.github.io/champion
+ nats/#championnats/seniors/DFB
 END:VEVENT
 BEGIN:VEVENT
 UID:DFB014@volley83.github.io

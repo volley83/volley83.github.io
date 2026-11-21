@@ -140,10 +140,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
 SUMMARY:M18 M · Volley Club Méditerranée – Volley Club Hyères / Pie
- rrefeu La Londe
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMA
+ rrefeu La Londe (2-0)
+DESCRIPTION:Résultat : 2-0 (25:19\, 25:18)\nPoule CMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CMA
 END:VEVENT
 BEGIN:VEVENT
 UID:CMA012@volley83.github.io
@@ -151,10 +151,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
 SUMMARY:M18 M · Volley Pradétan Gardéen – Union Athlétique Valettoi
- se
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMA
+ se (0-2)
+DESCRIPTION:Résultat : 0-2 (11:25\, 17:25)\nPoule CMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CMA
 END:VEVENT
 BEGIN:VEVENT
 UID:CMA013@volley83.github.io
@@ -162,10 +162,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
 SUMMARY:M18 M · Volley-Ball Ollioulais – Volley Club Hyères / Pierref
- eu La Londe
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMA
+ eu La Londe (2-1)
+DESCRIPTION:Résultat : 2-1 (25:15\, 19:25\, 16:14)\nPoule CMA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/jeunes/CMA
 END:VEVENT
 BEGIN:VEVENT
 UID:CMA014@volley83.github.io
@@ -173,20 +173,21 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
 SUMMARY:M18 M · Union Athlétique Valettoise – Volley Club Méditerran
- ée
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMA
+ ée (0-2)
+DESCRIPTION:Résultat : 0-2 (18:25\, 26:28)\nPoule CMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CMA
 END:VEVENT
 BEGIN:VEVENT
 UID:CMA015@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
-SUMMARY:M18 M · Volley-Ball Ollioulais – Volley Pradétan Gardéen
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMA
+SUMMARY:M18 M · Volley-Ball Ollioulais – Volley Pradétan Gardéen (2-
+ 0)
+DESCRIPTION:Résultat : 2-0 (25:16\, 25:17)\nPoule CMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CMA
 END:VEVENT
 BEGIN:VEVENT
 UID:CMA016@volley83.github.io

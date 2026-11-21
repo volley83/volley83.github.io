@@ -312,10 +312,11 @@ UID:CMB013@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T120000
 DTEND;TZID=Europe/Paris:20261121T140000
-SUMMARY:M18 M · Sainte-Maxime Cogolin Volley – Vidauban Volley-Ball
-LOCATION:Salle Sainte-Croix (Frejus)
-DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMB
+SUMMARY:M18 M · Sainte-Maxime Cogolin Volley – Vidauban Volley-Ball (1
+ -2)
+DESCRIPTION:Résultat : 1-2 (25:20\, 19:25\, 19:21)\nPoule CMB – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/jeunes/CMB
 END:VEVENT
 BEGIN:VEVENT
 UID:CMB016@volley83.github.io
@@ -440,10 +441,11 @@ UID:DFB012@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T170000
 DTEND;TZID=Europe/Paris:20261121T190000
-SUMMARY:SENIORS F · Vidauban Volley-Ball – Sud Sainte-Baume Volley Club
-LOCATION:Collège P.E Victor
-DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DFB
+SUMMARY:SENIORS F · Vidauban Volley-Ball – Sud Sainte-Baume Volley Clu
+ b (2-3)
+DESCRIPTION:Résultat : 2-3 (15:25\, 10:25\, 25:17\, 25:23\, 12:15)\nPoul
+ e DFB – classement et résultats : https://volley83.github.io/champion
+ nats/#championnats/seniors/DFB
 END:VEVENT
 BEGIN:VEVENT
 UID:DFB013@volley83.github.io
@@ -541,10 +543,11 @@ UID:DMB012@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T170000
 DTEND;TZID=Europe/Paris:20261121T190000
-SUMMARY:SENIORS M · Vidauban Volley-Ball – Volley-Ball Ollioulais 1
-LOCATION:Collège P.E Victor
-DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DMB
+SUMMARY:SENIORS M · Vidauban Volley-Ball – Volley-Ball Ollioulais 1 (1
+ -3)
+DESCRIPTION:Résultat : 1-3 (17:25\, 20:25\, 27:25\, 16:25)\nPoule DMB 
+ – classement et résultats : https://volley83.github.io/championnats/#
+ championnats/seniors/DMB
 END:VEVENT
 BEGIN:VEVENT
 UID:DMB013@volley83.github.io

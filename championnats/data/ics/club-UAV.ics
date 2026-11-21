@@ -74,10 +74,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
 SUMMARY:M18 F · Volley Club Méditerranée 1 – Union Athlétique Valet
- toise
-LOCATION:Gymnase Costebelle (Hyeres)
-DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CFA
+ toise (2-0)
+DESCRIPTION:Résultat : 2-0 (25:23\, 25:14)\nPoule CFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CFA
 END:VEVENT
 BEGIN:VEVENT
 UID:CFA013@volley83.github.io
@@ -85,10 +85,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
 SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Union Athl
- étique Valettoise
-LOCATION:Gymnase Costebelle (Hyeres)
-DESCRIPTION:Poule CFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CFA
+ étique Valettoise (2-0)
+DESCRIPTION:Résultat : 2-0 (25:19\, 25:22)\nPoule CFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CFA
 END:VEVENT
 BEGIN:VEVENT
 UID:CFA016@volley83.github.io
@@ -161,10 +161,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
 SUMMARY:M18 M · Volley Pradétan Gardéen – Union Athlétique Valettoi
- se
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMA
+ se (0-2)
+DESCRIPTION:Résultat : 0-2 (11:25\, 17:25)\nPoule CMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CMA
 END:VEVENT
 BEGIN:VEVENT
 UID:CMA014@volley83.github.io
@@ -172,10 +172,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
 SUMMARY:M18 M · Union Athlétique Valettoise – Volley Club Méditerran
- ée
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMA
+ ée (0-2)
+DESCRIPTION:Résultat : 0-2 (18:25\, 26:28)\nPoule CMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CMA
 END:VEVENT
 BEGIN:VEVENT
 UID:CMA016@volley83.github.io

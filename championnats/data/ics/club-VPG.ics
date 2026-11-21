@@ -414,20 +414,20 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
 SUMMARY:M18 F · Volley Pradétan Gardéen – Draguignan Union Club Var 
- VB
-LOCATION:Gymnase Rostand (Draguignan)
-DESCRIPTION:Poule CFB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CFB
+ VB (0-2)
+DESCRIPTION:Résultat : 0-2 (8:25\, 8:25)\nPoule CFB – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /CFB
 END:VEVENT
 BEGIN:VEVENT
 UID:CFB007@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
-SUMMARY:M18 F · Fréjus Var Volley – Volley Pradétan Gardéen
-LOCATION:Gymnase Rostand (Draguignan)
-DESCRIPTION:Poule CFB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CFB
+SUMMARY:M18 F · Fréjus Var Volley – Volley Pradétan Gardéen (2-0)
+DESCRIPTION:Résultat : 2-0 (25:8\, 25:17)\nPoule CFB – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /CFB
 END:VEVENT
 BEGIN:VEVENT
 UID:CFB010@volley83.github.io
@@ -501,20 +501,21 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
 SUMMARY:M18 M · Volley Pradétan Gardéen – Union Athlétique Valettoi
- se
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMA
+ se (0-2)
+DESCRIPTION:Résultat : 0-2 (11:25\, 17:25)\nPoule CMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CMA
 END:VEVENT
 BEGIN:VEVENT
 UID:CMA015@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
-SUMMARY:M18 M · Volley-Ball Ollioulais – Volley Pradétan Gardéen
-LOCATION:Gymnase Piemontesi (Ollioules)
-DESCRIPTION:Poule CMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/CMA
+SUMMARY:M18 M · Volley-Ball Ollioulais – Volley Pradétan Gardéen (2-
+ 0)
+DESCRIPTION:Résultat : 2-0 (25:16\, 25:17)\nPoule CMA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/CMA
 END:VEVENT
 BEGIN:VEVENT
 UID:CMA018@volley83.github.io
@@ -1070,10 +1071,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T160000
 DTEND;TZID=Europe/Paris:20261121T180000
 SUMMARY:SENIORS F · Volley Pradétan Gardéen – Fréjus Var Volley (M2
- 1)
-LOCATION:Jacques Troin
-DESCRIPTION:Poule DFB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DFB
+ 1) (0-3)
+DESCRIPTION:Résultat : 0-3 (17:25\, 14:25\, 9:25)\nPoule DFB – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/seniors/DFB
 END:VEVENT
 BEGIN:VEVENT
 UID:DFB014@volley83.github.io

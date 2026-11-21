@@ -72,40 +72,44 @@ UID:BFB005@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
-SUMMARY:M13 F · Fréjus Var Volley 2 – Sainte-Maxime Cogolin Volley 2
-LOCATION:Les Bosquettes (Sainte-Maxime)
-DESCRIPTION:Poule BFB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/BFB
+SUMMARY:M13 F · Fréjus Var Volley 2 – Sainte-Maxime Cogolin Volley 2 
+ (2-0)
+DESCRIPTION:Résultat : 2-0 (25:16\, 25:6)\nPoule BFB – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /BFB
 END:VEVENT
 BEGIN:VEVENT
 UID:BFB006@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
-SUMMARY:M13 F · Sainte-Maxime Cogolin Volley 1 – Fréjus Var Volley 1
-LOCATION:Les Bosquettes (Sainte-Maxime)
-DESCRIPTION:Poule BFB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/BFB
+SUMMARY:M13 F · Sainte-Maxime Cogolin Volley 1 – Fréjus Var Volley 1 
+ (0-2)
+DESCRIPTION:Résultat : 0-2 (24:26\, 20:25)\nPoule BFB – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/BFB
 END:VEVENT
 BEGIN:VEVENT
 UID:BFB007@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
-SUMMARY:M13 F · Fréjus Var Volley 2 – Sainte-Maxime Cogolin Volley 1
-LOCATION:Les Bosquettes (Sainte-Maxime)
-DESCRIPTION:Poule BFB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/BFB
+SUMMARY:M13 F · Fréjus Var Volley 2 – Sainte-Maxime Cogolin Volley 1 
+ (0-2)
+DESCRIPTION:Résultat : 0-2 (20:25\, 21:25)\nPoule BFB – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/BFB
 END:VEVENT
 BEGIN:VEVENT
 UID:BFB008@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
-SUMMARY:M13 F · Sainte-Maxime Cogolin Volley 2 – Fréjus Var Volley 1
-LOCATION:Les Bosquettes (Sainte-Maxime)
-DESCRIPTION:Poule BFB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/BFB
+SUMMARY:M13 F · Sainte-Maxime Cogolin Volley 2 – Fréjus Var Volley 1 
+ (0-2)
+DESCRIPTION:Résultat : 0-2 (7:25\, 9:25)\nPoule BFB – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /BFB
 END:VEVENT
 BEGIN:VEVENT
 UID:BFB009@volley83.github.io
