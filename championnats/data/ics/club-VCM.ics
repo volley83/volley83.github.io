@@ -364,10 +364,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T200000
 DTEND;TZID=Europe/Paris:20261121T220000
 SUMMARY:SENIORS F · Volley Club Hyères / Pierrefeu La Londe – Volley 
- Club Méditerranée
-LOCATION:Gymnase de Costebelle
-DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DFA
+ Club Méditerranée (2-3)
+DESCRIPTION:Résultat : 2-3 (25:23\, 18:25\, 25:21\, 14:25\, 18:20)\nPoul
+ e DFA – classement et résultats : https://volley83.github.io/champion
+ nats/#championnats/seniors/DFA
 END:VEVENT
 BEGIN:VEVENT
 UID:DFA013@volley83.github.io
