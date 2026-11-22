@@ -364,10 +364,11 @@ UID:BFC004@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261122T093000
 DTEND;TZID=Europe/Paris:20261122T113000
-SUMMARY:M13 F · Vidauban Volley-Ball – Draguignan Union Club Var VB 2
-LOCATION:Gymnase Rostand (Draguignan)
-DESCRIPTION:Poule BFC – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/BFC
+SUMMARY:M13 F · Vidauban Volley-Ball – Draguignan Union Club Var VB 2 
+ (1-2)
+DESCRIPTION:Résultat : 1-2 (22:25\, 25:18\, 10:15)\nPoule BFC – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/jeunes/BFC
 END:VEVENT
 BEGIN:VEVENT
 UID:BFC005@volley83.github.io
@@ -385,10 +386,11 @@ UID:BFC006@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261122T093000
 DTEND;TZID=Europe/Paris:20261122T113000
-SUMMARY:M13 F · Draguignan Union Club Var VB 1 – Vidauban Volley-Ball
-LOCATION:Gymnase Rostand (Draguignan)
-DESCRIPTION:Poule BFC – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/BFC
+SUMMARY:M13 F · Draguignan Union Club Var VB 1 – Vidauban Volley-Ball 
+ (2-0)
+DESCRIPTION:Résultat : 2-0 (25:18\, 25:16)\nPoule BFC – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/BFC
 END:VEVENT
 BEGIN:VEVENT
 UID:BFC007@volley83.github.io
@@ -459,10 +461,11 @@ UID:BMB005@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261122T100000
 DTEND;TZID=Europe/Paris:20261122T120000
-SUMMARY:M13 M · Draguignan Union Club Var VB – Fréjus Var Volley 1
-LOCATION:Salle Sainte-Croix (Frejus)
-DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/BMB
+SUMMARY:M13 M · Draguignan Union Club Var VB – Fréjus Var Volley 1 (2
+ -0)
+DESCRIPTION:Résultat : 2-0 (25:19\, 25:16)\nPoule BMB – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/BMB
 END:VEVENT
 BEGIN:VEVENT
 UID:BMB008@volley83.github.io
@@ -881,10 +884,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261122T150000
 DTEND;TZID=Europe/Paris:20261122T170000
 SUMMARY:SENIORS M · Draguignan Union Club Var VB (M21) – Volley Pradé
- tan Gardéen 1
-LOCATION:Gymnase Collège Rostand
-DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DMA
+ tan Gardéen 1 (3-0)
+DESCRIPTION:Résultat : 3-0 (25:17\, 25:16\, 25:23)\nPoule DMA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DMA
 END:VEVENT
 BEGIN:VEVENT
 UID:DMA015@volley83.github.io

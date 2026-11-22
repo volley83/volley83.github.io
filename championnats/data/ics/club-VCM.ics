@@ -578,10 +578,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261122T140000
 DTEND;TZID=Europe/Paris:20261122T160000
 SUMMARY:SENIORS M · Union Athlétique Valettoise 1 – Volley Club Médi
- terranée 2
-LOCATION:Santoni
-DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DMA
+ terranée 2 (3-0)
+DESCRIPTION:Résultat : 3-0 (25:19\, 25:18\, 25:16)\nPoule DMA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DMA
 END:VEVENT
 BEGIN:VEVENT
 UID:DMA014@volley83.github.io

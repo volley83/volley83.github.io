@@ -182,20 +182,21 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261122T093000
 DTEND;TZID=Europe/Paris:20261122T113000
 SUMMARY:M13 F · Volley Pradétan Gardéen 1 – Volley Club Hyères / Pi
- errefeu La Londe
-LOCATION:Jacques Troin (La Garde)
-DESCRIPTION:Poule BFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/BFA
+ errefeu La Londe (0-2)
+DESCRIPTION:Résultat : 0-2 (22:25\, 17:25)\nPoule BFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/BFA
 END:VEVENT
 BEGIN:VEVENT
 UID:BFA007@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261122T093000
 DTEND;TZID=Europe/Paris:20261122T113000
-SUMMARY:M13 F · Volley-Ball Ollioulais – Volley Pradétan Gardéen 1
-LOCATION:Jacques Troin (La Garde)
-DESCRIPTION:Poule BFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/BFA
+SUMMARY:M13 F · Volley-Ball Ollioulais – Volley Pradétan Gardéen 1 (
+ 0-2)
+DESCRIPTION:Résultat : 0-2 (10:25\, 10:25)\nPoule BFA – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/BFA
 END:VEVENT
 BEGIN:VEVENT
 UID:BFA008@volley83.github.io
@@ -203,10 +204,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261122T093000
 DTEND;TZID=Europe/Paris:20261122T113000
 SUMMARY:M13 F · Volley Pradétan Gardéen 2 – Volley Club Hyères / Pi
- errefeu La Londe
-LOCATION:Jacques Troin (La Garde)
-DESCRIPTION:Poule BFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/BFA
+ errefeu La Londe (0-2)
+DESCRIPTION:Résultat : 0-2 (8:25\, 12:25)\nPoule BFA – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /BFA
 END:VEVENT
 BEGIN:VEVENT
 UID:BFA010@volley83.github.io
@@ -962,10 +963,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261122T160000
 DTEND;TZID=Europe/Paris:20261122T180000
 SUMMARY:SENIORS F · Volley Pradétan Gardéen (M21) – Le Luc Volley-Ba
- ll
-LOCATION:Jacques Troin
-DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DFA
+ ll (0-3)
+DESCRIPTION:Résultat : 0-3 (15:25\, 13:25\, 18:25)\nPoule DFA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DFA
 END:VEVENT
 BEGIN:VEVENT
 UID:DFA014@volley83.github.io
@@ -1181,10 +1182,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261122T150000
 DTEND;TZID=Europe/Paris:20261122T170000
 SUMMARY:SENIORS M · Draguignan Union Club Var VB (M21) – Volley Pradé
- tan Gardéen 1
-LOCATION:Gymnase Collège Rostand
-DESCRIPTION:Poule DMA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DMA
+ tan Gardéen 1 (3-0)
+DESCRIPTION:Résultat : 3-0 (25:17\, 25:16\, 25:23)\nPoule DMA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DMA
 END:VEVENT
 BEGIN:VEVENT
 UID:DMA013@volley83.github.io

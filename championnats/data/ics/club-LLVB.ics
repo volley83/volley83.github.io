@@ -311,10 +311,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261122T160000
 DTEND;TZID=Europe/Paris:20261122T180000
 SUMMARY:SENIORS F · Volley Pradétan Gardéen (M21) – Le Luc Volley-Ba
- ll
-LOCATION:Jacques Troin
-DESCRIPTION:Poule DFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/seniors/DFA
+ ll (0-3)
+DESCRIPTION:Résultat : 0-3 (15:25\, 13:25\, 18:25)\nPoule DFA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/seniors/DFA
 END:VEVENT
 BEGIN:VEVENT
 UID:DFA015@volley83.github.io

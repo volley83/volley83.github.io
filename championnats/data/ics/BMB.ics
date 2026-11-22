@@ -72,20 +72,21 @@ UID:BMB005@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261122T100000
 DTEND;TZID=Europe/Paris:20261122T120000
-SUMMARY:M13 M · Draguignan Union Club Var VB – Fréjus Var Volley 1
-LOCATION:Salle Sainte-Croix (Frejus)
-DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/BMB
+SUMMARY:M13 M · Draguignan Union Club Var VB – Fréjus Var Volley 1 (2
+ -0)
+DESCRIPTION:Résultat : 2-0 (25:19\, 25:16)\nPoule BMB – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/BMB
 END:VEVENT
 BEGIN:VEVENT
 UID:BMB006@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261122T100000
 DTEND;TZID=Europe/Paris:20261122T120000
-SUMMARY:M13 M · Fréjus Var Volley 1 – Fréjus Var Volley 2
-LOCATION:Salle Sainte-Croix (Frejus)
-DESCRIPTION:Poule BMB – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/BMB
+SUMMARY:M13 M · Fréjus Var Volley 1 – Fréjus Var Volley 2 (2-0)
+DESCRIPTION:Résultat : 2-0 (25:10\, 25:21)\nPoule BMB – classement et 
+ résultats : https://volley83.github.io/championnats/#championnats/jeune
+ s/BMB
 END:VEVENT
 BEGIN:VEVENT
 UID:BMB007@volley83.github.io
