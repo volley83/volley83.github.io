@@ -73,10 +73,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261122T093000
 DTEND;TZID=Europe/Paris:20261122T113000
 SUMMARY:M13 F · Draguignan Union Club Var VB 2 – Draguignan Union Club
-  Var VB 1
-LOCATION:Gymnase Rostand (Draguignan)
-DESCRIPTION:Poule BFC – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/BFC
+  Var VB 1 (0-2)
+DESCRIPTION:Résultat : 0-2 (13:25\, 7:25)\nPoule BFC – classement et r
+ ésultats : https://volley83.github.io/championnats/#championnats/jeunes
+ /BFC
 END:VEVENT
 BEGIN:VEVENT
 UID:BFC006@volley83.github.io

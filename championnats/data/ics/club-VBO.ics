@@ -51,10 +51,11 @@ UID:BFA005@volley83.github.io
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261122T093000
 DTEND;TZID=Europe/Paris:20261122T113000
-SUMMARY:M13 F · Volley-Ball Ollioulais – Volley Pradétan Gardéen 2
-LOCATION:Jacques Troin (La Garde)
-DESCRIPTION:Poule BFA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/jeunes/BFA
+SUMMARY:M13 F · Volley-Ball Ollioulais – Volley Pradétan Gardéen 2 (
+ 2-1)
+DESCRIPTION:Résultat : 2-1 (25:27\, 25:20\, 15:8)\nPoule BFA – classem
+ ent et résultats : https://volley83.github.io/championnats/#championnat
+ s/jeunes/BFA
 END:VEVENT
 BEGIN:VEVENT
 UID:BFA007@volley83.github.io
