@@ -1021,7 +1021,7 @@ insert into fac_reglages (cle, valeur) values
   ('courrier_tarifs', '"Vu les tarifs pour la saison 2026-2027 approuvés par l''Assemblée Générale."'),
   ('courrier_signataires', '"Le Président du Comité du Var|Gérald HENRY\nLe président de la Commission Sportive|Loïc ADORA"'),
   ('courrier_mail_objet', '"Match {match} – Décision de la Commission Sportive"'),
-  ('courrier_mail_modele', '"{civilite},\n\nVeuillez trouver ci-joint le courrier de la Commission Sportive concernant la rencontre {match}.\n\nConformément à l''article 4.2 du RGISA, vous disposez d''un délai de 5 jours pour transmettre vos observations par courrier électronique.\n\nSportivement,\n\nComité du Var de Volley-Ball"'),
+  ('courrier_mail_modele', '"{civilite},\n\nVeuillez trouver ci-joint le courrier de la Commission Sportive concernant la rencontre {match}.\n\nConformément à l''article 4.2 du RGISA, vous disposez d''un délai de 5 jours pour transmettre vos observations par courrier électronique."'),
   ('memoire_objet', '"Remboursement – Comité du Var de Volley-Ball"'),
   ('memoire_modele', '"Bonjour,\n\nVeuillez trouver ci-joint le mémoire de remboursement{objet} d''un montant de {montant}.\n\nPour que nous puissions procéder au virement, merci de nous retourner un RIB (relevé d''identité bancaire) si vous ne nous l''avez pas déjà transmis.\n\nCordialement,\n\nComité du Var de Volley-Ball"'),
   ('devis_objet', '"Devis N° {numero} – Comité du Var de Volley-Ball"'),
@@ -1031,5 +1031,8 @@ on conflict (cle) do nothing;
 
 -- Mail des reçus (17/11) : « Bonjour Prénom Nom » et signature du trésorier, si le texte n'a pas été personnalisé
 update fac_reglages set valeur = '"Bonjour {prenom} {nom},\n\nNous vous remercions chaleureusement pour votre don de {montant} au Comité du Var de Volley-Ball.\n\nVous trouverez ci-joint votre reçu fiscal N° {numero}, à conserver : il vous permet de bénéficier d''une réduction d''impôt sur le revenu de 66 % du montant de votre don, dans la limite de 20 % de votre revenu imposable.\n\nAvec toute notre reconnaissance,\n\nEric CHASSAGNARD\nTrésorier\nComité du Var de Volley-Ball"'::jsonb where cle = 'recu_mail_modele' and valeur = '"Bonjour {prenom},\n\nNous vous remercions chaleureusement pour votre don de {montant} au Comité du Var de Volley-Ball.\n\nVous trouverez ci-joint votre reçu fiscal N° {numero}, à conserver : il vous permet de bénéficier d''une réduction d''impôt sur le revenu de 66 % du montant de votre don, dans la limite de 20 % de votre revenu imposable.\n\nAvec toute notre reconnaissance,\n\nComité du Var de Volley-Ball"'::jsonb;
+
+-- Mail des courriers (24/11) : sans signature (celle de Gmail est ajoutée), si le texte n'a pas été personnalisé
+update fac_reglages set valeur = '"{civilite},\n\nVeuillez trouver ci-joint le courrier de la Commission Sportive concernant la rencontre {match}.\n\nConformément à l''article 4.2 du RGISA, vous disposez d''un délai de 5 jours pour transmettre vos observations par courrier électronique."'::jsonb where cle = 'courrier_mail_modele' and valeur = '"{civilite},\n\nVeuillez trouver ci-joint le courrier de la Commission Sportive concernant la rencontre {match}.\n\nConformément à l''article 4.2 du RGISA, vous disposez d''un délai de 5 jours pour transmettre vos observations par courrier électronique.\n\nSportivement,\n\nComité du Var de Volley-Ball"'::jsonb;
 
 -- Message attendu : « Success. No rows returned »
