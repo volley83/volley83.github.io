@@ -912,7 +912,7 @@ function sectionSignalements() {
   return `<div class="card stack"><div class="ttl"><div><h3>📨 Signalements à vérifier (${sn.length})</h3><p class="small muted">Envoyés depuis la page de signalement. Vérifiez, corrigez si besoin, puis validez pour les ajouter à un RIS (ils seront facturés à la génération du RIS).</p></div></div>
     ${sn.length ? sn.map(g => { const a = art(g.article_id);
       return `<div class="card stack" data-sig="${g.id}" style="background:#FAFBFD;gap:10px">
-        <div class="small"><b>${esc(g.auteur || '?')}</b> · envoyé le ${fmtD(g.created_at)} · match du ${fmtD(g.date_match)}${g.details ? ` · 🔒 <b>${esc(g.details)}</b>` : ''}${g.commentaire ? `<div style="margin-top:6px;padding:8px 10px;background:#fff;border:1px solid var(--line);border-radius:8px;white-space:pre-wrap">💬 ${esc(g.commentaire)}</div>` : ''}</div>
+        <div class="small"><b>${esc(g.auteur || '?')}</b> · envoyé le ${fmtD(g.created_at)} · match du ${fmtD(g.date_match)}${g.details ? ` · 🔒 <b>${esc(g.details)}</b>` : ''}${g.nb_qualifies != null ? ` · ${g.nb_qualifies} ${g.nb_genre === 'f' ? 'joueuse(s)' : 'joueur(s)'} qualifié(e)s` : ''}${g.commentaire ? `<div style="margin-top:6px;padding:8px 10px;background:#fff;border:1px solid var(--line);border-radius:8px;white-space:pre-wrap">💬 ${esc(g.commentaire)}</div>` : ''}</div>
         <div class="grid" style="grid-template-columns:150px 150px 110px minmax(0,1fr) 100px;gap:8px">
           <div class="field"><label>Rubrique</label><select data-f="rubrique">${RUBRIQUES.map((t, k) => `<option value="${k + 1}" ${(a ? rubriqueArticle(a) : 5) === k + 1 ? 'selected' : ''}>${k + 1}- ${t}</option>`).join('')}</select></div>
           <div class="field"><label>N° match</label><input data-f="match" value="${esc(g.match || '')}"></div>
@@ -1754,7 +1754,7 @@ function texteCourrier(c) {
 function courrierInitial(it) {
   const g = (D.signalements || []).find(x => String(x.id) === String(it.signalement_id)), modele = modeleDe(it);
   const c = { modele, date: today(), match: it.match || (g && g.match) || '', date_match: (g && g.date_match) || '', dest: [{ code: it.club, civ: civDe(it.club), montant: num(it.montant) }],
-    f: { joueurs: it.detail || (g && g.details) || '', motif: MOTIF_DEF[modele] || '', article: ARTICLE_SURCL, rpe: 'RPE Senior Accession', perte: modele === 'forfait' ? 'forfait' : 'penalite', points: modele === 'forfait' ? 'zéro (0) point' : 'un (1) point' } };
+    f: { joueurs: it.detail || (g && g.details) || '', motif: MOTIF_DEF[modele] || '', article: ARTICLE_SURCL, nbq_n: g && g.nb_qualifies != null ? String(g.nb_qualifies) : '', genre: (g && g.nb_genre) || 'm', rpe: 'RPE Senior Accession', perte: modele === 'forfait' ? 'forfait' : 'penalite', points: modele === 'forfait' ? 'zéro (0) point' : 'un (1) point' } };
   return Object.assign(c, texteCourrier(c), { edite: false });
 }
 let CR = null, CR_OK = '';

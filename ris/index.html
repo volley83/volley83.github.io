@@ -107,6 +107,8 @@ function optionsNature() {
     <option value="autre">Autre infraction</option>`;
 }
 // Demandes de report / de modification au calendrier : précisions de dates dédiées, et proposition d'ajouter l'autre infraction
+// Infractions dont la sanction dépend du nombre de joueurs régulièrement qualifiés (perte par pénalité ou forfait)
+const besoinNbq = v => /^t:(Joueur non réglementairement licencié|Absence du surclassement requis)/.test(v);
 const RE_REPORT = /REPORT DE MATCH/i, RE_MODIF = /MODIFICATION AU CALENDRIER/i;
 const natDe = v => D.natures.find(x => String(x.id) === String(v));
 const estCalendrier = v => { const n = natDe(v); return !!n && (RE_REPORT.test(n.designation) || RE_MODIF.test(n.designation)); };
@@ -129,9 +131,14 @@ function ligneInf(v) {
         <div class="field"><span class="small">Date initiale du match</span><input type="date" data-k="di"></div>
         <div class="field"><span class="small">Date de report / nouvelle date</span><input type="date" data-k="dr"></div>
       </div><span class="small muted">🔒 Reprises sur la facture du club, mais <b>jamais publiées sur le RIS</b>.</span></div>
+    <div class="field" data-z="nbq" hidden><label>Nombre de joueurs régulièrement qualifiés inscrits sur la feuille de match <span class="req">*</span></label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><input type="number" min="0" data-k="nbq" style="width:110px" placeholder="Nombre">
+        <select data-k="genre" style="width:auto"><option value="m">joueurs</option><option value="f">joueuses</option></select></div>
+      <span class="small muted">Sans compter le ou les joueurs concernés par l'infraction.</span></div>
     <label class="chk" data-z="aussi" hidden style="display:flex;gap:8px;align-items:flex-start;font-size:14.5px"><input type="checkbox" data-k="aussi" style="width:18px;height:18px;margin-top:2px"> <span>Signaler aussi « <b data-z="aussi-nom"></b> » pour cette rencontre (mêmes club, dates et commentaire)</span></label>
     <div class="field"><label>Commentaire sur cette infraction</label><textarea data-k="com" rows="2" placeholder="Circonstances, explications utiles au Comité…"></textarea></div>`;
   const majCal = () => { const nat = d.querySelector('[data-k=nat]').value, cal = estCalendrier(nat), au = cal && autreCalendrier(nat);
+    d.querySelector('[data-z=nbq]').hidden = !besoinNbq(nat);
     d.querySelector('[data-z=det]').hidden = cal; d.querySelector('[data-z=cal]').hidden = !cal;
     d.querySelector('[data-z=aussi]').hidden = !au || !!EDIT; if (au) d.querySelector('[data-z=aussi-nom]').textContent = intitule(au.designation); };
   if (prec) d.querySelector('[data-k=club]').value = prec.value;
@@ -140,6 +147,7 @@ function ligneInf(v) {
     d.querySelector('[data-k=club]').value = v.club || '';
     sel.value = v.article_id && ok(String(v.article_id)) ? String(v.article_id) : ok('t:' + v.nature) ? 't:' + v.nature : 'autre';
     d.querySelector('[data-k=int]').value = v.nature || ''; d.querySelector('[data-k=com]').value = v.commentaire || '';
+    d.querySelector('[data-k=nbq]').value = v.nb_qualifies ?? ''; d.querySelector('[data-k=genre]').value = v.nb_genre || 'm';
     if (estCalendrier(sel.value)) { const t = String(v.details || '');
       d.querySelector('[data-k=dd]').value = isoDe((t.match(/Demande du ([\d/]+)/) || [])[1]); d.querySelector('[data-k=di]').value = isoDe((t.match(/date initiale ([\d/]+)/) || [])[1]);
       d.querySelector('[data-k=dr]').value = isoDe((t.match(/nouvelle date ([\d/]+)/) || [])[1]); }
@@ -171,7 +179,7 @@ function render(okMsg) {
     ${EDIT ? '<button class="btn ghost" type="button" id="f-annul">Annuler la modification</button>' : ''}
   </form>
   <div class="card"><h2>Mes signalements</h2>
-    ${D.mes.length ? D.mes.map(g => `<div class="sig"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>${esc(g.club)} · ${esc(g.nature)}</b>${etat(g)}</div>${g.details ? `<span class="small">🔒 ${esc(g.details)}</span>` : ''}
+    ${D.mes.length ? D.mes.map(g => `<div class="sig"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>${esc(g.club)} · ${esc(g.nature)}</b>${etat(g)}</div>${g.details ? `<span class="small">🔒 ${esc(g.details)}</span>` : ''}${g.nb_qualifies != null ? `<span class="small">${g.nb_qualifies} ${g.nb_genre === 'f' ? 'joueuse(s)' : 'joueur(s)'} régulièrement qualifié(e)s</span>` : ''}
       <span class="small muted">Match ${esc(g.match || '—')} du ${fmtD(g.date_match)} · envoyé le ${fmtD(g.created_at)}</span>
       ${g.commentaire ? `<span class="small">${esc(g.commentaire)}</span>` : ''}
       ${g.statut === 'rejete' && g.motif_rejet ? `<span class="small muted">Motif : ${esc(g.motif_rejet)}</span>` : ''}
@@ -189,9 +197,11 @@ function render(okMsg) {
     const ps = [];
     for (const [k, d] of rows.entries()) {
       const g = x => d.querySelector(`[data-k=${x}]`).value.trim(), nat = g('nat'), cal = estCalendrier(nat);
-      const p = { date_match, match, club: g('club'), article_id: /^\d+$/.test(nat) ? nat : null, nature: g('int'), details: cal ? detailsCalendrier(d) : g('det'), commentaire: g('com'), _row: k };
+      const p = { date_match, match, club: g('club'), article_id: /^\d+$/.test(nat) ? nat : null, nature: g('int'), details: cal ? detailsCalendrier(d) : g('det'), commentaire: g('com'), _row: k,
+        nb_qualifies: besoinNbq(nat) ? g('nbq') : '', nb_genre: besoinNbq(nat) ? g('genre') : '' };
       if (!p.club) return err(`Infraction ${k + 1} : choisissez le club concerné.`);
       if (!p.nature) return err(`Infraction ${k + 1} : choisissez ou précisez l'infraction.`);
+      if (besoinNbq(nat) && g('nbq') === '') return err(`Infraction ${k + 1} : indiquez le nombre de joueurs régulièrement qualifiés inscrits sur la feuille de match.`);
       if (cal && (!g('dd') || !g('di'))) return err(`Infraction ${k + 1} : indiquez au moins la date de la demande et la date initiale du match.`);
       ps.push(p);
       const au = cal && !EDIT && d.querySelector('[data-k=aussi]').checked && autreCalendrier(nat);

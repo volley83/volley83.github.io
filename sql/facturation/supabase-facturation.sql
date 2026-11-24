@@ -134,7 +134,9 @@ alter table fac_ris_items add column if not exists commentaire text;   -- remarq
 alter table fac_ris_items add column if not exists note text;          -- note explicative, imprimée sur le RIS et la facture
 alter table fac_ris_items add column if not exists detail text;
 alter table fac_ris_items add column if not exists courrier jsonb;     -- courrier de décision de la Commission Sportive (modèle, textes, destinataires)        -- précision nominative (joueur, licence…) : facture seulement, jamais sur le RIS
-alter table fac_signalements add column if not exists details text;    -- précisions du vérificateur (nom, licence…) : non publiées sur le RIS
+alter table fac_signalements add column if not exists details text;
+alter table fac_signalements add column if not exists nb_qualifies int;    -- joueurs régulièrement qualifiés inscrits (pour le courrier)
+alter table fac_signalements add column if not exists nb_genre text;        -- 'm' joueurs / 'f' joueuses    -- précisions du vérificateur (nom, licence…) : non publiées sur le RIS
 alter table fac_ris_items add column if not exists signalement_id bigint;
 
 -- Rappels envoyés aux clubs pour les bordereaux non réglés
@@ -562,7 +564,7 @@ begin
                 -- liste proposée aux vérificateurs : pénalités constatables sur le terrain ou la feuille de match seulement
                 -- (forfaits, arbitrage, engagements et implantations sont décidés / facturés par le Comité)
                 from fac_articles a where a.actif and a.categorie = 'Pénalités' and a.designation !~* '(ENGAGEMENT NON CONFORME|IMPLANTATION)'),
-    'mes', (select coalesce(jsonb_agg(jsonb_build_object('id', g.id, 'date_match', g.date_match, 'match', g.match, 'club', g.club, 'nature', g.nature, 'details', g.details, 'article_id', g.article_id,
+    'mes', (select coalesce(jsonb_agg(jsonb_build_object('id', g.id, 'date_match', g.date_match, 'match', g.match, 'club', g.club, 'nature', g.nature, 'details', g.details, 'article_id', g.article_id, 'nb_qualifies', g.nb_qualifies, 'nb_genre', g.nb_genre,
               'commentaire', g.commentaire, 'statut', g.statut, 'motif_rejet', g.motif_rejet, 'created_at', g.created_at) order by g.created_at desc), '[]')
             from fac_signalements g where g.saisisseur_id = u.id and g.created_at > now() - interval '1 year'));
 end $$;
@@ -580,12 +582,13 @@ begin
   if coalesce(trim(p->>'nature'), '') = '' then raise exception 'Indiquez la nature de l''infraction'; end if;
   if coalesce(trim(p->>'club'), '') = '' then raise exception 'Indiquez le club concerné'; end if;
   if d is null then raise exception 'Indiquez la date du match'; end if;
-  insert into fac_signalements (saison, saisisseur_id, auteur, date_match, match, club, article_id, nature, commentaire, details)
+  insert into fac_signalements (saison, saisisseur_id, auteur, date_match, match, club, article_id, nature, commentaire, details, nb_qualifies, nb_genre)
   values (case when extract(month from d) >= 7 then extract(year from d)::int || '-' || (extract(year from d)::int + 1)
                else (extract(year from d)::int - 1) || '-' || extract(year from d)::int end,
           u.id, u.nom, d, nullif(left(trim(p->>'match'), 80), ''), upper(left(trim(p->>'club'), 20)),
           (select id from fac_articles where id = nullif(p->>'article_id', '')::bigint),
-          left(trim(p->>'nature'), 200), nullif(left(trim(p->>'commentaire'), 2000), ''), nullif(left(trim(p->>'details'), 300), ''))
+          left(trim(p->>'nature'), 200), nullif(left(trim(p->>'commentaire'), 2000), ''), nullif(left(trim(p->>'details'), 300), ''),
+          nullif(p->>'nb_qualifies', '')::int, nullif(p->>'nb_genre', ''))
   returning id into gid;
   return gid;
 end $$;
@@ -619,6 +622,7 @@ begin
     date_match = d, match = nullif(left(trim(p->>'match'), 80), ''), club = upper(left(trim(p->>'club'), 20)),
     article_id = (select id from fac_articles where id = nullif(p->>'article_id', '')::bigint),
     nature = left(trim(p->>'nature'), 200), details = nullif(left(trim(p->>'details'), 300), ''),
+    nb_qualifies = nullif(p->>'nb_qualifies', '')::int, nb_genre = nullif(p->>'nb_genre', ''),
     commentaire = nullif(left(trim(p->>'commentaire'), 2000), '')
   where id = p_id;
   return p_id;
