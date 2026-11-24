@@ -786,6 +786,7 @@ function renderReglages() {
     <div class="field"><label>Mentions en bas de facture (conditions de règlement, SIRET…)</label><textarea id="r-me" rows="6">${esc(reglage('mentions', ''))}</textarea></div>
     <div class="field"><label>Mention TVA (sous le total des factures et des devis)</label><input id="r-tva" value="${esc(reglage('mention_tva', ''))}"></div></div>
     <div class="field"><label>Coordonnées bancaires (encadré « Règlement par virement » sur chaque facture)</label><textarea id="r-bq" rows="4" placeholder="Titulaire, IBAN, BIC, banque">${esc(reglage('banque', ''))}</textarea></div>
+    <div class="field"><label>Mention en bas des RIS (délai d'observations)</label><textarea id="r-rm" rows="3">${esc(reglage('ris_mention', '') || RIS_MENTION_DEF)}</textarea></div>
     <div class="field"><label>Pied de page des RIS</label><textarea id="r-rp" rows="3">${esc(reglage('ris_pied', ''))}</textarea></div>
     <div class="btnrow"><button class="btn primary" id="r-ok1">Enregistrer</button></div></div>
   <div class="card stack"><h3>Mail d'envoi des bordereaux</h3>
@@ -837,7 +838,7 @@ function renderReglages() {
     <p class="small muted">Selon le nombre de tournois joués par chaque équipe d'un club sur la saison (finale comprise).</p>
     <div class="grid g3"><div class="field"><label>1 tournoi</label><input id="r-t1" value="${fmtN(t[0])}" inputmode="decimal"></div><div class="field"><label>2 tournois</label><input id="r-t2" value="${fmtN(t[1])}" inputmode="decimal"></div><div class="field"><label>3 tournois ou plus</label><input id="r-t3" value="${fmtN(t[2])}" inputmode="decimal"></div></div>
     <div class="btnrow"><button class="btn primary" id="r-ok2">Enregistrer</button></div></div>`);
-  $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mention_tva', p_valeur: $('r-tva').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_pied', p_valeur: $('r-rp').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+  $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mention_tva', p_valeur: $('r-tva').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_pied', p_valeur: $('r-rp').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_mention', p_valeur: $('r-rm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok3').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_total', p_valeur: $('r-at').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_partiel', p_valeur: $('r-ap').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok9').onclick = async () => { try { for (const [k, i] of [['courrier_tarifs', 'r-ct'], ['courrier_signataires', 'r-cs'], ['courrier_mail_objet', 'r-cmo'], ['courrier_mail_modele', 'r-cmm']]) await rpc('fac_admin_reglage', { pwd: PWD, p_cle: k, p_valeur: $(i).value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok8').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'memoire_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'memoire_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
@@ -1211,7 +1212,7 @@ async function pdfRis(id) {
     y += 6;
   });
   // ---- Mention RGISA
-  const txt = doc.splitTextToSize("Conformément à l'article 4.2 du RGISA, les GSA disposent d'un délai de 5 jours pour transmettre leurs observations par courrier électronique.", CW - 14);
+  const txt = doc.splitTextToSize(pdfTxt(reglage('ris_mention', '') || RIS_MENTION_DEF), CW - 14);
   const hB = 6 + txt.length * 4.3;
   if (y + hB > BAS) nouvellePage();
   doc.setFillColor(255, 248, 225); doc.roundedRect(M, y, CW, hB, 2, 2, 'F'); doc.setFillColor(...GOLD); doc.rect(M, y, 1.4, hB, 'F');
@@ -1691,6 +1692,7 @@ async function pdfMemoire(f) {
 }
 
 // ======================== COURRIERS DE DÉCISION (Commission Sportive) ========================
+const RIS_MENTION_DEF = "Conformément à l'article 4.2 du RGISA, les GSA disposent d'un délai de 5 jours à compter de la réception du présent relevé pour transmettre leurs observations par courrier électronique. Ce délai ne s'applique pas aux infractions ayant déjà fait l'objet d'une notification individuelle de la Commission Sportive : pour celles-ci, le délai de 5 jours a couru à compter de la réception de cette notification.";
 const CIVS = ['Monsieur le président', 'Madame la présidente'];
 const RPES = ['RPE Senior Accession', 'RPE COMPETLIB 4x4 Mixte', 'RPE des championnats Jeunes'];
 const POINTS = ['un (1) point', 'zéro (0) point', 'moins un (-1) point', 'moins deux (-2) points'];
