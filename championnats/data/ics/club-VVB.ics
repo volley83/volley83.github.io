@@ -379,10 +379,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261123T210000
 DTEND;TZID=Europe/Paris:20261123T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Vidauban Volley-Ball – Rocbaron Club Vo
- lley-Ball 2
-LOCATION:Collège P.E Victor
-DESCRIPTION:Poule M4E – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/competlib/M4E
+ lley-Ball 2 (0-3)
+DESCRIPTION:Résultat : 0-3 (20:25\, 23:25\, 15:25)\nPoule M4E – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/competlib/M4E
 END:VEVENT
 BEGIN:VEVENT
 UID:M4E010@volley83.github.io
