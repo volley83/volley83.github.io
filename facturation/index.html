@@ -1719,7 +1719,7 @@ function texteCourrier(c) {
     surclassement: [feuille, `Vu que ${f.motif || '…'} ;`, f.article || 'Vu l’article 10 du RGES relatif aux catégories d’âges et au surclassement des joueurs ;', Q_ART28, ...fin],
     mutes: [feuille, `Vu que ${f.motif || '…'}`, 'Vu l’article 2 du RPE Accession : « Nombre maximum de mutés : 3 »', Q_ART28, ...fin],
     categorie: [feuille, Q_ART913, `Vu que ${f.motif || '…'}`, Q_ART28, ...fin],
-    officiel: [`Vu la feuille de match de la rencontre ${m} du ${dm} ; sur laquelle le club ${nomClub(c1)} a inscrit ${f.joueurs || '…'},`, `Vu que ${f.motif || '…'}`, Q_ART282, reglage('courrier_tarifs', '')],
+    officiel: [`Vu la feuille de match de la rencontre ${m} du ${dm} ; sur laquelle le club ${nomClub(c1)} a inscrit ${f.joueurs || '…'},`, `Vu que ${f.motif || '…'}`, Q_ART282, 'Vu que l’article 28.2 du RGES prévoit en outre que le GSA doit régulariser la licence de l’officiel concerné dans un délai de 10 jours à compter de la notification, sous peine de perdre la rencontre par pénalité et de se voir appliquer une nouvelle amende ;', reglage('courrier_tarifs', '')],
     forfait: [`Vu le match ${m}${dest.length > 1 ? ' ' + dest.map(d => d.code).join(' / ') : ''}, prévu au calendrier le ${dm},`, `Vu ${f.motif || '…'},`, Q_FORFAIT, reglage('courrier_tarifs', '')],
     libre: [],
   }[c.modele] || [];
@@ -1728,6 +1728,7 @@ function texteCourrier(c) {
     if (c.modele !== 'officiel' && c.modele !== 'libre' && perte !== 'aucune')
       dec.push(perte === 'forfait' ? `L’équipe ${d.code} perd la rencontre ${m} par FORFAIT, et marque ${f.points || 'zéro (0) point'} au classement. Le classement sera modifié.`
         : `L’équipe ${d.code} perd la rencontre ${m} par pénalité (0/3 – 00/25, 00/25, 00/25), et marque ${f.points || 'un (1) point'} au classement. Le classement sera modifié.`); });
+  if (c.modele === 'officiel') dest.forEach(d => dec.push(`Le club de ${d.code} doit régulariser la licence de l’officiel concerné dans un délai de 10 jours à compter de la présente notification, sous peine de perdre la rencontre ${m} par pénalité et de se voir appliquer une nouvelle amende.`));
   dest.forEach(d => { const mt = num(d.montant); if (mt) dec.push(`Le club de ${d.code} se verra facturer la pénalité de ${fmtN(mt).replace(',00', '')} € correspondante.`); });
   return { vu: vu.filter(Boolean).join('\n\n'), dec: dec.join('\n') };
 }
