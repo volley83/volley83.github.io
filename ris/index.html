@@ -74,10 +74,10 @@ function intitule(des) {
 }
 // Infractions dont la sanction (forfait ou pénalité) est décidée par le Comité : pas d'article associé
 const DECISION = ['Équipe absente', 'Joueur non réglementairement licencié', 'Absence du surclassement requis']
-  .flatMap(t => ['Senior', "Compet'Lib", 'Jeunes'].map(c => `${t} – ${c}`));
+  .flatMap(t => ['Senior', "Compet'Lib", 'Jeunes'].map(c => `${t} – Championnat ${c}`));   // niveau de la rencontre, pas catégorie du joueur
 const MARQUEUR = ['Marqueur non réglementairement licencié', 'Marqueur invalide'];
 let EDIT = null;   // signalement en cours de modification
-let CODE = '', D = null, GARDE = { date: today(), match: '' };
+let CODE = '', D = null, GARDE = { date: '', match: '' };   // date volontairement vide : à saisir
 
 function renderLogin(err) {
   $('who').textContent = '';
@@ -161,7 +161,7 @@ function render(okMsg) {
     ${EDIT ? '<div class="msg info">Corrigez ce qui doit l\'être puis enregistrez. Le Comité verra directement la version corrigée.</div>' : ''}
     <div class="g2">
       <div class="field"><label for="f-date">Date du match <span class="req">*</span></label><input id="f-date" type="date" value="${esc(EDIT ? EDIT.date_match : GARDE.date)}" max="${today()}" required></div>
-      <div class="field"><label for="f-match">N° du match ou tournoi</label><input id="f-match" value="${esc(EDIT ? EDIT.match || '' : GARDE.match)}" placeholder="DFB007, OPEN 2x2 – T1…"></div>
+      <div class="field"><label for="f-match">N° du match ou tournoi <span class="req">*</span></label><input id="f-match" value="${esc(EDIT ? EDIT.match || '' : GARDE.match)}" placeholder="DFB007, OPEN 2x2 – T1…" required></div>
     </div>
     <p class="small muted" ${EDIT ? 'hidden' : ''}>Vous pouvez signaler <b>plusieurs infractions pour la même rencontre</b> (pour un club ou pour les deux) : ajoutez-les avec le bouton ci-dessous.</p>
     <div id="infs" style="display:flex;flex-direction:column;gap:18px;padding-top:6px"></div>
@@ -185,6 +185,7 @@ function render(okMsg) {
     const err = m => { $('f-err').textContent = m; $('f-err').hidden = false; };
     const date_match = $('f-date').value, match = $('f-match').value.trim(), rows = [...document.querySelectorAll('.inf')];
     if (!date_match) return err('Indiquez la date du match.');
+    if (!match) return err('Indiquez le n° du match ou du tournoi.');
     const ps = [];
     for (const [k, d] of rows.entries()) {
       const g = x => d.querySelector(`[data-k=${x}]`).value.trim(), nat = g('nat'), cal = estCalendrier(nat);
