@@ -1719,7 +1719,9 @@ const civDe = code => { for (const i of D.ris_items || []) for (const d of ((i.c
 function texteCourrier(c) {
   const f = c.f || {}, dest = c.dest || [], m = c.match || '…', dm = c.date_match ? fmtD(c.date_match) : '…', c1 = dest[0] ? dest[0].code : '…';
   const feuille = `Vu la feuille de match de la rencontre ${m} du ${dm} ; sur laquelle le club ${nomClub(c1)} a inscrit ${f.joueurs || '…'},`;
-  const fin = [...(f.nbq ? [`Vu que l’équipe de ${c1} a inscrit ${f.nbq}${/qualifi/i.test(f.nbq) ? '' : ' régulièrement qualifié(e)s'} pour cette rencontre`] : []), ...(f.rpe ? [`Vu le ${f.rpe} pour les barèmes et Classements`] : []), reglage('courrier_tarifs', '')].filter(Boolean);
+  const nbq = f.nbq_n !== undefined && f.nbq_n !== '' ? (() => { const n = +f.nbq_n, fem = f.genre === 'f', pl = n > 1;
+      return `${n} ${fem ? 'joueuse' : 'joueur'}${pl ? 's' : ''} régulièrement ${fem ? 'qualifiée' : 'qualifié'}${pl ? 's' : ''}`; })() : f.nbq;
+  const fin = [...(nbq ? [`Vu que l’équipe de ${c1} a inscrit ${nbq}${/qualifi/i.test(nbq) ? '' : ' régulièrement qualifié(e)s'} pour cette rencontre`] : []), ...(f.rpe ? [`Vu le ${f.rpe} pour les barèmes et Classements`] : []), reglage('courrier_tarifs', '')].filter(Boolean);
   const vu = {
     report: [feuille, `Vu la Date d’Homologation Officielle de la licence au ${f.dho ? fmtD(f.dho) : '…'} ;`, `Vu la date initiale de la rencontre au ${f.init ? fmtD(f.init) : '…'},`, Q_ART97, Q_ART28, ...fin],
     licence: [feuille, `Vu que ${f.motif || '…'} ;`, Q_ART28, ...fin],
@@ -1760,6 +1762,8 @@ function renderCourrier(it) {
   const champ = k => { const [lab, ph] = CH[k], v = CR.f[k] || '';
     if (k === 'perte') return `<div class="field"><label>${lab}</label><select data-c="perte"><option value="penalite" ${v === 'penalite' ? 'selected' : ''}>Par pénalité (0/3)</option><option value="forfait" ${v === 'forfait' ? 'selected' : ''}>Par forfait (0/3)</option><option value="aucune" ${v === 'aucune' ? 'selected' : ''}>Pas de perte de la rencontre</option></select></div>`;
     if (k === 'points') return `<div class="field"><label>${lab}</label><select data-c="points">${[...new Set([...POINTS, ...(v ? [v] : [])])].map(x => `<option ${x === v ? 'selected' : ''}>${esc(x)}</option>`).join('')}</select></div>`;
+    if (k === 'nbq') return `<div class="field"><label>${lab}</label><div style="display:flex;gap:8px"><input data-c="nbq_n" type="number" min="0" style="width:110px" value="${esc(CR.f.nbq_n ?? '')}" placeholder="Nombre">
+      <select data-c="genre" style="width:auto"><option value="m" ${CR.f.genre !== 'f' ? 'selected' : ''}>joueurs régulièrement qualifiés</option><option value="f" ${CR.f.genre === 'f' ? 'selected' : ''}>joueuses régulièrement qualifiées</option></select></div></div>`;
     if (k === 'dho' || k === 'init') return `<div class="field"><label>${lab}</label><input type="date" data-c="${k}" value="${esc(v)}"></div>`;
     if (k === 'rpe') return `<div class="field"><label>${lab}</label><input data-c="rpe" list="cr-rpe" value="${esc(v)}"><datalist id="cr-rpe"><option value="RPE Senior Accession"><option value="RPE COMPETLIB 4x4 Mixte"><option value="RPE des championnats Jeunes"></datalist></div>`;
     return `<div class="field" style="grid-column:1 / -1"><label>${lab}</label><input data-c="${k}" value="${esc(v)}" placeholder="${esc(ph)}"></div>`; };
