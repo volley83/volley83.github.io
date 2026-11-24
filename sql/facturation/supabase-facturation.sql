@@ -1004,13 +1004,18 @@ where not exists (select 1 from fac_articles a where regexp_replace(a.designatio
 update fac_articles set designation = regexp_replace(designation, '^PÉNALITÉ RIS N°\s*\d+\s*-\s*', 'PÉNALITÉ - ')
   where designation ~ '^PÉNALITÉ RIS N°';
 
+-- Forfaits et pénalités : préciser le niveau de la rencontre (« Championnat Senior / Compet'Lib / Jeunes »), pas la catégorie du joueur
+update fac_articles set designation = replace(regexp_replace(designation, '(FORFAIT UN MATCH|PÉNALITÉ|FORFAIT GÉNÉRAL) (SENIOR|COMPET''LIB|JEUNE)', '\1 – CHAMPIONNAT \2'),
+    'CHAMPIONNAT JEUNE', 'CHAMPIONNAT JEUNES')
+  where categorie = 'Forfaits' and designation !~ 'CHAMPIONNAT' and designation ~ '(SENIOR|COMPET''LIB|JEUNE)';
+
 -- ---------- Rubrique du RIS des pénalités (une seule fois, modifiable ensuite dans Articles) ----------
 -- 1 Dossiers · 2 Licences · 3 Saisie des résultats et envoi des feuilles · 4 Feuille de match · 5 Divers
 update fac_articles set rubrique_ris = case
     when designation ~* 'LICENCE|LICENCIÉ|QUALIFI|SURCLASSEMENT' then 2
     when designation ~* 'RÉSULTAT|PARVENUE|ADRESSE|AFFRANCHI' then 3
     when designation ~* 'MAL TENUE|MAUVAISE FEUILLE' then 4
-    when designation ~* 'FORFAIT|ABSENTE|INCOMPLÈTE|PÉNALITÉ (SENIOR|COMPET|JEUNE)' then 1
+    when designation ~* 'FORFAIT|ABSENTE|INCOMPLÈTE|PÉNALITÉ (– CHAMPIONNAT )?(SENIOR|COMPET|JEUNE)' then 1
     else 5 end
   where rubrique_ris is null and categorie in ('Pénalités', 'Forfaits', 'Arbitrage');
 
