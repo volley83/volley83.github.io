@@ -467,7 +467,7 @@ function vueComite(msg) {
           <div class="small muted">${c.email ? esc(c.email) : 'Pas de mail connu'}${c.lien_envoye_le ? ' · lien envoyé le ' + esc(fmtD(c.lien_envoye_le)) : ''}${c.propose_le ? ' · fiche reçue le ' + esc(fmtD(c.propose_le)) : ''}${c.publie_le ? ' · publiée le ' + esc(fmtD(c.publie_le)) : ''}</div></div>
         <div class="row">
           <button class="btn ${c.proposition ? 'primary' : 'ghost'} sm" data-a="voir" data-c="${esc(c.code)}">${c.proposition ? 'Voir et valider' : c.fiche ? 'Modifier la fiche' : 'Remplir la fiche'}</button>
-          <button class="btn ghost sm" data-a="mail" data-c="${esc(c.code)}">Envoyer le lien</button>
+          <button class="btn ghost sm" data-a="mail" data-c="${esc(c.code)}">${estRappel(c) ? 'Envoyer un rappel' : 'Envoyer le lien'}</button>
           <button class="btn ghost sm" data-a="copie" data-c="${esc(c.code)}">Copier le lien</button>
           <button class="btn ghost sm" data-a="plus" data-c="${esc(c.code)}">Autres…</button>
         </div></div>`; }).join('') || '<div class="muted">Aucun club.</div>'}</div>`;
@@ -483,13 +483,17 @@ function vueComite(msg) {
     const c = ADM.find(x => x.code === b.dataset.c); if (!c) return;
     if (b.dataset.a === 'voir') return vueValider(c);
     if (b.dataset.a === 'copie') { try { await navigator.clipboard.writeText(lienClub(c)); b.textContent = 'Lien copié'; } catch (e) { prompt('Lien du club :', lienClub(c)); } return; }
-    if (b.dataset.a === 'mail') { mailClub(c); try { await rpc('clb_admin_club', { pwd: PWD, p: { code: c.code, lien_envoye: true } }); c.lien_envoye_le = new Date().toISOString(); } catch (e) {} return; }
+    if (b.dataset.a === 'mail') { mailClub(c); try { await rpc('clb_admin_club', { pwd: PWD, p: { code: c.code, lien_envoye: true } }); c.lien_envoye_le = new Date().toISOString(); b.textContent = estRappel(c) ? 'Envoyer un rappel' : 'Envoyer le lien'; } catch (e) {} return; }
     if (b.dataset.a === 'plus') return vuePlus(c);
   };
 }
+const estRappel = c => !!c.lien_envoye_le && !c.proposition && !c.fiche;
 function mailClub(c) {
+  const rappel = estRappel(c);
   const corps = `Bonjour,
-
+${rappel ? `
+Nous n'avons pas eu de réponse à notre mail du ${fmtD(c.lien_envoye_le)}.
+` : ''}
 Le Comité du Var de Volley-Ball prépare son nouveau site internet. Il comprendra un annuaire des clubs du Var, pour aider les familles et les joueurs à trouver un club près de chez eux.
 
 L'objectif est de faire une page beaucoup plus complète et lisible que celle sur le site de la Fédération, merci de votre coopération.
@@ -505,7 +509,7 @@ Merci d'avance, et bonne journée.
 
 Clément ROBEAU
 Comité du Var de Volley-Ball`;
-  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(c.email || '') + '&su=' + encodeURIComponent('Votre fiche club sur le nouveau site du Comité du Var – ' + c.nom) + '&body=' + encodeURIComponent(corps), '_blank', 'noopener');
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(c.email || '') + '&su=' + encodeURIComponent((rappel ? 'RAPPEL – ' : '') + 'Votre fiche club sur le nouveau site du Comité du Var – ' + c.nom) + '&body=' + encodeURIComponent(corps), '_blank', 'noopener');
 }
 function exportCsv() {
   const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
