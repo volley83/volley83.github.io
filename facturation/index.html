@@ -1692,9 +1692,10 @@ const MODELES = {
   libre:     { t: 'Courrier libre', champs: [] },
 };
 const CH = { joueurs: ['Joueur(s) / licencié(s) concerné(s)', 'Ex. : la joueuse DUPONT Léa, N° de licence 1234567'], motif: ['Constat (« Vu que … »)', ''], dho: ['Date d’homologation (DHO) de la licence', ''],
-  init: ['Date initiale de la rencontre', ''], article: ['Article de référence (repris tel quel dans le courrier)', 'Ex. : Vu l’article … du Règlement Médical : « … »'], nbq: ['Nombre de joueurs régulièrement qualifiés', 'Ex. : 8 joueuses régulièrement qualifiées'], rpe: ['Règlement de l’épreuve (RPE)', ''], perte: ['Perte de la rencontre', ''], points: ['Points au classement', ''] };
+  init: ['Date initiale de la rencontre', ''], article: ['Article de référence (repris tel quel dans le courrier)', ''], nbq: ['Nombre de joueurs régulièrement qualifiés', 'Ex. : 8 joueuses régulièrement qualifiées'], rpe: ['Règlement de l’épreuve (RPE)', ''], perte: ['Perte de la rencontre', ''], points: ['Points au classement', ''] };
+const ARTICLE_SURCL = 'Vu l’article 10 du RGES relatif aux catégories d’âges et au surclassement des joueurs ;';
 const MOTIF_DEF = { licence: 'ce joueur n’a aucune licence dans le club pour la saison en cours', mutes: 'ces joueuses ont une licence avec « Mutation Régionale »',
-  surclassement: 'cette joueuse, née en …, de catégorie …, ne dispose pas du surclassement requis pour participer à une rencontre de cette catégorie',
+  surclassement: 'ce joueur / cette joueuse, né(e) en …, de catégorie …, ne dispose pas du surclassement requis pour participer à une rencontre de cette catégorie',
   categorie: 'ces joueurs font partie de la catégorie A et ne sont pas qualifiés pour la rencontre de l’équipe 2', officiel: 'ce licencié a une DHO postérieure à la rencontre',
   forfait: 'l’absence de saisie d’une demande de modification au calendrier avant la rencontre' };
 function modeleDe(it) {
@@ -1716,7 +1717,7 @@ function texteCourrier(c) {
   const vu = {
     report: [feuille, `Vu la Date d’Homologation Officielle de la licence au ${f.dho ? fmtD(f.dho) : '…'} ;`, `Vu la date initiale de la rencontre au ${f.init ? fmtD(f.init) : '…'},`, Q_ART97, Q_ART28, ...fin],
     licence: [feuille, `Vu que ${f.motif || '…'} ;`, Q_ART28, ...fin],
-    surclassement: [feuille, `Vu que ${f.motif || '…'} ;`, f.article || 'Vu l’article 10 du RGES relatif aux catégories d’âges et au surclassement des joueurs ;', Q_ART28, ...fin],
+    surclassement: [feuille, `Vu que ${f.motif || '…'} ;`, f.article || ARTICLE_SURCL, Q_ART28, ...fin],
     mutes: [feuille, `Vu que ${f.motif || '…'}`, 'Vu l’article 2 du RPE Accession : « Nombre maximum de mutés : 3 »', Q_ART28, ...fin],
     categorie: [feuille, Q_ART913, `Vu que ${f.motif || '…'}`, Q_ART28, ...fin],
     officiel: [`Vu la feuille de match de la rencontre ${m} du ${dm} ; sur laquelle le club ${nomClub(c1)} a inscrit ${f.joueurs || '…'},`, `Vu que ${f.motif || '…'}`, Q_ART282, 'Vu que l’article 28.2 du RGES prévoit en outre que le GSA doit régulariser la licence de l’officiel concerné dans un délai de 10 jours à compter de la notification, sous peine de perdre la rencontre par pénalité et de se voir appliquer une nouvelle amende ;', reglage('courrier_tarifs', '')],
@@ -1735,7 +1736,7 @@ function texteCourrier(c) {
 function courrierInitial(it) {
   const g = (D.signalements || []).find(x => String(x.id) === String(it.signalement_id)), modele = modeleDe(it);
   const c = { modele, date: today(), match: it.match || (g && g.match) || '', date_match: (g && g.date_match) || '', dest: [{ code: it.club, civ: civDe(it.club), montant: num(it.montant) }],
-    f: { joueurs: it.detail || (g && g.details) || '', motif: MOTIF_DEF[modele] || '', rpe: 'RPE Senior Accession', perte: modele === 'forfait' ? 'forfait' : 'penalite', points: modele === 'forfait' ? 'zéro (0) point' : 'un (1) point' } };
+    f: { joueurs: it.detail || (g && g.details) || '', motif: MOTIF_DEF[modele] || '', article: ARTICLE_SURCL, rpe: 'RPE Senior Accession', perte: modele === 'forfait' ? 'forfait' : 'penalite', points: modele === 'forfait' ? 'zéro (0) point' : 'un (1) point' } };
   return Object.assign(c, texteCourrier(c), { edite: false });
 }
 let CR = null;
@@ -1773,7 +1774,7 @@ function renderCourrier(it) {
     <div class="btnrow"><button class="btn primary" onclick="enregistrerCourrier(${it.id})">✓ Enregistrer le courrier</button></div>
   </div>`);
   window.majCR = redessiner => { if (!CR.edite) Object.assign(CR, texteCourrier(CR)); if (redessiner) { const sv = { ...CR }; it._tmp = sv; renderCourrierDepuis(it, sv); } else { $('cr-vu').value = CR.vu; $('cr-dec').value = CR.dec; } };
-  $('cr-mod').onchange = e => { CR.modele = e.target.value; CR.f.motif = MOTIF_DEF[CR.modele] || CR.f.motif; if (CR.modele === 'forfait') { CR.f.perte = 'forfait'; CR.f.points = 'zéro (0) point'; } CR.edite = false; majCR(true); };
+  $('cr-mod').onchange = e => { CR.modele = e.target.value; CR.f.motif = MOTIF_DEF[CR.modele] || CR.f.motif; if (!CR.f.article) CR.f.article = ARTICLE_SURCL; if (CR.modele === 'forfait') { CR.f.perte = 'forfait'; CR.f.points = 'zéro (0) point'; } CR.edite = false; majCR(true); };
   $('cr-date').onchange = e => CR.date = e.target.value;
   $('cr-match').oninput = e => { CR.match = e.target.value.trim(); majCR(); };
   $('cr-dm').onchange = e => { CR.date_match = e.target.value; majCR(); };
