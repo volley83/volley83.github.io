@@ -1739,7 +1739,7 @@ function courrierInitial(it) {
     f: { joueurs: it.detail || (g && g.details) || '', motif: MOTIF_DEF[modele] || '', article: ARTICLE_SURCL, rpe: 'RPE Senior Accession', perte: modele === 'forfait' ? 'forfait' : 'penalite', points: modele === 'forfait' ? 'zéro (0) point' : 'un (1) point' } };
   return Object.assign(c, texteCourrier(c), { edite: false });
 }
-let CR = null;
+let CR = null, CR_OK = '';
 function renderCourrier(it) {
   CR = JSON.parse(JSON.stringify(it.courrier || courrierInitial(it)));
   const r = (D.ris || []).find(x => x.id === it.ris_id), clubs = D.clubs.filter(c => c.actif).sort((a, b) => coll.compare(a.code, b.code));
@@ -1771,8 +1771,11 @@ function renderCourrier(it) {
     <h3 class="cond" style="font-size:19px">Texte du courrier ${CR.edite ? '<span class="badge b-warn">modifié à la main</span> <button class="btn sm ghost" onclick="CR.edite=false;majCR(true)">Régénérer depuis le modèle</button>' : ''}</h3>
     <div class="field"><label>Considérants (« Vu … »), séparés par une ligne vide</label><textarea id="cr-vu" rows="16">${esc(CR.vu)}</textarea></div>
     <div class="field"><label>Décisions de la Commission Sportive (une par ligne)</label><textarea id="cr-dec" rows="4">${esc(CR.dec)}</textarea></div>
-    <div class="btnrow"><button class="btn primary" onclick="enregistrerCourrier(${it.id})">✓ Enregistrer le courrier</button></div>
+    <div class="btnrow" style="align-items:center"><button class="btn primary" onclick="enregistrerCourrier(${it.id})">✓ Enregistrer le courrier</button>
+      <button class="btn ghost" onclick="pdfCourrier(${it.id})">⬇ PDF</button><button class="btn ghost" onclick="mailCourrier(${it.id})">✉ Préparer le mail</button>
+      <span id="cr-ok" class="msg ok small" ${CR_OK ? '' : 'hidden'} style="padding:8px 12px">${esc(CR_OK)}</span></div>
   </div>`);
+  CR_OK = '';
   window.majCR = redessiner => { if (!CR.edite) Object.assign(CR, texteCourrier(CR)); if (redessiner) { const sv = { ...CR }; it._tmp = sv; renderCourrierDepuis(it, sv); } else { $('cr-vu').value = CR.vu; $('cr-dec').value = CR.dec; } };
   $('cr-mod').onchange = e => { CR.modele = e.target.value; CR.f.motif = MOTIF_DEF[CR.modele] || CR.f.motif; if (!CR.f.article) CR.f.article = ARTICLE_SURCL; if (CR.modele === 'forfait') { CR.f.perte = 'forfait'; CR.f.points = 'zéro (0) point'; } CR.edite = false; majCR(true); };
   $('cr-date').onchange = e => CR.date = e.target.value;
@@ -1785,7 +1788,10 @@ function renderCourrier(it) {
 }
 function renderCourrierDepuis(it, cr) { const sauve = it.courrier; it.courrier = cr; renderCourrier(it); it.courrier = sauve; }
 async function enregistrerCourrier(id) {
-  try { await rpc('fac_admin_courrier', { pwd: PWD, p_item: id, p: CR }); await load(); toast('✓ Courrier enregistré'); renderCourrier(D.ris_items.find(x => x.id === id)); } catch(e) { fail(e); }
+  const y = window.scrollY;
+  try { await rpc('fac_admin_courrier', { pwd: PWD, p_item: id, p: CR }); await load(); toast('✓ Courrier enregistré');
+    CR_OK = `✓ Courrier enregistré à ${new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}. Vous pouvez télécharger le PDF ou préparer le mail.`;
+    renderCourrier(D.ris_items.find(x => x.id === id)); window.scrollTo(0, y); } catch(e) { fail(e); }
 }
 async function effacerCourrier(id) {
   if (!confirm('Effacer ce courrier ? Il sera repréparé à partir du modèle.')) return;
