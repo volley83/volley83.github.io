@@ -1013,7 +1013,8 @@ function renderRis(r) {
       <td><select data-k="club" ${lock ? 'disabled' : ''} style="width:100px">${clubs.map(c => `<option ${c.code === i.club ? 'selected' : ''}>${esc(c.code)}</option>`).join('')}</select></td>
       <td><input data-k="intitule" value="${esc(i.intitule)}" ${lock ? 'disabled' : ''} style="min-width:320px">
         <input data-k="note" value="${esc(i.note || '')}" ${lock ? 'disabled' : ''} placeholder="Note explicative (facultatif, imprimée sur le RIS)" style="margin-top:4px;font-size:12.5px;padding:5px 8px;color:var(--muted)">
-        <input data-k="detail" value="${esc(i.detail || '')}" ${lock ? 'disabled' : ''} placeholder="🔒 Précision facture seulement : nom, licence… (jamais sur le RIS)" style="margin-top:4px;font-size:12.5px;padding:5px 8px;color:var(--muted)">${i.commentaire ? `<div class="small muted" style="margin-top:3px;white-space:pre-wrap">💬 ${esc(i.commentaire)}</div>` : ''}</td>
+        <input data-k="detail" value="${esc(i.detail || '')}" ${lock ? 'disabled' : ''} placeholder="🔒 Précision facture seulement : nom, licence… (jamais sur le RIS)" style="margin-top:4px;font-size:12.5px;padding:5px 8px;color:var(--muted)">${lock ? (i.commentaire ? `<div class="small muted" style="margin-top:3px;white-space:pre-wrap">💬 ${esc(i.commentaire)}</div>` : '')
+          : `<textarea data-k="commentaire" rows="${Math.min(6, Math.max(1, String(i.commentaire || '').split('\n').length))}" placeholder="💬 Commentaire interne (jamais sur le RIS)" title="Commentaire interne (jamais sur le RIS)" style="margin-top:4px;font-size:12.5px;padding:5px 8px;color:var(--muted);min-height:0;resize:vertical">${esc(i.commentaire || '')}</textarea>`}</td>
       <td><input data-k="montant" class="n" value="${fmtN(i.montant)}" ${lock ? 'disabled' : ''} style="width:80px" inputmode="decimal"></td>
       <td>${l ? `<a class="badge b-ok" href="#b/${b.id}/${encodeURIComponent(i.club)}">✓ Bordereau n° ${b.numero}</a>` : num(i.montant) ? '<span class="badge b-warn">À facturer</span>'
         : `<label class="small" style="display:flex;gap:6px;align-items:center;white-space:nowrap"><input type="checkbox" data-k="sans_sanction" ${i.sans_sanction ? 'checked' : ''}> Pas de sanction financière</label>${i.sans_sanction ? '' : '<span class="badge b-bad">Montant à saisir</span>'}`}</td>
@@ -1080,7 +1081,7 @@ function renderRis(r) {
       document.querySelector('.ri-row [data-r="rub"]').focus();
     } catch(e) { fail(e); }
   };
-  document.querySelectorAll('.ri-t tr[data-id] input, .ri-t tr[data-id] select').forEach(inp => inp.onchange = async () => {
+  document.querySelectorAll('.ri-t tr[data-id] input, .ri-t tr[data-id] select, .ri-t tr[data-id] textarea').forEach(inp => inp.onchange = async () => {
     const it = (D.ris_items || []).find(x => x.id === +inp.closest('tr').dataset.id), k = inp.dataset.k; it[k] = k === 'montant' ? num(inp.value) : k === 'rubrique' ? +inp.value : inp.type === 'checkbox' ? inp.checked : inp.value;
     try { await rpc('fac_admin_ris_item', { pwd: PWD, p: { ...it, montant: String(num(it.montant)) } }); toast('✓ Enregistré'); if (['montant', 'rubrique', 'sans_sanction'].includes(k)) renderRis(risDe(r.id)); } catch(e) { fail(e); }
   });
