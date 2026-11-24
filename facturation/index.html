@@ -1777,8 +1777,8 @@ function texteCourrier(c) {
     if (c.modele !== 'officiel' && c.modele !== 'libre' && perte !== 'aucune')
       dec.push(perte === 'forfait' ? `L’équipe ${d.code} perd la rencontre ${m} par forfait (0/3 – 00/25, 00/25, 00/25), et marque ${f.points || 'zéro (0) point'} au classement. Le classement sera modifié.`
         : `L’équipe ${d.code} perd la rencontre ${m} par pénalité (0/3 – 00/25, 00/25, 00/25), et marque ${f.points || 'un (1) point'} au classement. Le classement sera modifié.`); });
-  if (c.modele === 'officiel') dest.forEach(d => dec.push(`Le club de ${d.code} doit régulariser la licence de l’officiel concerné dans un délai de 10 jours à compter de la présente notification, sous peine de perdre la rencontre ${m} par pénalité et de se voir appliquer une nouvelle amende.`));
   dest.forEach(d => { const mt = num(d.montant); if (mt) dec.push(`Le club de ${d.code} se verra facturer la pénalité de ${fmtN(mt).replace(',00', '')} € correspondante.`); });
+  if (c.modele === 'officiel') dest.forEach(d => dec.push(`Le club de ${d.code} doit régulariser la licence de l’officiel concerné dans un délai de 10 jours à compter de la présente notification, sous peine de perdre la rencontre ${m} par pénalité et de se voir appliquer une nouvelle amende.`));
   return { vu: vu.filter(Boolean).join('\n\n'), dec: dec.join('\n') };
 }
 function courrierInitial(it) {
