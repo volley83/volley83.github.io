@@ -132,7 +132,8 @@ create table if not exists fac_signalements (
 );
 alter table fac_ris_items add column if not exists commentaire text;   -- remarque interne (signalement…)
 alter table fac_ris_items add column if not exists note text;          -- note explicative, imprimée sur le RIS et la facture
-alter table fac_ris_items add column if not exists detail text;        -- précision nominative (joueur, licence…) : facture seulement, jamais sur le RIS
+alter table fac_ris_items add column if not exists detail text;
+alter table fac_ris_items add column if not exists courrier jsonb;     -- courrier de décision de la Commission Sportive (modèle, textes, destinataires)        -- précision nominative (joueur, licence…) : facture seulement, jamais sur le RIS
 alter table fac_signalements add column if not exists details text;    -- précisions du vérificateur (nom, licence…) : non publiées sur le RIS
 alter table fac_ris_items add column if not exists signalement_id bigint;
 
@@ -533,6 +534,15 @@ begin
   return iid;
 end $$;
 
+-- Courrier de décision rattaché à une infraction du RIS (p = contenu complet, ou null pour l'effacer)
+create or replace function fac_admin_courrier(pwd text, p_item bigint, p jsonb) returns bigint
+language plpgsql security definer set search_path = public as $$
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  update fac_ris_items set courrier = p where id = p_item;
+  return p_item;
+end $$;
+
 -- ---------- Signalements (page /ris/ pour les personnes habilitées) ----------
 create or replace function fac_signal_qui(p_code text) returns fac_saisisseurs
 language sql stable security definer set search_path = public as $$
@@ -799,6 +809,7 @@ grant execute on function
   fac_admin_facture(text, jsonb),
   fac_admin_devis_facture(text, bigint),
   fac_admin_recu(text, jsonb),
+  fac_admin_courrier(text, bigint, jsonb),
   fac_admin_donateur(text, jsonb),
   fac_admin_ris(text, jsonb),
   fac_admin_rappel(text, jsonb),
@@ -1007,6 +1018,10 @@ insert into fac_reglages (cle, valeur) values
   ('recu_signataire', '"Gérald HENRY\nPrésident du Comité du Var de Volley-Ball"'),
   ('recu_mail_objet', '"Reçu fiscal N° {numero} – Comité du Var de Volley-Ball"'),
   ('recu_mail_modele', '"Bonjour {prenom} {nom},\n\nNous vous remercions chaleureusement pour votre don de {montant} au Comité du Var de Volley-Ball.\n\nVous trouverez ci-joint votre reçu fiscal N° {numero}, à conserver : il vous permet de bénéficier d''une réduction d''impôt sur le revenu de 66 % du montant de votre don, dans la limite de 20 % de votre revenu imposable.\n\nAvec toute notre reconnaissance,\n\nEric CHASSAGNARD\nTrésorier\nComité du Var de Volley-Ball"'),
+  ('courrier_tarifs', '"Vu les tarifs pour la saison 2026-2027 approuvés par l''Assemblée Générale."'),
+  ('courrier_signataires', '"Le Président du Comité du Var|Gérald HENRY\nLe président de la Commission Sportive|Loïc ADORA"'),
+  ('courrier_mail_objet', '"Match {match} – Décision de la Commission Sportive"'),
+  ('courrier_mail_modele', '"{civilite},\n\nVeuillez trouver ci-joint le courrier de la Commission Sportive concernant la rencontre {match}.\n\nConformément à l''article 4.2 du RGISA, vous disposez d''un délai de 5 jours pour transmettre vos observations par courrier électronique.\n\nSportivement,\n\nComité du Var de Volley-Ball"'),
   ('memoire_objet', '"Remboursement – Comité du Var de Volley-Ball"'),
   ('memoire_modele', '"Bonjour,\n\nVeuillez trouver ci-joint le mémoire de remboursement{objet} d''un montant de {montant}.\n\nPour que nous puissions procéder au virement, merci de nous retourner un RIB (relevé d''identité bancaire) si vous ne nous l''avez pas déjà transmis.\n\nCordialement,\n\nComité du Var de Volley-Ball"'),
   ('devis_objet', '"Devis N° {numero} – Comité du Var de Volley-Ball"'),

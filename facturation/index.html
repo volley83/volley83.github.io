@@ -817,6 +817,12 @@ function renderReglages() {
     <div class="field"><label>Objet du mail</label><input id="r-rmo" value="${esc(reglage('recu_mail_objet', ''))}"></div>
     <div class="field"><label>Texte du mail (champs : {prenom}, {nom}, {montant}, {numero}, {date})</label><textarea id="r-rmm" rows="9">${esc(reglage('recu_mail_modele', ''))}</textarea></div>
     <div class="btnrow"><button class="btn primary" id="r-ok7">Enregistrer</button></div></div>
+  <div class="card stack"><h3>Courriers de décision (Commission Sportive)</h3>
+    <div class="field"><label>Phrase des tarifs (dernier « Vu » des courriers)</label><input id="r-ct" value="${esc(reglage('courrier_tarifs', ''))}"></div>
+    <div class="field"><label>Signataires (une ligne par signataire : titre|nom)</label><textarea id="r-cs" rows="2">${esc(reglage('courrier_signataires', ''))}</textarea></div>
+    <div class="field"><label>Objet du mail (champ {match})</label><input id="r-cmo" value="${esc(reglage('courrier_mail_objet', ''))}"></div>
+    <div class="field"><label>Texte du mail (champs {civilite}, {match})</label><textarea id="r-cmm" rows="7">${esc(reglage('courrier_mail_modele', ''))}</textarea></div>
+    <div class="btnrow"><button class="btn primary" id="r-ok9">Enregistrer</button></div></div>
   <div class="card stack"><h3>Mail des mémoires (remboursements)</h3>
     <p class="small muted">Champs : <span class="code">{numero}</span>, <span class="code">{date}</span>, <span class="code">{montant}</span>, <span class="code">{client}</span> (bénéficiaire), <span class="code">{objet}</span>.</p>
     <div class="field"><label>Objet</label><input id="r-mo" value="${esc(reglage('memoire_objet', ''))}"></div>
@@ -833,6 +839,7 @@ function renderReglages() {
     <div class="btnrow"><button class="btn primary" id="r-ok2">Enregistrer</button></div></div>`);
   $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mention_tva', p_valeur: $('r-tva').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_pied', p_valeur: $('r-rp').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok3').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_total', p_valeur: $('r-at').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_partiel', p_valeur: $('r-ap').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+  $('r-ok9').onclick = async () => { try { for (const [k, i] of [['courrier_tarifs', 'r-ct'], ['courrier_signataires', 'r-cs'], ['courrier_mail_objet', 'r-cmo'], ['courrier_mail_modele', 'r-cmm']]) await rpc('fac_admin_reglage', { pwd: PWD, p_cle: k, p_valeur: $(i).value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok8').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'memoire_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'memoire_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok7').onclick = async () => { try { for (const [k, i] of [['recu_objet_asso', 'r-ro2'], ['recu_signataire', 'r-sg'], ['recu_rna', 'r-rna'], ['recu_mail_objet', 'r-rmo'], ['recu_mail_modele', 'r-rmm']]) await rpc('fac_admin_reglage', { pwd: PWD, p_cle: k, p_valeur: $(i).value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-sigf').onchange = async e => { const f = e.target.files[0]; if (!f) return; try { const u = await chargerSignature(f); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'recu_signature', p_valeur: u }); await load(); route(); toast('✓ Signature enregistrée'); } catch(err) { fail(err); } };
@@ -993,7 +1000,8 @@ function renderRis(r) {
       <td><input data-k="montant" class="n" value="${fmtN(i.montant)}" ${lock ? 'disabled' : ''} style="width:80px" inputmode="decimal"></td>
       <td>${l ? `<a class="badge b-ok" href="#b/${b.id}/${encodeURIComponent(i.club)}">✓ Bordereau n° ${b.numero}</a>` : num(i.montant) ? '<span class="badge b-warn">À facturer</span>'
         : `<label class="small" style="display:flex;gap:6px;align-items:center;white-space:nowrap"><input type="checkbox" data-k="sans_sanction" ${i.sans_sanction ? 'checked' : ''}> Pas de sanction financière</label>${i.sans_sanction ? '' : '<span class="badge b-bad">Montant à saisir</span>'}`}</td>
-      <td>${lock ? '' : `<button class="x" onclick="supprItem(${i.id})">✕</button>`}</td></tr>`; };
+      <td class="nw"><a class="btn sm ${i.courrier ? 'ok' : 'ghost'}" href="#c/${i.id}" title="Courrier de décision au club">✉ ${i.courrier ? 'Courrier ✓' : 'Courrier'}</a>
+        ${lock ? '' : `<button class="x" onclick="supprItem(${i.id})">✕</button>`}</td></tr>`; };
   shell('ris', `
   <div class="crumb"><a href="#ris">RIS</a> › N° ${r.numero}</div>
   <div class="card stack">
@@ -1664,6 +1672,175 @@ async function pdfMemoire(f) {
   doc.save(`Memoire-${facLibreNum(f)}-${slug(f.client_nom)}.pdf`);
 }
 
+// ======================== COURRIERS DE DÉCISION (Commission Sportive) ========================
+const CIVS = ['Monsieur le président', 'Madame la présidente'];
+const POINTS = ['un (1) point', 'zéro (0) point', 'moins un (-1) point', 'moins deux (-2) points'];
+const Q_ART28 = "Vu l’article 28 du RGES : « L’équipe constituée d’un collectif joueurs et/ou le GSA en infraction avec le présent règlement ou la réglementation particulière d’une épreuve encourt la :\n - PERTE la rencontre par PÉNALITÉ, si le seul décompte des joueurs régulièrement qualifiés pour cette rencontre et inscrits sur la feuille de match, rend l’équipe complète. »";
+const Q_ART97 = "Vu l’article 9-7 du RGES : « En cas de rencontre reportée sur décision ou acceptation de la Commission Sportive référente, seuls peuvent participer à la rencontre les joueurs régulièrement qualifiés à la date initiale de la rencontre figurant sur le calendrier officiel »";
+const Q_ART282 = "Vu l’article 28-2 du RGES : « 2 le GSA qui a inscrit sur une feuille de match un ou des officiels de quelque nature que ce soit (Entraîneur, Entraîneur-Adjoint, soignant, ou autre) non licencié ou non régulièrement qualifié conformément au Règlement Particulier de l’Epreuve concernée encourt une amende administrative par décision de la Commission Sportive référente »";
+const Q_ART913 = "Vu l’article 9.13 du RGES sur la qualification des joueurs : « Les GSA ayant engagé une équipe 2 et dont l’équipe 1 ne participe pas aux championnats LNV, peuvent avoir trois catégories de joueurs\n- Catégorie A = Joueurs appartenant à l’équipe 1 :\n✓ tout joueur inscrit sur la première feuille de match de l’équipe 1 ;\n✓ tout joueur de catégorie B ayant participé à 3 rencontres de l’équipe 1 (sauf la première, consécutives ou non).\n- Catégorie B = Joueurs appartenant à l’équipe 2 :\n✓ tout joueur inscrit sur la première feuille de match de l’équipe 2 ;\n✓ tout joueur de catégorie A n’ayant pas participé aux 3 dernières rencontres de l’équipe 1.\nCas spécifique : Joueurs M18/M21 utilisant la double participation :\n✓ Les joueurs M18/M21 qui jouent deux matchs dans un même week-end appartiennent à la catégorie (A, B ou C) de l’équipe la plus haute dans laquelle ils évoluent, conformément aux catégories précisées ci-dessus.\n✓ Ces joueurs, dans la limite de deux, pourront participer à une seconde rencontre le même week-end avec l’équipe immédiatement inférieure ou supérieure en fonction de la catégorie à laquelle ils appartiennent. »";
+const Q_FORFAIT = "Vu le RGES, « si une ou les deux équipes opposées sont absentes ou incomplètes à l’heure fixée par la règlementation de l’épreuve, le forfait est proposé à la Commission Sportive référente de l’épreuve contre la ou les équipes absentes ou incomplètes ».";
+// Modèles : champs utiles + considérants (« Vu … ») et décisions proposés
+const MODELES = {
+  report:    { t: 'Joueur non qualifié – rencontre reportée (art. 9-7)', champs: ['joueurs', 'dho', 'init', 'nbq', 'rpe', 'perte', 'points'] },
+  licence:   { t: 'Joueur non licencié ou licence non valide (art. 28)', champs: ['joueurs', 'motif', 'nbq', 'rpe', 'perte', 'points'] },
+  mutes:     { t: 'Mutés en surnombre (art. 2 du RPE)', champs: ['joueurs', 'motif', 'nbq', 'rpe', 'perte', 'points'] },
+  categorie: { t: 'Joueur de l’équipe 1 en équipe 2 (art. 9.13)', champs: ['joueurs', 'motif', 'nbq', 'rpe', 'perte', 'points'] },
+  officiel:  { t: 'Officiel / manager non licencié (art. 28-2)', champs: ['joueurs', 'motif'] },
+  forfait:   { t: 'Forfait – rencontre non jouée', champs: ['motif', 'perte', 'points'] },
+  libre:     { t: 'Courrier libre', champs: [] },
+};
+const CH = { joueurs: ['Joueur(s) / licencié(s) concerné(s)', 'Ex. : la joueuse DUPONT Léa, N° de licence 1234567'], motif: ['Constat (« Vu que … »)', ''], dho: ['Date d’homologation (DHO) de la licence', ''],
+  init: ['Date initiale de la rencontre', ''], nbq: ['Nombre de joueurs régulièrement qualifiés', 'Ex. : 8 joueuses régulièrement qualifiées'], rpe: ['Règlement de l’épreuve (RPE)', ''], perte: ['Perte de la rencontre', ''], points: ['Points au classement', ''] };
+const MOTIF_DEF = { licence: 'ce joueur n’a aucune licence dans le club pour la saison en cours', mutes: 'ces joueuses ont une licence avec « Mutation Régionale »',
+  categorie: 'ces joueurs font partie de la catégorie A et ne sont pas qualifiés pour la rencontre de l’équipe 2', officiel: 'ce licencié a une DHO postérieure à la rencontre',
+  forfait: 'l’absence de saisie d’une demande de modification au calendrier avant la rencontre' };
+function modeleDe(it) {
+  const t = norm(it.intitule || '');
+  if (/report|initial/.test(t)) return 'report';
+  if (/mut/.test(t)) return 'mutes';
+  if (/manager|entraineur|officiel|marqueur/.test(t)) return 'officiel';
+  if (/absente|forfait/.test(t)) return 'forfait';
+  if (/licenci|licence|surclassement/.test(t)) return 'licence';
+  return 'libre';
+}
+const nomClub = code => (club(code) || {}).nom || code;
+const civDe = code => { for (const i of D.ris_items || []) for (const d of ((i.courrier || {}).dest || [])) if (d.code === code && d.civ) return d.civ; return CIVS[0]; };
+function texteCourrier(c) {
+  const f = c.f || {}, dest = c.dest || [], m = c.match || '…', dm = c.date_match ? fmtD(c.date_match) : '…', c1 = dest[0] ? dest[0].code : '…';
+  const feuille = `Vu la feuille de match de la rencontre ${m} du ${dm} ; sur laquelle le club ${nomClub(c1)} a inscrit ${f.joueurs || '…'},`;
+  const fin = [...(f.nbq ? [`Vu que l’équipe de ${c1} a inscrit ${f.nbq}${/qualifi/i.test(f.nbq) ? '' : ' régulièrement qualifié(e)s'} pour cette rencontre`] : []), ...(f.rpe ? [`Vu le ${f.rpe} pour les barèmes et Classements`] : []), reglage('courrier_tarifs', '')].filter(Boolean);
+  const vu = {
+    report: [feuille, `Vu la Date d’Homologation Officielle de la licence au ${f.dho ? fmtD(f.dho) : '…'} ;`, `Vu la date initiale de la rencontre au ${f.init ? fmtD(f.init) : '…'},`, Q_ART97, Q_ART28, ...fin],
+    licence: [feuille, `Vu que ${f.motif || '…'} ;`, Q_ART28, ...fin],
+    mutes: [feuille, `Vu que ${f.motif || '…'}`, 'Vu l’article 2 du RPE Accession : « Nombre maximum de mutés : 3 »', Q_ART28, ...fin],
+    categorie: [feuille, Q_ART913, `Vu que ${f.motif || '…'}`, Q_ART28, ...fin],
+    officiel: [`Vu la feuille de match de la rencontre ${m} du ${dm} ; sur laquelle le club ${nomClub(c1)} a inscrit ${f.joueurs || '…'},`, `Vu que ${f.motif || '…'}`, Q_ART282, reglage('courrier_tarifs', '')],
+    forfait: [`Vu le match ${m}${dest.length > 1 ? ' ' + dest.map(d => d.code).join(' / ') : ''}, prévu au calendrier le ${dm},`, `Vu ${f.motif || '…'},`, Q_FORFAIT, reglage('courrier_tarifs', '')],
+    libre: [],
+  }[c.modele] || [];
+  const dec = [];
+  dest.forEach(d => { const perte = f.perte || (c.modele === 'forfait' ? 'forfait' : 'penalite');
+    if (c.modele !== 'officiel' && c.modele !== 'libre' && perte !== 'aucune')
+      dec.push(perte === 'forfait' ? `L’équipe ${d.code} perd la rencontre ${m} par FORFAIT, et marque ${f.points || 'zéro (0) point'} au classement. Le classement sera modifié.`
+        : `L’équipe ${d.code} perd la rencontre ${m} par pénalité (0/3 – 00/25, 00/25, 00/25), et marque ${f.points || 'un (1) point'} au classement. Le classement sera modifié.`); });
+  dest.forEach(d => { const mt = num(d.montant); if (mt) dec.push(`Le club de ${d.code} se verra facturer la pénalité de ${fmtN(mt).replace(',00', '')} € correspondante.`); });
+  return { vu: vu.filter(Boolean).join('\n\n'), dec: dec.join('\n') };
+}
+function courrierInitial(it) {
+  const g = (D.signalements || []).find(x => String(x.id) === String(it.signalement_id)), modele = modeleDe(it);
+  const c = { modele, date: today(), match: it.match || (g && g.match) || '', date_match: (g && g.date_match) || '', dest: [{ code: it.club, civ: civDe(it.club), montant: num(it.montant) }],
+    f: { joueurs: it.detail || (g && g.details) || '', motif: MOTIF_DEF[modele] || '', rpe: 'RPE Senior Accession', perte: modele === 'forfait' ? 'forfait' : 'penalite', points: modele === 'forfait' ? 'zéro (0) point' : 'un (1) point' } };
+  return Object.assign(c, texteCourrier(c), { edite: false });
+}
+let CR = null;
+function renderCourrier(it) {
+  CR = JSON.parse(JSON.stringify(it.courrier || courrierInitial(it)));
+  const r = (D.ris || []).find(x => x.id === it.ris_id), clubs = D.clubs.filter(c => c.actif).sort((a, b) => coll.compare(a.code, b.code));
+  const champ = k => { const [lab, ph] = CH[k], v = CR.f[k] || '';
+    if (k === 'perte') return `<div class="field"><label>${lab}</label><select data-c="perte"><option value="penalite" ${v === 'penalite' ? 'selected' : ''}>Par pénalité (0/3)</option><option value="forfait" ${v === 'forfait' ? 'selected' : ''}>Par forfait</option><option value="aucune" ${v === 'aucune' ? 'selected' : ''}>Pas de perte de la rencontre</option></select></div>`;
+    if (k === 'points') return `<div class="field"><label>${lab}</label><input data-c="points" list="cr-pts" value="${esc(v)}"><datalist id="cr-pts">${POINTS.map(x => `<option value="${x}">`).join('')}</datalist></div>`;
+    if (k === 'dho' || k === 'init') return `<div class="field"><label>${lab}</label><input type="date" data-c="${k}" value="${esc(v)}"></div>`;
+    if (k === 'rpe') return `<div class="field"><label>${lab}</label><input data-c="rpe" list="cr-rpe" value="${esc(v)}"><datalist id="cr-rpe"><option value="RPE Senior Accession"><option value="RPE COMPETLIB 4x4 Mixte"><option value="RPE des championnats Jeunes"></datalist></div>`;
+    return `<div class="field" style="grid-column:1 / -1"><label>${lab}</label><input data-c="${k}" value="${esc(v)}" placeholder="${esc(ph)}"></div>`; };
+  shell('ris', `
+  <div class="crumb"><a href="#ris">RIS</a> › ${r ? `<a href="#ris/${r.id}">N° ${r.numero}</a> › ` : ''}Courrier ${esc(it.club)} – ${esc(it.match || '')}</div>
+  <div class="card stack">
+    <div class="ttl"><div><h2>Courrier de décision</h2><p class="muted">${esc(it.club)} · ${esc(it.intitule)}${num(it.montant) ? ' · ' + euros(it.montant) : ''}. Choisissez le modèle, complétez les champs : le texte se met à jour. Vous pouvez ensuite le retoucher librement.</p></div>
+      <div class="btnrow"><button class="btn ghost" onclick="pdfCourrier(${it.id})">⬇ PDF</button><button class="btn ghost" onclick="mailCourrier(${it.id})">✉ Préparer le mail</button>${it.courrier ? `<button class="btn danger" onclick="effacerCourrier(${it.id})">Effacer</button>` : ''}</div></div>
+    <div class="grid g2">
+      <div class="field"><label>Modèle</label><select id="cr-mod">${Object.entries(MODELES).map(([k, m]) => `<option value="${k}" ${CR.modele === k ? 'selected' : ''}>${esc(m.t)}</option>`).join('')}</select></div>
+      <div class="field"><label>Date du courrier</label><input type="date" id="cr-date" value="${esc(CR.date)}"></div>
+      <div class="field"><label>N° de la rencontre</label><input id="cr-match" value="${esc(CR.match)}"></div>
+      <div class="field"><label>Date de la rencontre</label><input type="date" id="cr-dm" value="${esc(CR.date_match)}"></div>
+    </div>
+    <h3 class="cond" style="font-size:19px">Destinataires</h3>
+    <div id="cr-dest" class="stack" style="gap:8px">${CR.dest.map((d, k) => `<div class="grid" style="grid-template-columns:130px minmax(0,1fr) 140px auto;gap:8px;align-items:end">
+      <div class="field"><label>Club</label><select data-d="code" data-i="${k}">${clubs.map(c => `<option ${c.code === d.code ? 'selected' : ''}>${esc(c.code)}</option>`).join('')}</select></div>
+      <div class="field"><label>Formule</label><select data-d="civ" data-i="${k}">${CIVS.map(x => `<option ${x === d.civ ? 'selected' : ''}>${x}</option>`).join('')}</select></div>
+      <div class="field"><label>Pénalité €</label><input data-d="montant" data-i="${k}" class="n" value="${num(d.montant) ? fmtN(d.montant) : ''}" inputmode="decimal"></div>
+      <div>${k ? `<button class="x" onclick="CR.dest.splice(${k},1);majCR(true)">✕</button>` : ''}</div></div>`).join('')}</div>
+    <div><button class="btn sm ghost" onclick="CR.dest.push({code:'',civ:CIVS[0],montant:0});majCR(true)">+ Ajouter un club (ex. : forfait des deux équipes)</button></div>
+    ${MODELES[CR.modele].champs.length ? `<h3 class="cond" style="font-size:19px">Éléments du dossier</h3><div class="grid g2">${MODELES[CR.modele].champs.map(champ).join('')}</div>` : ''}
+    <h3 class="cond" style="font-size:19px">Texte du courrier ${CR.edite ? '<span class="badge b-warn">modifié à la main</span> <button class="btn sm ghost" onclick="CR.edite=false;majCR(true)">Régénérer depuis le modèle</button>' : ''}</h3>
+    <div class="field"><label>Considérants (« Vu … »), séparés par une ligne vide</label><textarea id="cr-vu" rows="16">${esc(CR.vu)}</textarea></div>
+    <div class="field"><label>Décisions de la Commission Sportive (une par ligne)</label><textarea id="cr-dec" rows="4">${esc(CR.dec)}</textarea></div>
+    <div class="btnrow"><button class="btn primary" onclick="enregistrerCourrier(${it.id})">✓ Enregistrer le courrier</button></div>
+  </div>`);
+  window.majCR = redessiner => { if (!CR.edite) Object.assign(CR, texteCourrier(CR)); if (redessiner) { const sv = { ...CR }; it._tmp = sv; renderCourrierDepuis(it, sv); } else { $('cr-vu').value = CR.vu; $('cr-dec').value = CR.dec; } };
+  $('cr-mod').onchange = e => { CR.modele = e.target.value; CR.f.motif = MOTIF_DEF[CR.modele] || CR.f.motif; if (CR.modele === 'forfait') { CR.f.perte = 'forfait'; CR.f.points = 'zéro (0) point'; } CR.edite = false; majCR(true); };
+  $('cr-date').onchange = e => CR.date = e.target.value;
+  $('cr-match').oninput = e => { CR.match = e.target.value.trim(); majCR(); };
+  $('cr-dm').onchange = e => { CR.date_match = e.target.value; majCR(); };
+  document.querySelectorAll('[data-d]').forEach(x => x.onchange = () => { const d = CR.dest[+x.dataset.i]; d[x.dataset.d] = x.dataset.d === 'montant' ? num(x.value) : x.value; if (x.dataset.d === 'code' && x.value) d.civ = civDe(x.value); majCR(x.dataset.d === 'code'); });
+  document.querySelectorAll('[data-c]').forEach(x => x[x.tagName === 'SELECT' || x.type === 'date' ? 'onchange' : 'oninput'] = () => { CR.f[x.dataset.c] = x.value.trim(); majCR(); });
+  $('cr-vu').oninput = e => { CR.vu = e.target.value; CR.edite = true; };
+  $('cr-dec').oninput = e => { CR.dec = e.target.value; CR.edite = true; };
+}
+function renderCourrierDepuis(it, cr) { const sauve = it.courrier; it.courrier = cr; renderCourrier(it); it.courrier = sauve; }
+async function enregistrerCourrier(id) {
+  try { await rpc('fac_admin_courrier', { pwd: PWD, p_item: id, p: CR }); await load(); toast('✓ Courrier enregistré'); renderCourrier(D.ris_items.find(x => x.id === id)); } catch(e) { fail(e); }
+}
+async function effacerCourrier(id) {
+  if (!confirm('Effacer ce courrier ? Il sera repréparé à partir du modèle.')) return;
+  try { await rpc('fac_admin_courrier', { pwd: PWD, p_item: id, p: null }); await load(); renderCourrier(D.ris_items.find(x => x.id === id)); } catch(e) { fail(e); }
+}
+async function pdfCourrier(id) {
+  if (!window.jspdf) { alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.'); return; }
+  const c = CR, { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' }), W = 210, M = 20, TW = W - 2 * M, NAVY = [11, 33, 73], BLEU = [31, 79, 163], TXT = [20, 32, 58];
+  const put = (img, x, y, h, maxW, right) => { if (!img) return; try { const ip = doc.getImageProperties(img); let w = h * ip.width / ip.height; if (w > maxW) { h = h * maxW / w; w = maxW; } doc.addImage(img, img.startsWith('data:image/png') ? 'PNG' : 'JPEG', right ? x - w : x, y, w, h); } catch(e) {} };
+  const [imgFF, imgC] = [await logoFF(), (await logoCarre()) || (await logo())];
+  const pied = () => { doc.setDrawColor(...BLEU); doc.setLineWidth(0.4); doc.line(M, 277, W - M, 277); doc.setTextColor(...TXT); doc.setFontSize(7.5);
+    ['Maison des sports du Var – 133, Boulevard du Général Brosset - 83200 TOULON', 'Téléphone : 06-13-30-34-25 / e-mail : contact@volley83.fr / www.volley83.fr', 'N° Siret : 42463014300024 / Code APE : 9312 Z']
+      .forEach((t, k) => { doc.setFont('helvetica', k ? 'normal' : 'bold'); doc.text(pdfTxt(t), W / 2, 281 + k * 3.6, { align: 'center' }); }); };
+  const entete = () => { put(imgFF, M - 4, 9, 22, 26); put(imgC, W - M + 4, 10, 20, 32, true);
+    doc.setFont('helvetica', 'bold'); doc.setTextColor(...BLEU); doc.setFontSize(15.5); doc.text('Comité Départemental du Var', W / 2, 18, { align: 'center' }); doc.text('de la Fédération Française de Volley', W / 2, 25, { align: 'center' }); };
+  let y; const page = () => { pied(); doc.addPage(); entete(); y = 40; doc.setTextColor(...TXT); };
+  entete(); doc.setTextColor(...TXT); doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5);
+  const xr = W - M - 72; y = 44;
+  doc.text(pdfTxt(`Toulon le ${new Date((c.date || today()) + 'T12:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })},`), xr, y); y += 9;
+  c.dest.filter(d => d.code).forEach(d => doc.splitTextToSize(pdfTxt(nomClub(d.code)), 72).forEach(t => { doc.text(t, xr, y); y += 5; }));
+  y += 6; doc.setFont('helvetica', 'bold'); doc.text('Objet :', M, y); doc.setLineWidth(0.2); doc.setDrawColor(...TXT); doc.line(M, y + 0.8, M + doc.getTextWidth('Objet :'), y + 0.8);
+  doc.setFont('helvetica', 'italic'); doc.text(pdfTxt('Match ' + (c.match || '')), M + 16, y); y += 10;
+  const civs = [...new Set(c.dest.filter(d => d.code).map(d => d.civ))], sal = civs.length > 1 ? civs.join(', ') : civs[0] || CIVS[0];
+  doc.setFont('helvetica', 'normal'); doc.text(pdfTxt(sal.charAt(0).toUpperCase() + sal.slice(1) + ','), M + 25, y); y += 9;
+  // considérants : paragraphes justifiés, alinéa ; les citations « … » en italique
+  doc.setFontSize(10);
+  String(c.vu || '').split(/\n\s*\n/).map(x => x.trim()).filter(Boolean).forEach(par => {
+    const lignes = []; par.split('\n').forEach((sub, k) => { const ital = /«/.test(sub) && k > 0 || /^[-✓]/.test(sub.trim());
+      doc.splitTextToSize(pdfTxt((k === 0 ? '        ' : (/^[✓]/.test(sub.trim()) ? '   ' : '')) + sub.replace(/✓/g, '•')), TW).forEach((t, j, arr) => lignes.push({ t, ital, last: j === arr.length - 1 })); });
+    if (y + lignes.length * 4.6 > 262) page();
+    lignes.forEach(l => { doc.setFont('helvetica', l.ital ? 'italic' : 'normal'); doc.text(l.t, M, y, l.last ? {} : { align: 'justify', maxWidth: TW }); y += 4.6; });
+    y += 3;
+  });
+  // décisions : cadre
+  const decs = String(c.dec || '').split('\n').map(x => x.trim()).filter(Boolean);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
+  const dl = decs.map(t => doc.splitTextToSize(pdfTxt(t), TW - 16)), hBox = 14 + dl.reduce((x, l) => x + l.length * 4.8 + 1.5, 0);
+  if (y + hBox + 40 > 270) page();
+  y += 2; doc.setFillColor(222, 234, 248); doc.setDrawColor(150, 180, 220); doc.setLineWidth(0.3); doc.roundedRect(M - 2, y, TW + 4, hBox, 4, 4, 'FD');
+  let yy = y + 7; doc.setTextColor(...TXT); doc.text('Décisions de la Commission Sportive :', M + 8, yy); doc.line(M + 8, yy + 0.8, M + 8 + doc.getTextWidth('Décisions de la Commission Sportive :'), yy + 0.8); yy += 7;
+  dl.forEach(l => { doc.setFillColor(...TXT); doc.triangle(M + 3, yy - 2.8, M + 3, yy - 0.2, M + 5.6, yy - 1.5, 'F'); l.forEach(t => { doc.text(t, M + 9, yy); yy += 4.8; }); yy += 1.5; });
+  y += hBox + 7;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+  doc.text('Conformément à l’article 4.2 du RGISA, les GSA disposent d’un délai de 5 jours pour transmettre'.replace(/’/g, "'"), W / 2, y, { align: 'center' }); y += 4.8;
+  doc.text('leurs observations par courrier électronique.', W / 2, y, { align: 'center' }); y += 9;
+  doc.text(pdfTxt(`Veuillez agréer, ${sal}, nos salutations sportives,`), M + 12, y); y += 13;
+  const sg = String(reglage('courrier_signataires', '')).split('\n').map(l => l.split('|')).filter(l => l[0]);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5);
+  sg.slice(0, 2).forEach((l, k) => { const x = k ? W - M - 42 : M + 35; doc.text(pdfTxt(l[0]), x, y, { align: 'center' }); if (l[1]) doc.text(pdfTxt(l[1]), x, y + 4.8, { align: 'center' }); });
+  pied();
+  doc.save(`Courrier-${c.dest.map(d => d.code).filter(Boolean).join('-')}-${slug(c.match || 'match')}.pdf`);
+}
+async function mailCourrier(id) {
+  await pdfCourrier(id);
+  const c = CR, ds = c.dest.filter(d => d.code).map(d => club(d.code) || {}), to = ds.map(x => x.email || '').filter(Boolean).join(', ');
+  const civs = [...new Set(c.dest.filter(d => d.code).map(d => d.civ))], vars = { match: c.match || '', civilite: (civs.join(', ') || CIVS[0]).replace(/^./, x => x.toUpperCase()) };
+  const rep = t => String(t || '').replace(/\{(\w+)\}/g, (m, k) => vars[k] != null ? vars[k] : m);
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to) + '&su=' + encodeURIComponent(rep(reglage('courrier_mail_objet', 'Match {match}'))) + '&body=' + encodeURIComponent(rep(reglage('courrier_mail_modele', ''))), '_blank');
+  toast(to ? '✓ PDF téléchargé : pensez à le joindre au mail' : 'Pas de mail enregistré pour ce club (onglet Clubs)', to ? 'ok' : 'err');
+}
+
 // ======================== REÇUS DE DONS (Cerfa 11580) ========================
 const recuDe = id => D.recus.find(r => String(r.id) === String(id));
 const donateurDe = id => D.donateurs.find(d => String(d.id) === String(id));
@@ -1931,6 +2108,7 @@ async function route() {
     else if ((m = h.match(/^f\/(\d+)$/))) { const f = facDe(m[1]); if (!f) { location.hash = 'factures'; return; } renderFactureLibre(f); }
     else if (h === 'factures') renderFactures();
     else if (h === 'dons') renderDons();
+    else if ((m = h.match(/^c\/(\d+)$/))) { const it = (D.ris_items || []).find(x => String(x.id) === m[1]); if (!it) { location.hash = 'ris'; return; } renderCourrier(it); }
     else if ((m = h.match(/^d\/new(?:\/(\d+))?$/))) renderRecu(null, m[1]);
     else if ((m = h.match(/^d\/(\d+)$/))) { const r = recuDe(m[1]); if (!r) { location.hash = 'dons'; return; } renderRecu(r); }
     else if (h === 'paiements') renderPaiements();
