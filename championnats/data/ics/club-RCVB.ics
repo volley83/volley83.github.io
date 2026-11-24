@@ -202,10 +202,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261012T210000
 DTEND;TZID=Europe/Paris:20261012T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 1 – Rocbaron Clu
- b Volley-Ball 2 (3-0)
-DESCRIPTION:Résultat : 3-0 (25:11\, 25:10\, 25:13)\nPoule M4E – classe
- ment et résultats : https://volley83.github.io/championnats/#championna
- ts/competlib/M4E
+ b Volley-Ball 2
+LOCATION:3
+DESCRIPTION:Poule M4E – classement et résultats : https://volley83.git
+ hub.io/championnats/#championnats/competlib/M4E
 END:VEVENT
 BEGIN:VEVENT
 UID:M4E004@volley83.github.io
