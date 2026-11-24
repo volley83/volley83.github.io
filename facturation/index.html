@@ -1895,8 +1895,8 @@ async function pdfCourrier(id) {
   dl.forEach(l => { doc.setFillColor(...TXT); doc.triangle(M + 3, yy - 2.8, M + 3, yy - 0.2, M + 5.6, yy - 1.5, 'F'); l.forEach(t => { doc.text(t, M + 9, yy); yy += 4.8; }); yy += 1.5; });
   y += hBox + 7;
   doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
-  doc.text('Conformément à l’article 4.2 du RGISA, les GSA disposent d’un délai de 5 jours pour transmettre'.replace(/’/g, "'"), W / 2, y, { align: 'center' }); y += 4.8;
-  doc.text('leurs observations par courrier électronique.', W / 2, y, { align: 'center' }); y += 9;
+  doc.splitTextToSize("Conformément à l'article 4.2 du RGISA, les GSA disposent d'un délai de cinq (5) jours francs à compter de la réception de la présente notification pour transmettre leurs observations par courrier électronique avec accusé de réception.", TW - 10)
+    .forEach(t => { doc.text(t, W / 2, y, { align: 'center' }); y += 4.8; }); y += 4.2;
   doc.text(pdfTxt(`Veuillez agréer, ${sal}, nos salutations sportives,`), M + 12, y); y += 13;
   const sg = String(reglage('courrier_signataires', '')).split('\n').map(l => l.split('|')).filter(l => l[0]);
   doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5);
