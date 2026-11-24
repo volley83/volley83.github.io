@@ -1749,7 +1749,9 @@ function renderCourrier(it) {
     if (k === 'dho' || k === 'init') return `<div class="field"><label>${lab}</label><input type="date" data-c="${k}" value="${esc(v)}"></div>`;
     if (k === 'rpe') return `<div class="field"><label>${lab}</label><input data-c="rpe" list="cr-rpe" value="${esc(v)}"><datalist id="cr-rpe"><option value="RPE Senior Accession"><option value="RPE COMPETLIB 4x4 Mixte"><option value="RPE des championnats Jeunes"></datalist></div>`;
     return `<div class="field" style="grid-column:1 / -1"><label>${lab}</label><input data-c="${k}" value="${esc(v)}" placeholder="${esc(ph)}"></div>`; };
+  const retour = `<a class="btn ghost" href="#ris${r ? '/' + r.id : ''}">← Retour au RIS${r ? ' n° ' + r.numero : ''}</a>`;
   shell('ris', `
+  <div>${retour}</div>
   <div class="crumb"><a href="#ris">RIS</a> › ${r ? `<a href="#ris/${r.id}">N° ${r.numero}</a> › ` : ''}Courrier ${esc(it.club)} – ${esc(it.match || '')}</div>
   <div class="card stack">
     <div class="ttl"><div><h2>Courrier de décision</h2><p class="muted">${esc(it.club)} · ${esc(it.intitule)}${num(it.montant) ? ' · ' + euros(it.montant) : ''}. Choisissez le modèle, complétez les champs : le texte se met à jour. Vous pouvez ensuite le retoucher librement.</p></div>
@@ -1772,7 +1774,7 @@ function renderCourrier(it) {
     <div class="field"><label>Considérants (« Vu … »), séparés par une ligne vide</label><textarea id="cr-vu" rows="16">${esc(CR.vu)}</textarea></div>
     <div class="field"><label>Décisions de la Commission Sportive (une par ligne)</label><textarea id="cr-dec" rows="4">${esc(CR.dec)}</textarea></div>
     <div class="btnrow" style="align-items:center"><button class="btn primary" onclick="enregistrerCourrier(${it.id})">✓ Enregistrer le courrier</button>
-      <button class="btn ghost" onclick="pdfCourrier(${it.id})">⬇ PDF</button><button class="btn ghost" onclick="mailCourrier(${it.id})">✉ Préparer le mail</button>
+      <button class="btn ghost" onclick="pdfCourrier(${it.id})">⬇ PDF</button><button class="btn ghost" onclick="mailCourrier(${it.id})">✉ Préparer le mail</button>${retour}
       <span id="cr-ok" class="msg ok small" ${CR_OK ? '' : 'hidden'} style="padding:8px 12px">${esc(CR_OK)}</span></div>
   </div>`);
   CR_OK = '';
