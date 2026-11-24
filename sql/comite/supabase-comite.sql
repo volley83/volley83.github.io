@@ -40,13 +40,15 @@ begin
     r := r || jsonb_build_object('tournois', x);
   exception when others then null; end;
 
-  -- Prochains stages (60 jours) : convoqués sans réponse, non payés
+  -- Prochains stages (60 jours) : convoqués sans réponse, non payés ; pour les stages à inscription en ligne (beach, été) : inscrits et liste d'attente
   begin
     select coalesce(jsonb_agg(jsonb_build_object('titre', s.titre, 'date', s.date_debut, 'date_limite', s.date_limite,
              'convoques', (select count(*) from stg_convocations v where v.stage_id = s.id and v.statut = 'convoque'),
              'sans_reponse', (select count(*) from stg_convocations v where v.stage_id = s.id and v.statut = 'convoque' and v.reponse = 'attente'),
              'presents', (select count(*) from stg_convocations v where v.stage_id = s.id and v.statut = 'convoque' and v.reponse = 'present'),
-             'non_payes', (select count(*) from stg_convocations v where v.stage_id = s.id and v.statut = 'convoque' and v.reponse = 'present' and not coalesce(v.paye, false))
+             'non_payes', (select count(*) from stg_convocations v where v.stage_id = s.id and v.statut = 'convoque' and v.reponse = 'present' and not coalesce(v.paye, false)),
+             'inscription', coalesce(s.inscription, false),
+             'en_attente', (select count(*) from stg_convocations v where v.stage_id = s.id and v.statut = 'attente')
            ) order by s.date_debut), '[]')
       into x
       from stg_stages s

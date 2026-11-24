@@ -235,7 +235,9 @@ function blocAVenir(R) {
   if (R.stages) cartes.push(`<div class="card"><h3>🎓 Stages à venir</h3>${R.stages.length ? `<ul>${R.stages.map(s => {
     const lim = s.date_limite && s.sans_reponse ? ` · réponse avant le ${jour(s.date_limite)}` : '';
     return `<li><a href="../stages/#admin" class="d">${esc(s.titre)}</a><div class="small muted">${jour(s.date)} · ${dans(s.date)}${lim}</div>
-      <div class="tags"><span class="tag">${pl(s.convoques, 'convoqué')}</span>${s.presents ? `<span class="tag g">${pl(s.presents, 'présent')}</span>` : ''}${s.sans_reponse ? `<span class="tag w">${s.sans_reponse} sans réponse</span>` : ''}${s.non_payes ? `<span class="tag r">${s.non_payes} non payé${s.non_payes > 1 ? 's' : ''}</span>` : ''}</div></li>`; }).join('')}</ul>`
+      <div class="tags">${s.inscription
+        ? `<span class="tag ${s.presents ? 'g' : ''}">${pl(s.presents, 'inscrit')}</span>${s.en_attente ? `<span class="tag w">${s.en_attente} en liste d'attente</span>` : ''}`
+        : `<span class="tag">${pl(s.convoques, 'convoqué')}</span>${s.presents ? `<span class="tag g">${pl(s.presents, 'présent')}</span>` : ''}${s.sans_reponse ? `<span class="tag w">${s.sans_reponse} sans réponse</span>` : ''}`}${s.non_payes ? `<span class="tag r">${s.non_payes} non payé${s.non_payes > 1 ? 's' : ''}</span>` : ''}</div></li>`; }).join('')}</ul>`
     : '<p class="muted small">Aucun stage dans les 60 prochains jours.</p>'}</div>`);
   if (R.tournois) cartes.push(`<div class="card"><h3>🏐 Tournois OPEN et 4x4</h3>${R.tournois.length ? `<ul>${R.tournois.map(t =>
     `<li><a href="../championnats/#admin/inscriptions" class="d">${esc(t.competition)}</a><div class="small muted">${jour(t.date)} · ${dans(t.date)}${t.lieu ? ' · ' + esc(t.lieu) : ''}</div>
