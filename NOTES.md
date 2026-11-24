@@ -171,6 +171,18 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - **Page publique** : recherche, filtres par catégorie, badge « Nouveau » 30 jours après un dépôt, PDF ouverts dans un nouvel onglet, autres fichiers téléchargés ; lien direct `documents/?doc=<slug>` (document mis en évidence ; « Copier le lien » dans l'Espace Comité).
 - À vérifier par Clément au dépôt : la présentation TIP était celle de 2026 (non reprise, renvoi vers le site du TIP).
 
+## Espace Comité (tableau de bord) — `comite/index.html` (24/11/2026)
+
+- **Adresse** : https://volley83.github.io/comite/ (non indexée) ; lien « Espace Comité » dans le pied de page de l'accueil (colonne « Accès réservés »).
+- **Connexion unique** : `comite/session.js`, inclus en tête (`<script src="/comite/session.js">`) de **toutes** les pages qui ont un accès Comité : stages, championnats, facturation, documents, clubs, frais, accueil, et dans les dépôts `tip` et `pitchounvolley`. À ajouter à toute nouvelle page d'admin, avec sa clé dans la liste `KEYS`.
+  - Il relie les clés de session de chaque page (`stg_admin`, `chp_admin`, `fac_admin`, `doc_admin`, `clb_admin`, `tip_admin`, `pit_admin`) à une clé commune `v83_admin` : un mot de passe saisi n'importe où vaut pour toutes les parties ; une déconnexion n'importe où déconnecte partout (y compris la session Supabase Auth du Pitchoun').
+  - `tip_admin` n'est pas recopié vers les autres (le TIP accepte aussi un mot de passe « saisie des résultats »).
+  - Case « Rester connecté sur cet ordinateur » (Espace Comité seulement) → `localStorage`.
+  - Bouton flottant « ◂ Espace Comité » en bas à gauche de chaque page quand on est connecté.
+  - Pitchoun' : `#admin` se connecte tout seul avec le mot de passe commun. TIP : `…/tip/#admin` ouvre directement le panneau d'administration.
+- **Tableau de bord** : « À traiter » (infractions signalées, classements OPEN/4x4 saisis, plateaux Pitchoun' saisis, fiches clubs reçues, factures non réglées), « À venir » (stages à 60 jours avec convoqués / sans réponse / présents non payés, tournois OPEN-4x4 à 30 jours avec équipes inscrites, prochain plateau Pitchoun'), puis les tuiles de toutes les fonctions et des outils (Supabase, GitHub, Gmail).
+  - Données : fonction `comite_resume(pwd)` (script `sql/comite/supabase-comite.sql`). Sans ce script, la page marche quand même (mot de passe vérifié par `doc_admin_get`) mais sans compteurs.
+
 ## Scripts SQL — dossier `sql/`
 
 - `sql/stages/supabase-stages.sql`, `sql/championnats/supabase-championnats.sql` et `sql/facturation/supabase-facturation.sql` : installation complète. Ils contiennent les dernières versions des fonctions.
