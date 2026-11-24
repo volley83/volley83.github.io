@@ -1722,6 +1722,9 @@ function modeleDe(it) {
   if (/licenci|licence/.test(t)) return 'licence';
   return 'libre';
 }
+// Points par défaut selon le RPE : CompetLib 4x4 (pénalité 0 pt, forfait -2 pts), sinon Senior Accession (pénalité 1 pt, forfait 0 pt)
+const estCompetlib = rpe => /compet.?lib/i.test(rpe || '');
+const pointsDef = f => estCompetlib(f.rpe) ? (f.perte === 'forfait' ? 'moins deux (-2) points' : 'zéro (0) point') : (f.perte === 'forfait' ? 'zéro (0) point' : 'un (1) point');
 const nomClub = code => (club(code) || {}).nom || code;
 const civDe = code => { for (const i of D.ris_items || []) for (const d of ((i.courrier || {}).dest || [])) if (d.code === code && d.civ) return d.civ; return CIVS[0]; };
 function texteCourrier(c) {
@@ -1763,7 +1766,8 @@ function texteCourrier(c) {
 function courrierInitial(it) {
   const g = (D.signalements || []).find(x => String(x.id) === String(it.signalement_id)), modele = modeleDe(it);
   const c = { modele, date: today(), match: it.match || (g && g.match) || '', date_match: (g && g.date_match) || '', dest: [{ code: it.club, civ: civDe(it.club), montant: num(it.montant) }],
-    f: { joueurs: it.detail || (g && g.details) || '', motif: MOTIF_DEF[modele] || '', article: ARTICLE_SURCL, nbq_n: g && g.nb_qualifies != null ? String(g.nb_qualifies) : '', genre: (g && g.nb_genre) || 'm', rpe: 'RPE Senior Accession', perte: ['forfait', 'incomplete'].includes(modele) ? 'forfait' : 'penalite', points: ['forfait', 'incomplete'].includes(modele) ? 'zéro (0) point' : 'un (1) point' } };
+    f: { joueurs: it.detail || (g && g.details) || '', motif: MOTIF_DEF[modele] || '', article: ARTICLE_SURCL, nbq_n: g && g.nb_qualifies != null ? String(g.nb_qualifies) : '', genre: (g && g.nb_genre) || 'm', rpe: /compet.?lib/i.test(it.intitule || '') ? 'RPE COMPETLIB 4x4 Mixte' : 'RPE Senior Accession', perte: ['forfait', 'incomplete'].includes(modele) ? 'forfait' : 'penalite' } };
+  c.f.points = pointsDef(c.f);
   return Object.assign(c, texteCourrier(c), { edite: false });
 }
 let CR = null, CR_OK = '';
@@ -1808,12 +1812,14 @@ function renderCourrier(it) {
   </div>`);
   CR_OK = '';
   window.majCR = redessiner => { if (!CR.edite) Object.assign(CR, texteCourrier(CR)); if (redessiner) { const sv = { ...CR }; it._tmp = sv; renderCourrierDepuis(it, sv); } else { $('cr-vu').value = CR.vu; $('cr-dec').value = CR.dec; } };
-  $('cr-mod').onchange = e => { CR.modele = e.target.value; CR.f.motif = MOTIF_DEF[CR.modele] || CR.f.motif; if (!CR.f.article) CR.f.article = ARTICLE_SURCL; if (CR.modele === 'forfait' || CR.modele === 'incomplete') { CR.f.perte = 'forfait'; CR.f.points = 'zéro (0) point'; } CR.edite = false; majCR(true); };
+  $('cr-mod').onchange = e => { CR.modele = e.target.value; CR.f.motif = MOTIF_DEF[CR.modele] || CR.f.motif; if (!CR.f.article) CR.f.article = ARTICLE_SURCL; if (CR.modele === 'forfait' || CR.modele === 'incomplete') CR.f.perte = 'forfait'; CR.f.points = pointsDef(CR.f); CR.edite = false; majCR(true); };
   $('cr-date').onchange = e => CR.date = e.target.value;
   $('cr-match').oninput = e => { CR.match = e.target.value.trim(); majCR(); };
   $('cr-dm').onchange = e => { CR.date_match = e.target.value; majCR(); };
   document.querySelectorAll('[data-d]').forEach(x => x.onchange = () => { const d = CR.dest[+x.dataset.i]; d[x.dataset.d] = x.dataset.d === 'montant' ? num(x.value) : x.value; if (x.dataset.d === 'code' && x.value) d.civ = civDe(x.value); majCR(x.dataset.d === 'code'); });
-  document.querySelectorAll('[data-c]').forEach(x => x[x.tagName === 'SELECT' || x.type === 'date' ? 'onchange' : 'oninput'] = () => { CR.f[x.dataset.c] = x.value.trim(); majCR(); });
+  document.querySelectorAll('[data-c]').forEach(x => x[x.tagName === 'SELECT' || x.type === 'date' ? 'onchange' : 'oninput'] = () => { CR.f[x.dataset.c] = x.value.trim();
+    if (x.dataset.c === 'perte' || x.dataset.c === 'rpe') { const pt = pointsDef(CR.f); if (pt !== CR.f.points) { CR.f.points = pt; const sel = document.querySelector('[data-c=points]'); if (sel) sel.value = pt; } }
+    majCR(); });
   $('cr-vu').oninput = e => { CR.vu = e.target.value; CR.edite = true; };
   $('cr-dec').oninput = e => { CR.dec = e.target.value; CR.edite = true; };
 }
