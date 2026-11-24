@@ -1734,7 +1734,7 @@ function texteCourrier(c) {
   const dec = [];
   dest.forEach(d => { const perte = f.perte || (c.modele === 'forfait' ? 'forfait' : 'penalite');
     if (c.modele !== 'officiel' && c.modele !== 'libre' && perte !== 'aucune')
-      dec.push(perte === 'forfait' ? `L’équipe ${d.code} perd la rencontre ${m} par FORFAIT, et marque ${f.points || 'zéro (0) point'} au classement. Le classement sera modifié.`
+      dec.push(perte === 'forfait' ? `L’équipe ${d.code} perd la rencontre ${m} par forfait (0/3 – 00/25, 00/25, 00/25), et marque ${f.points || 'zéro (0) point'} au classement. Le classement sera modifié.`
         : `L’équipe ${d.code} perd la rencontre ${m} par pénalité (0/3 – 00/25, 00/25, 00/25), et marque ${f.points || 'un (1) point'} au classement. Le classement sera modifié.`); });
   if (c.modele === 'officiel') dest.forEach(d => dec.push(`Le club de ${d.code} doit régulariser la licence de l’officiel concerné dans un délai de 10 jours à compter de la présente notification, sous peine de perdre la rencontre ${m} par pénalité et de se voir appliquer une nouvelle amende.`));
   dest.forEach(d => { const mt = num(d.montant); if (mt) dec.push(`Le club de ${d.code} se verra facturer la pénalité de ${fmtN(mt).replace(',00', '')} € correspondante.`); });
@@ -1751,8 +1751,8 @@ function renderCourrier(it) {
   CR = JSON.parse(JSON.stringify(it.courrier || courrierInitial(it)));
   const r = (D.ris || []).find(x => x.id === it.ris_id), clubs = D.clubs.filter(c => c.actif).sort((a, b) => coll.compare(a.code, b.code));
   const champ = k => { const [lab, ph] = CH[k], v = CR.f[k] || '';
-    if (k === 'perte') return `<div class="field"><label>${lab}</label><select data-c="perte"><option value="penalite" ${v === 'penalite' ? 'selected' : ''}>Par pénalité (0/3)</option><option value="forfait" ${v === 'forfait' ? 'selected' : ''}>Par forfait</option><option value="aucune" ${v === 'aucune' ? 'selected' : ''}>Pas de perte de la rencontre</option></select></div>`;
-    if (k === 'points') return `<div class="field"><label>${lab}</label><input data-c="points" list="cr-pts" value="${esc(v)}"><datalist id="cr-pts">${POINTS.map(x => `<option value="${x}">`).join('')}</datalist></div>`;
+    if (k === 'perte') return `<div class="field"><label>${lab}</label><select data-c="perte"><option value="penalite" ${v === 'penalite' ? 'selected' : ''}>Par pénalité (0/3)</option><option value="forfait" ${v === 'forfait' ? 'selected' : ''}>Par forfait (0/3)</option><option value="aucune" ${v === 'aucune' ? 'selected' : ''}>Pas de perte de la rencontre</option></select></div>`;
+    if (k === 'points') return `<div class="field"><label>${lab}</label><select data-c="points">${[...new Set([...POINTS, ...(v ? [v] : [])])].map(x => `<option ${x === v ? 'selected' : ''}>${esc(x)}</option>`).join('')}</select></div>`;
     if (k === 'dho' || k === 'init') return `<div class="field"><label>${lab}</label><input type="date" data-c="${k}" value="${esc(v)}"></div>`;
     if (k === 'rpe') return `<div class="field"><label>${lab}</label><input data-c="rpe" list="cr-rpe" value="${esc(v)}"><datalist id="cr-rpe"><option value="RPE Senior Accession"><option value="RPE COMPETLIB 4x4 Mixte"><option value="RPE des championnats Jeunes"></datalist></div>`;
     return `<div class="field" style="grid-column:1 / -1"><label>${lab}</label><input data-c="${k}" value="${esc(v)}" placeholder="${esc(ph)}"></div>`; };
