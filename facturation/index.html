@@ -1009,7 +1009,7 @@ function renderRis(r) {
       <td><input data-k="montant" class="n" value="${fmtN(i.montant)}" ${lock ? 'disabled' : ''} style="width:80px" inputmode="decimal"></td>
       <td>${l ? `<a class="badge b-ok" href="#b/${b.id}/${encodeURIComponent(i.club)}">✓ Bordereau n° ${b.numero}</a>` : num(i.montant) ? '<span class="badge b-warn">À facturer</span>'
         : `<label class="small" style="display:flex;gap:6px;align-items:center;white-space:nowrap"><input type="checkbox" data-k="sans_sanction" ${i.sans_sanction ? 'checked' : ''}> Pas de sanction financière</label>${i.sans_sanction ? '' : '<span class="badge b-bad">Montant à saisir</span>'}`}</td>
-      <td class="nw"><a class="btn sm ${i.courrier ? 'ok' : 'ghost'}" href="#c/${i.id}" title="Courrier de décision au club">✉ ${i.courrier ? 'Courrier ✓' : 'Courrier'}</a>
+      <td class="nw">${i.rubrique === 5 && !i.courrier ? '' : `<a class="btn sm ${i.courrier ? 'ok' : 'ghost'}" href="#c/${i.id}" title="Courrier de décision au club">✉ ${i.courrier ? 'Courrier ✓' : 'Courrier'}</a>`}
         ${lock ? '' : `<button class="x" onclick="supprItem(${i.id})">✕</button>`}</td></tr>`; };
   shell('ris', `
   <div class="crumb"><a href="#ris">RIS</a> › N° ${r.numero}</div>
