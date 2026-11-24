@@ -904,14 +904,22 @@ function renderRisListe() {
   brancherSignalements();
 }
 // ----- Signalements reçus des personnes habilitées (page /ris/) -----
+// Signalements identiques (même match, club et infraction) : proposés regroupés en une seule infraction
+let SIG_SEPARE = new Set();
+const memeSig = (a, b) => a.id !== b.id && norm(a.match || '') === norm(b.match || '') && a.club === b.club && ((a.article_id && a.article_id === b.article_id) || norm(a.nature) === norm(b.nature));
+const groupeSig = g => SIG_SEPARE.has(g.id) ? [] : sigNouveaux().filter(x => !SIG_SEPARE.has(x.id) && memeSig(g, x));
 const SIG_URL = location.origin + location.pathname.replace(/facturation\/.*$/, 'ris/');
 function sectionSignalements() {
   const sn = sigNouveaux(), rs = [...(D.ris || [])].sort((a, b) => b.numero - a.numero), as = articlesRis();
   const clubs = D.clubs.filter(c => c.actif).sort((a, b) => coll.compare(a.code, b.code));
   const traites = (D.signalements || []).filter(g => g.statut !== 'nouveau').slice(0, 30);
   return `<div class="card stack"><div class="ttl"><div><h3>📨 Signalements à vérifier (${sn.length})</h3><p class="small muted">Envoyés depuis la page de signalement. Vérifiez, corrigez si besoin, puis validez pour les ajouter à un RIS (ils seront facturés à la génération du RIS).</p></div></div>
-    ${sn.length ? sn.map(g => { const a = art(g.article_id);
-      return `<div class="card stack" data-sig="${g.id}" style="background:#FAFBFD;gap:10px">
+    ${sn.length ? sn.filter(g => !groupeSig(g).some(x => x.id < g.id)).map(g => { const a = art(g.article_id), grp = groupeSig(g), tous = [g, ...grp];
+      const details = tous.map(x => x.details).filter(Boolean).join(' ; ');
+      return `<div class="card stack" data-sig="${g.id}" data-grp="${grp.map(x => x.id).join(',')}" style="background:#FAFBFD;gap:10px">
+        ${grp.length ? `<div class="msg warn small"><b>👥 ${tous.length} signalements identiques regroupés</b> (même match, même club, même infraction) : <b>une seule infraction</b> sera inscrite au RIS, avec un seul montant.
+          ${tous.map(x => `<div style="margin-top:4px">• ${esc(x.auteur || '?')}${x.details ? ` · 🔒 <b>${esc(x.details)}</b>` : ''}${x.commentaire ? ` · 💬 ${esc(x.commentaire)}` : ''}</div>`).join('')}
+          <div style="margin-top:6px"><button class="linkbtn" onclick="SIG_SEPARE = new Set([...SIG_SEPARE, ${tous.map(x => x.id).join(', ')}]); renderRisListe()">Traiter séparément</button></div></div>` : ''}
         <div class="small"><b>${esc(g.auteur || '?')}</b> · envoyé le ${fmtD(g.created_at)} · match du ${fmtD(g.date_match)}${g.details ? ` · 🔒 <b>${esc(g.details)}</b>` : ''}${g.nb_qualifies != null ? ` · ${g.nb_qualifies} ${g.nb_genre === 'f' ? 'joueuse(s)' : 'joueur(s)'} qualifié(e)s` : ''}${g.commentaire ? `<div style="margin-top:6px;padding:8px 10px;background:#fff;border:1px solid var(--line);border-radius:8px;white-space:pre-wrap">💬 ${esc(g.commentaire)}</div>` : ''}</div>
         <div class="grid" style="grid-template-columns:150px 150px 110px minmax(0,1fr) 100px;gap:8px">
           <div class="field"><label>Rubrique</label><select data-f="rubrique">${RUBRIQUES.map((t, k) => `<option value="${k + 1}" ${(a ? rubriqueArticle(a) : 5) === k + 1 ? 'selected' : ''}>${k + 1}- ${t}</option>`).join('')}</select></div>
@@ -920,7 +928,7 @@ function sectionSignalements() {
           <div class="field"><label>Infraction relevée (texte du RIS)</label><input data-f="intitule" value="${esc(g.nature)}"></div>
           <div class="field"><label>Montant €</label><input data-f="montant" class="n" value="${a && num(a.prix) ? fmtN(a.prix) : ''}" inputmode="decimal"></div>
         </div>
-        <div class="field"><label>🔒 Précision pour la facture uniquement (nom, licence… – jamais sur le RIS)</label><input data-f="detail" value="${esc(g.details || '')}" placeholder="Ex. : DUPONT Léa, licence 1234567"></div>
+        <div class="field"><label>🔒 Précision pour la facture uniquement (nom, licence… – jamais sur le RIS)</label><input data-f="detail" value="${esc(details)}" placeholder="Ex. : DUPONT Léa, licence 1234567"></div>
         <div class="grid" style="grid-template-columns:minmax(0,1fr) 220px auto auto;gap:8px;align-items:end">
           <div class="field"><label>Tarif appliqué</label><select data-f="article_id"><option value="">— Saisie libre —</option>${as.map(x => `<option value="${x.id}" ${a && a.id === x.id ? 'selected' : ''}>${esc(intituleArticle(x))}${num(x.prix) ? ` (${euros(x.prix)})` : ' (montant à saisir)'}</option>`).join('')}</select></div>
           <div class="field"><label>Ajouter au RIS</label><select data-f="ris_id">${rs.map(r => `<option value="${r.id}">RIS n° ${r.numero} (au ${fmtD(r.date)})</option>`).join('')}<option value="nouveau" ${rs.length ? '' : 'selected'}>+ Nouveau RIS</option></select></div>
@@ -933,7 +941,7 @@ function sectionSignalements() {
 }
 function brancherSignalements() {
   document.querySelectorAll('[data-sig]').forEach(box => {
-    const id = +box.dataset.sig, f = k => box.querySelector(`[data-f="${k}"]`);
+    const id = +box.dataset.sig, f = k => box.querySelector(`[data-f="${k}"]`), grp = (box.dataset.grp || '').split(',').filter(Boolean).map(Number);
     f('article_id').onchange = () => { const a = art(f('article_id').value); if (a) { f('montant').value = num(a.prix) ? fmtN(a.prix) : ''; f('rubrique').value = rubriqueArticle(a); } };
     box.querySelector('[data-ok]').onclick = async () => {
       const g = D.signalements.find(x => x.id === id);
@@ -942,7 +950,8 @@ function brancherSignalements() {
         let rid = f('ris_id').value;
         if (rid === 'nouveau') rid = await rpc('fac_admin_ris', { pwd: PWD, p: { saison: SAISON, date: today() } });
         await rpc('fac_admin_signalement', { pwd: PWD, p_id: id, p: { action: 'integrer', ris_id: String(rid), item: { rubrique: f('rubrique').value, match: f('match').value.trim(), club: f('club').value,
-          article_id: f('article_id').value || null, intitule: f('intitule').value.trim(), montant: String(num(f('montant').value)), detail: f('detail').value.trim(), commentaire: `${g.auteur || ''} : ${g.commentaire || ''}`.replace(/ : $/, '') } } });
+          article_id: f('article_id').value || null, intitule: f('intitule').value.trim(), montant: String(num(f('montant').value)), detail: f('detail').value.trim(),
+          commentaire: [g, ...grp.map(x => D.signalements.find(y => y.id === x))].filter(Boolean).map(x => `${x.auteur || ''} : ${x.commentaire || ''}`.replace(/ : $/, '')).filter(Boolean).join('\n') }, groupe: grp } });
         await load(); toast('✓ Ajouté au RIS'); renderRisListe();
       } catch(e) { fail(e); }
     };

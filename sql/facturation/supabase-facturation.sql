@@ -669,6 +669,9 @@ begin
              'article_id', it->>'article_id', 'intitule', it->>'intitule', 'montant', it->>'montant', 'detail', it->>'detail', 'ordre', 999));
     update fac_ris_items set commentaire = nullif(trim(it->>'commentaire'), ''), signalement_id = p_id where id = iid;
     update fac_signalements set statut = 'integre', ris_item_id = iid, traite_le = now() where id = p_id;
+    -- signalements identiques regroupés (même match, club et infraction) : une seule infraction dans le RIS
+    update fac_signalements set statut = 'integre', ris_item_id = iid, traite_le = now()
+      where statut = 'nouveau' and id in (select x::bigint from jsonb_array_elements_text(coalesce(p->'groupe', '[]')) x);
     return iid;
   end if;
   raise exception 'Action inconnue';
