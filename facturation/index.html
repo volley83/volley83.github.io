@@ -1684,7 +1684,8 @@ const Q_FORFAIT = "Vu l’article 12.3 du RGES, « si une ou les deux équipes o
 const MODELES = {
   report:    { t: 'Joueur non qualifié – rencontre reportée (art. 9-7)', champs: ['joueurs', 'dho', 'init', 'nbq', 'rpe', 'perte', 'points'] },
   licence:   { t: 'Joueur non licencié ou licence non valide (art. 28)', champs: ['joueurs', 'motif', 'nbq', 'rpe', 'perte', 'points'] },
-  validation: { t: 'Licence non valide – validation administrative / financière (art. 11 RGLIGA)', champs: ['joueurs', 'motif', 'nbq', 'rpe', 'perte', 'points'] },
+  nonvalidee: { t: 'Licence non validée administrativement (art. 19.2 RGES)', champs: ['joueurs', 'motif', 'nbq', 'rpe', 'perte', 'points'] },
+  validation: { t: 'Licence à DHO suspendue – défaut de validation sous 30 jours (art. 11 RGLIGA)', champs: ['joueurs', 'motif', 'nbq', 'rpe', 'perte', 'points'] },
   surclassement: { t: 'Surclassement absent ou incorrect', champs: ['joueurs', 'motif', 'article', 'nbq', 'rpe', 'perte', 'points'] },
   mutes:     { t: 'Mutés en surnombre (art. 2 du RPE)', champs: ['joueurs', 'motif', 'nbq', 'rpe', 'perte', 'points'] },
   categorie: { t: 'Joueur de l’équipe 1 en équipe 2 (art. 9.13)', champs: ['joueurs', 'motif', 'nbq', 'rpe', 'perte', 'points'] },
@@ -1696,6 +1697,7 @@ const CH = { joueurs: ['Joueur(s) / licencié(s) concerné(s)', 'Ex. : la joueus
   init: ['Date initiale de la rencontre', ''], article: ['Article de référence (repris tel quel dans le courrier)', ''], nbq: ['Nombre de joueurs régulièrement qualifiés', 'Ex. : 8 joueuses régulièrement qualifiées'], rpe: ['Règlement de l’épreuve (RPE)', ''], perte: ['Perte de la rencontre', ''], points: ['Points au classement', ''] };
 const ARTICLE_SURCL = 'Vu l’article 10 du RGES relatif aux catégories d’âges et au surclassement des joueurs, et le tableau récapitulatif des catégories d’âges et surclassements de la saison (annexe 1 du RGES) ;';
 const MOTIF_DEF = { licence: 'ce joueur n’a aucune licence dans le club pour la saison en cours', mutes: 'ces joueuses ont une licence avec « Mutation Régionale »',
+  nonvalidee: 'la licence de ces joueurs n’avait pas été validée administrativement à la date de la rencontre',
   validation: 'ces licenciés avaient leur DHO suspendue à la date de la rencontre, faute de validation administrative et financière de leur licence dans les 30 jours suivant sa saisie',
   surclassement: 'ce joueur / cette joueuse, né(e) en …, de catégorie …, ne dispose pas du surclassement requis pour participer à une rencontre de cette catégorie',
   categorie: 'ces joueurs font partie de la catégorie A et ne sont pas qualifiés pour la rencontre de l’équipe 2', officiel: 'ce licencié a une DHO postérieure à la rencontre',
@@ -1707,6 +1709,7 @@ function modeleDe(it) {
   if (/manager|entraineur|officiel|marqueur/.test(t)) return 'officiel';
   if (/absente|forfait/.test(t)) return 'forfait';
   if (/surclass/.test(t)) return 'surclassement';
+  if (/non valide|validee? administ/.test(t)) return 'nonvalidee';
   if (/validation|dho|suspendu/.test(t)) return 'validation';
   if (/licenci|licence/.test(t)) return 'licence';
   return 'libre';
@@ -1720,6 +1723,10 @@ function texteCourrier(c) {
   const vu = {
     report: [feuille, `Vu la Date d’Homologation Officielle de la licence au ${f.dho ? fmtD(f.dho) : '…'} ;`, `Vu la date initiale de la rencontre au ${f.init ? fmtD(f.init) : '…'},`, Q_ART97, Q_ART28, ...fin],
     licence: [feuille, `Vu que ${f.motif || '…'} ;`, Q_ART28, ...fin],
+    nonvalidee: [feuille, `Vu que ${f.motif || '…'} ;`,
+      'Vu l’article 19.2 du RGES : « En l’absence de validation administrative, la licence ne peut pas être inscrite sur le collectif ni sur la feuille de match. Seules les licences figurant sur ce collectif validé peuvent être autorisées à jouer. »',
+      'Vu l’article 7B du RGLIGA, qui fixe la Date d’Homologation Officielle (DHO) comme la date à partir de laquelle le licencié, après validation administrative, est autorisé à participer aux compétitions ;',
+      Q_ART28, ...fin],
     validation: [feuille, `Vu que ${f.motif || '…'} ;`,
       'Vu l’article 11 du Règlement Général des Licences et des GSA (RGLIGA), qui impose la validation administrative et financière de la licence dans un délai de 30 jours calendaires suivant sa saisie, faute de quoi la suspension de la DHO est automatiquement prononcée ;',
       'Vu l’article 7B du RGLIGA, qui fixe la Date d’Homologation Officielle (DHO) comme la date à partir de laquelle le licencié, après validation administrative, est autorisé à participer aux compétitions ;',
