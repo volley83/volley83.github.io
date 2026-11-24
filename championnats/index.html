@@ -1156,7 +1156,7 @@ async function renderAdmin(tab) {
   if (!ADMIN_PWD) { location.hash = '4x4'; return; }
   if (tab) ATAB = tab;
   if (!A) await loadAdmin();
-  const aTitre = { inscriptions: 'Inscriptions', rappel: 'Rappel week-end', formules: 'Formules sportives', participations: 'Participations', classements: 'Classements', tournois: 'Calendrier et codes', clubs: 'Clubs', coupe: 'Coupe de France' };
+  const aTitre = { inscriptions: 'Inscriptions', rappel: 'Rappel week-end', mails: 'Mails aux clubs', formules: 'Formules sportives', participations: 'Participations', classements: 'Classements', tournois: 'Calendrier et codes', clubs: 'Clubs', coupe: 'Coupe de France' };
   const aValider = A.tournois.filter(t => t.statut === 'saisi').length;
   $('app').innerHTML = `
   <div class="hero"><div class="wrap"><div class="k">Espace Comité</div><h1>Gestion des championnats</h1></div></div>
@@ -1165,7 +1165,7 @@ async function renderAdmin(tab) {
       <span><span id="a-save" class="save"></span> <button class="linkbtn" onclick="ADMIN_PWD='';A=null;try{sessionStorage.removeItem('chp_admin')}catch(e){};location.hash='4x4'">Se déconnecter</button></span></div>
     <div id="a-body"></div>
   </main>`;
-  ({ inscriptions: adminInscriptions, rappel: adminRappel, formules: adminFormules, participations: adminParticipations, classements: adminClassements, tournois: adminTournois, clubs: adminClubs, coupe: adminCoupe })[ATAB]();
+  ({ inscriptions: adminInscriptions, rappel: adminRappel, mails: adminMails, formules: adminFormules, participations: adminParticipations, classements: adminClassements, tournois: adminTournois, clubs: adminClubs, coupe: adminCoupe })[ATAB]();
 }
 const tSel = (list, cur, id = 'a-t') => `<select id="${id}" style="max-width:560px">${A.competitions.map(c => { const l = list.filter(t => t.competition === c.code); return l.length ? `<optgroup label="${esc(c.nom)}">${l.map(t => `<option value="${t.id}" ${t.id === cur ? 'selected' : ''}>${esc(c.nom)} · ${tNom(t)} · ${esc(fmtShort(t.date))}${t.ville ? ' · ' + esc(t.ville) : ''}${t.statut === 'saisi' ? ' · À VALIDER' : ''}</option>`).join('')}</optgroup>` : ''; }).join('')}</select>`;
 
@@ -1501,6 +1501,82 @@ function adminRappel() {
   $('r-copy').onclick = async () => { try { await navigator.clipboard.writeText(tous().join(', ')); saveMark('ok', `✓ ${tous().length} adresses copiées`); } catch(e) { saveMark('err', '⚠ Copie impossible'); } };
   $('r-go').onclick = () => {
     gmailMisEnForme({ bcc: tous().join(','), su: $('r-su').value, body: $('r-body').value });
+  };
+}
+
+// ----- Mails aux clubs d'une ou plusieurs poules (championnats FFVB) -----
+let MP_SEL = new Set(), MP_SU = '', MP_BODY = null;
+const MP_MODELE = `Bonjour à tous,
+
+
+
+Sportivement,
+
+Clément ROBEAU
+Comité du Var de Volley-Ball`;
+function equipesPoule(p) {
+  const s = new Set();
+  (p.classement || []).forEach(e => e.equipe && s.add(e.equipe));
+  (p.journees || []).forEach(j => (j.matchs || []).forEach(m => { [m.dom, m.ext].forEach(n => n && s.add(n)); }));
+  return [...s].filter(n => !/^x+$/i.test(n.trim()));
+}
+const mailsDe = code => String((MAILS_CLUBS || {})[code] || '').split(/[,;\s]+/).map(m => m.trim().toLowerCase()).filter(m => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m));
+async function adminMails() {
+  if (MAILS_CLUBS === null) { MAILS_CLUBS = {}; rpc('chp_admin_mails', { pwd: ADMIN_PWD }).then(m => { MAILS_CLUBS = m || {}; if (ATAB === 'mails') adminMails(); }).catch(() => { MAILS_CLUBS = null; }); }
+  if (!FED) { $('a-body').innerHTML = '<div class="card muted">Chargement des poules…</div>'; try { await loadFed(); } catch (e) {} if (ATAB !== 'mails') return; }
+  if (!FED) { $('a-body').innerHTML = '<div class="card">Les poules n\'ont pas pu être chargées. Réessayez dans un instant.</div>'; return; }
+  const groupes = [['jeunes', 'Jeunes'], ['seniors', 'Seniors'], ['competlib', "Compet'Lib"]];
+  const cats = FED.categories;
+  const cle = (c, p) => c.titre + '|' + p.code;
+  const ordreG = g => { const i = groupes.findIndex(x => x[0] === g); return i < 0 ? 9 : i; };
+  // Clubs concernés par la sélection
+  const clubs = {}, inconnues = new Set();
+  cats.forEach(c => c.poules.forEach(p => { if (!MP_SEL.has(cle(c, p))) return;
+    equipesPoule(p).forEach(n => { const k = clubTrouve(n); if (!k) { inconnues.add(n); return; }
+      const x = clubs[k.code] || (clubs[k.code] = { k, poules: new Set() }); x.poules.add(c.titre.replace(/\s+-\s+.*$/, '') + ' ' + p.code); }); }));
+  const liste = Object.values(clubs).sort((a, b) => coll.compare(a.k.nom, b.k.nom));
+  const adr = [...new Set(liste.flatMap(x => mailsDe(x.k.code)))], sansMail = liste.filter(x => !mailsDe(x.k.code).length);
+  const extra = store.get('chp_mails_extra', '');
+  if (MP_BODY === null) MP_BODY = MP_MODELE;
+  const cases = [...new Set(cats.map(c => c.groupe))].sort((a, b) => ordreG(a) - ordreG(b)).map(g => `
+    <div class="stack" style="gap:8px"><b class="lbl">${esc((groupes.find(x => x[0] === g) || [g, g])[1])}</b>
+    ${cats.filter(c => c.groupe === g).map(c => { const toutes = c.poules.every(p => MP_SEL.has(cle(c, p))), une = c.poules.some(p => MP_SEL.has(cle(c, p)));
+      return `<div style="display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;padding:6px 0;border-top:1px solid var(--line)">
+        <label class="chk-s" style="min-width:270px;color:var(--text)"><input type="checkbox" data-cat="${esc(c.titre)}" ${toutes ? 'checked' : ''} ${une && !toutes ? 'data-partiel="1"' : ''}> ${esc(c.titre)}</label>
+        ${c.poules.length > 1 ? c.poules.map(p => `<label class="chk-s"><input type="checkbox" data-poule="${esc(cle(c, p))}" ${MP_SEL.has(cle(c, p)) ? 'checked' : ''}> ${esc(p.code)}</label>`).join('') : ''}
+      </div>`; }).join('')}</div>`).join('');
+  $('a-body').innerHTML = `<div class="card stack">
+    <div class="rank-head"><h2>Mail aux clubs des poules</h2><span class="muted small">cochez une catégorie entière ou seulement certaines poules</span></div>
+    <div class="row" style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn ghost" id="mp-tout">Tout cocher</button><button class="btn ghost" id="mp-rien">Tout décocher</button></div>
+    ${cases}
+  </div>
+  <div class="card stack">
+    <h2>${liste.length ? liste.length + ' club' + (liste.length > 1 ? 's' : '') + ' concerné' + (liste.length > 1 ? 's' : '') : 'Aucune poule cochée'}</h2>
+    ${liste.length ? `<div style="display:flex;flex-direction:column;gap:4px">${liste.map(x => `<div class="small"><b>${esc(x.k.nom)}</b> <span class="muted">· ${esc([...x.poules].join(', '))}</span>${mailsDe(x.k.code).length ? '' : ' <span style="color:#A3231D;font-weight:700">· pas d\'adresse dans la Facturation</span>'}</div>`).join('')}</div>` : ''}
+    ${inconnues.size ? `<div class="small" style="color:#8A5A00">Équipes non reliées à un club (à ajouter dans l'onglet Clubs, nom FFVB) : ${esc([...inconnues].join(', '))}</div>` : ''}
+    ${liste.length ? `
+    <div class="field"><label>Destinataires en Cci (${adr.length} adresse${adr.length > 1 ? 's' : ''}, fiches clubs de la Facturation)</label><textarea readonly style="min-height:56px;font-size:12.5px">${esc(adr.join(', '))}</textarea></div>
+    <div class="field"><label for="mp-extra">Autres destinataires (membres du Comité, arbitres…) · gardés sur cet ordinateur</label><textarea id="mp-extra" style="min-height:44px;font-size:12.5px" placeholder="adresse1@…, adresse2@…">${esc(extra)}</textarea></div>
+    <div class="field"><label for="mp-su">Objet</label><input id="mp-su" value="${esc(MP_SU)}" placeholder="Ex. : M13 féminin – modification du calendrier"></div>
+    <div class="field"><label for="mp-body">Message <span class="muted" style="font-weight:500">(**gras**, !!rouge!! ; la signature Gmail est retirée après « Sportivement, »)</span></label>
+      <textarea id="mp-body" style="min-height:300px;font-family:ui-monospace,Consolas,monospace;font-size:13px;line-height:1.45">${esc(MP_BODY)}</textarea></div>
+    <div class="btnrow" style="margin:0"><button class="btn primary" id="mp-go">✉ Ouvrir dans Gmail</button><button class="btn ghost" id="mp-copy">📋 Copier les adresses</button>${sansMail.length ? `<span class="muted small" style="align-self:center">${sansMail.length} club(s) sans adresse : à prévenir autrement</span>` : ''}</div>` : ''}
+  </div>`;
+  document.querySelectorAll('[data-partiel]').forEach(i => i.indeterminate = true);
+  const garder = () => { if ($('mp-su')) MP_SU = $('mp-su').value; if ($('mp-body')) MP_BODY = $('mp-body').value; };
+  $('a-body').querySelectorAll('[data-cat]').forEach(i => i.onchange = () => { garder(); const c = cats.find(x => x.titre === i.dataset.cat); c.poules.forEach(p => i.checked ? MP_SEL.add(cle(c, p)) : MP_SEL.delete(cle(c, p))); adminMails(); });
+  $('a-body').querySelectorAll('[data-poule]').forEach(i => i.onchange = () => { garder(); i.checked ? MP_SEL.add(i.dataset.poule) : MP_SEL.delete(i.dataset.poule); adminMails(); });
+  $('mp-tout').onclick = () => { garder(); cats.forEach(c => c.poules.forEach(p => MP_SEL.add(cle(c, p)))); adminMails(); };
+  $('mp-rien').onclick = () => { garder(); MP_SEL.clear(); adminMails(); };
+  if (!liste.length) return;
+  $('mp-extra').oninput = () => store.set('chp_mails_extra', $('mp-extra').value);
+  $('mp-su').oninput = () => { MP_SU = $('mp-su').value; };
+  $('mp-body').oninput = () => { MP_BODY = $('mp-body').value; };
+  const tous = () => [...new Set(adr.concat($('mp-extra').value.split(/[,;\s]+/).map(m => m.trim().toLowerCase()).filter(m => /@/.test(m))))];
+  $('mp-copy').onclick = async () => { try { await navigator.clipboard.writeText(tous().join(', ')); saveMark('ok', `✓ ${tous().length} adresses copiées`); } catch(e) { saveMark('err', '⚠ Copie impossible'); } };
+  $('mp-go').onclick = () => {
+    if (!$('mp-su').value.trim()) { saveMark('err', '⚠ Indiquez un objet'); $('mp-su').focus(); return; }
+    gmailMisEnForme({ bcc: tous().join(','), su: $('mp-su').value, body: $('mp-body').value });
   };
 }
 

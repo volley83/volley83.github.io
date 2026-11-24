@@ -128,6 +128,12 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - **2 onglets** : « Frais de déplacement » (par défaut) et « Note de frais » (`/frais/#note`) pour les autres dépenses (billet, achat de matériel…) : date, **famille** (liste `FAMILLES` [libellé, code compta] en haut du script, + « Autre » sans code), précisions, montant ; pas de « Vous intervenez en tant que » ; justificatifs toujours obligatoires (case à cocher) ; remboursement uniquement ; PDF A4 portrait reprenant le modèle Word « Note de frais » (colonne Code, 8 lignes mini, récapitulatif des totaux par code comptable, Le demandeur / Le président : constante `PRESIDENT` = Gérald HENRY).
 - Taux kilométrique selon l'imputation (objet `IMPUT` en haut du script) : 0,25 €/km bénévoles et intervenants, 0,60 €/km salariés (abandon de frais impossible pour un salarié : option grisée).
 
+## Championnats — onglet « Mails aux clubs » de l'Espace Comité (ajouté le 24/11/2026)
+
+- Demande de Clément : envoyer un mail aux clubs de certaines poules des championnats FFVB. On coche une catégorie entière (toutes ses poules) ou des poules précises (coche partielle affichée), ou « Tout cocher ».
+- Équipes lues dans `data/ffvb.json` (classement + matchs, exempts « xxxxx » ignorés) et reliées aux clubs par `clubTrouve()` (même correspondance que « Suivre un club » : nom FFVB des clubs de l'onglet Clubs). Les équipes non reliées sont listées pour être ajoutées dans l'onglet Clubs.
+- Adresses : `chp_admin_mails` (fiches clubs de la Facturation, plusieurs adresses par club possibles) ; clubs sans adresse signalés. « Autres destinataires » gardés dans le navigateur (`chp_mails_extra`). Envoi en Cci par `gmailMisEnForme` (texte mis en forme copié, **gras** / !!rouge!!, signature Gmail retirée après « Sportivement, »). Objet obligatoire.
+
 ## Page d'accueil du portail — `accueil/index.html` (adresse provisoire)
 
 - **Adresse** : https://volley83.github.io/accueil/ (non indexée). La racine `index.html` redirige toujours vers www.volley83.fr : ne la remplacer que sur demande de Clément.
