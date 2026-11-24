@@ -1680,6 +1680,10 @@ const Q_ART28_FORF = "Vu l’article 28 du RGES : « L’équipe constituée d�
 const Q_ART97 = "Vu l’article 9-7 du RGES : « En cas de rencontre reportée sur décision ou acceptation de la Commission Sportive référente, seuls peuvent participer à la rencontre les joueurs régulièrement qualifiés à la date initiale de la rencontre figurant sur le calendrier officiel »";
 const Q_ART282 = "Vu l’article 28-2 du RGES : « 2 le GSA qui a inscrit sur une feuille de match un ou des officiels de quelque nature que ce soit (Entraîneur, Entraîneur-Adjoint, soignant, ou autre) non licencié ou non régulièrement qualifié conformément au Règlement Particulier de l’Epreuve concernée encourt une amende administrative par décision de la Commission Sportive référente »";
 const Q_ART913 = "Vu l’article 9.13 du RGES sur la qualification des joueurs : « Les GSA ayant engagé une équipe 2 et dont l’équipe 1 ne participe pas aux championnats LNV, peuvent avoir trois catégories de joueurs\n- Catégorie A = Joueurs appartenant à l’équipe 1 :\n✓ tout joueur inscrit sur la première feuille de match de l’équipe 1 ;\n✓ tout joueur de catégorie B ayant participé à 3 rencontres de l’équipe 1 (sauf la première, consécutives ou non).\n- Catégorie B = Joueurs appartenant à l’équipe 2 :\n✓ tout joueur inscrit sur la première feuille de match de l’équipe 2 ;\n✓ tout joueur de catégorie A n’ayant pas participé aux 3 dernières rencontres de l’équipe 1.\nCas spécifique : Joueurs M18/M21 utilisant la double participation :\n✓ Les joueurs M18/M21 qui jouent deux matchs dans un même week-end appartiennent à la catégorie (A, B ou C) de l’équipe la plus haute dans laquelle ils évoluent, conformément aux catégories précisées ci-dessus.\n✓ Ces joueurs, dans la limite de deux, pourront participer à une seconde rencontre le même week-end avec l’équipe immédiatement inférieure ou supérieure en fonction de la catégorie à laquelle ils appartiennent. »";
+const Q_ART123 = "Vu l’article 12.3 du RGES : « L’arbitre constate la présence des équipes à l’heure fixée par la règlementation de l’épreuve, si une ou les deux équipes opposées sont absentes ou incomplètes le forfait est proposé à la Commission Sportive référente de l’épreuve contre la ou les équipes absentes ou incomplètes. »";
+const Q_ART18 = "Vu l’article 18 du RGES : « Une équipe est dite incomplète quand elle ne présente pas à l’heure fixée par le règlement particulier de l’épreuve, le nombre minimum de joueurs imposé par la forme de jeu de l’épreuve. »";
+const Q_ART193 = "Vu l’article 19.3 du RGES, selon lequel le premier arbitre procède au tirage au sort trente (30) minutes avant le début de la rencontre, et toute personne inscrite et non présente à H-30 est rayée de la composition d’équipe de la feuille de match ;";
+const Q_ART281_INC = "Vu l’article 28.1 du RGES : « Quel que soit le décompte de ses joueurs, une équipe perd la rencontre par FORFAIT dans les cas suivants : […] Lorsqu’elle est incomplète à l’heure prévue par le règlement particulier de l’épreuve (RPE) »";
 const Q_FORFAIT = "Vu l’article 12.3 du RGES, « si une ou les deux équipes opposées sont absentes ou incomplètes à l’heure fixée par la règlementation de l’épreuve, le forfait est proposé à la Commission Sportive référente de l’épreuve contre la ou les équipes absentes ou incomplètes ».";
 // Modèles : champs utiles + considérants (« Vu … ») et décisions proposés
 const MODELES = {
@@ -1691,6 +1695,7 @@ const MODELES = {
   mutes:     { t: 'Mutés en surnombre (art. 2 du RPE)', champs: ['joueurs', 'motif', 'nbq', 'rpe', 'perte', 'points'] },
   categorie: { t: 'Joueur de l’équipe 1 en équipe 2 (art. 9.13)', champs: ['joueurs', 'motif', 'nbq', 'rpe', 'perte', 'points'] },
   officiel:  { t: 'Officiel / manager non licencié (art. 28-2)', champs: ['joueurs', 'motif'] },
+  incomplete: { t: 'Équipe incomplète au tirage au sort (art. 12.3, 18, 28.1)', champs: ['nbq', 'motif', 'rpe', 'perte', 'points'] },
   forfait:   { t: 'Forfait – rencontre non jouée', champs: ['motif', 'perte', 'points'] },
   libre:     { t: 'Courrier libre', champs: [] },
 };
@@ -1702,12 +1707,14 @@ const MOTIF_DEF = { licence: 'ce joueur n’a aucune licence dans le club pour l
   validation: 'ces licenciés avaient leur DHO suspendue à la date de la rencontre, faute de validation administrative et financière de leur licence dans les 30 jours suivant sa saisie',
   surclassement: 'ce joueur / cette joueuse, né(e) en …, de catégorie …, ne dispose pas du surclassement requis pour participer à une rencontre de cette catégorie',
   categorie: 'ces joueurs font partie de la catégorie A et ne sont pas qualifiés pour la rencontre de l’équipe 2', officiel: 'ce licencié a une DHO postérieure à la rencontre',
+  incomplete: 'l’équipe ne présentait pas, à l’heure du tirage au sort, le nombre minimum de joueurs imposé par la forme de jeu de l’épreuve',
   forfait: 'l’absence de saisie d’une demande de modification au calendrier avant la rencontre' };
 function modeleDe(it) {
   const t = norm(it.intitule || '');
   if (/report|initial/.test(t)) return 'report';
   if (/mut/.test(t)) return 'mutes';
   if (/manager|entraineur|officiel|marqueur/.test(t)) return 'officiel';
+  if (/incompl|tirage/.test(t)) return 'incomplete';
   if (/absente|forfait/.test(t)) return 'forfait';
   if (/surclass/.test(t)) return 'surclassement';
   if (/non valide|validee? administ/.test(t)) return 'nonvalidee';
@@ -1739,6 +1746,8 @@ function texteCourrier(c) {
     mutes: [feuille, `Vu que ${f.motif || '…'}`, 'Vu l’article 2 du RPE Accession : « Nombre maximum de mutés : 3 »', Q_ART28, ...fin],
     categorie: [feuille, Q_ART913, `Vu que ${f.motif || '…'}`, Q_ART28, ...fin],
     officiel: [`Vu la feuille de match de la rencontre ${m} du ${dm} ; sur laquelle le club ${nomClub(c1)} a inscrit ${f.joueurs || '…'},`, `Vu que ${f.motif || '…'}`, Q_ART282, 'Vu que l’article 28.2 du RGES prévoit en outre que le GSA doit régulariser la licence de l’officiel concerné dans un délai de 10 jours à compter de la notification, sous peine de perdre la rencontre par pénalité et de se voir appliquer une nouvelle amende ;', reglage('courrier_tarifs', '')],
+    incomplete: [`Vu la feuille de match de la rencontre ${m} du ${dm}${nbq ? ` ; sur laquelle l’équipe de ${c1} ne comptait que ${nbq.replace(/ régulièrement qualifiée?s?$/, '')} présent${f.genre === 'f' ? 'e' : ''}${+f.nbq_n > 1 ? 's' : ''} au moment du tirage au sort` : ''},`,
+      `Vu que ${f.motif || '…'} ;`, Q_ART123, Q_ART18, Q_ART193, Q_ART281_INC, ...(f.rpe ? [`Vu le ${f.rpe} pour les barèmes et Classements`] : []), reglage('courrier_tarifs', '')],
     forfait: [`Vu le match ${m}${dest.length > 1 ? ' ' + dest.map(d => d.code).join(' / ') : ''}, prévu au calendrier le ${dm},`, `Vu ${f.motif || '…'},`, Q_FORFAIT, reglage('courrier_tarifs', '')],
     libre: [],
   }[c.modele] || [];
@@ -1754,7 +1763,7 @@ function texteCourrier(c) {
 function courrierInitial(it) {
   const g = (D.signalements || []).find(x => String(x.id) === String(it.signalement_id)), modele = modeleDe(it);
   const c = { modele, date: today(), match: it.match || (g && g.match) || '', date_match: (g && g.date_match) || '', dest: [{ code: it.club, civ: civDe(it.club), montant: num(it.montant) }],
-    f: { joueurs: it.detail || (g && g.details) || '', motif: MOTIF_DEF[modele] || '', article: ARTICLE_SURCL, nbq_n: g && g.nb_qualifies != null ? String(g.nb_qualifies) : '', genre: (g && g.nb_genre) || 'm', rpe: 'RPE Senior Accession', perte: modele === 'forfait' ? 'forfait' : 'penalite', points: modele === 'forfait' ? 'zéro (0) point' : 'un (1) point' } };
+    f: { joueurs: it.detail || (g && g.details) || '', motif: MOTIF_DEF[modele] || '', article: ARTICLE_SURCL, nbq_n: g && g.nb_qualifies != null ? String(g.nb_qualifies) : '', genre: (g && g.nb_genre) || 'm', rpe: 'RPE Senior Accession', perte: ['forfait', 'incomplete'].includes(modele) ? 'forfait' : 'penalite', points: ['forfait', 'incomplete'].includes(modele) ? 'zéro (0) point' : 'un (1) point' } };
   return Object.assign(c, texteCourrier(c), { edite: false });
 }
 let CR = null, CR_OK = '';
@@ -1799,7 +1808,7 @@ function renderCourrier(it) {
   </div>`);
   CR_OK = '';
   window.majCR = redessiner => { if (!CR.edite) Object.assign(CR, texteCourrier(CR)); if (redessiner) { const sv = { ...CR }; it._tmp = sv; renderCourrierDepuis(it, sv); } else { $('cr-vu').value = CR.vu; $('cr-dec').value = CR.dec; } };
-  $('cr-mod').onchange = e => { CR.modele = e.target.value; CR.f.motif = MOTIF_DEF[CR.modele] || CR.f.motif; if (!CR.f.article) CR.f.article = ARTICLE_SURCL; if (CR.modele === 'forfait') { CR.f.perte = 'forfait'; CR.f.points = 'zéro (0) point'; } CR.edite = false; majCR(true); };
+  $('cr-mod').onchange = e => { CR.modele = e.target.value; CR.f.motif = MOTIF_DEF[CR.modele] || CR.f.motif; if (!CR.f.article) CR.f.article = ARTICLE_SURCL; if (CR.modele === 'forfait' || CR.modele === 'incomplete') { CR.f.perte = 'forfait'; CR.f.points = 'zéro (0) point'; } CR.edite = false; majCR(true); };
   $('cr-date').onchange = e => CR.date = e.target.value;
   $('cr-match').oninput = e => { CR.match = e.target.value.trim(); majCR(); };
   $('cr-dm').onchange = e => { CR.date_match = e.target.value; majCR(); };
