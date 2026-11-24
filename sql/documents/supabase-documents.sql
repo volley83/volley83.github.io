@@ -137,7 +137,6 @@ insert into doc_documents (slug, titre, categorie, ordre) values
   ('feuille-tournoi-6x6',            'Feuille de match pour tournoi 6x6',                  'feuilles', 3),
   ('feuille-m15-m18-5-sets',         'Feuille de match M15 - M18 - 5 sets',                'feuilles', 4),
   ('feuille-competlib-4x4',          'Feuille de match Compet''Lib 4x4',                   'feuilles', 5),
-  ('feuille-competlib-6x6',          'Feuille de match Compet''Lib 6x6',                   'feuilles', 6),
   ('demande-derogation',             'Demande de dérogation exceptionnelle',               'formulaires', 1),
   ('composition-equipe-pdf',         'Fiche de composition d''équipe (PDF)',               'formulaires', 2),
   ('composition-equipe-word',        'Fiche de composition d''équipe (Word)',              'formulaires', 3),
