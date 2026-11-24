@@ -1674,6 +1674,7 @@ async function pdfMemoire(f) {
 
 // ======================== COURRIERS DE DÉCISION (Commission Sportive) ========================
 const CIVS = ['Monsieur le président', 'Madame la présidente'];
+const RPES = ['RPE Senior Accession', 'RPE COMPETLIB 4x4 Mixte', 'RPE des championnats Jeunes'];
 const POINTS = ['un (1) point', 'zéro (0) point', 'moins un (-1) point', 'moins deux (-2) points'];
 const Q_ART28_PEN = "Vu l’article 28 du RGES : « L’équipe constituée d’un collectif joueurs et/ou le GSA en infraction avec le présent règlement ou la réglementation particulière d’une épreuve encourt la :\n - PERTE la rencontre par PÉNALITÉ, si le seul décompte des joueurs régulièrement qualifiés pour cette rencontre et inscrits sur la feuille de match, rend l’équipe complète. »";
 const Q_ART28_FORF = "Vu l’article 28 du RGES : « L’équipe constituée d’un collectif joueurs et/ou le GSA en infraction avec le présent règlement ou la réglementation particulière d’une épreuve encourt la :\n - PERTE la rencontre par FORFAIT, si le seul décompte des joueurs régulièrement qualifiés pour cette rencontre et inscrits sur la feuille de match, rend l’équipe incomplète. »";
@@ -1780,7 +1781,7 @@ function renderCourrier(it) {
     if (k === 'nbq') return `<div class="field"><label>${lab}</label><div style="display:flex;gap:8px"><input data-c="nbq_n" type="number" min="0" style="width:110px" value="${esc(CR.f.nbq_n ?? '')}" placeholder="Nombre">
       <select data-c="genre" style="width:auto"><option value="m" ${CR.f.genre !== 'f' ? 'selected' : ''}>joueurs régulièrement qualifiés</option><option value="f" ${CR.f.genre === 'f' ? 'selected' : ''}>joueuses régulièrement qualifiées</option></select></div></div>`;
     if (k === 'dho' || k === 'init') return `<div class="field"><label>${lab}</label><input type="date" data-c="${k}" value="${esc(v)}"></div>`;
-    if (k === 'rpe') return `<div class="field"><label>${lab}</label><input data-c="rpe" list="cr-rpe" value="${esc(v)}"><datalist id="cr-rpe"><option value="RPE Senior Accession"><option value="RPE COMPETLIB 4x4 Mixte"><option value="RPE des championnats Jeunes"></datalist></div>`;
+    if (k === 'rpe') return `<div class="field"><label>${lab}</label><select data-c="rpe">${[...new Set([...RPES, ...(v ? [v] : [])])].map(x => `<option ${x === v ? 'selected' : ''}>${esc(x)}</option>`).join('')}<option value="__autre">Autre… (à saisir)</option></select></div>`;
     return `<div class="field" style="grid-column:1 / -1"><label>${lab}</label><input data-c="${k}" value="${esc(v)}" placeholder="${esc(ph)}"></div>`; };
   const retour = `<a class="btn ghost" href="#ris${r ? '/' + r.id : ''}">← Retour au RIS${r ? ' n° ' + r.numero : ''}</a>`;
   shell('ris', `
@@ -1818,6 +1819,8 @@ function renderCourrier(it) {
   $('cr-dm').onchange = e => { CR.date_match = e.target.value; majCR(); };
   document.querySelectorAll('[data-d]').forEach(x => x.onchange = () => { const d = CR.dest[+x.dataset.i]; d[x.dataset.d] = x.dataset.d === 'montant' ? num(x.value) : x.value; if (x.dataset.d === 'code' && x.value) d.civ = civDe(x.value); majCR(x.dataset.d === 'code'); });
   document.querySelectorAll('[data-c]').forEach(x => x[x.tagName === 'SELECT' || x.type === 'date' ? 'onchange' : 'oninput'] = () => { CR.f[x.dataset.c] = x.value.trim();
+    if (x.value === '__autre') { const t = (prompt('Nom du règlement (ex. : RPE Pré-Régional Masculin)') || '').trim(); if (!t) { x.value = RPES[0]; CR.f.rpe = x.value; majCR(); return; }
+      CR.f.rpe = t; x.insertAdjacentHTML('afterbegin', `<option>${esc(t)}</option>`); x.value = t; }
     if (x.dataset.c === 'perte' || x.dataset.c === 'rpe') { const pt = pointsDef(CR.f); if (pt !== CR.f.points) { CR.f.points = pt; const sel = document.querySelector('[data-c=points]'); if (sel) sel.value = pt; } }
     majCR(); });
   $('cr-vu').oninput = e => { CR.vu = e.target.value; CR.edite = true; };
