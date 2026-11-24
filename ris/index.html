@@ -43,6 +43,7 @@
   .inf { border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: #FAFBFD; display: flex; flex-direction: column; gap: 10px; position: relative; }
   .inf .num { position: absolute; top: -10px; left: 12px; background: var(--navy); color: #fff; font-size: 12px; font-weight: 700; border-radius: 10px; padding: 1px 9px; }
   .inf .x { position: absolute; top: 8px; right: 8px; }
+  @media (max-width: 560px) { .inf .g3 { grid-template-columns: 1fr !important; } }
   .badge { display: inline-flex; padding: 2px 9px; border-radius: 20px; font-size: 12px; font-weight: 700; }
   .b-new { background: var(--warn-bg); color: var(--warn); } .b-ok { background: var(--ok-bg); color: var(--ok); } .b-no { background: #EEF1F5; color: var(--muted); }
   .chk { display: flex; gap: 8px; align-items: center; font-weight: 500; font-size: 14px; }
@@ -105,6 +106,15 @@ function optionsNature() {
     <optgroup label="Marqueur">${MARQUEUR.map(t => `<option value="t:${esc(t)}">${esc(t)}</option>`).join('')}</optgroup>
     <option value="autre">Autre infraction</option>`;
 }
+// Demandes de report / de modification au calendrier : précisions de dates dédiées, et proposition d'ajouter l'autre infraction
+const RE_REPORT = /REPORT DE MATCH/i, RE_MODIF = /MODIFICATION AU CALENDRIER/i;
+const natDe = v => D.natures.find(x => String(x.id) === String(v));
+const estCalendrier = v => { const n = natDe(v); return !!n && (RE_REPORT.test(n.designation) || RE_MODIF.test(n.designation)); };
+const autreCalendrier = v => { const n = natDe(v); if (!n) return null; const re = RE_REPORT.test(n.designation) ? RE_MODIF : RE_REPORT; return D.natures.find(x => re.test(x.designation)) || null; };
+const dFr = x => x ? fmtD(x) : '';
+const detailsCalendrier = d => { const g = k => d.querySelector(`[data-k=${k}]`).value;
+  return [g('dd') && 'Demande du ' + dFr(g('dd')), g('di') && 'date initiale ' + dFr(g('di')), g('dr') && 'nouvelle date ' + dFr(g('dr'))].filter(Boolean).join(' · '); };
+const isoDe = t => { const m = String(t || '').match(/(\d{2})\/(\d{2})\/(\d{4})/); return m ? `${m[3]}-${m[2]}-${m[1]}` : ''; };
 function ligneInf(v) {
   const d = document.createElement('div'); d.className = 'inf';
   const prec = [...document.querySelectorAll('.inf [data-k=club]')].pop();
@@ -112,18 +122,33 @@ function ligneInf(v) {
     <div class="field"><label>Club concerné <span class="req">*</span></label><select data-k="club"><option value="">— Choisir —</option>${D.clubs.map(c => `<option value="${esc(c.code)}">${esc(c.code)} – ${esc(c.nom)}</option>`).join('')}</select></div>
     <div class="field"><label>Nature de l'infraction <span class="req">*</span></label><select data-k="nat">${optionsNature()}</select></div>
     <div class="field"><label>Intitulé de l'infraction (publié sur le RIS) <span class="req">*</span></label><input data-k="int" placeholder="Ex. : Licence non présentée – 2 joueuses"><span class="small muted">Pré-rempli selon la nature choisie. Restez général : <b>pas de nom</b> ici.</span></div>
-    <div class="field"><label>Précisions : nom du joueur, n° de licence…</label><input data-k="det" placeholder="Ex. : DUPONT Léa, licence 1234567"><span class="small muted">🔒 Transmises au Comité et reprises sur la facture du club, mais <b>jamais publiées sur le RIS</b>.</span></div>`;
+    <div class="field" data-z="det"><label>Précisions : nom du joueur, n° de licence…</label><input data-k="det" placeholder="Ex. : DUPONT Léa, licence 1234567"><span class="small muted">🔒 Transmises au Comité et reprises sur la facture du club, mais <b>jamais publiées sur le RIS</b>.</span></div>
+    <div class="field" data-z="cal" hidden><label>Précisions sur la demande <span class="req">*</span></label>
+      <div class="g3" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+        <div class="field"><span class="small">Date de la demande</span><input type="date" data-k="dd"></div>
+        <div class="field"><span class="small">Date initiale du match</span><input type="date" data-k="di"></div>
+        <div class="field"><span class="small">Date de report / nouvelle date</span><input type="date" data-k="dr"></div>
+      </div><span class="small muted">🔒 Reprises sur la facture du club, mais <b>jamais publiées sur le RIS</b>.</span></div>
+    <label class="chk" data-z="aussi" hidden style="display:flex;gap:8px;align-items:flex-start;font-size:14.5px"><input type="checkbox" data-k="aussi" style="width:18px;height:18px;margin-top:2px"> <span>Signaler aussi « <b data-z="aussi-nom"></b> » pour cette rencontre (mêmes club, dates et commentaire)</span></label>
+    <div class="field"><label>Commentaire sur cette infraction</label><textarea data-k="com" rows="2" placeholder="Circonstances, explications utiles au Comité…"></textarea></div>`;
+  const majCal = () => { const nat = d.querySelector('[data-k=nat]').value, cal = estCalendrier(nat), au = cal && autreCalendrier(nat);
+    d.querySelector('[data-z=det]').hidden = cal; d.querySelector('[data-z=cal]').hidden = !cal;
+    d.querySelector('[data-z=aussi]').hidden = !au || !!EDIT; if (au) d.querySelector('[data-z=aussi-nom]').textContent = intitule(au.designation); };
   if (prec) d.querySelector('[data-k=club]').value = prec.value;
   if (v) {   // modification : formulaire pré-rempli
     const sel = d.querySelector('[data-k=nat]'), ok = x => [...sel.options].some(o => o.value === x);
     d.querySelector('[data-k=club]').value = v.club || '';
     sel.value = v.article_id && ok(String(v.article_id)) ? String(v.article_id) : ok('t:' + v.nature) ? 't:' + v.nature : 'autre';
-    d.querySelector('[data-k=int]').value = v.nature || ''; d.querySelector('[data-k=det]').value = v.details || '';
+    d.querySelector('[data-k=int]').value = v.nature || ''; d.querySelector('[data-k=com]').value = v.commentaire || '';
+    if (estCalendrier(sel.value)) { const t = String(v.details || '');
+      d.querySelector('[data-k=dd]').value = isoDe((t.match(/Demande du ([\d/]+)/) || [])[1]); d.querySelector('[data-k=di]').value = isoDe((t.match(/date initiale ([\d/]+)/) || [])[1]);
+      d.querySelector('[data-k=dr]').value = isoDe((t.match(/nouvelle date ([\d/]+)/) || [])[1]); }
+    else d.querySelector('[data-k=det]').value = v.details || '';
   }
-  d.querySelector('[data-k=nat]').onchange = e => { const v = e.target.value, n = D.natures.find(x => String(x.id) === v), inp = d.querySelector('[data-k=int]');
-    inp.value = n ? intitule(n.designation) : v.startsWith('t:') ? v.slice(2) : ''; if (!inp.value) inp.focus(); };
+  d.querySelector('[data-k=nat]').onchange = e => { const v = e.target.value, n = natDe(v), inp = d.querySelector('[data-k=int]');
+    inp.value = n ? intitule(n.designation) : v.startsWith('t:') ? v.slice(2) : ''; majCal(); if (!inp.value) inp.focus(); };
   d.querySelector('.x').onclick = () => { if (document.querySelectorAll('.inf').length > 1) { d.remove(); numeroter(); } };
-  $('infs').appendChild(d); numeroter(); return d;
+  $('infs').appendChild(d); majCal(); numeroter(); return d;
 }
 function numeroter() { const l = document.querySelectorAll('.inf'); l.forEach((d, k) => { d.querySelector('.num').textContent = 'Infraction ' + (k + 1); d.querySelector('.x').hidden = l.length < 2; }); }
 function render(okMsg) {
@@ -141,7 +166,6 @@ function render(okMsg) {
     <p class="small muted" ${EDIT ? 'hidden' : ''}>Vous pouvez signaler <b>plusieurs infractions pour la même rencontre</b> (pour un club ou pour les deux) : ajoutez-les avec le bouton ci-dessous.</p>
     <div id="infs" style="display:flex;flex-direction:column;gap:18px;padding-top:6px"></div>
     <div ${EDIT ? 'hidden' : ''}><button type="button" class="btn ghost" id="f-plus">+ Ajouter une autre infraction sur ce match</button></div>
-    <div class="field"><label for="f-com">Commentaires</label><textarea id="f-com" placeholder="Tout ce qui peut aider le Comité : circonstances, joueur ou équipe concernés, numéros de licence, horaires…">${esc(EDIT ? EDIT.commentaire || '' : '')}</textarea></div>
     <div id="f-err" class="msg err" hidden></div>
     <button class="btn primary" type="submit" id="f-ok">${EDIT ? 'Enregistrer la correction' : 'Envoyer au Comité'}</button>
     ${EDIT ? '<button class="btn ghost" type="button" id="f-annul">Annuler la modification</button>' : ''}
@@ -159,27 +183,34 @@ function render(okMsg) {
   $('f').onsubmit = async ev => {
     ev.preventDefault();
     const err = m => { $('f-err').textContent = m; $('f-err').hidden = false; };
-    const date_match = $('f-date').value, match = $('f-match').value.trim(), commentaire = $('f-com').value.trim();
-    const ps = [...document.querySelectorAll('.inf')].map(d => { const g = k => d.querySelector(`[data-k=${k}]`).value.trim(), nat = g('nat');
-      return { date_match, match, club: g('club'), article_id: /^\d+$/.test(nat) ? nat : null, nature: g('int'), details: g('det'), commentaire }; });
+    const date_match = $('f-date').value, match = $('f-match').value.trim(), rows = [...document.querySelectorAll('.inf')];
     if (!date_match) return err('Indiquez la date du match.');
-    for (const [k, p] of ps.entries()) {
+    const ps = [];
+    for (const [k, d] of rows.entries()) {
+      const g = x => d.querySelector(`[data-k=${x}]`).value.trim(), nat = g('nat'), cal = estCalendrier(nat);
+      const p = { date_match, match, club: g('club'), article_id: /^\d+$/.test(nat) ? nat : null, nature: g('int'), details: cal ? detailsCalendrier(d) : g('det'), commentaire: g('com'), _row: k };
       if (!p.club) return err(`Infraction ${k + 1} : choisissez le club concerné.`);
       if (!p.nature) return err(`Infraction ${k + 1} : choisissez ou précisez l'infraction.`);
+      if (cal && (!g('dd') || !g('di'))) return err(`Infraction ${k + 1} : indiquez au moins la date de la demande et la date initiale du match.`);
+      ps.push(p);
+      const au = cal && !EDIT && d.querySelector('[data-k=aussi]').checked && autreCalendrier(nat);
+      if (au) ps.push({ ...p, article_id: au.id, nature: intitule(au.designation) });
     }
     $('f-ok').disabled = true;
     if (EDIT) {
-      try { await rpc('fac_signal_modifier', { p_code: CODE, p_id: EDIT.id, p: ps[0] }); EDIT = null; D = await rpc('fac_signal_login', { p_code: CODE });
+      const { _row, ...p0 } = ps[0];
+      try { await rpc('fac_signal_modifier', { p_code: CODE, p_id: EDIT.id, p: p0 }); EDIT = null; D = await rpc('fac_signal_login', { p_code: CODE });
         render('✓ Signalement corrigé.'); window.scrollTo(0, 0); }
       catch(e) { $('f-ok').disabled = false; err(e.message); }
       return;
     }
     let n = 0;
-    try { for (const p of ps) { await rpc('fac_signal_envoyer', { p_code: CODE, p }); n++; }
+    try { for (const { _row, ...p } of ps) { await rpc('fac_signal_envoyer', { p_code: CODE, p }); n++; }
       GARDE = { date: date_match, match }; D = await rpc('fac_signal_login', { p_code: CODE });
       render(n > 1 ? `✓ ${n} infractions envoyées au Comité.` : '✓ Signalement envoyé au Comité. Vous pouvez en saisir un autre pour le même match.'); window.scrollTo(0, 0); }
     catch(e) { $('f-ok').disabled = false; err((n ? `${n} infraction(s) envoyée(s), mais la suivante a échoué : ` : '') + e.message);
-      if (n) { [...document.querySelectorAll('.inf')].slice(0, n).forEach(d => d.remove()); numeroter(); } }
+      if (n) { const fini = new Set(ps.slice(0, n).map(p => p._row)); if (n < ps.length && ps[n]._row === ps[n - 1]._row) fini.delete(ps[n]._row);
+        rows.forEach((d, k) => { if (fini.has(k)) d.remove(); }); numeroter(); } }
   };
 }
 function modifier(id) {
