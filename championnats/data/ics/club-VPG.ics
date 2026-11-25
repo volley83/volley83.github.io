@@ -650,10 +650,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261124T210000
 DTEND;TZID=Europe/Paris:20261124T230000
 SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 3 – Volley Pradé
- tan Gardéen 1
-LOCATION:Guy Moquet 1
-DESCRIPTION:Poule 4FA – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/competlib/4FA
+ tan Gardéen 1 (0-3)
+DESCRIPTION:Résultat : 0-3 (16:25\, 15:25\, 11:25)\nPoule 4FA – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/competlib/4FA
 END:VEVENT
 BEGIN:VEVENT
 UID:4FA015@volley83.github.io
