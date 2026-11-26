@@ -187,6 +187,31 @@ alter table fac_factures add constraint fac_factures_type_check check (type in (
 alter table fac_factures add column if not exists modalite text;   -- mémoire : modalité de remboursement imprimée
 create unique index if not exists fac_factures_numero_uk on fac_factures (saison, type, numero);
 
+-- Franchises de cotisations (manifestations sportives) : personnes mémorisées, états numérotés par année civile
+create table if not exists fac_fr_personnes (
+  id         bigserial primary key,
+  nom        text not null,
+  prenom     text,
+  fonction   text,
+  email      text,
+  created_at timestamptz not null default now()
+);
+create table if not exists fac_franchises (
+  id          bigserial primary key,
+  annee       int not null,
+  numero      int not null,
+  personne_id bigint references fac_fr_personnes(id) on delete set null,
+  nom         text not null,
+  prenom      text,
+  fonction    text,
+  lignes      jsonb not null default '[]',   -- [{date, libelle, paiement, montant}]
+  observations text,
+  paye_le     date,
+  date_doc    date not null default current_date,
+  created_at  timestamptz not null default now(),
+  unique (annee, numero)
+);
+
 -- Reçus fiscaux de dons (Cerfa 11580) : donateurs mémorisés, reçus numérotés par année civile (2026-001…)
 create table if not exists fac_donateurs (
   id         bigserial primary key,
@@ -235,7 +260,9 @@ alter table fac_rappels      enable row level security;
 alter table fac_factures     enable row level security;
 alter table fac_donateurs    enable row level security;
 alter table fac_recus        enable row level security;
-revoke all on fac_clubs, fac_articles, fac_bordereaux, fac_lignes, fac_paiements, fac_reglages, fac_ris, fac_ris_items, fac_saisisseurs, fac_signalements, fac_rappels, fac_factures, fac_donateurs, fac_recus from anon, authenticated;
+alter table fac_fr_personnes enable row level security;
+alter table fac_franchises   enable row level security;
+revoke all on fac_clubs, fac_articles, fac_bordereaux, fac_lignes, fac_paiements, fac_reglages, fac_ris, fac_ris_items, fac_saisisseurs, fac_signalements, fac_rappels, fac_factures, fac_donateurs, fac_recus, fac_fr_personnes, fac_franchises from anon, authenticated;
 
 -- ---------- Outils ----------
 create or replace function fac_is_admin(pwd text) returns boolean
@@ -262,6 +289,8 @@ begin
                    from fac_ris_items i join fac_ris r on r.id = i.ris_id where r.saison = p_saison),
     'rappels',      (select coalesce(jsonb_agg(to_jsonb(x) order by x.created_at), '[]') from fac_rappels x where x.saison = p_saison),
     'saisisseurs',  (select coalesce(jsonb_agg(to_jsonb(x) order by x.nom), '[]') from fac_saisisseurs x),
+    'franchises',   (select coalesce(jsonb_agg(to_jsonb(f) order by f.annee desc, f.numero desc), '[]') from fac_franchises f),
+    'fr_personnes', (select coalesce(jsonb_agg(to_jsonb(x) order by lower(x.nom), lower(x.prenom)), '[]') from fac_fr_personnes x),
     'recus',        (select coalesce(jsonb_agg(to_jsonb(r) order by r.annee desc, r.numero desc), '[]') from fac_recus r),
     'donateurs',    (select coalesce(jsonb_agg(to_jsonb(d) order by lower(d.nom), lower(d.prenom)), '[]') from fac_donateurs d),
     'factures',     (select coalesce(jsonb_agg(to_jsonb(f) order by f.numero), '[]') from fac_factures f where f.saison = p_saison),
@@ -789,6 +818,34 @@ begin
   return rid;
 end $$;
 
+-- Franchise : p = {id?, personne_id?, nom, prenom, fonction, email, lignes, observations, paye_le, date_doc} ; {id, supprimer:true}
+-- Numéro attribué à la création (année du document). La personne est mémorisée / mise à jour.
+create or replace function fac_admin_franchise(pwd text, p jsonb) returns bigint
+language plpgsql security definer set search_path = public as $$
+declare fid bigint := nullif(p->>'id', '')::bigint; pid bigint := nullif(p->>'personne_id', '')::bigint; an int;
+begin
+  if not fac_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  if (p->>'supprimer')::boolean then delete from fac_franchises where id = fid; return fid; end if;
+  if (p->>'supprimer_personne')::boolean then delete from fac_fr_personnes where id = pid; return pid; end if;
+  if nullif(trim(p->>'nom'), '') is null then raise exception 'Nom manquant'; end if;
+  if pid is null then
+    select id into pid from fac_fr_personnes where lower(nom) = lower(trim(p->>'nom')) and lower(coalesce(prenom, '')) = lower(coalesce(trim(p->>'prenom'), '')) limit 1;
+  end if;
+  if pid is null then insert into fac_fr_personnes (nom) values (trim(p->>'nom')) returning id into pid; end if;
+  update fac_fr_personnes set nom = trim(p->>'nom'), prenom = nullif(trim(p->>'prenom'), ''), fonction = nullif(trim(p->>'fonction'), ''),
+    email = nullif(trim(p->>'email'), '') where id = pid;
+  if fid is null then
+    an := extract(year from coalesce(nullif(p->>'date_doc', '')::date, current_date));
+    insert into fac_franchises (annee, numero, nom) values (an, (select coalesce(max(numero), 0) + 1 from fac_franchises where annee = an), trim(p->>'nom'))
+      returning id into fid;
+  end if;
+  update fac_franchises set personne_id = pid, nom = trim(p->>'nom'), prenom = nullif(trim(p->>'prenom'), ''), fonction = nullif(trim(p->>'fonction'), ''),
+    lignes = coalesce(p->'lignes', '[]'), observations = nullif(trim(p->>'observations'), ''), paye_le = nullif(p->>'paye_le', '')::date,
+    date_doc = coalesce(nullif(p->>'date_doc', '')::date, date_doc)
+  where id = fid;
+  return fid;
+end $$;
+
 -- Donateur : modification ou suppression (les reçus déjà émis gardent leurs coordonnées)
 create or replace function fac_admin_donateur(pwd text, p jsonb) returns bigint
 language plpgsql security definer set search_path = public as $$
@@ -816,6 +873,7 @@ grant execute on function
   fac_admin_facture(text, jsonb),
   fac_admin_devis_facture(text, bigint),
   fac_admin_recu(text, jsonb),
+  fac_admin_franchise(text, jsonb),
   fac_admin_courrier(text, bigint, jsonb),
   fac_admin_donateur(text, jsonb),
   fac_admin_ris(text, jsonb),
@@ -1030,6 +1088,8 @@ insert into fac_reglages (cle, valeur) values
   ('recu_signataire', '"Gérald HENRY\nPrésident du Comité du Var de Volley-Ball"'),
   ('recu_mail_objet', '"Reçu fiscal N° {numero} – Comité du Var de Volley-Ball"'),
   ('recu_mail_modele', '"Bonjour {prenom} {nom},\n\nNous vous remercions chaleureusement pour votre don de {montant} au Comité du Var de Volley-Ball.\n\nVous trouverez ci-joint votre reçu fiscal N° {numero}, à conserver : il vous permet de bénéficier d''une réduction d''impôt sur le revenu de 66 % du montant de votre don, dans la limite de 20 % de votre revenu imposable.\n\nAvec toute notre reconnaissance,\n\nEric CHASSAGNARD\nTrésorier\nComité du Var de Volley-Ball"'),
+  ('franchise_plafond', '154'),
+  ('franchise_mention', '"Sommes versées au titre de la franchise de cotisations applicable aux manifestations sportives (arrêté du 27 juillet 1994, circulaire interministérielle DSS/AAF A1/94-60 du 28 juillet 1994). Dans la limite de 70 % du plafond journalier de la Sécurité sociale par manifestation, soit {plafond} € en {annee}, et pour les cinq premières manifestations du mois par personne et par organisateur, ces sommes ne sont pas soumises aux cotisations de Sécurité sociale ni à la CSG et à la CRDS. Justificatifs conservés : feuille de match ou programme de la manifestation et preuve de la présence du bénéficiaire."'),
   ('courrier_tarifs', '"Vu les tarifs pour la saison 2026-2027 approuvés par l''Assemblée Générale."'),
   ('courrier_signataires', '"Le Président du Comité du Var|Gérald HENRY\nLe président de la Commission Sportive|Loïc ADORA"'),
   ('courrier_mail_objet', '"Match {match} – Décision de la Commission Sportive"'),

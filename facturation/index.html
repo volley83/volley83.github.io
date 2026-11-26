@@ -221,7 +221,7 @@ const clubsVisibles = () => D.clubs.filter(c => c.actif || D.lignes.some(l => l.
 async function load() {
   D = await rpc('fac_admin_get', { pwd: PWD, p_saison: SAISON });
   D.lignes.forEach(l => { l.quantite = num(l.quantite); l.prix = num(l.prix); });
-  D.factures = D.factures || []; D.clients = D.clients || []; D.recus = D.recus || []; D.donateurs = D.donateurs || [];
+  D.factures = D.factures || []; D.clients = D.clients || []; D.recus = D.recus || []; D.donateurs = D.donateurs || []; D.franchises = D.franchises || []; D.fr_personnes = D.fr_personnes || [];
   D.recus.forEach(r => { r.montant = num(r.montant); });
 }
 
@@ -248,7 +248,7 @@ function logout() { PWD = ''; D = null; try { sessionStorage.removeItem('fac_adm
 // ======================== MISE EN PAGE ========================
 function shell(tab, body) {
   const saisons = [...new Set([...(D.saisons || []), saisonDe(today()), SAISON])].sort().reverse();
-  const nav = [['recap', 'Récapitulatif'], ['bordereaux', 'Bordereaux'], ['ris', 'RIS'], ['paiements', 'Paiements'], ['factures', 'Hors clubs'], ['dons', 'Reçus de dons'], ['articles', 'Articles'], ['clubs', 'Clubs'], ['reglages', 'Réglages']];
+  const nav = [['recap', 'Récapitulatif'], ['bordereaux', 'Bordereaux'], ['ris', 'RIS'], ['paiements', 'Paiements'], ['factures', 'Hors clubs'], ['dons', 'Reçus de dons'], ['franchises', 'Franchises'], ['articles', 'Articles'], ['clubs', 'Clubs'], ['reglages', 'Réglages']];
   $('app').innerHTML = `
   <header><div class="wrap head">
     <img src="logo-comite-var.jpg" alt="Comité du Var de Volley-Ball">
@@ -818,6 +818,10 @@ function renderReglages() {
     <div class="field"><label>Objet du mail</label><input id="r-rmo" value="${esc(reglage('recu_mail_objet', ''))}"></div>
     <div class="field"><label>Texte du mail (champs : {prenom}, {nom}, {montant}, {numero}, {date})</label><textarea id="r-rmm" rows="9">${esc(reglage('recu_mail_modele', ''))}</textarea></div>
     <div class="btnrow"><button class="btn primary" id="r-ok7">Enregistrer</button></div></div>
+  <div class="card stack"><h3>Franchises (manifestations sportives)</h3>
+    <div class="grid" style="grid-template-columns:200px minmax(0,1fr)"><div class="field"><label>Maximum par manifestation (€)</label><input id="r-fpl" value="${fmtN(reglage('franchise_plafond', 154))}" inputmode="decimal"><span class="small muted">70 % du plafond journalier de la Sécurité sociale (154 € en 2026). À mettre à jour chaque 1er janvier.</span></div>
+      <div class="field"><label>Mention imprimée sur l'état (champs {plafond}, {annee})</label><textarea id="r-fme" rows="5">${esc(reglage('franchise_mention', ''))}</textarea></div></div>
+    <div class="btnrow"><button class="btn primary" id="r-ok10">Enregistrer</button></div></div>
   <div class="card stack"><h3>Courriers de décision (Commission Sportive)</h3>
     <div class="field"><label>Phrase des tarifs (dernier « Vu » des courriers)</label><input id="r-ct" value="${esc(reglage('courrier_tarifs', ''))}"></div>
     <div class="field"><label>Signataires (une ligne par signataire : titre|nom)</label><textarea id="r-cs" rows="2">${esc(reglage('courrier_signataires', ''))}</textarea></div>
@@ -840,6 +844,7 @@ function renderReglages() {
     <div class="btnrow"><button class="btn primary" id="r-ok2">Enregistrer</button></div></div>`);
   $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mention_tva', p_valeur: $('r-tva').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_pied', p_valeur: $('r-rp').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_mention', p_valeur: $('r-rm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok3').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_total', p_valeur: $('r-at').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_partiel', p_valeur: $('r-ap').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+  $('r-ok10').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'franchise_plafond', p_valeur: num($('r-fpl').value) }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'franchise_mention', p_valeur: $('r-fme').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok9').onclick = async () => { try { for (const [k, i] of [['courrier_tarifs', 'r-ct'], ['courrier_signataires', 'r-cs'], ['courrier_mail_objet', 'r-cmo'], ['courrier_mail_modele', 'r-cmm']]) await rpc('fac_admin_reglage', { pwd: PWD, p_cle: k, p_valeur: $(i).value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok8').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'memoire_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'memoire_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok7').onclick = async () => { try { for (const [k, i] of [['recu_objet_asso', 'r-ro2'], ['recu_signataire', 'r-sg'], ['recu_rna', 'r-rna'], ['recu_mail_objet', 'r-rmo'], ['recu_mail_modele', 'r-rmm']]) await rpc('fac_admin_reglage', { pwd: PWD, p_cle: k, p_valeur: $(i).value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
@@ -2131,6 +2136,210 @@ async function chargerSignature(file) {
   return c.toDataURL('image/png');
 }
 
+// ======================== FRANCHISES (MANIFESTATIONS SPORTIVES) ========================
+let FR_AN = null;
+const frDe = id => D.franchises.find(f => String(f.id) === String(id));
+const frPers = id => D.fr_personnes.find(p => String(p.id) === String(id));
+const frNum = f => f.annee + '-' + String(f.numero).padStart(3, '0');
+const frPlafond = () => num(reglage('franchise_plafond', 154)) || 154;
+const frTotal = f => r2((f.lignes || []).reduce((s, l) => s + num(l.montant), 0));
+const FR_EXCLUS = /arbitr|entra[iî]n|coach|[ée]ducat|m[ée]dec|kin[ée]|ost[ée]o|secr[ée]tar|administrat|comptab/i;
+const moisDe = d => String(d || '').slice(0, 7);
+const nomMois = m => { const [a, n] = m.split('-'); return ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'][+n - 1] + ' ' + a; };
+// Toutes les manifestations d'une personne (hors état en cours d'édition), par mois
+function frManifsMois(nom, prenom, exclId) {
+  const k = (String(nom).trim() + '|' + String(prenom || '').trim()).toLowerCase(), m = {};
+  D.franchises.filter(f => String(f.id) !== String(exclId) && (String(f.nom).trim() + '|' + String(f.prenom || '').trim()).toLowerCase() === k)
+    .forEach(f => (f.lignes || []).forEach(l => { if (l.date) { const c = moisDe(l.date); (m[c] = m[c] || new Set()).add(l.date); } }));
+  return m;
+}
+function renderFranchises() {
+  const ans = [...new Set([new Date().getFullYear(), ...D.franchises.map(f => f.annee)])].sort((a, b) => b - a);
+  if (!FR_AN || !ans.includes(FR_AN)) FR_AN = ans[0];
+  const fs = D.franchises.filter(f => f.annee === FR_AN), tot = r2(fs.reduce((s, f) => s + frTotal(f), 0));
+  shell('franchises', `
+  <div class="ttl"><div><h1 style="font-size:34px">Franchises ${FR_AN}</h1><p class="muted">États des sommes versées aux personnes lors des manifestations sportives (franchise de cotisations URSSAF). Les personnes sont gardées pour les prochaines fois.</p></div>
+    <div class="btnrow"><select id="fr-an" style="width:auto">${ans.map(a => `<option ${a === FR_AN ? 'selected' : ''}>${a}</option>`).join('')}</select><a class="btn primary" href="#fr/new">+ Nouvel état</a></div></div>
+  <div class="kpis">
+    <div class="kpi"><b>${fs.length}</b><span>état${fs.length > 1 ? 's' : ''} en ${FR_AN}</span></div>
+    <div class="kpi ok"><b>${euros(tot)}</b><span>versés en franchise</span></div>
+    <div class="kpi"><b>${euros(frPlafond())}</b><span>maximum par manifestation</span></div>
+    <div class="kpi"><b>${D.fr_personnes.length}</b><span>personne${D.fr_personnes.length > 1 ? 's' : ''} enregistrée${D.fr_personnes.length > 1 ? 's' : ''}</span></div>
+  </div>
+  <div class="msg info small"><b>Rappel des règles :</b> au maximum <b>${euros(frPlafond())}</b> par manifestation (70 % du plafond journalier de la Sécurité sociale), pour les <b>5 premières manifestations du mois</b> par personne. Peuvent en bénéficier les sportifs et les personnes indispensables à l'organisation (accueil, billetterie, installation, accompagnateurs…). <b>Exclus :</b> arbitres et juges, entraîneurs et éducateurs, personnel médical, personnel administratif. Une manifestation sur plusieurs jours compte un jour = une manifestation. Le Comité doit avoir moins de 10 salariés permanents.</div>
+  ${fs.length ? `<div class="tablebox"><table class="t"><thead><tr><th>N°</th><th>Personne</th><th>Fonction</th><th>Manifestations</th><th class="r">Total</th><th>Payé le</th><th></th></tr></thead><tbody>
+    ${fs.map(f => `<tr class="clk" onclick="location.hash='fr/${f.id}'"><td class="nw"><b>${frNum(f)}</b></td>
+      <td class="club"><b>${esc(String(f.nom).toUpperCase())} ${esc(f.prenom || '')}</b></td><td class="small">${esc(f.fonction || '')}</td>
+      <td class="small">${(f.lignes || []).map(l => `${fmtD(l.date)} ${esc(l.libelle || '')}`).join('<br>')}</td>
+      <td class="num"><b>${euros(frTotal(f))}</b></td><td class="nw">${f.paye_le ? fmtD(f.paye_le) : '<span class="badge b-warn">À payer</span>'}</td>
+      <td class="r nw" onclick="event.stopPropagation()"><button class="btn sm ghost" onclick="pdfFranchise(${f.id})">PDF</button></td></tr>`).join('')}
+    </tbody><tfoot><tr><td colspan="4">Total ${FR_AN}</td><td class="num">${euros(tot)}</td><td></td><td></td></tr></tfoot></table></div>`
+  : `<div class="card msg info">Aucun état en ${FR_AN}. Créez le premier avec « Nouvel état ».</div>`}
+  <h2 class="cond" style="font-size:24px">Personnes</h2>
+  ${D.fr_personnes.length ? `<div class="tablebox"><table class="t"><thead><tr><th>Personne</th><th>Fonction</th><th class="r">États</th><th></th></tr></thead><tbody>
+    ${D.fr_personnes.map(p => { const ps = D.franchises.filter(f => String(f.personne_id) === String(p.id));
+      return `<tr><td class="club"><b>${esc(String(p.nom).toUpperCase())} ${esc(p.prenom || '')}</b><small>${esc(p.email || '')}</small></td><td class="small">${esc(p.fonction || '')}</td>
+      <td class="num">${ps.length ? `${ps.length} · ${euros(ps.reduce((s, f) => s + frTotal(f), 0))}` : '—'}</td>
+      <td class="r nw"><a class="btn sm primary" href="#fr/new/${p.id}">+ État</a> <button class="btn sm ghost" title="Retirer cette personne de la liste" onclick="supprFrPers(${p.id})">✕</button></td></tr>`; }).join('')}
+    </tbody></table></div>` : '<p class="muted small">Les personnes sont enregistrées automatiquement à leur premier état.</p>'}`);
+  $('fr-an').onchange = e => { FR_AN = +e.target.value; renderFranchises(); };
+}
+async function supprFrPers(id) {
+  const p = frPers(id);
+  if (!confirm(`Retirer ${p.prenom || ''} ${p.nom} de la liste ?\n\nSes états déjà établis sont conservés.`)) return;
+  try { await rpc('fac_admin_franchise', { pwd: PWD, p: { personne_id: id, supprimer_personne: true } }); await load(); renderFranchises(); toast('✓ Personne retirée'); } catch(e) { fail(e); }
+}
+let FR_LIGNES = [];
+function renderFranchise(f, persId) {
+  const p0 = f || frPers(persId) || {}, v = k => esc(p0[k] || ''), pl = frPlafond();
+  FR_LIGNES = f ? JSON.parse(JSON.stringify(f.lignes || [])) : [{ date: '', libelle: '', paiement: '', montant: '' }];
+  const an = new Date().getFullYear(), dernier = f && !D.franchises.some(x => x.annee === f.annee && x.numero > f.numero);
+  const selId = f ? f.personne_id : persId;
+  shell('franchises', `
+  <div class="crumb"><a href="#franchises">Franchises</a> › ${f ? 'État ' + frNum(f) : 'Nouvel état'}</div>
+  <div class="card stack">
+    <div class="ttl"><div><h2>${f ? 'Franchise N° ' + frNum(f) : 'Nouvel état de franchise'}</h2><p class="muted">${f ? 'Vous pouvez corriger l\'état puis régénérer le PDF : il garde son numéro.' : `Le numéro sera attribué à l'enregistrement (prochain : <b>${an}-${String(Math.max(0, ...D.franchises.filter(x => x.annee === an).map(x => x.numero)) + 1).padStart(3, '0')}</b>).`}</p></div>
+      ${f ? `<div class="btnrow"><button class="btn ghost" onclick="pdfFranchise(${f.id})">⬇ PDF</button>${dernier ? `<button class="btn danger" onclick="supprFranchise(${f.id})">Supprimer</button>` : ''}</div>` : ''}</div>
+    <h3 class="cond" style="font-size:19px">Personne</h3>
+    ${D.fr_personnes.length ? `<div class="field"><label>Personne déjà enregistrée</label><select id="fr-pers"><option value="">— Nouvelle personne —</option>${D.fr_personnes.map(p => `<option value="${p.id}" ${String(selId) === String(p.id) ? 'selected' : ''}>${esc(String(p.nom).toUpperCase())} ${esc(p.prenom || '')}${p.fonction ? ' – ' + esc(p.fonction) : ''}</option>`).join('')}</select></div>` : ''}
+    <div class="grid g2"><div class="field"><label>Nom *</label><input id="fr-nom" value="${v('nom')}"></div><div class="field"><label>Prénom *</label><input id="fr-prenom" value="${v('prenom')}"></div></div>
+    <div class="grid g2"><div class="field"><label>Fonction sur la manifestation *</label><input id="fr-fonction" value="${v('fonction')}" list="fr-fonctions" placeholder="ex. Accueil et organisation sportive">
+      <datalist id="fr-fonctions">${['Accueil et organisation sportive', 'Organisation sportive', 'Installation des terrains', 'Table de marque', 'Billetterie', 'Accompagnateur', 'Joueur / joueuse'].map(t => `<option value="${t}">`).join('')}</datalist></div>
+      <div class="field"><label>Mail (facultatif)</label><input id="fr-email" value="${v('email')}" inputmode="email"></div></div>
+    <div class="msg warn small" id="fr-excl" hidden></div>
+    <h3 class="cond" style="font-size:19px">Manifestations</h3>
+    <div class="tablebox"><table class="t"><thead><tr><th style="width:150px">Date *</th><th>Manifestation / compétition *</th><th style="width:210px">Paiement (type et référence)</th><th style="width:120px" class="r">Somme versée *</th><th></th></tr></thead><tbody id="fr-lignes"></tbody>
+      <tfoot><tr><td colspan="3">TOTAL GÉNÉRAL</td><td class="num" id="fr-tot"></td><td></td></tr></tfoot></table></div>
+    <div class="btnrow"><button class="btn ghost sm" id="fr-add">+ Ajouter une manifestation</button><span class="small muted">Maximum ${euros(pl)} par manifestation (jour).</span></div>
+    <div id="fr-alertes" class="stack" style="gap:6px"></div>
+    <div class="field"><label>Observations</label><textarea id="fr-obs" rows="2">${esc(f ? f.observations || '' : '')}</textarea></div>
+    <div class="grid g2"><div class="field"><label>Date du document</label><input id="fr-datedoc" type="date" value="${esc(f ? f.date_doc : today())}"></div>
+      <div class="field"><label>Payé le (laisser vide si pas encore payé)</label><input id="fr-paye" type="date" value="${esc(f ? f.paye_le || '' : '')}"></div></div>
+    <div class="btnrow"><button class="btn primary" id="fr-ok">${f ? '✓ Enregistrer les modifications' : '✓ Enregistrer l\'état'}</button>${f ? '' : '<a class="btn ghost" href="#franchises">Annuler</a>'}</div>
+    <p class="small muted">À conserver avec l'état signé : la feuille de match ou le programme de la manifestation, et la preuve de la présence de la personne.</p>
+  </div>`);
+  const dessine = () => {
+    $('fr-lignes').innerHTML = FR_LIGNES.map((l, i) => `<tr>
+      <td><input type="date" data-i="${i}" data-k="date" value="${esc(l.date || '')}"></td>
+      <td><input data-i="${i}" data-k="libelle" value="${esc(l.libelle || '')}" placeholder="ex. Tournoi beach Les Sablettes"></td>
+      <td><input data-i="${i}" data-k="paiement" value="${esc(l.paiement || '')}" placeholder="ex. Chèque n° 1234567"></td>
+      <td><input data-i="${i}" data-k="montant" value="${l.montant === '' || l.montant == null ? '' : fmtN(l.montant)}" inputmode="decimal" placeholder="${fmtN(pl)}" style="text-align:right"></td>
+      <td class="r">${FR_LIGNES.length > 1 ? `<button class="btn sm ghost" data-del="${i}">✕</button>` : ''}</td></tr>`).join('');
+    $('fr-lignes').querySelectorAll('input').forEach(x => x.oninput = x.onchange = () => { const l = FR_LIGNES[x.dataset.i]; l[x.dataset.k] = x.dataset.k === 'montant' ? (x.value.trim() === '' ? '' : num(x.value)) : x.value; verifie(); });
+    $('fr-lignes').querySelectorAll('[data-del]').forEach(b => b.onclick = () => { FR_LIGNES.splice(+b.dataset.del, 1); dessine(); });
+    verifie();
+  };
+  const verifie = () => {
+    $('fr-tot').innerHTML = `<b>${euros(FR_LIGNES.reduce((s, l) => s + num(l.montant), 0))}</b>`;
+    const a = [];
+    FR_LIGNES.forEach(l => { if (num(l.montant) > pl) a.push(`<b>${fmtD(l.date) || 'Ligne sans date'}</b> : ${euros(num(l.montant))} dépasse le maximum de ${euros(pl)} par manifestation. La part au-delà serait soumise à cotisations.`); });
+    const dates = FR_LIGNES.map(l => l.date).filter(Boolean);
+    if (new Set(dates).size < dates.length) a.push('Deux lignes ont la même date : une seule franchise par jour de manifestation.');
+    const nom = $('fr-nom').value.trim();
+    if (nom) {
+      const m = frManifsMois(nom, $('fr-prenom').value, f && f.id);
+      dates.forEach(d => { const c = moisDe(d); (m[c] = m[c] || new Set()).add(d); });
+      Object.entries(m).filter(([c, s]) => s.size > 5 && dates.some(d => moisDe(d) === c)).forEach(([c, s]) => a.push(`${s.size} manifestations en ${nomMois(c)} pour cette personne (tous états confondus) : seules les 5 premières du mois peuvent bénéficier de la franchise.`));
+    }
+    $('fr-alertes').innerHTML = a.map(t => `<div class="msg warn small">⚠ ${t}</div>`).join('');
+    const fo = $('fr-fonction').value;
+    $('fr-excl').hidden = !FR_EXCLUS.test(fo);
+    $('fr-excl').innerHTML = '⚠ Cette fonction est exclue de la franchise (arbitres, entraîneurs / éducateurs, personnel médical et administratif) : les sommes versées doivent être déclarées normalement.';
+  };
+  $('fr-add').onclick = () => { FR_LIGNES.push({ date: '', libelle: '', paiement: '', montant: '' }); dessine(); };
+  ['fr-nom', 'fr-prenom', 'fr-fonction'].forEach(i => $(i).oninput = verifie);
+  if ($('fr-pers')) $('fr-pers').onchange = e => { const p = frPers(e.target.value) || {}; ['nom', 'prenom', 'fonction', 'email'].forEach(k => $('fr-' + k).value = p[k] || ''); verifie(); };
+  $('fr-ok').onclick = () => enregistrerFranchise(f);
+  dessine();
+}
+async function enregistrerFranchise(f) {
+  const g = k => $('fr-' + k).value.trim();
+  const lignes = FR_LIGNES.filter(l => l.date || String(l.libelle || '').trim() || num(l.montant)).map(l => ({ date: l.date, libelle: String(l.libelle || '').trim(), paiement: String(l.paiement || '').trim(), montant: r2(num(l.montant)) }))
+    .sort((a, b) => String(a.date).localeCompare(String(b.date)));
+  const e = [];
+  if (!g('nom') || !g('prenom')) e.push('le nom et le prénom');
+  if (!g('fonction')) e.push('la fonction');
+  if (!lignes.length) e.push('au moins une manifestation');
+  if (lignes.some(l => !l.date || !l.libelle || !(l.montant > 0))) e.push('la date, le libellé et la somme de chaque manifestation');
+  if (e.length) return alert('Indiquez ' + e.join(', ') + '.');
+  if (lignes.some(l => l.montant > frPlafond()) && !confirm(`Une somme dépasse ${euros(frPlafond())} par manifestation. Enregistrer quand même ?`)) return;
+  const date_doc = g('datedoc') || today();
+  if (f && String(new Date(date_doc).getFullYear()) !== String(f.annee)) return alert(`Cet état est numéroté sur l'année ${f.annee} : sa date doit rester en ${f.annee}.`);
+  const p = { id: f ? f.id : null, personne_id: $('fr-pers') ? $('fr-pers').value : '', nom: g('nom'), prenom: g('prenom'), fonction: g('fonction'), email: g('email'), lignes, observations: g('obs'), paye_le: g('paye'), date_doc };
+  try {
+    const id = await rpc('fac_admin_franchise', { pwd: PWD, p }); await load();
+    toast(f ? '✓ État mis à jour' : `✓ État ${frNum(frDe(id))} enregistré`);
+    location.hash = 'fr/' + id; if (f) renderFranchise(frDe(id));
+  } catch(err) { fail(err); }
+}
+async function supprFranchise(id) {
+  const f = frDe(id);
+  if (!confirm(`Supprimer définitivement l'état ${frNum(f)} ?\n\nC'est le dernier de l'année : son numéro sera réattribué au prochain état.`)) return;
+  try { await rpc('fac_admin_franchise', { pwd: PWD, p: { id, supprimer: true } }); await load(); location.hash = 'franchises'; toast('✓ État supprimé'); } catch(e) { fail(e); }
+}
+async function pdfFranchise(id) {
+  if (!window.jspdf) { alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.'); return; }
+  const f = frDe(id), { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, M = 15, NAVY = [11, 33, 73], TXT = [20, 32, 58], GRIS = [100, 112, 135], pl = frPlafond(), an = new Date(f.date_doc || today()).getFullYear();
+  const img1 = await logoFF(), img2 = (await logoCarre()) || (await logo());
+  const put = (img, x, y, h, maxW, right) => { if (!img) return; try { const ip = doc.getImageProperties(img); let w = h * ip.width / ip.height; if (w > maxW) { h = h * maxW / w; w = maxW; } doc.addImage(img, img.startsWith('data:image/png') ? 'PNG' : 'JPEG', right ? x - w : x, y, w, h); } catch(e) {} };
+  put(img1, M, 10, 20, 26); put(img2, W - M, 10, 22, 30, true);
+  doc.setTextColor(...NAVY); doc.setFont('helvetica', 'bold'); doc.setFontSize(17); doc.text('Franchise Manifestation Sportive', W / 2, 18, { align: 'center' });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.text('État des sommes versées – franchise de cotisations sociales', W / 2, 24, { align: 'center' });
+  doc.setFont('helvetica', 'italic'); doc.setFontSize(8); doc.setTextColor(...GRIS); doc.text('Arrêté du 27 juillet 1994 – Circulaire DSS/AAF/A1/94-60 du 28 juillet 1994', W / 2, 29, { align: 'center' });
+  doc.setTextColor(...TXT); doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5); doc.text(pdfTxt('N° ' + frNum(f)), W - M, 39, { align: 'right' });
+  // blocs organisateur / bénéficiaire
+  let y = 44; const bw = (W - 2 * M - 6) / 2;
+  const bloc = (x, titre, lignes) => {
+    doc.setFillColor(...NAVY); doc.rect(x, y, bw, 6.5, 'F'); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.text(titre, x + 2.5, y + 4.6);
+    doc.setDrawColor(200, 208, 222); doc.setLineWidth(0.3); doc.rect(x, y, bw, 32); doc.setTextColor(...TXT);
+    let yy = y + 12; lignes.forEach(([lab, val, bold]) => { doc.setFontSize(9); if (lab) { doc.setFont('helvetica', 'bold'); doc.text(pdfTxt(lab), x + 2.5, yy); }
+      doc.setFont('helvetica', bold ? 'bold' : 'normal'); const t = doc.splitTextToSize(pdfTxt(val || ''), bw - 5 - (lab ? 20 : 0)); doc.text(t, x + 2.5 + (lab ? 20 : 0), yy); yy += 4.6 * t.length + 0.4; });
+  };
+  bloc(M, 'Organisateur', [['', 'Comité du Var de Volley-Ball', true], ['', 'Maison des Sports du Var'], ['', '133, boulevard Général Brosset'], ['', '83200 TOULON'], ['', 'N° SIRET : 424 630 143 00024']]);
+  bloc(M + bw + 6, 'Bénéficiaire', [['Nom :', String(f.nom).toUpperCase(), true], ['Prénom :', f.prenom || '', true], ['Fonction :', f.fonction || '']]);
+  y += 40;
+  // tableau
+  const cols = [[M, 26, 'Date'], [M + 26, 78, 'Manifestation / compétition'], [M + 104, 44, 'Paiement (type et référence)'], [M + 148, 32, 'Somme versée']];
+  doc.setFillColor(...NAVY); doc.rect(M, y, W - 2 * M, 9, 'F'); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(8.8);
+  cols.forEach(([x, w, t], k) => doc.text(t, k === 3 ? x + w - 2 : x + 2, y + 4, { align: k === 3 ? 'right' : 'left' }));
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.text(pdfTxt(`max. ${euros(pl)} / manif.`), M + 178, y + 7.5, { align: 'right' });
+  y += 9; doc.setTextColor(...TXT);
+  (f.lignes || []).forEach((l, i) => {
+    doc.setFontSize(9); doc.setFont('helvetica', 'normal');
+    const lib = doc.splitTextToSize(pdfTxt(l.libelle || ''), 74), pai = doc.splitTextToSize(pdfTxt(l.paiement || ''), 40), h = Math.max(8, 4.4 * Math.max(lib.length, pai.length) + 3.6);
+    if (i % 2) { doc.setFillColor(244, 246, 250); doc.rect(M, y, W - 2 * M, h, 'F'); }
+    doc.setFontSize(9); doc.setFont('helvetica', 'normal');
+    doc.text(fmtD(l.date), M + 2, y + 5.2); doc.text(lib, M + 28, y + 5.2); doc.text(pai, M + 106, y + 5.2);
+    doc.setFont('helvetica', 'bold'); doc.text(pdfTxt(euros(l.montant)), M + 178, y + 5.2, { align: 'right' });
+    doc.setDrawColor(220, 226, 236); doc.setLineWidth(0.2); doc.line(M, y + h, W - M, y + h); y += h;
+  });
+  doc.setFillColor(253, 235, 216); doc.rect(M, y, W - 2 * M, 9, 'F'); doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(...NAVY);
+  doc.text('TOTAL GÉNÉRAL', M + 104, y + 6); doc.text(pdfTxt(euros(frTotal(f))), M + 178, y + 6, { align: 'right' }); doc.setTextColor(...TXT); y += 13;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.text('Observations :', M, y);
+  doc.setFont('helvetica', 'normal'); const ob = doc.splitTextToSize(pdfTxt(f.observations || ''), W - 2 * M - 26); doc.text(ob, M + 25, y);
+  y += Math.max(10, 4.6 * ob.length + 5);
+  // mention
+  const men = String(reglage('franchise_mention', '')).replace(/\{plafond\}/g, fmtN(pl).replace(',00', '')).replace(/\{annee\}/g, an);
+  const mt = doc.splitTextToSize(pdfTxt(men), W - 2 * M - 8); doc.setFontSize(8);
+  const mh = 4 * mt.length + 5; doc.setFillColor(244, 246, 250); doc.setDrawColor(200, 208, 222); doc.roundedRect(M, y, W - 2 * M, mh, 1.5, 1.5, 'FD');
+  doc.setTextColor(...GRIS); doc.setFont('helvetica', 'normal'); doc.text(mt, M + 4, y + 5); doc.setTextColor(...TXT); y += mh + 8;
+  // signatures
+  const sw = (W - 2 * M - 8) / 3;
+  [['Signature du bénéficiaire', 'précédée de « Pour acquit »'], ['Visa du responsable', ''], ['Payé le', f.paye_le ? fmtD(f.paye_le) : '']].forEach(([t, s], k) => {
+    const x = M + k * (sw + 4); doc.setDrawColor(200, 208, 222); doc.setLineWidth(0.3); doc.rect(x, y, sw, 30);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.text(pdfTxt(t), x + sw / 2, y + 5.5, { align: 'center' });
+    if (s) { doc.setFont('helvetica', k === 2 ? 'bold' : 'italic'); doc.setFontSize(k === 2 ? 11 : 7.5); doc.text(pdfTxt(s), x + sw / 2, y + (k === 2 ? 17 : 9.5), { align: 'center' }); }
+  });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.text(pdfTxt('Fait à Toulon, le ' + fmtD(f.date_doc || today())), M, y + 37);
+  // pied
+  doc.setDrawColor(200, 208, 222); doc.setLineWidth(0.3); doc.line(M, 279, W - M, 279);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...GRIS);
+  doc.text('Maison des sports du Var – 133, Boulevard Général Brosset - 83200 TOULON – Téléphone : 06-13-30-34-25', W / 2, 283, { align: 'center' });
+  doc.text('N° Siret : 42463014300024 – Code APE : 9312 Z', W / 2, 286.5, { align: 'center' });
+  doc.save(`Franchise-${frNum(f)}-${slug(f.nom)}.pdf`);
+}
+
 // ======================== EXPORT EXCEL ========================
 function loadScript(src) { return new Promise((ok, ko) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => ko(new Error('Module Excel indisponible')); document.head.appendChild(s); }); }
 async function exportExcel() {
@@ -2180,6 +2389,9 @@ async function route() {
     else if ((m = h.match(/^f\/(\d+)$/))) { const f = facDe(m[1]); if (!f) { location.hash = 'factures'; return; } renderFactureLibre(f); }
     else if (h === 'factures') renderFactures();
     else if (h === 'dons') renderDons();
+    else if (h === 'franchises') renderFranchises();
+    else if ((m = h.match(/^fr\/new(?:\/(\d+))?$/))) renderFranchise(null, m[1]);
+    else if ((m = h.match(/^fr\/(\d+)$/))) { const f = frDe(m[1]); if (!f) { location.hash = 'franchises'; return; } renderFranchise(f); }
     else if ((m = h.match(/^c\/(\d+)$/))) { const it = (D.ris_items || []).find(x => String(x.id) === m[1]); if (!it) { location.hash = 'ris'; return; } renderCourrier(it); }
     else if ((m = h.match(/^d\/new(?:\/(\d+))?$/))) renderRecu(null, m[1]);
     else if ((m = h.match(/^d\/(\d+)$/))) { const r = recuDe(m[1]); if (!r) { location.hash = 'dons'; return; } renderRecu(r); }
