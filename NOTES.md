@@ -111,6 +111,12 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - **Mémoires** (remboursements faits par le Comité : parent, club extérieur…) : même table, `type` = 'memoire', numéro `2627-M001`, `modalite` (« À régler par virement sur le RIB ci-joint » par défaut). PDF « MÉMOIRE » sur le modèle Word (Toulon, le…, bénéficiaire, tableau, TOTAL À RECEVOIR EN EUROS, modalité, signataire + signature des reçus). Remboursement effectué saisi dans les champs règlement. Hors des totaux « facturés » et de l'export Excel. Mail : `memoire_objet` / `memoire_modele`.
 - Mention TVA (réglage `mention_tva`, modifiable dans Réglages) imprimée sous le total de toutes les factures (clubs et hors clubs) et des devis. Défaut : « TVA non applicable – article 261-7-1° b du CGI ». Recodification de la TVA dans le CIBS au 1er janvier 2027 (anciennes références CGI tolérées jusqu'au 31/12/2027).
 
+## Franchises URSSAF — onglet « Franchises » de la facturation
+- Tables `fac_fr_personnes` (personnes mémorisées) et `fac_franchises` (états numérotés par année civile 2026-001…, lignes jsonb {date, libelle, paiement, montant}). RPC `fac_admin_franchise` (création/maj, `supprimer`, `supprimer_personne`).
+- Réglages `franchise_plafond` (154 € en 2026 = 70 % du plafond journalier SS, à mettre à jour chaque 1er janvier) et `franchise_mention` ({plafond}, {annee}).
+- Alertes : somme > plafond, même date en double, plus de 5 manifestations dans le mois pour la personne (tous états), fonction exclue (arbitre, entraîneur, médical, administratif).
+- Textes : arrêté du 27/07/1994, circulaire DSS/AAF/A1/94-60 du 28/07/1994 ; arbitres exclus depuis 2007.
+
 ## Reçus de dons — onglet « Reçus de dons » de la facturation
 
 - Tables `fac_donateurs` (coordonnées mémorisées) et `fac_recus` (copie des coordonnées, montant, date du don, type don / abandon de frais, mode, date du reçu, annulé). RPC `fac_admin_recu` (numéro attribué à la création : année du reçu + n° à la suite, `2026-001` ; mise à jour du donateur ; suppression seulement du dernier reçu de l'année, sinon « annuler » pour garder une numérotation continue) et `fac_admin_donateur`.
