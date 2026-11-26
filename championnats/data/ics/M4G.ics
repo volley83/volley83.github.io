@@ -96,10 +96,10 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261126T204500
 DTEND;TZID=Europe/Paris:20261126T224500
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 1 – Volley-Ba
- ll Ollioulais 1
-LOCATION:Gerard Sébastia
-DESCRIPTION:Poule M4G – classement et résultats : https://volley83.git
- hub.io/championnats/#championnats/competlib/M4G
+ ll Ollioulais 1 (0-3)
+DESCRIPTION:Résultat : 0-3 (15:25\, 16:25\, 20:25)\nPoule M4G – classe
+ ment et résultats : https://volley83.github.io/championnats/#championna
+ ts/competlib/M4G
 END:VEVENT
 BEGIN:VEVENT
 UID:M4G008@volley83.github.io
