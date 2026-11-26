@@ -212,6 +212,7 @@ create table if not exists fac_franchises (
   unique (annee, numero)
 );
 alter table fac_franchises add column if not exists mois text;   -- AAAA-MM : un état par mois
+alter table fac_franchises add column if not exists virement boolean not null default false;   -- payé par virement : signature du bénéficiaire facultative
 
 -- Reçus fiscaux de dons (Cerfa 11580) : donateurs mémorisés, reçus numérotés par année civile (2026-001…)
 create table if not exists fac_donateurs (
@@ -841,7 +842,7 @@ begin
       returning id into fid;
   end if;
   update fac_franchises set personne_id = pid, nom = trim(p->>'nom'), prenom = nullif(trim(p->>'prenom'), ''), fonction = nullif(trim(p->>'fonction'), ''),
-    lignes = coalesce(p->'lignes', '[]'), mois = nullif(p->>'mois', ''), observations = nullif(trim(p->>'observations'), ''), paye_le = nullif(p->>'paye_le', '')::date,
+    lignes = coalesce(p->'lignes', '[]'), mois = nullif(p->>'mois', ''), virement = coalesce((p->>'virement')::boolean, false), observations = nullif(trim(p->>'observations'), ''), paye_le = nullif(p->>'paye_le', '')::date,
     date_doc = coalesce(nullif(p->>'date_doc', '')::date, date_doc)
   where id = fid;
   return fid;

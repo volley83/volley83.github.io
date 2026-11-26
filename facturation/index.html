@@ -2240,7 +2240,7 @@ function renderFranchise(f, persId) {
   <div class="crumb"><a href="#franchises">Franchises</a> › ${f ? 'État ' + frNum(f) : 'Nouvel état'}</div>
   <div class="card stack">
     <div class="ttl"><div><h2>${f ? 'Franchise N° ' + frNum(f) : 'Nouvel état de franchise'}</h2><p class="muted">${f ? 'Vous pouvez corriger l\'état puis régénérer le PDF : il garde son numéro.' : `Le numéro sera attribué à l'enregistrement (prochain : <b>${an}-${String(Math.max(0, ...D.franchises.filter(x => x.annee === an).map(x => x.numero)) + 1).padStart(3, '0')}</b>).`}</p></div>
-      ${f ? `<div class="btnrow"><button class="btn ghost" onclick="pdfFranchise(${f.id})">⬇ PDF</button>${dernier ? `<button class="btn danger" onclick="supprFranchise(${f.id})">Supprimer</button>` : ''}</div>` : ''}</div>
+      ${f ? `<div class="btnrow"><button class="btn ghost" onclick="pdfFranchise(${f.id})">⬇ PDF</button><button class="btn ghost" onclick="mailFranchise(${f.id})">✉ Envoyer pour signature</button>${dernier ? `<button class="btn danger" onclick="supprFranchise(${f.id})">Supprimer</button>` : ''}</div>` : ''}</div>
     <div class="field" style="max-width:320px"><label>Mois concerné *</label><select id="fr-mois">${optsMois.map(m => `<option value="${m}" ${m === mois0 ? 'selected' : ''}>${nomMois(m).replace(/^./, c => c.toUpperCase())}</option>`).join('')}</select></div>
     <h3 class="cond" style="font-size:19px">Personne</h3>
     ${D.fr_personnes.length ? `<div class="field"><label>Personne déjà enregistrée</label><select id="fr-pers"><option value="">— Nouvelle personne —</option>${D.fr_personnes.map(p => `<option value="${p.id}" ${String(selId) === String(p.id) ? 'selected' : ''}>${esc(String(p.nom).toUpperCase())} ${esc(p.prenom || '')}${p.fonction ? ' – ' + esc(p.fonction) : ''}</option>`).join('')}</select></div>` : ''}
@@ -2258,6 +2258,7 @@ function renderFranchise(f, persId) {
     <div class="field"><label>Observations</label><textarea id="fr-obs" rows="2">${esc(f ? f.observations || '' : '')}</textarea></div>
     <div class="grid g2"><div class="field"><label>Date du document</label><input id="fr-datedoc" type="date" value="${esc(f ? f.date_doc : today())}"></div>
       <div class="field"><label>Payé le (laisser vide si pas encore payé)</label><input id="fr-paye" type="date" value="${esc(f ? f.paye_le || '' : '')}"></div></div>
+    <label class="chk" style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" id="fr-vir" ${!f || f.virement ? 'checked' : ''}> <span><b>Payé par virement bancaire</b><br><span class="small muted">La signature du bénéficiaire n'est alors pas demandée : le relevé bancaire prouve le versement. Décochez pour un paiement en espèces ou par chèque.</span></span></label>
     <div class="btnrow"><button class="btn primary" id="fr-ok">${f ? '✓ Enregistrer les modifications' : '✓ Enregistrer l\'état'}</button>${f ? '' : '<a class="btn ghost" href="#franchises">Annuler</a>'}</div>
     <p class="small muted">À conserver avec l'état signé : la feuille de match ou le programme de la manifestation, et la preuve de la présence de la personne.</p>
   </div>`);
@@ -2276,7 +2277,7 @@ function renderFranchise(f, persId) {
       : `<span class="muted">Aucune manifestation trouvée pour ce mois : ajoutez-les avec « + Ajouter une ligne libre ».</span>`;
     $('fr-picks').querySelectorAll('[data-cle]').forEach(c => c.onchange = () => {
       const x = l.find(y => y.cle === c.dataset.cle);
-      if (c.checked) { FR_LIGNES = FR_LIGNES.filter(y => y.date || y.libelle || y.montant); FR_LIGNES.push({ cle: x.cle, date: x.date, libelle: x.libelle, paiement: '', montant: '' }); }
+      if (c.checked) { FR_LIGNES = FR_LIGNES.filter(y => y.date || y.libelle || y.montant); FR_LIGNES.push({ cle: x.cle, date: x.date, libelle: x.libelle, paiement: $('fr-vir').checked ? 'Virement' : '', montant: '' }); }
       else FR_LIGNES = FR_LIGNES.filter(y => !(y.cle === x.cle || (y.date === x.date && y.libelle === x.libelle)));
       FR_LIGNES.sort((a, b) => String(a.date || '9').localeCompare(String(b.date || '9'))); dessine();
     });
@@ -2311,12 +2312,13 @@ function renderFranchise(f, persId) {
     $('fr-excl').hidden = !FR_EXCLUS.test(fo);
     $('fr-excl').innerHTML = '⚠ Cette fonction est exclue de la franchise (arbitres, entraîneurs / éducateurs, personnel médical et administratif) : les sommes versées doivent être déclarées normalement.';
   };
-  $('fr-add').onclick = () => { FR_LIGNES.push({ date: '', libelle: '', paiement: '', montant: '' }); dessine(); };
+  $('fr-add').onclick = () => { FR_LIGNES.push({ date: '', libelle: '', paiement: $('fr-vir').checked ? 'Virement' : '', montant: '' }); dessine(); };
   $('fr-mois').onchange = () => { picks(); dessine(); };
   chargerManifs().then(l => { manifs = l; if ($('fr-picks')) picks(); });
   ['fr-nom', 'fr-prenom', 'fr-fonction'].forEach(i => $(i).oninput = verifie);
   if ($('fr-pers')) $('fr-pers').onchange = e => { const p = frPers(e.target.value) || {}; ['nom', 'prenom', 'fonction', 'email'].forEach(k => $('fr-' + k).value = p[k] || ''); verifie(); };
   $('fr-ok').onclick = () => enregistrerFranchise(f);
+  $('fr-vir').onchange = () => { if ($('fr-vir').checked) { FR_LIGNES.forEach(l => { if (!String(l.paiement || '').trim()) l.paiement = 'Virement'; }); dessine(); } };
   dessine();
 }
 async function enregistrerFranchise(f) {
@@ -2333,19 +2335,27 @@ async function enregistrerFranchise(f) {
   if (lignes.some(l => l.montant > frPlafond()) && !confirm(`Une somme dépasse ${euros(frPlafond())} par manifestation. Enregistrer quand même ?`)) return;
   const date_doc = g('datedoc') || today();
   if (f && String(new Date(date_doc).getFullYear()) !== String(f.annee)) return alert(`Cet état est numéroté sur l'année ${f.annee} : sa date doit rester en ${f.annee}.`);
-  const p = { id: f ? f.id : null, personne_id: $('fr-pers') ? $('fr-pers').value : '', nom: g('nom'), prenom: g('prenom'), fonction: g('fonction'), email: g('email'), mois: g('mois'), lignes, observations: g('obs'), paye_le: g('paye'), date_doc };
+  const p = { id: f ? f.id : null, personne_id: $('fr-pers') ? $('fr-pers').value : '', nom: g('nom'), prenom: g('prenom'), fonction: g('fonction'), email: g('email'), mois: g('mois'), virement: $('fr-vir').checked, lignes, observations: g('obs'), paye_le: g('paye'), date_doc };
   try {
     const id = await rpc('fac_admin_franchise', { pwd: PWD, p }); await load();
     toast(f ? '✓ État mis à jour' : `✓ État ${frNum(frDe(id))} enregistré`);
     location.hash = 'fr/' + id; if (f) renderFranchise(frDe(id));
   } catch(err) { fail(err); }
 }
+async function mailFranchise(id) {
+  const f = frDe(id), p = frPers(f.personne_id) || {};
+  await pdfFranchise(id, true);
+  const mo = f.mois ? nomMois(f.mois) : '';
+  const corps = `Bonjour ${f.prenom || ''} ${String(f.nom).toUpperCase()},\n\nVous trouverez ci-joint l'état N° ${frNum(f)} des sommes qui vous sont versées${mo ? ' pour le mois de ' + mo : ''} au titre de la franchise de cotisations (manifestations sportives), pour un total de ${euros(frTotal(f))}.\n\nMerci de le signer (mention « Pour acquit », date et signature) puis de nous le retourner par retour de mail. Vous pouvez le signer directement sur votre téléphone ou votre ordinateur (par exemple avec Adobe Acrobat Reader, « Remplir et signer »), ou l'imprimer, le signer et nous envoyer une photo.\n\nMerci pour votre aide lors de nos manifestations !\n\nSportivement,\nLe Comité du Var de Volley-Ball`;
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(f.email || p.email || '') + '&su=' + encodeURIComponent(`Franchise ${mo ? mo + ' ' : ''}– état N° ${frNum(f)} à signer`) + '&body=' + encodeURIComponent(corps), '_blank');
+  toast((f.email || p.email) ? '✓ PDF téléchargé : pensez à le joindre au mail' : 'Pas de mail pour cette personne : complétez le destinataire', (f.email || p.email) ? 'ok' : 'err');
+}
 async function supprFranchise(id) {
   const f = frDe(id);
   if (!confirm(`Supprimer définitivement l'état ${frNum(f)} ?\n\nC'est le dernier de l'année : son numéro sera réattribué au prochain état.`)) return;
   try { await rpc('fac_admin_franchise', { pwd: PWD, p: { id, supprimer: true } }); await load(); location.hash = 'franchises'; toast('✓ État supprimé'); } catch(e) { fail(e); }
 }
-async function pdfFranchise(id) {
+async function pdfFranchise(id, signer) {
   if (!window.jspdf) { alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.'); return; }
   const f = frDe(id), { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const W = 210, M = 15, NAVY = [11, 33, 73], TXT = [20, 32, 58], GRIS = [100, 112, 135], pl = frPlafond(), an = new Date(f.date_doc || today()).getFullYear();
@@ -2395,12 +2405,17 @@ async function pdfFranchise(id) {
   const mh = 4 * mt.length + 5; doc.setFillColor(244, 246, 250); doc.setDrawColor(200, 208, 222); doc.roundedRect(M, y, W - 2 * M, mh, 1.5, 1.5, 'FD');
   doc.setTextColor(...GRIS); doc.setFont('helvetica', 'normal'); doc.text(mt, M + 4, y + 5); doc.setTextColor(...TXT); y += mh + 8;
   // signatures
-  const sw = (W - 2 * M - 8) / 3;
-  [['Signature du bénéficiaire', 'précédée de « Pour acquit »'], ['Visa du responsable', ''], ['Payé le', f.paye_le ? fmtD(f.paye_le) : '']].forEach(([t, s], k) => {
-    const x = M + k * (sw + 4); doc.setDrawColor(200, 208, 222); doc.setLineWidth(0.3); doc.rect(x, y, sw, 30);
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.text(pdfTxt(t), x + sw / 2, y + 5.5, { align: 'center' });
-    if (s) { doc.setFont('helvetica', k === 2 ? 'bold' : 'italic'); doc.setFontSize(k === 2 ? 11 : 7.5); doc.text(pdfTxt(s), x + sw / 2, y + (k === 2 ? 17 : 9.5), { align: 'center' }); }
+  const sansSig = f.virement && !signer;
+  const cases = sansSig ? [['Visa du responsable', ''], ['Payé par virement le', f.paye_le ? fmtD(f.paye_le) : '']]
+    : [['Signature du bénéficiaire', 'précédée de « Pour acquit »'], ['Visa du responsable', ''], ['Payé le', f.paye_le ? fmtD(f.paye_le) : '']];
+  const sw = (W - 2 * M - 4 * (cases.length - 1)) / cases.length;
+  cases.forEach(([t, s], k) => {
+    const x = M + k * (sw + 4), paye = k === cases.length - 1; doc.setDrawColor(200, 208, 222); doc.setLineWidth(0.3); doc.rect(x, y, sw, 30);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...TXT); doc.text(pdfTxt(t), x + sw / 2, y + 5.5, { align: 'center' });
+    if (s) { doc.setFont('helvetica', paye ? 'bold' : 'italic'); doc.setFontSize(paye ? 11 : 7.5); doc.text(pdfTxt(s), x + sw / 2, y + (paye ? 17 : 9.5), { align: 'center' }); }
   });
+  if (sansSig) { doc.setFont('helvetica', 'italic'); doc.setFontSize(8); doc.setTextColor(...GRIS);
+    doc.text(pdfTxt('Sommes versées par virement bancaire sur le compte du bénéficiaire : le relevé bancaire tient lieu de justificatif de paiement.'), M, y + 34); doc.setTextColor(...TXT); y += 4; }
   doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.text(pdfTxt('Fait à Toulon, le ' + fmtD(f.date_doc || today())), M, y + 37);
   // pied
   doc.setDrawColor(200, 208, 222); doc.setLineWidth(0.3); doc.line(M, 279, W - M, 279);
