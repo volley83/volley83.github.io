@@ -821,6 +821,8 @@ function renderReglages() {
   <div class="card stack"><h3>Franchises (manifestations sportives)</h3>
     <div class="grid" style="grid-template-columns:200px minmax(0,1fr)"><div class="field"><label>Maximum par manifestation (€)</label><input id="r-fpl" value="${fmtN(reglage('franchise_plafond', 154))}" inputmode="decimal"><span class="small muted">70 % du plafond journalier de la Sécurité sociale (154 € en 2026). À mettre à jour chaque 1er janvier.</span></div>
       <div class="field"><label>Mention imprimée sur l'état (champs {plafond}, {annee})</label><textarea id="r-fme" rows="5">${esc(reglage('franchise_mention', ''))}</textarea></div></div>
+    <div class="field"><label>Autres manifestations à proposer (TIP, finales, événements… une par ligne : AAAA-MM-JJ|Intitulé ; une ligne par jour)</label><textarea id="r-fau" rows="4" placeholder="2027-05-22|Tournoi International Poussins / Poussines (TIP) – Hyères">${esc(reglage('franchise_autres', ''))}</textarea>
+      <span class="small muted">Les championnats, les tournois OPEN / 4x4 et les plateaux Pitchoun' sont proposés automatiquement.</span></div>
     <div class="btnrow"><button class="btn primary" id="r-ok10">Enregistrer</button></div></div>
   <div class="card stack"><h3>Courriers de décision (Commission Sportive)</h3>
     <div class="field"><label>Phrase des tarifs (dernier « Vu » des courriers)</label><input id="r-ct" value="${esc(reglage('courrier_tarifs', ''))}"></div>
@@ -844,7 +846,7 @@ function renderReglages() {
     <div class="btnrow"><button class="btn primary" id="r-ok2">Enregistrer</button></div></div>`);
   $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mention_tva', p_valeur: $('r-tva').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_pied', p_valeur: $('r-rp').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_mention', p_valeur: $('r-rm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok3').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_total', p_valeur: $('r-at').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_partiel', p_valeur: $('r-ap').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
-  $('r-ok10').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'franchise_plafond', p_valeur: num($('r-fpl').value) }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'franchise_mention', p_valeur: $('r-fme').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+  $('r-ok10').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'franchise_plafond', p_valeur: num($('r-fpl').value) }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'franchise_mention', p_valeur: $('r-fme').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'franchise_autres', p_valeur: $('r-fau').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok9').onclick = async () => { try { for (const [k, i] of [['courrier_tarifs', 'r-ct'], ['courrier_signataires', 'r-cs'], ['courrier_mail_objet', 'r-cmo'], ['courrier_mail_modele', 'r-cmm']]) await rpc('fac_admin_reglage', { pwd: PWD, p_cle: k, p_valeur: $(i).value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok8').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'memoire_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'memoire_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok7').onclick = async () => { try { for (const [k, i] of [['recu_objet_asso', 'r-ro2'], ['recu_signataire', 'r-sg'], ['recu_rna', 'r-rna'], ['recu_mail_objet', 'r-rmo'], ['recu_mail_modele', 'r-rmm']]) await rpc('fac_admin_reglage', { pwd: PWD, p_cle: k, p_valeur: $(i).value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
@@ -2167,13 +2169,13 @@ function renderFranchises() {
     <div class="kpi"><b>${D.fr_personnes.length}</b><span>personne${D.fr_personnes.length > 1 ? 's' : ''} enregistrée${D.fr_personnes.length > 1 ? 's' : ''}</span></div>
   </div>
   <div class="msg info small"><b>Rappel des règles :</b> au maximum <b>${euros(frPlafond())}</b> par manifestation (70 % du plafond journalier de la Sécurité sociale), pour les <b>5 premières manifestations du mois</b> par personne. Peuvent en bénéficier les sportifs et les personnes indispensables à l'organisation (accueil, billetterie, installation, accompagnateurs…). <b>Exclus :</b> arbitres et juges, entraîneurs et éducateurs, personnel médical, personnel administratif. Une manifestation sur plusieurs jours compte un jour = une manifestation. Le Comité doit avoir moins de 10 salariés permanents.</div>
-  ${fs.length ? `<div class="tablebox"><table class="t"><thead><tr><th>N°</th><th>Personne</th><th>Fonction</th><th>Manifestations</th><th class="r">Total</th><th>Payé le</th><th></th></tr></thead><tbody>
-    ${fs.map(f => `<tr class="clk" onclick="location.hash='fr/${f.id}'"><td class="nw"><b>${frNum(f)}</b></td>
+  ${fs.length ? `<div class="tablebox"><table class="t"><thead><tr><th>N°</th><th>Mois</th><th>Personne</th><th>Fonction</th><th>Manifestations</th><th class="r">Total</th><th>Payé le</th><th></th></tr></thead><tbody>
+    ${fs.map(f => `<tr class="clk" onclick="location.hash='fr/${f.id}'"><td class="nw"><b>${frNum(f)}</b></td><td class="nw">${f.mois ? nomMois(f.mois) : ''}</td>
       <td class="club"><b>${esc(String(f.nom).toUpperCase())} ${esc(f.prenom || '')}</b></td><td class="small">${esc(f.fonction || '')}</td>
       <td class="small">${(f.lignes || []).map(l => `${fmtD(l.date)} ${esc(l.libelle || '')}`).join('<br>')}</td>
       <td class="num"><b>${euros(frTotal(f))}</b></td><td class="nw">${f.paye_le ? fmtD(f.paye_le) : '<span class="badge b-warn">À payer</span>'}</td>
       <td class="r nw" onclick="event.stopPropagation()"><button class="btn sm ghost" onclick="pdfFranchise(${f.id})">PDF</button></td></tr>`).join('')}
-    </tbody><tfoot><tr><td colspan="4">Total ${FR_AN}</td><td class="num">${euros(tot)}</td><td></td><td></td></tr></tfoot></table></div>`
+    </tbody><tfoot><tr><td colspan="5">Total ${FR_AN}</td><td class="num">${euros(tot)}</td><td></td><td></td></tr></tfoot></table></div>`
   : `<div class="card msg info">Aucun état en ${FR_AN}. Créez le premier avec « Nouvel état ».</div>`}
   <h2 class="cond" style="font-size:24px">Personnes</h2>
   ${D.fr_personnes.length ? `<div class="tablebox"><table class="t"><thead><tr><th>Personne</th><th>Fonction</th><th class="r">États</th><th></th></tr></thead><tbody>
@@ -2189,10 +2191,49 @@ async function supprFrPers(id) {
   if (!confirm(`Retirer ${p.prenom || ''} ${p.nom} de la liste ?\n\nSes états déjà établis sont conservés.`)) return;
   try { await rpc('fac_admin_franchise', { pwd: PWD, p: { personne_id: id, supprimer_personne: true } }); await load(); renderFranchises(); toast('✓ Personne retirée'); } catch(e) { fail(e); }
 }
-let FR_LIGNES = [];
+let FR_LIGNES = [], FR_MANIFS = null;
+const nomCatFr = t => { let n = String(t || '').toLowerCase().replace(/\s+-\s+/g, ' – ');
+  n = n.replace(/competlib'?/g, "Compet'Lib").replace(/coupe de france/g, 'Coupe de France').replace(/\bm(\d+)\b/g, 'M$1').replace(/\b4x4\b/g, '4x4');
+  return n.charAt(0).toUpperCase() + n.slice(1); };
+// Manifestations organisées par le Comité : championnats (ffvb.json), tournois OPEN / 4x4, plateaux Pitchoun', autres (Réglages)
+async function chargerManifs() {
+  if (FR_MANIFS) return FR_MANIFS;
+  const L = [], add = (date, libelle, type) => { if (date && !L.some(x => x.date === date && x.libelle === libelle)) L.push({ cle: date + '|' + libelle, date, libelle, type }); };
+  const hdr = { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' };
+  await Promise.all([
+    fetch('../championnats/data/ffvb.json?h=' + Math.floor(Date.now() / 6e5), { cache: 'no-store' }).then(r => r.ok ? r.json() : {}).then(d => {
+      for (const c of d.categories || []) {
+        const g = {};
+        for (const p of c.poules || []) for (const jn of p.journees || []) for (const m of jn.matchs || []) {
+          if (!m.date || /^x+$/i.test(m.dom || '') || /^x+$/i.test(m.ext || '')) continue;
+          (g[m.date] = g[m.date] || new Set()).add(jn.titre || '');
+        }
+        const nc = nomCatFr(c.titre), lib = c.groupe === 'competlib' ? nc : c.groupe === 'jeunes' ? 'Championnat départemental ' + nc : 'Championnat ' + nc.charAt(0).toLowerCase() + nc.slice(1);
+        const typ = c.groupe === 'competlib' ? "Compet'Lib" : c.groupe === 'jeunes' ? 'Championnats jeunes' : 'Championnats seniors';
+        for (const dt in g) { const j = [...g[dt]].filter(Boolean); add(dt, lib + (j.length === 1 ? ' – ' + j[0] : ''), typ); }
+      }
+    }).catch(() => {}),
+    fetch(SUPABASE_URL + '/rest/v1/rpc/chp_public', { method: 'POST', headers: hdr, body: '{}' }).then(r => r.ok ? r.json() : {}).then(d => {
+      const comp = {}; (d.competitions || []).forEach(c => comp[c.code] = c);
+      for (const t of d.tournois || []) { if (!t.date || t.statut === 'annule') continue; const c = comp[t.competition] || {};
+        add(t.date, `Tournoi ${c.nom || t.competition}${t.numero ? ' n° ' + t.numero : ''}${t.ville ? ' – ' + t.ville : ''}`, c.famille === 'open' ? 'Tournois OPEN' : 'Tournois 4x4'); }
+    }).catch(() => {}),
+    fetch(SUPABASE_URL + '/rest/v1/pitchoun_plateaux?select=date,lieu,ville&order=date', { headers: hdr }).then(r => r.ok ? r.json() : []).then(d => {
+      for (const pl of d || []) add(pl.date, "Plateau Pitchoun' Volley" + (pl.ville || pl.lieu ? ' – ' + (pl.ville || pl.lieu) : ''), "Pitchoun' Volley");
+    }).catch(() => {})
+  ]);
+  FR_MANIFS = L;
+  return L;
+}
+const frAutres = () => String(reglage('franchise_autres', '')).split('\n').map(t => t.split('|')).filter(x => /^\d{4}-\d{2}-\d{2}$/.test((x[0] || '').trim()) && (x[1] || '').trim())
+  .map(([d, l]) => ({ cle: d.trim() + '|' + l.trim(), date: d.trim(), libelle: l.trim(), type: 'Autres manifestations' }));
+const jourCourt = d => parseD(d) ? parseD(d).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }) : d;
 function renderFranchise(f, persId) {
   const p0 = f || frPers(persId) || {}, v = k => esc(p0[k] || ''), pl = frPlafond();
-  FR_LIGNES = f ? JSON.parse(JSON.stringify(f.lignes || [])) : [{ date: '', libelle: '', paiement: '', montant: '' }];
+  FR_LIGNES = f ? JSON.parse(JSON.stringify(f.lignes || [])) : [];
+  const mAct = today().slice(0, 7), mois0 = f ? (f.mois || moisDe((f.lignes || [])[0] && f.lignes[0].date) || moisDe(f.date_doc)) : mAct;
+  const optsMois = []; { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() + 6); for (let k = 0; k < 24; k++) { optsMois.push(d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0')); d.setMonth(d.getMonth() - 1); } }
+  if (!optsMois.includes(mois0)) optsMois.push(mois0);
   const an = new Date().getFullYear(), dernier = f && !D.franchises.some(x => x.annee === f.annee && x.numero > f.numero);
   const selId = f ? f.personne_id : persId;
   shell('franchises', `
@@ -2200,6 +2241,7 @@ function renderFranchise(f, persId) {
   <div class="card stack">
     <div class="ttl"><div><h2>${f ? 'Franchise N° ' + frNum(f) : 'Nouvel état de franchise'}</h2><p class="muted">${f ? 'Vous pouvez corriger l\'état puis régénérer le PDF : il garde son numéro.' : `Le numéro sera attribué à l'enregistrement (prochain : <b>${an}-${String(Math.max(0, ...D.franchises.filter(x => x.annee === an).map(x => x.numero)) + 1).padStart(3, '0')}</b>).`}</p></div>
       ${f ? `<div class="btnrow"><button class="btn ghost" onclick="pdfFranchise(${f.id})">⬇ PDF</button>${dernier ? `<button class="btn danger" onclick="supprFranchise(${f.id})">Supprimer</button>` : ''}</div>` : ''}</div>
+    <div class="field" style="max-width:320px"><label>Mois concerné *</label><select id="fr-mois">${optsMois.map(m => `<option value="${m}" ${m === mois0 ? 'selected' : ''}>${nomMois(m).replace(/^./, c => c.toUpperCase())}</option>`).join('')}</select></div>
     <h3 class="cond" style="font-size:19px">Personne</h3>
     ${D.fr_personnes.length ? `<div class="field"><label>Personne déjà enregistrée</label><select id="fr-pers"><option value="">— Nouvelle personne —</option>${D.fr_personnes.map(p => `<option value="${p.id}" ${String(selId) === String(p.id) ? 'selected' : ''}>${esc(String(p.nom).toUpperCase())} ${esc(p.prenom || '')}${p.fonction ? ' – ' + esc(p.fonction) : ''}</option>`).join('')}</select></div>` : ''}
     <div class="grid g2"><div class="field"><label>Nom *</label><input id="fr-nom" value="${v('nom')}"></div><div class="field"><label>Prénom *</label><input id="fr-prenom" value="${v('prenom')}"></div></div>
@@ -2208,9 +2250,10 @@ function renderFranchise(f, persId) {
       <div class="field"><label>Mail (facultatif)</label><input id="fr-email" value="${v('email')}" inputmode="email"></div></div>
     <div class="msg warn small" id="fr-excl" hidden></div>
     <h3 class="cond" style="font-size:19px">Manifestations</h3>
+    <div class="card" style="background:#F6F8FC;padding:14px 16px"><div class="small" style="margin-bottom:8px"><b id="fr-ptitre"></b> <span class="muted">– cochez celles où la personne était présente, l'intitulé et la date se mettent tout seuls.</span></div><div id="fr-picks" class="small muted">Chargement…</div></div>
     <div class="tablebox"><table class="t"><thead><tr><th style="width:150px">Date *</th><th>Manifestation / compétition *</th><th style="width:210px">Paiement (type et référence)</th><th style="width:120px" class="r">Somme versée *</th><th></th></tr></thead><tbody id="fr-lignes"></tbody>
       <tfoot><tr><td colspan="3">TOTAL GÉNÉRAL</td><td class="num" id="fr-tot"></td><td></td></tr></tfoot></table></div>
-    <div class="btnrow"><button class="btn ghost sm" id="fr-add">+ Ajouter une manifestation</button><span class="small muted">Maximum ${euros(pl)} par manifestation (jour).</span></div>
+    <div class="btnrow"><button class="btn ghost sm" id="fr-add">+ Ajouter une ligne libre</button><span class="small muted">Maximum ${euros(pl)} par manifestation (jour).</span></div>
     <div id="fr-alertes" class="stack" style="gap:6px"></div>
     <div class="field"><label>Observations</label><textarea id="fr-obs" rows="2">${esc(f ? f.observations || '' : '')}</textarea></div>
     <div class="grid g2"><div class="field"><label>Date du document</label><input id="fr-datedoc" type="date" value="${esc(f ? f.date_doc : today())}"></div>
@@ -2218,15 +2261,36 @@ function renderFranchise(f, persId) {
     <div class="btnrow"><button class="btn primary" id="fr-ok">${f ? '✓ Enregistrer les modifications' : '✓ Enregistrer l\'état'}</button>${f ? '' : '<a class="btn ghost" href="#franchises">Annuler</a>'}</div>
     <p class="small muted">À conserver avec l'état signé : la feuille de match ou le programme de la manifestation, et la preuve de la présence de la personne.</p>
   </div>`);
+  const moisSel = () => $('fr-mois').value, bornes = () => { const m = moisSel(), [a, n] = m.split('-').map(Number); return [m + '-01', m + '-' + String(new Date(a, n, 0).getDate()).padStart(2, '0')]; };
+  let manifs = [];
+  const picks = () => {
+    const m = moisSel(), l = [...manifs, ...frAutres()].filter(x => moisDe(x.date) === m).filter((x, i, t) => t.findIndex(y => y.cle === x.cle) === i).sort((a, b) => a.date.localeCompare(b.date) || a.libelle.localeCompare(b.libelle));
+    $('fr-ptitre').textContent = 'Manifestations du Comité en ' + nomMois(m);
+    const ORDRE = ['Autres manifestations', 'Tournois OPEN', 'Tournois 4x4', "Pitchoun' Volley", 'Championnats jeunes', 'Championnats seniors', "Compet'Lib"];
+    const types = [...new Set(l.map(x => x.type))].sort((a, b) => ORDRE.indexOf(a) - ORDRE.indexOf(b));
+    const coche = x => FR_LIGNES.some(y => y.cle === x.cle || (y.date === x.date && y.libelle === x.libelle));
+    $('fr-picks').className = 'small';
+    $('fr-picks').innerHTML = l.length ? types.map(t => { const lt = l.filter(x => x.type === t), nc = lt.filter(coche).length;
+      return `<details style="margin:2px 0 6px" ${lt.length <= 8 || nc ? 'open' : ''}><summary style="cursor:pointer;font-weight:700;text-transform:uppercase;font-size:11.5px;letter-spacing:.04em;color:var(--navy);padding:4px 0">${esc(t)} <span class="muted" style="font-weight:400;text-transform:none">(${lt.length}${nc ? ` · ${nc} cochée${nc > 1 ? 's' : ''}` : ''})</span></summary>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));column-gap:18px">${lt.map(x => `<label class="chk" style="display:flex;gap:8px;align-items:center;padding:3px 0"><input type="checkbox" data-cle="${esc(x.cle)}" ${coche(x) ? 'checked' : ''}> <span class="nw" style="min-width:92px"><b>${esc(jourCourt(x.date))}</b></span> ${esc(x.libelle)}</label>`).join('')}</div></details>`; }).join('')
+      : `<span class="muted">Aucune manifestation trouvée pour ce mois : ajoutez-les avec « + Ajouter une ligne libre ».</span>`;
+    $('fr-picks').querySelectorAll('[data-cle]').forEach(c => c.onchange = () => {
+      const x = l.find(y => y.cle === c.dataset.cle);
+      if (c.checked) { FR_LIGNES = FR_LIGNES.filter(y => y.date || y.libelle || y.montant); FR_LIGNES.push({ cle: x.cle, date: x.date, libelle: x.libelle, paiement: '', montant: '' }); }
+      else FR_LIGNES = FR_LIGNES.filter(y => !(y.cle === x.cle || (y.date === x.date && y.libelle === x.libelle)));
+      FR_LIGNES.sort((a, b) => String(a.date || '9').localeCompare(String(b.date || '9'))); dessine();
+    });
+  };
   const dessine = () => {
-    $('fr-lignes').innerHTML = FR_LIGNES.map((l, i) => `<tr>
-      <td><input type="date" data-i="${i}" data-k="date" value="${esc(l.date || '')}"></td>
+    const [b1, b2] = bornes();
+    $('fr-lignes').innerHTML = FR_LIGNES.length ? FR_LIGNES.map((l, i) => `<tr>
+      <td><input type="date" data-i="${i}" data-k="date" min="${b1}" max="${b2}" value="${esc(l.date || '')}"></td>
       <td><input data-i="${i}" data-k="libelle" value="${esc(l.libelle || '')}" placeholder="ex. Tournoi beach Les Sablettes"></td>
       <td><input data-i="${i}" data-k="paiement" value="${esc(l.paiement || '')}" placeholder="ex. Chèque n° 1234567"></td>
       <td><input data-i="${i}" data-k="montant" value="${l.montant === '' || l.montant == null ? '' : fmtN(l.montant)}" inputmode="decimal" placeholder="${fmtN(pl)}" style="text-align:right"></td>
-      <td class="r">${FR_LIGNES.length > 1 ? `<button class="btn sm ghost" data-del="${i}">✕</button>` : ''}</td></tr>`).join('');
+      <td class="r"><button class="btn sm ghost" data-del="${i}">✕</button></td></tr>`).join('') : '<tr><td colspan="5" class="muted small">Cochez une manifestation ci-dessus ou ajoutez une ligne libre.</td></tr>';
     $('fr-lignes').querySelectorAll('input').forEach(x => x.oninput = x.onchange = () => { const l = FR_LIGNES[x.dataset.i]; l[x.dataset.k] = x.dataset.k === 'montant' ? (x.value.trim() === '' ? '' : num(x.value)) : x.value; verifie(); });
-    $('fr-lignes').querySelectorAll('[data-del]').forEach(b => b.onclick = () => { FR_LIGNES.splice(+b.dataset.del, 1); dessine(); });
+    $('fr-lignes').querySelectorAll('[data-del]').forEach(b => b.onclick = () => { FR_LIGNES.splice(+b.dataset.del, 1); dessine(); picks(); });
     verifie();
   };
   const verifie = () => {
@@ -2234,6 +2298,7 @@ function renderFranchise(f, persId) {
     const a = [];
     FR_LIGNES.forEach(l => { if (num(l.montant) > pl) a.push(`<b>${fmtD(l.date) || 'Ligne sans date'}</b> : ${euros(num(l.montant))} dépasse le maximum de ${euros(pl)} par manifestation. La part au-delà serait soumise à cotisations.`); });
     const dates = FR_LIGNES.map(l => l.date).filter(Boolean);
+    if (dates.some(d => moisDe(d) !== moisSel())) a.push(`Une date n'est pas en ${nomMois(moisSel())} : un état ne concerne qu'un seul mois.`);
     if (new Set(dates).size < dates.length) a.push('Deux lignes ont la même date : une seule franchise par jour de manifestation.');
     const nom = $('fr-nom').value.trim();
     if (nom) {
@@ -2247,6 +2312,8 @@ function renderFranchise(f, persId) {
     $('fr-excl').innerHTML = '⚠ Cette fonction est exclue de la franchise (arbitres, entraîneurs / éducateurs, personnel médical et administratif) : les sommes versées doivent être déclarées normalement.';
   };
   $('fr-add').onclick = () => { FR_LIGNES.push({ date: '', libelle: '', paiement: '', montant: '' }); dessine(); };
+  $('fr-mois').onchange = () => { picks(); dessine(); };
+  chargerManifs().then(l => { manifs = l; if ($('fr-picks')) picks(); });
   ['fr-nom', 'fr-prenom', 'fr-fonction'].forEach(i => $(i).oninput = verifie);
   if ($('fr-pers')) $('fr-pers').onchange = e => { const p = frPers(e.target.value) || {}; ['nom', 'prenom', 'fonction', 'email'].forEach(k => $('fr-' + k).value = p[k] || ''); verifie(); };
   $('fr-ok').onclick = () => enregistrerFranchise(f);
@@ -2254,7 +2321,7 @@ function renderFranchise(f, persId) {
 }
 async function enregistrerFranchise(f) {
   const g = k => $('fr-' + k).value.trim();
-  const lignes = FR_LIGNES.filter(l => l.date || String(l.libelle || '').trim() || num(l.montant)).map(l => ({ date: l.date, libelle: String(l.libelle || '').trim(), paiement: String(l.paiement || '').trim(), montant: r2(num(l.montant)) }))
+  const lignes = FR_LIGNES.filter(l => l.date || String(l.libelle || '').trim() || num(l.montant)).map(l => ({ ...(l.cle ? { cle: l.cle } : {}), date: l.date, libelle: String(l.libelle || '').trim(), paiement: String(l.paiement || '').trim(), montant: r2(num(l.montant)) }))
     .sort((a, b) => String(a.date).localeCompare(String(b.date)));
   const e = [];
   if (!g('nom') || !g('prenom')) e.push('le nom et le prénom');
@@ -2262,10 +2329,11 @@ async function enregistrerFranchise(f) {
   if (!lignes.length) e.push('au moins une manifestation');
   if (lignes.some(l => !l.date || !l.libelle || !(l.montant > 0))) e.push('la date, le libellé et la somme de chaque manifestation');
   if (e.length) return alert('Indiquez ' + e.join(', ') + '.');
+  if (lignes.some(l => moisDe(l.date) !== g('mois'))) return alert(`Toutes les manifestations doivent être en ${nomMois(g('mois'))} (un état par mois).`);
   if (lignes.some(l => l.montant > frPlafond()) && !confirm(`Une somme dépasse ${euros(frPlafond())} par manifestation. Enregistrer quand même ?`)) return;
   const date_doc = g('datedoc') || today();
   if (f && String(new Date(date_doc).getFullYear()) !== String(f.annee)) return alert(`Cet état est numéroté sur l'année ${f.annee} : sa date doit rester en ${f.annee}.`);
-  const p = { id: f ? f.id : null, personne_id: $('fr-pers') ? $('fr-pers').value : '', nom: g('nom'), prenom: g('prenom'), fonction: g('fonction'), email: g('email'), lignes, observations: g('obs'), paye_le: g('paye'), date_doc };
+  const p = { id: f ? f.id : null, personne_id: $('fr-pers') ? $('fr-pers').value : '', nom: g('nom'), prenom: g('prenom'), fonction: g('fonction'), email: g('email'), mois: g('mois'), lignes, observations: g('obs'), paye_le: g('paye'), date_doc };
   try {
     const id = await rpc('fac_admin_franchise', { pwd: PWD, p }); await load();
     toast(f ? '✓ État mis à jour' : `✓ État ${frNum(frDe(id))} enregistré`);
@@ -2298,7 +2366,9 @@ async function pdfFranchise(id) {
   };
   bloc(M, 'Organisateur', [['', 'Comité du Var de Volley-Ball', true], ['', 'Maison des Sports du Var'], ['', '133, boulevard Général Brosset'], ['', '83200 TOULON'], ['', 'N° SIRET : 424 630 143 00024']]);
   bloc(M + bw + 6, 'Bénéficiaire', [['Nom :', String(f.nom).toUpperCase(), true], ['Prénom :', f.prenom || '', true], ['Fonction :', f.fonction || '']]);
-  y += 40;
+  y += 38;
+  const mo = f.mois || moisDe((f.lignes || [])[0] && f.lignes[0].date);
+  if (mo) { doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(...NAVY); doc.text(pdfTxt('Mois de ' + nomMois(mo)), M, y + 4); doc.setTextColor(...TXT); y += 8; } else y += 2;
   // tableau
   const cols = [[M, 26, 'Date'], [M + 26, 78, 'Manifestation / compétition'], [M + 104, 44, 'Paiement (type et référence)'], [M + 148, 32, 'Somme versée']];
   doc.setFillColor(...NAVY); doc.rect(M, y, W - 2 * M, 9, 'F'); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(8.8);

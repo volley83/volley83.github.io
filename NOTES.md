@@ -115,6 +115,7 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - Tables `fac_fr_personnes` (personnes mémorisées) et `fac_franchises` (états numérotés par année civile 2026-001…, lignes jsonb {date, libelle, paiement, montant}). RPC `fac_admin_franchise` (création/maj, `supprimer`, `supprimer_personne`).
 - Réglages `franchise_plafond` (154 € en 2026 = 70 % du plafond journalier SS, à mettre à jour chaque 1er janvier) et `franchise_mention` ({plafond}, {annee}).
 - Alertes : somme > plafond, même date en double, plus de 5 manifestations dans le mois pour la personne (tous états), fonction exclue (arbitre, entraîneur, médical, administratif).
+- Un état par mois (colonne `mois` AAAA-MM, « Mois de … » sur le PDF). Le formulaire propose les manifestations du mois : championnats (championnats/data/ffvb.json, regroupés par catégorie et date), tournois OPEN / 4x4 (`chp_public`), plateaux Pitchoun' (`pitchoun_plateaux`), et la liste libre du réglage `franchise_autres` (AAAA-MM-JJ|Intitulé, ex. TIP). Lignes libres possibles.
 - Textes : arrêté du 27/07/1994, circulaire DSS/AAF/A1/94-60 du 28/07/1994 ; arbitres exclus depuis 2007.
 
 ## Reçus de dons — onglet « Reçus de dons » de la facturation

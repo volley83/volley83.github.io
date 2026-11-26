@@ -211,6 +211,7 @@ create table if not exists fac_franchises (
   created_at  timestamptz not null default now(),
   unique (annee, numero)
 );
+alter table fac_franchises add column if not exists mois text;   -- AAAA-MM : un état par mois
 
 -- Reçus fiscaux de dons (Cerfa 11580) : donateurs mémorisés, reçus numérotés par année civile (2026-001…)
 create table if not exists fac_donateurs (
@@ -840,7 +841,7 @@ begin
       returning id into fid;
   end if;
   update fac_franchises set personne_id = pid, nom = trim(p->>'nom'), prenom = nullif(trim(p->>'prenom'), ''), fonction = nullif(trim(p->>'fonction'), ''),
-    lignes = coalesce(p->'lignes', '[]'), observations = nullif(trim(p->>'observations'), ''), paye_le = nullif(p->>'paye_le', '')::date,
+    lignes = coalesce(p->'lignes', '[]'), mois = nullif(p->>'mois', ''), observations = nullif(trim(p->>'observations'), ''), paye_le = nullif(p->>'paye_le', '')::date,
     date_doc = coalesce(nullif(p->>'date_doc', '')::date, date_doc)
   where id = fid;
   return fid;
@@ -1089,6 +1090,7 @@ insert into fac_reglages (cle, valeur) values
   ('recu_mail_objet', '"Reçu fiscal N° {numero} – Comité du Var de Volley-Ball"'),
   ('recu_mail_modele', '"Bonjour {prenom} {nom},\n\nNous vous remercions chaleureusement pour votre don de {montant} au Comité du Var de Volley-Ball.\n\nVous trouverez ci-joint votre reçu fiscal N° {numero}, à conserver : il vous permet de bénéficier d''une réduction d''impôt sur le revenu de 66 % du montant de votre don, dans la limite de 20 % de votre revenu imposable.\n\nAvec toute notre reconnaissance,\n\nEric CHASSAGNARD\nTrésorier\nComité du Var de Volley-Ball"'),
   ('franchise_plafond', '154'),
+  ('franchise_autres', '"2027-05-22|Tournoi International Poussins / Poussines (TIP) – Hyères\n2027-05-23|Tournoi International Poussins / Poussines (TIP) – Hyères"'),
   ('franchise_mention', '"Sommes versées au titre de la franchise de cotisations applicable aux manifestations sportives (arrêté du 27 juillet 1994, circulaire interministérielle DSS/AAF A1/94-60 du 28 juillet 1994). Dans la limite de 70 % du plafond journalier de la Sécurité sociale par manifestation, soit {plafond} € en {annee}, et pour les cinq premières manifestations du mois par personne et par organisateur, ces sommes ne sont pas soumises aux cotisations de Sécurité sociale ni à la CSG et à la CRDS. Justificatifs conservés : feuille de match ou programme de la manifestation et preuve de la présence du bénéficiaire."'),
   ('courrier_tarifs', '"Vu les tarifs pour la saison 2026-2027 approuvés par l''Assemblée Générale."'),
   ('courrier_signataires', '"Le Président du Comité du Var|Gérald HENRY\nLe président de la Commission Sportive|Loïc ADORA"'),
