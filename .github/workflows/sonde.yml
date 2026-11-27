@@ -14,9 +14,12 @@ jobs:
           mkdir -p sonde
           UA="Mozilla/5.0 (compatible; Comite-Var-Volley/1.0; +https://volley83.github.io/championnats/)"
           B="https://www.ffvbbeach.org/ffvbapp/resu"
-          curl -sSL -A "$UA" "$B/vbspo_home.php?codent=PTCA83" -o sonde/home.html || true
-          curl -sSL -A "$UA" "$B/vbspo_calendrier.php?saison=2026%2F2027&codent=PTCA83&poule=DFA" -o sonde/cal_DFA.html || true
-          curl -sSL -A "$UA" "$B/vbspo_calendrier.php?saison=2026%2F2027&codent=PTCA83&poule=CFA" -o sonde/cal_CFA.html || true
-          grep -oiE 'href="[^"]+"' sonde/*.html | sort -u > sonde/liens.txt || true
+          A="https://www.ffvbbeach.org/ffvbapp/adressier"
+          rm -f sonde/*
+          curl -sSL -A "$UA" -X POST -d "wss_saison=2026/2027&codmatch=DFA004&codent=PTCA83" "$A/fiche_match_ffvb.php" -o sonde/fiche_DFA004.bin || true
+          curl -sSL -A "$UA" -X POST -d "wss_saison=2026/2027&codmatch=CFA016&codent=PTCA83" "$A/fiche_match_ffvb.php" -o sonde/fiche_CFA016.bin || true
+          curl -sSL -A "$UA" "https://www.ffvbbeach.org/ffvbapp/resu/planning_club.php?cnclub=0837251" -o sonde/planning_VBO.html || true
+          for u in "fiche_club.php?cnclub=0837251" "fiche_club_ffvb.php?cnclub=0837251" "rech_aff.php"; do curl -sSL -A "$UA" "$A/$u" -o "sonde/adr_$(echo $u | tr '?=&/' '____').html" || true; done
+          file sonde/* > sonde/types.txt
           git config user.name volley83; git config user.email volley83@users.noreply.github.com
           git add sonde && git commit -m "sonde" && git push
