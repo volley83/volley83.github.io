@@ -142,7 +142,10 @@ def poule(code, html):
                 m.update({'sd': int(r[6]), 'se': int(r[7]), 'sets': r[8] if len(r) > 8 else '', 'points': r[9] if len(r) > 9 else '',
                           'arbitre': r[10] if len(r) > 10 and r[10] else None})
             else:
-                m.update({'lieu': r[7] if len(r) > 7 and r[7] else None, 'arbitre': r[9] if len(r) > 9 and r[9] else None})
+                lieu = r[7] if len(r) > 7 and r[7] else None
+                if lieu and (len(lieu) < 4 or not re.search(r'[A-Za-zÀ-ÿ]{3}', lieu)):   # « F », « P », « 3 » : codes de forfait / pénalité, pas un gymnase
+                    lieu = None
+                m.update({'lieu': lieu, 'arbitre': r[9] if len(r) > 9 and r[9] else None})
             if not journees:
                 journees.append({'titre': '', 'matchs': []})
             journees[-1]['matchs'].append(m)
@@ -330,6 +333,29 @@ def ecrire_ics(cats):
     print(f'{len(fichiers)} agendas .ics')
 
 
+# Une fois le match joué, la FFvolley remplace le gymnase par le score : on garde en mémoire le dernier
+# gymnase connu de chaque match (championnats/data/lieux.json) pour continuer à l'afficher dans les résultats.
+LIEUX = os.path.join(os.path.dirname(SORTIE), 'lieux.json')
+
+
+def garder_lieux(cats):
+    try:
+        memo = json.load(open(LIEUX, encoding='utf-8'))
+    except Exception:
+        memo = {}
+    for c in cats:
+        for p in c['poules']:
+            for j in p['journees']:
+                for m in j['matchs']:
+                    if m.get('lieu') and len(m['lieu']) >= 4:
+                        memo[m['code']] = m['lieu']
+                    elif memo.get(m['code']):
+                        m['lieu'] = memo[m['code']]
+    os.makedirs(os.path.dirname(LIEUX), exist_ok=True)
+    with open(LIEUX, 'w', encoding='utf-8') as fh:
+        json.dump(dict(sorted(memo.items())), fh, ensure_ascii=False, indent=0)
+
+
 def main():
     local = sys.argv[1] if len(sys.argv) > 1 else None
     home = lire(f'{BASE}vbspo_home.php?codent={CODENT}', local and os.path.join(local, 'home.html'))
@@ -361,6 +387,7 @@ def main():
                 time.sleep(1)
         if poules:
             cats.append({'titre': c['titre'], 'groupe': groupe(c['titre']), 'poules': poules})
+    garder_lieux(cats)
     data = {'saison': SAISON, 'source': f'{BASE}vbspo_home.php?codent={CODENT}', 'categories': cats}
     if not local:
         ecrire_ics(cats)
