@@ -262,6 +262,6 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 
 ### Gymnases
 - Le robot reprend bien les changements de gymnase (vérifié dans l'historique : DFA015 Jean-Yves Gosse → Pierre Gaudin). Après le match, la FFvolley remplace le gymnase par le score : `scripts/ffvb.py` garde le dernier gymnase connu dans `championnats/data/lieux.json` et ne le recopie que sur les matchs joués. Codes « F », « P », « 3 » (forfait/pénalité) ignorés.
-- Table `chp_gymnases` (clé = `cleGym()` : majuscules sans accents, sans « GYMNASE DE », sans la ville entre parenthèses ; nom, ville, adresse), RPC `chp_gymnases_public` / `chp_admin_gymnase`. Admin › Gymnases.
+- Table `chp_gymnases` (liste validée ; propositions = `championnats/data/salles_ffvb.json`, lues chaque semaine dans les fiches de match PDF par `scripts/salles.py` ; clé = `cleGym()` : majuscules sans accents, sans « GYMNASE DE », sans la ville entre parenthèses ; nom, ville, adresse), RPC `chp_gymnases_public` / `chp_admin_gymnase`. Admin › Gymnases.
 - Affichage : tournois = nom + ville en tête du tournoi ; matchs simples = nom seul. Nom cliquable (`gymHTML` / `ouvrirGym`) : adresse, Itinéraire (Google Maps dir), Voir sur la carte.
 

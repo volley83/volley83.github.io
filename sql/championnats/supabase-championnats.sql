@@ -506,18 +506,4 @@ end $$;
 grant execute on function chp_gymnases_public() to anon, authenticated;
 grant execute on function chp_admin_gymnase(text, text, jsonb) to anon, authenticated;
 
--- Premières villes connues (à compléter dans Admin › Gymnases)
-insert into chp_gymnases (cle, nom, ville) values
-  ('COSTEBELLE', 'Gymnase de Costebelle', 'Hyères'),
-  ('PIEMONTESI', 'Gymnase Piemontesi', 'Ollioules'),
-  ('SANTONI', 'Gymnase Santoni', 'La Valette-du-Var'),
-  ('LES BOSQUETTES', 'Gymnase des Bosquettes', 'Sainte-Maxime'),
-  ('JACQUES TROIN', 'Gymnase Jacques Troin', 'La Garde'),
-  ('COMPLEXE SPORTIF DES LICES', 'Complexe sportif des Lices', 'Toulon'),
-  ('LES LICES', 'Complexe sportif des Lices', 'Toulon'),
-  ('COLLEGE P.E VICTOR', 'Collège Paul-Émile Victor', 'Vidauban'),
-  ('ROSTAND', 'Gymnase Rostand', 'Draguignan'),
-  ('COLLEGE ROSTAND', 'Gymnase Rostand', 'Draguignan'),
-  ('SALLE SAINTE-CROIX', 'Salle Sainte-Croix', 'Fréjus'),
-  ('HALLE ST CROIX', 'Salle Sainte-Croix', 'Fréjus')
-on conflict (cle) do nothing;
+-- La liste se remplit depuis Admin › Gymnases (propositions reprises des fiches clubs FFvolley).

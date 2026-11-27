@@ -1426,14 +1426,15 @@ async function adminGymnases() {
   await loadSallesFfvb();
   Object.keys(SALLES_FFVB).forEach(k => vus[k] = vus[k] || { bruts: new Set([SALLES_FFVB[k].nom]), n: 0 });
   const propo = k => { const f = SALLES_FFVB[k]; return f ? { nom: lieuJoli(f.nom), ville: villeJolie(f.ville), adresse: f.adresse ? lieuJoli(f.adresse) + (f.cp ? ', ' + f.cp : '') : (f.cp || '') } : null; };
-  const cles = Object.keys(vus).sort((a, b) => !!(GYMS[a] && GYMS[a].ville) - !!(GYMS[b] && GYMS[b].ville) || a.localeCompare(b));
-  const aFaire = cles.filter(k => !(GYMS[k] && GYMS[k].ville)).length;
+  const valide = k => !!(GYMS[k] && GYMS[k].adresse);
+  const cles = Object.keys(vus).sort((a, b) => valide(a) - valide(b) || a.localeCompare(b));
+  const aFaire = cles.filter(k => !valide(k)).length;
   $('a-body').innerHTML = `<div class="card stack">
     <div class="rank-head" style="margin:0"><h2>Gymnases</h2><span class="muted small">${cles.length} gymnases · ${aFaire} à valider</span></div>
     ${Object.keys(SALLES_FFVB).length ? `<div class="msg" style="margin:0;background:#F6F8FC;color:var(--text)">💡 Les champs en <i>italique</i> sont repris des <b>fiches clubs FFvolley</b> (salle principale et salle de repli de chaque club, mises à jour chaque semaine). Vérifiez-les, corrigez si besoin, puis <b>Valider</b>. <button class="btn ghost sm" id="gy-all">✓ Valider toutes les propositions</button></div>` : ''}
-    <p class="muted small" style="margin:0">Sur le site, le nom du gymnase est cliquable : adresse, « Itinéraire » et « Voir sur la carte ». Les matchs simples affichent le nom seul, les tournois le nom et la ville. Les gymnases sans ville sont en haut. Chaque champ est enregistré dès que vous le quittez.</p>
+    <p class="muted small" style="margin:0">Sur le site, le nom du gymnase est cliquable : adresse, « Itinéraire » et « Voir sur la carte ». Les matchs simples affichent le nom seul, les tournois le nom et la ville. Les gymnases à valider sont en haut. Chaque champ est enregistré dès que vous le quittez.</p>
     <div class="tablebox"><table class="adm"><thead><tr><th>Nom(s) sur le site FFvolley</th><th>Nom affiché</th><th>Ville</th><th>Adresse</th><th></th></tr></thead><tbody>
-    ${cles.map(k => { const g = GYMS[k], d = infoGym([...vus[k].bruts][0] || k), pr = propo(k), v = g || pr || d, it = !g && pr ? 'font-style:italic;' : '', f = SALLES_FFVB[k]; return `<tr data-k="${esc(k)}" ${g ? '' : 'class="nv"'}>
+    ${cles.map(k => { const g0 = GYMS[k], d = infoGym([...vus[k].bruts][0] || k), pr = propo(k), g = g0 && g0.adresse ? g0 : null, v = { nom: (g0 && g0.nom) || (pr && pr.nom) || d.nom, ville: (g0 && g0.ville) || (pr && pr.ville) || d.ville, adresse: (g0 && g0.adresse) || (pr && pr.adresse) || '' }, it = !g && pr ? 'font-style:italic;' : '', f = SALLES_FFVB[k]; return `<tr data-k="${esc(k)}" ${g ? '' : 'class="nv"'}>
       <td class="small">${[...vus[k].bruts].map(esc).join('<br>') || esc(k)}${vus[k].n ? `<br><span class="muted">${vus[k].n} match(s)</span>` : ''}${f && f.clubs.length ? `<br><span class="muted">${f.clubs.map(esc).join('<br>')}</span>` : ''}</td>
       <td><input data-f="nom" value="${esc(v.nom || '')}" style="${it}min-width:170px"></td>
       <td><input data-f="ville" value="${esc(v.ville || '')}" placeholder="Ville" style="${it}min-width:120px"></td>
