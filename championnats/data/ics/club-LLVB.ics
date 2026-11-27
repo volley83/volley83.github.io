@@ -31,6 +31,7 @@ DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
 SUMMARY:M11 F · Le Luc Volley-Ball – Sainte-Maxime Cogolin Volley 2 (0
  -2)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 0-2 (4:15\, 11:15)\nPoule PFD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PFD
@@ -41,6 +42,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
 SUMMARY:M11 F · Le Luc Volley-Ball – Vidauban Volley-Ball (0-2)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 0-2 (1:15\, 5:15)\nPoule PFD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PFD
@@ -52,6 +54,7 @@ DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
 SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 3 – Le Luc Volley-Ball (1
  -1)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 1-1 (15:7\, 10:15)\nPoule PFD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PFD
@@ -152,6 +155,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 M · Sainte-Maxime Cogolin Volley – Le Luc Volley-Ball (0-2)
+LOCATION:College P.E Victor (Vidauban)
 DESCRIPTION:Résultat : 0-2 (15:25\, 18:25)\nPoule CMB – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CMB
@@ -162,6 +166,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 M · Le Luc Volley-Ball – Draguignan Union Club Var VB (0-2)
+LOCATION:College P.E Victor (Vidauban)
 DESCRIPTION:Résultat : 0-2 (20:25\, 10:25)\nPoule CMB – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CMB
@@ -172,6 +177,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T120000
 DTEND;TZID=Europe/Paris:20261121T140000
 SUMMARY:M18 M · Le Luc Volley-Ball – Vidauban Volley-Ball (2-0)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 2-0 (25:14\, 25:6)\nPoule CMB – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /CMB
@@ -182,6 +188,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T120000
 DTEND;TZID=Europe/Paris:20261121T140000
 SUMMARY:M18 M · Fréjus Var Volley – Le Luc Volley-Ball (0-2)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 0-2 (23:25\, 16:25)\nPoule CMB – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CMB
@@ -189,8 +196,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:CMB017@volley83.github.io
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261205T130000
-DTEND;TZID=Europe/Paris:20261205T150000
+DTSTART;TZID=Europe/Paris:20261205T120000
+DTEND;TZID=Europe/Paris:20261205T140000
 SUMMARY:M18 M · Le Luc Volley-Ball – Sainte-Maxime Cogolin Volley
 LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
@@ -199,8 +206,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:CMB018@volley83.github.io
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261205T130000
-DTEND;TZID=Europe/Paris:20261205T150000
+DTSTART;TZID=Europe/Paris:20261205T120000
+DTEND;TZID=Europe/Paris:20261205T140000
 SUMMARY:M18 M · Draguignan Union Club Var VB – Le Luc Volley-Ball
 LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
@@ -224,6 +231,7 @@ DTSTART;TZID=Europe/Paris:20261103T210000
 DTEND;TZID=Europe/Paris:20261103T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 2 – Le Luc Vo
  lley-Ball (3-1)
+LOCATION:Guy Moquet 1
 DESCRIPTION:Résultat : 3-1 (25:19\, 25:10\, 22:25\, 25:16)\nPoule M4A 
  – classement et résultats : https://volley83.github.io/championnats/#
  championnats/competlib/M4A
@@ -235,6 +243,7 @@ DTSTART;TZID=Europe/Paris:20261113T210000
 DTEND;TZID=Europe/Paris:20261113T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Le Luc Volley-Ball – Sud Sainte-Baume V
  olley Club 1 (0-3)
+LOCATION:Pierre Gaudin
 DESCRIPTION:Résultat : 0-3 (19:25\, 9:25\, 16:25)\nPoule M4A – classem
  ent et résultats : https://volley83.github.io/championnats/#championnat
  s/competlib/M4A
@@ -301,6 +310,7 @@ DTSTART;TZID=Europe/Paris:20261107T190000
 DTEND;TZID=Europe/Paris:20261107T210000
 SUMMARY:SENIORS F · Le Luc Volley-Ball – Volley Club Méditerranée (3
  -1)
+LOCATION:Pierre Gaudin
 DESCRIPTION:Résultat : 3-1 (25:13\, 25:21\, 22:25\, 25:13)\nPoule DFA 
  – classement et résultats : https://volley83.github.io/championnats/#
  championnats/seniors/DFA
@@ -312,6 +322,7 @@ DTSTART;TZID=Europe/Paris:20261122T160000
 DTEND;TZID=Europe/Paris:20261122T180000
 SUMMARY:SENIORS F · Volley Pradétan Gardéen (M21) – Le Luc Volley-Ba
  ll (0-3)
+LOCATION:Jacques Troin
 DESCRIPTION:Résultat : 0-3 (15:25\, 13:25\, 18:25)\nPoule DFA – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/seniors/DFA

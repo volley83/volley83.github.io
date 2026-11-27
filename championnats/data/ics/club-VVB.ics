@@ -31,6 +31,7 @@ DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
 SUMMARY:M11 F · Vidauban Volley-Ball – Sainte-Maxime Cogolin Volley 3 
  (2-0)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 2-0 (15:0\, 15:5)\nPoule PFD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PFD
@@ -41,6 +42,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
 SUMMARY:M11 F · Le Luc Volley-Ball – Vidauban Volley-Ball (0-2)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 0-2 (1:15\, 5:15)\nPoule PFD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PFD
@@ -52,6 +54,7 @@ DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
 SUMMARY:M11 F · Vidauban Volley-Ball – Draguignan Union Club Var VB (2
  -0)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 2-0 (15:11\, 15:8)\nPoule PFD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PFD
@@ -63,6 +66,7 @@ DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
 SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 1 – Vidauban Volley-Ball 
  (0-2)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 0-2 (4:15\, 5:15)\nPoule PFD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PFD
@@ -156,6 +160,7 @@ DTSTART;TZID=Europe/Paris:20261122T093000
 DTEND;TZID=Europe/Paris:20261122T113000
 SUMMARY:M13 F · Vidauban Volley-Ball – Draguignan Union Club Var VB 2 
  (1-2)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 1-2 (22:25\, 25:18\, 10:15)\nPoule BFC – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/jeunes/BFC
@@ -167,6 +172,7 @@ DTSTART;TZID=Europe/Paris:20261122T093000
 DTEND;TZID=Europe/Paris:20261122T113000
 SUMMARY:M13 F · Draguignan Union Club Var VB 1 – Vidauban Volley-Ball 
  (2-0)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 2-0 (25:18\, 25:16)\nPoule BFC – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/BFC
@@ -220,6 +226,7 @@ DTSTART;TZID=Europe/Paris:20261122T140000
 DTEND;TZID=Europe/Paris:20261122T160000
 SUMMARY:M13 M · Volley Club Hyères / Pierrefeu La Londe 1 – Vidauban 
  Volley-Ball (2-0)
+LOCATION:Gymnase Costebelle (Hyeres)
 DESCRIPTION:Résultat : 2-0 (25:11\, 25:22)\nPoule BMA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/BMA
@@ -231,6 +238,7 @@ DTSTART;TZID=Europe/Paris:20261122T140000
 DTEND;TZID=Europe/Paris:20261122T160000
 SUMMARY:M13 M · Vidauban Volley-Ball – Volley Club Hyères / Pierrefeu
   La Londe 2 (2-1)
+LOCATION:Gymnase Costebelle (Hyeres)
 DESCRIPTION:Résultat : 2-1 (25:27\, 25:23\, 18:16)\nPoule BMA – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/jeunes/BMA
@@ -284,6 +292,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 M · Fréjus Var Volley – Vidauban Volley-Ball (1-2)
+LOCATION:College P.E Victor (Vidauban)
 DESCRIPTION:Résultat : 1-2 (22:25\, 26:24\, 13:15)\nPoule CMB – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/jeunes/CMB
@@ -295,6 +304,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 M · Draguignan Union Club Var VB – Vidauban Volley-Ball (2
  -0)
+LOCATION:College P.E Victor (Vidauban)
 DESCRIPTION:Résultat : 2-0 (25:14\, 26:24)\nPoule CMB – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CMB
@@ -305,6 +315,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T120000
 DTEND;TZID=Europe/Paris:20261121T140000
 SUMMARY:M18 M · Le Luc Volley-Ball – Vidauban Volley-Ball (2-0)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 2-0 (25:14\, 25:6)\nPoule CMB – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /CMB
@@ -316,6 +327,7 @@ DTSTART;TZID=Europe/Paris:20261121T120000
 DTEND;TZID=Europe/Paris:20261121T140000
 SUMMARY:M18 M · Sainte-Maxime Cogolin Volley – Vidauban Volley-Ball (1
  -2)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 1-2 (25:20\, 19:25\, 19:21)\nPoule CMB – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/jeunes/CMB
@@ -323,8 +335,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:CMB016@volley83.github.io
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261205T130000
-DTEND;TZID=Europe/Paris:20261205T150000
+DTSTART;TZID=Europe/Paris:20261205T120000
+DTEND;TZID=Europe/Paris:20261205T140000
 SUMMARY:M18 M · Vidauban Volley-Ball – Fréjus Var Volley
 LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
@@ -333,8 +345,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:CMB020@volley83.github.io
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261205T130000
-DTEND;TZID=Europe/Paris:20261205T150000
+DTSTART;TZID=Europe/Paris:20261205T120000
+DTEND;TZID=Europe/Paris:20261205T140000
 SUMMARY:M18 M · Vidauban Volley-Ball – Draguignan Union Club Var VB
 LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
@@ -358,6 +370,7 @@ DTSTART;TZID=Europe/Paris:20261112T210000
 DTEND;TZID=Europe/Paris:20261112T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 2 – Vidauban 
  Volley-Ball (3-2)
+LOCATION:Gymnase Gassendi
 DESCRIPTION:Résultat : 3-2 (25:16\, 25:27\, 22:25\, 25:20\, 23:21)\nPoul
  e M4E – classement et résultats : https://volley83.github.io/champion
  nats/#championnats/competlib/M4E
@@ -369,6 +382,7 @@ DTSTART;TZID=Europe/Paris:20261109T210000
 DTEND;TZID=Europe/Paris:20261109T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Vidauban Volley-Ball – Six-Fours Beach 
  Volley 1 (0-3)
+LOCATION:Collège P.E Victor
 DESCRIPTION:Résultat : 0-3 (7:25\, 9:25\, 9:25)\nPoule M4E – classemen
  t et résultats : https://volley83.github.io/championnats/#championnats/
  competlib/M4E
@@ -380,6 +394,7 @@ DTSTART;TZID=Europe/Paris:20261123T210000
 DTEND;TZID=Europe/Paris:20261123T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Vidauban Volley-Ball – Rocbaron Club Vo
  lley-Ball 2 (0-3)
+LOCATION:Collège P.E Victor
 DESCRIPTION:Résultat : 0-3 (20:25\, 23:25\, 15:25)\nPoule M4E – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4E
@@ -445,6 +460,7 @@ DTSTART;TZID=Europe/Paris:20261121T170000
 DTEND;TZID=Europe/Paris:20261121T190000
 SUMMARY:SENIORS F · Vidauban Volley-Ball – Sud Sainte-Baume Volley Clu
  b (2-3)
+LOCATION:Collège P.E Victor
 DESCRIPTION:Résultat : 2-3 (15:25\, 10:25\, 25:17\, 25:23\, 12:15)\nPoul
  e DFB – classement et résultats : https://volley83.github.io/champion
  nats/#championnats/seniors/DFB
@@ -536,6 +552,7 @@ DTSTART;TZID=Europe/Paris:20261114T191500
 DTEND;TZID=Europe/Paris:20261114T211500
 SUMMARY:SENIORS M · Sud Sainte-Baume Volley Club – Vidauban Volley-Bal
  l (3-1)
+LOCATION:Gymnase du College le Vigneret
 DESCRIPTION:Résultat : 3-1 (25:12\, 25:10\, 24:26\, 25:20)\nPoule DMB 
  – classement et résultats : https://volley83.github.io/championnats/#
  championnats/seniors/DMB
@@ -547,6 +564,7 @@ DTSTART;TZID=Europe/Paris:20261121T170000
 DTEND;TZID=Europe/Paris:20261121T190000
 SUMMARY:SENIORS M · Vidauban Volley-Ball – Volley-Ball Ollioulais 1 (1
  -3)
+LOCATION:Collège P.E Victor
 DESCRIPTION:Résultat : 1-3 (17:25\, 20:25\, 27:25\, 16:25)\nPoule DMB 
  – classement et résultats : https://volley83.github.io/championnats/#
  championnats/seniors/DMB

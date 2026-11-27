@@ -31,6 +31,7 @@ DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
 SUMMARY:M11 F · Draguignan Union Club Var VB – Sainte-Maxime Cogolin V
  olley 1 (1-1)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 1-1 (15:11\, 10:15)\nPoule PFD – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/PFD
@@ -42,6 +43,7 @@ DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
 SUMMARY:M11 F · Sainte-Maxime Cogolin Volley 2 – Draguignan Union Club
   Var VB (1-1)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 1-1 (10:15\, 15:13)\nPoule PFD – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/PFD
@@ -53,6 +55,7 @@ DTSTART;TZID=Europe/Paris:20261107T130000
 DTEND;TZID=Europe/Paris:20261107T150000
 SUMMARY:M11 F · Vidauban Volley-Ball – Draguignan Union Club Var VB (2
  -0)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 2-0 (15:11\, 15:8)\nPoule PFD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PFD
@@ -138,6 +141,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Draguignan Union Club Var VB 1 – Draguignan Union Club
   Var VB 2 (2-0)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 2-0 (15:12\, 15:6)\nPoule PMD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PMD
@@ -149,6 +153,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Draguignan Union Club Var VB 2 – Volley Pradétan Gard
  éen (2-0)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 2-0 (15:2\, 15:10)\nPoule PMD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PMD
@@ -160,6 +165,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 1 – Draguigna
  n Union Club Var VB 1 (1-1)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 1-1 (4:15\, 15:10)\nPoule PMD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PMD
@@ -171,6 +177,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Draguignan Union Club Var VB 1 – Fréjus Var Volley (2
  -0)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 2-0 (15:11\, 15:7)\nPoule PMD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PMD
@@ -182,6 +189,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Draguignan Union Club Var VB 2 – Volley Club Hyères /
   Pierrefeu La Londe 1 (0-2)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 0-2 (11:15\, 3:15)\nPoule PMD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PMD
@@ -193,6 +201,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Volley Pradétan Gardéen – Draguignan Union Club Var 
  VB 1 (0-2)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 0-2 (7:15\, 1:15)\nPoule PMD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PMD
@@ -366,6 +375,7 @@ DTSTART;TZID=Europe/Paris:20261122T093000
 DTEND;TZID=Europe/Paris:20261122T113000
 SUMMARY:M13 F · Vidauban Volley-Ball – Draguignan Union Club Var VB 2 
  (1-2)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 1-2 (22:25\, 25:18\, 10:15)\nPoule BFC – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/jeunes/BFC
@@ -377,6 +387,7 @@ DTSTART;TZID=Europe/Paris:20261122T093000
 DTEND;TZID=Europe/Paris:20261122T113000
 SUMMARY:M13 F · Draguignan Union Club Var VB 2 – Draguignan Union Club
   Var VB 1 (0-2)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 0-2 (13:25\, 7:25)\nPoule BFC – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /BFC
@@ -388,6 +399,7 @@ DTSTART;TZID=Europe/Paris:20261122T093000
 DTEND;TZID=Europe/Paris:20261122T113000
 SUMMARY:M13 F · Draguignan Union Club Var VB 1 – Vidauban Volley-Ball 
  (2-0)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 2-0 (25:18\, 25:16)\nPoule BFC – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/BFC
@@ -452,6 +464,7 @@ DTSTART;TZID=Europe/Paris:20261122T100000
 DTEND;TZID=Europe/Paris:20261122T120000
 SUMMARY:M13 M · Fréjus Var Volley 2 – Draguignan Union Club Var VB (0
  -2)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 0-2 (3:25\, 12:25)\nPoule BMB – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /BMB
@@ -463,6 +476,7 @@ DTSTART;TZID=Europe/Paris:20261122T100000
 DTEND;TZID=Europe/Paris:20261122T120000
 SUMMARY:M13 M · Draguignan Union Club Var VB – Fréjus Var Volley 1 (2
  -0)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 2-0 (25:19\, 25:16)\nPoule BMB – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/BMB
@@ -516,6 +530,7 @@ DTSTART;TZID=Europe/Paris:20261114T140000
 DTEND;TZID=Europe/Paris:20261114T160000
 SUMMARY:M15 F · Volley-Ball Ollioulais – Draguignan Union Club Var VB 
  (1-2)
+LOCATION:Les Bosquettes (Sainte-Maxime)
 DESCRIPTION:Résultat : 1-2 (25:21\, 20:25\, 13:15)\nPoule MFA – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/jeunes/MFA
@@ -526,6 +541,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261114T140000
 DTEND;TZID=Europe/Paris:20261114T160000
 SUMMARY:M15 F · Draguignan Union Club Var VB – Fréjus Var Volley (2-1)
+LOCATION:Les Bosquettes (Sainte-Maxime)
 DESCRIPTION:Résultat : 2-1 (25:23\, 20:25\, 15:13)\nPoule MFA – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/jeunes/MFA
@@ -662,6 +678,7 @@ DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
 SUMMARY:M18 F · Volley Pradétan Gardéen – Draguignan Union Club Var 
  VB (0-2)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 0-2 (8:25\, 8:25)\nPoule CFB – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /CFB
@@ -673,6 +690,7 @@ DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
 SUMMARY:M18 F · Sainte-Maxime Cogolin Volley – Draguignan Union Club V
  ar VB (0-2)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 0-2 (14:25\, 11:25)\nPoule CFB – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CFB
@@ -725,6 +743,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 M · Le Luc Volley-Ball – Draguignan Union Club Var VB (0-2)
+LOCATION:College P.E Victor (Vidauban)
 DESCRIPTION:Résultat : 0-2 (20:25\, 10:25)\nPoule CMB – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CMB
@@ -736,6 +755,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 M · Draguignan Union Club Var VB – Vidauban Volley-Ball (2
  -0)
+LOCATION:College P.E Victor (Vidauban)
 DESCRIPTION:Résultat : 2-0 (25:14\, 26:24)\nPoule CMB – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CMB
@@ -746,6 +766,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T120000
 DTEND;TZID=Europe/Paris:20261121T140000
 SUMMARY:M18 M · Draguignan Union Club Var VB – Fréjus Var Volley (2-0)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 2-0 (25:18\, 25:23)\nPoule CMB – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CMB
@@ -757,6 +778,7 @@ DTSTART;TZID=Europe/Paris:20261121T120000
 DTEND;TZID=Europe/Paris:20261121T140000
 SUMMARY:M18 M · Sainte-Maxime Cogolin Volley – Draguignan Union Club V
  ar VB (1-2)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 1-2 (17:25\, 25:17\, 14:16)\nPoule CMB – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/jeunes/CMB
@@ -764,8 +786,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:CMB018@volley83.github.io
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261205T130000
-DTEND;TZID=Europe/Paris:20261205T150000
+DTSTART;TZID=Europe/Paris:20261205T120000
+DTEND;TZID=Europe/Paris:20261205T140000
 SUMMARY:M18 M · Draguignan Union Club Var VB – Le Luc Volley-Ball
 LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
@@ -774,8 +796,8 @@ END:VEVENT
 BEGIN:VEVENT
 UID:CMB020@volley83.github.io
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=Europe/Paris:20261205T130000
-DTEND;TZID=Europe/Paris:20261205T150000
+DTSTART;TZID=Europe/Paris:20261205T120000
+DTEND;TZID=Europe/Paris:20261205T140000
 SUMMARY:M18 M · Vidauban Volley-Ball – Draguignan Union Club Var VB
 LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Poule CMB – classement et résultats : https://volley83.git
@@ -799,6 +821,7 @@ DTSTART;TZID=Europe/Paris:20261102T203000
 DTEND;TZID=Europe/Paris:20261102T223000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Draguignan Union Club Var VB – Volley C
  lub Seynois 1 (2-3)
+LOCATION:Complexe Saint Exupery
 DESCRIPTION:Résultat : 2-3 (16:25\, 22:25\, 25:23\, 25:14\, 13:15)\nPoul
  e M4F – classement et résultats : https://volley83.github.io/champion
  nats/#championnats/competlib/M4F
@@ -810,6 +833,7 @@ DTSTART;TZID=Europe/Paris:20261109T203000
 DTEND;TZID=Europe/Paris:20261109T223000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Sainte-Maxime Cogolin Volley 2 – Dragui
  gnan Union Club Var VB (3-0)
+LOCATION:Omnisports Pastorelli
 DESCRIPTION:Résultat : 3-0 (28:26\, 25:17\, 25:10)\nPoule M4F – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4F
@@ -821,6 +845,7 @@ DTSTART;TZID=Europe/Paris:20261124T210000
 DTEND;TZID=Europe/Paris:20261124T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Seynois 1 – Draguignan Unio
  n Club Var VB (1-3)
+LOCATION:Gymnase Armand Sauvat
 DESCRIPTION:Résultat : 1-3 (19:25\, 25:22\, 17:25\, 18:25)\nPoule M4F 
  – classement et résultats : https://volley83.github.io/championnats/#
  championnats/competlib/M4F
@@ -874,6 +899,7 @@ DTSTART;TZID=Europe/Paris:20261108T123000
 DTEND;TZID=Europe/Paris:20261108T143000
 SUMMARY:SENIORS M · Volley Club Méditerranée 2 – Draguignan Union Cl
  ub Var VB (M21) (0-3)
+LOCATION:Complexe Sportif des Lices
 DESCRIPTION:Résultat : 0-3 (21:25\, 16:25\, 32:34)\nPoule DMA – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/seniors/DMA
@@ -885,6 +911,7 @@ DTSTART;TZID=Europe/Paris:20261122T150000
 DTEND;TZID=Europe/Paris:20261122T170000
 SUMMARY:SENIORS M · Draguignan Union Club Var VB (M21) – Volley Pradé
  tan Gardéen 1 (3-0)
+LOCATION:Gymnase Collège Rostand
 DESCRIPTION:Résultat : 3-0 (25:17\, 25:16\, 25:23)\nPoule DMA – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/seniors/DMA

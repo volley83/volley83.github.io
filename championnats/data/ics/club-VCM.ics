@@ -64,6 +64,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 F · Volley Club Méditerranée 2 – Union Athlétique Valet
  toise (0-2)
+LOCATION:Gymnase Piemontesi (Ollioules)
 DESCRIPTION:Résultat : 0-2 (12:25\, 5:25)\nPoule CFA – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /CFA
@@ -75,6 +76,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Volley Club
   Méditerranée 1 (0-2)
+LOCATION:Gymnase Piemontesi (Ollioules)
 DESCRIPTION:Résultat : 0-2 (22:25\, 17:25)\nPoule CFA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CFA
@@ -86,6 +88,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 F · Volley Club Méditerranée 1 – Volley-Ball Ollioulais 
  (2-1)
+LOCATION:Gymnase Piemontesi (Ollioules)
 DESCRIPTION:Résultat : 2-1 (25:13\, 19:25\, 15:8)\nPoule CFA – classem
  ent et résultats : https://volley83.github.io/championnats/#championnat
  s/jeunes/CFA
@@ -97,6 +100,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Volley Club
   Méditerranée 2 (2-0)
+LOCATION:Gymnase Piemontesi (Ollioules)
 DESCRIPTION:Résultat : 2-0 (25:17\, 25:17)\nPoule CFA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CFA
@@ -108,6 +112,7 @@ DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
 SUMMARY:M18 F · Volley Club Méditerranée 1 – Union Athlétique Valet
  toise (2-0)
+LOCATION:Gymnase Costebelle (Hyeres)
 DESCRIPTION:Résultat : 2-0 (25:23\, 25:14)\nPoule CFA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CFA
@@ -119,6 +124,7 @@ DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
 SUMMARY:M18 F · Volley-Ball Ollioulais – Volley Club Méditerranée 2 
  (2-0)
+LOCATION:Gymnase Costebelle (Hyeres)
 DESCRIPTION:Résultat : 2-0 (25:19\, 25:10)\nPoule CFA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CFA
@@ -130,6 +136,7 @@ DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
 SUMMARY:M18 F · Volley Club Méditerranée 2 – Volley Club Méditerran
  ée 1 (0-2)
+LOCATION:Gymnase Costebelle (Hyeres)
 DESCRIPTION:Résultat : 0-2 (10:25\, 11:25)\nPoule CFA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CFA
@@ -206,6 +213,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 M · Volley-Ball Ollioulais – Volley Club Méditerranée (0
  -2)
+LOCATION:Gymnase Santoni (La Valette)
 DESCRIPTION:Résultat : 0-2 (17:25\, 23:25)\nPoule CMA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CMA
@@ -217,6 +225,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 M · Volley Club Méditerranée – Volley Pradétan Gardéen
   (2-0)
+LOCATION:Gymnase Santoni (La Valette)
 DESCRIPTION:Résultat : 2-0 (25:9\, 25:23)\nPoule CMA – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /CMA
@@ -228,6 +237,7 @@ DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
 SUMMARY:M18 M · Volley Club Méditerranée – Volley Club Hyères / Pie
  rrefeu La Londe (2-0)
+LOCATION:Gymnase Piemontesi (Ollioules)
 DESCRIPTION:Résultat : 2-0 (25:19\, 25:18)\nPoule CMA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CMA
@@ -239,6 +249,7 @@ DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
 SUMMARY:M18 M · Union Athlétique Valettoise – Volley Club Méditerran
  ée (0-2)
+LOCATION:Gymnase Piemontesi (Ollioules)
 DESCRIPTION:Résultat : 0-2 (18:25\, 26:28)\nPoule CMA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CMA
@@ -279,6 +290,7 @@ DTSTART;TZID=Europe/Paris:20261105T210000
 DTEND;TZID=Europe/Paris:20261105T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 3 – Volley Cl
  ub Méditerranée (1-3)
+LOCATION:Gymnase Gassendi
 DESCRIPTION:Résultat : 1-3 (20:25\, 25:20\, 21:25\, 19:25)\nPoule M4H 
  – classement et résultats : https://volley83.github.io/championnats/#
  championnats/competlib/M4H
@@ -290,6 +302,7 @@ DTSTART;TZID=Europe/Paris:20261113T211500
 DTEND;TZID=Europe/Paris:20261113T231500
 SUMMARY:COMPET'LIB 4X4 MIXTE · Union Athlétique Valettoise 1 – Volley
   Club Méditerranée (3-0)
+LOCATION:Santoni
 DESCRIPTION:Résultat : 3-0 (25:22\, 25:19\, 25:21)\nPoule M4H – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4H
@@ -301,6 +314,7 @@ DTSTART;TZID=Europe/Paris:20261123T200000
 DTEND;TZID=Europe/Paris:20261123T220000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Méditerranée – Rocbaron C
  lub Volley-Ball 3 (3-0)
+LOCATION:Complexe Sportif des Lices
 DESCRIPTION:Résultat : 3-0 (25:23\, 26:24\, 25:14)\nPoule M4H – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4H
@@ -354,6 +368,7 @@ DTSTART;TZID=Europe/Paris:20261107T190000
 DTEND;TZID=Europe/Paris:20261107T210000
 SUMMARY:SENIORS F · Le Luc Volley-Ball – Volley Club Méditerranée (3
  -1)
+LOCATION:Pierre Gaudin
 DESCRIPTION:Résultat : 3-1 (25:13\, 25:21\, 22:25\, 25:13)\nPoule DFA 
  – classement et résultats : https://volley83.github.io/championnats/#
  championnats/seniors/DFA
@@ -365,6 +380,7 @@ DTSTART;TZID=Europe/Paris:20261121T200000
 DTEND;TZID=Europe/Paris:20261121T220000
 SUMMARY:SENIORS F · Volley Club Hyères / Pierrefeu La Londe – Volley 
  Club Méditerranée (2-3)
+LOCATION:Gymnase de Costebelle
 DESCRIPTION:Résultat : 2-3 (25:23\, 18:25\, 25:21\, 14:25\, 18:20)\nPoul
  e DFA – classement et résultats : https://volley83.github.io/champion
  nats/#championnats/seniors/DFA
@@ -462,6 +478,7 @@ DTSTART;TZID=Europe/Paris:20261114T170000
 DTEND;TZID=Europe/Paris:20261114T190000
 SUMMARY:SENIORS F · Sud Sainte-Baume Volley Club – Volley Club Médite
  rranée (0-3)
+LOCATION:Gymnase du College le Vigneret
 DESCRIPTION:Résultat : 0-3 (17:25\, 11:25\, 14:25)\nPoule DFB – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/seniors/DFB
@@ -473,6 +490,7 @@ DTSTART;TZID=Europe/Paris:20261121T180000
 DTEND;TZID=Europe/Paris:20261121T200000
 SUMMARY:SENIORS F · Union Athlétique Valettoise – Volley Club Médite
  rranée (0-3)
+LOCATION:Santoni
 DESCRIPTION:Résultat : 0-3 (22:25\, 8:25\, 13:25)\nPoule DFB – classem
  ent et résultats : https://volley83.github.io/championnats/#championnat
  s/seniors/DFB
@@ -568,6 +586,7 @@ DTSTART;TZID=Europe/Paris:20261108T123000
 DTEND;TZID=Europe/Paris:20261108T143000
 SUMMARY:SENIORS M · Volley Club Méditerranée 2 – Draguignan Union Cl
  ub Var VB (M21) (0-3)
+LOCATION:Complexe Sportif des Lices
 DESCRIPTION:Résultat : 0-3 (21:25\, 16:25\, 32:34)\nPoule DMA – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/seniors/DMA
@@ -579,6 +598,7 @@ DTSTART;TZID=Europe/Paris:20261122T140000
 DTEND;TZID=Europe/Paris:20261122T160000
 SUMMARY:SENIORS M · Union Athlétique Valettoise 1 – Volley Club Médi
  terranée 2 (3-0)
+LOCATION:Santoni
 DESCRIPTION:Résultat : 3-0 (25:19\, 25:18\, 25:16)\nPoule DMA – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/seniors/DMA
@@ -685,6 +705,7 @@ DTSTART;TZID=Europe/Paris:20261108T100000
 DTEND;TZID=Europe/Paris:20261108T120000
 SUMMARY:SENIORS M · Volley Club Méditerranée 1 – Volley Pradétan Ga
  rdéen 2 (3-0)
+LOCATION:Complexe Sportif des Lices
 DESCRIPTION:Résultat : 3-0 (25:22\, 25:8\, 25:11)\nPoule DMB – classem
  ent et résultats : https://volley83.github.io/championnats/#championnat
  s/seniors/DMB

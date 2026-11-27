@@ -72,6 +72,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
 SUMMARY:M18 F · Fréjus Var Volley – Sainte-Maxime Cogolin Volley (2-1)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 2-1 (25:22\, 20:25\, 15:11)\nPoule CFB – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/jeunes/CFB
@@ -83,6 +84,7 @@ DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
 SUMMARY:M18 F · Volley Pradétan Gardéen – Draguignan Union Club Var 
  VB (0-2)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 0-2 (8:25\, 8:25)\nPoule CFB – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /CFB
@@ -93,6 +95,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
 SUMMARY:M18 F · Fréjus Var Volley – Volley Pradétan Gardéen (2-0)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 2-0 (25:8\, 25:17)\nPoule CFB – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /CFB
@@ -104,6 +107,7 @@ DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
 SUMMARY:M18 F · Sainte-Maxime Cogolin Volley – Draguignan Union Club V
  ar VB (0-2)
+LOCATION:Gymnase Rostand (Draguignan)
 DESCRIPTION:Résultat : 0-2 (14:25\, 11:25)\nPoule CFB – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CFB

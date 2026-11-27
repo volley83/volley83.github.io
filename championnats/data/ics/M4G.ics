@@ -31,6 +31,7 @@ DTSTART;TZID=Europe/Paris:20261119T204500
 DTEND;TZID=Europe/Paris:20261119T224500
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 1 – Six-Fours
   Beach Volley 3 (1-3)
+LOCATION:Gerard Sébastia
 DESCRIPTION:Résultat : 1-3 (20:25\, 25:23\, 20:25\, 20:25)\nPoule M4G 
  – classement et résultats : https://volley83.github.io/championnats/#
  championnats/competlib/M4G
@@ -53,6 +54,7 @@ DTSTART;TZID=Europe/Paris:20261102T193000
 DTEND;TZID=Europe/Paris:20261102T213000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 1 – Volley Prad
  étan Gardéen 1 (3-0)
+LOCATION:La Cordeille
 DESCRIPTION:Résultat : 3-0 (25:23\, 25:7\, 25:20)\nPoule M4G – classem
  ent et résultats : https://volley83.github.io/championnats/#championnat
  s/competlib/M4G
@@ -86,6 +88,7 @@ DTSTART;TZID=Europe/Paris:20261112T210000
 DTEND;TZID=Europe/Paris:20261112T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 3 – Volley-Ball 
  Ollioulais 1 (3-0)
+LOCATION:Complexe Sportif du Verger
 DESCRIPTION:Résultat : 3-0 (25:13\, 25:17\, 25:11)\nPoule M4G – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4G
@@ -97,6 +100,7 @@ DTSTART;TZID=Europe/Paris:20261126T204500
 DTEND;TZID=Europe/Paris:20261126T224500
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Pradétan Gardéen 1 – Volley-Ba
  ll Ollioulais 1 (0-3)
+LOCATION:Gerard Sébastia
 DESCRIPTION:Résultat : 0-3 (15:25\, 16:25\, 20:25)\nPoule M4G – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4G
@@ -108,6 +112,7 @@ DTSTART;TZID=Europe/Paris:20261126T213000
 DTEND;TZID=Europe/Paris:20261126T233000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Sud Sainte-Baume Volley Club 2 – Six-Fo
  urs Beach Volley 3 (1-3)
+LOCATION:Compexe Sportif du Beausset
 DESCRIPTION:Résultat : 1-3 (15:25\, 16:25\, 25:21\, 23:25)\nPoule M4G 
  – classement et résultats : https://volley83.github.io/championnats/#
  championnats/competlib/M4G

@@ -63,6 +63,7 @@ DTSTART;TZID=Europe/Paris:20261122T100000
 DTEND;TZID=Europe/Paris:20261122T120000
 SUMMARY:M13 M · Fréjus Var Volley 2 – Draguignan Union Club Var VB (0
  -2)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 0-2 (3:25\, 12:25)\nPoule BMB – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /BMB
@@ -74,6 +75,7 @@ DTSTART;TZID=Europe/Paris:20261122T100000
 DTEND;TZID=Europe/Paris:20261122T120000
 SUMMARY:M13 M · Draguignan Union Club Var VB – Fréjus Var Volley 1 (2
  -0)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 2-0 (25:19\, 25:16)\nPoule BMB – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/BMB
@@ -84,6 +86,7 @@ DTSTAMP:20260901T000000Z
 DTSTART;TZID=Europe/Paris:20261122T100000
 DTEND;TZID=Europe/Paris:20261122T120000
 SUMMARY:M13 M · Fréjus Var Volley 1 – Fréjus Var Volley 2 (2-0)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 2-0 (25:10\, 25:21)\nPoule BMB – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/BMB

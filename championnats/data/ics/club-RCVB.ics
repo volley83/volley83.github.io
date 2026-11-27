@@ -51,6 +51,7 @@ DTSTART;TZID=Europe/Paris:20261105T210000
 DTEND;TZID=Europe/Paris:20261105T230000
 SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball – Six-Fours Beach
   Volley (0-3)
+LOCATION:Gymnase Gassendi
 DESCRIPTION:Résultat : 0-3 (9:25\, 12:25\, 20:25)\nPoule 4FA – classem
  ent et résultats : https://volley83.github.io/championnats/#championnat
  s/competlib/4FA
@@ -62,6 +63,7 @@ DTSTART;TZID=Europe/Paris:20261110T210000
 DTEND;TZID=Europe/Paris:20261110T230000
 SUMMARY:COMPET'LIB 4X4 F · Volley Pradétan Gardéen 1 – Rocbaron Club
   Volley-Ball (2-3)
+LOCATION:Guy Moquet 1
 DESCRIPTION:Résultat : 2-3 (25:17\, 17:25\, 25:23\, 18:25\, 7:15)\nPoule
   4FA – classement et résultats : https://volley83.github.io/championn
  ats/#championnats/competlib/4FA
@@ -73,6 +75,7 @@ DTSTART;TZID=Europe/Paris:20261126T210000
 DTEND;TZID=Europe/Paris:20261126T230000
 SUMMARY:COMPET'LIB 4X4 F · Rocbaron Club Volley-Ball – Volley Pradéta
  n Gardéen 2 (3-0)
+LOCATION:Gymnase Gassendi
 DESCRIPTION:Résultat : 3-0 (25:19\, 25:20\, 25:23)\nPoule 4FA – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/4FA
@@ -137,6 +140,7 @@ DTSTART;TZID=Europe/Paris:20261103T210000
 DTEND;TZID=Europe/Paris:20261103T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 1 – Volley Cl
  ub Hyères / Pierrefeu La Londe 3 (3-0)
+LOCATION:Gymnase Gassendi
 DESCRIPTION:Résultat : 3-0 (25:13\, 25:19\, 26:24)\nPoule M4B – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4B
@@ -148,6 +152,7 @@ DTSTART;TZID=Europe/Paris:20261116T210000
 DTEND;TZID=Europe/Paris:20261116T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 2 – Rocbaron Clu
  b Volley-Ball 1 (0-3)
+LOCATION:Complexe Sportif du Verger
 DESCRIPTION:Résultat : 0-3 (14:25\, 18:25\, 17:25)\nPoule M4B – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4B
@@ -170,6 +175,7 @@ DTSTART;TZID=Europe/Paris:20261124T210000
 DTEND;TZID=Europe/Paris:20261124T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 1 – Six-Fours
   Beach Volley 2 (3-1)
+LOCATION:Gymnase Gassendi
 DESCRIPTION:Résultat : 3-1 (26:24\, 25:9\, 20:25\, 25:12)\nPoule M4B –
   classement et résultats : https://volley83.github.io/championnats/#cha
  mpionnats/competlib/M4B
@@ -203,7 +209,6 @@ DTSTART;TZID=Europe/Paris:20261012T210000
 DTEND;TZID=Europe/Paris:20261012T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 1 – Rocbaron Clu
  b Volley-Ball 2
-LOCATION:3
 DESCRIPTION:Poule M4E – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/M4E
 END:VEVENT
@@ -214,6 +219,7 @@ DTSTART;TZID=Europe/Paris:20261112T210000
 DTEND;TZID=Europe/Paris:20261112T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 2 – Vidauban 
  Volley-Ball (3-2)
+LOCATION:Gymnase Gassendi
 DESCRIPTION:Résultat : 3-2 (25:16\, 25:27\, 22:25\, 25:20\, 23:21)\nPoul
  e M4E – classement et résultats : https://volley83.github.io/champion
  nats/#championnats/competlib/M4E
@@ -225,6 +231,7 @@ DTSTART;TZID=Europe/Paris:20261110T210000
 DTEND;TZID=Europe/Paris:20261110T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 2 – Volley Cl
  ub Hyères / Pierrefeu La Londe 4 (0-3)
+LOCATION:Gymnase Gassendi
 DESCRIPTION:Résultat : 0-3 (18:25\, 10:25\, 21:25)\nPoule M4E – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4E
@@ -236,6 +243,7 @@ DTSTART;TZID=Europe/Paris:20261123T210000
 DTEND;TZID=Europe/Paris:20261123T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Vidauban Volley-Ball – Rocbaron Club Vo
  lley-Ball 2 (0-3)
+LOCATION:Collège P.E Victor
 DESCRIPTION:Résultat : 0-3 (20:25\, 23:25\, 15:25)\nPoule M4E – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4E
@@ -280,6 +288,7 @@ DTSTART;TZID=Europe/Paris:20261105T210000
 DTEND;TZID=Europe/Paris:20261105T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 3 – Volley Cl
  ub Méditerranée (1-3)
+LOCATION:Gymnase Gassendi
 DESCRIPTION:Résultat : 1-3 (20:25\, 25:20\, 21:25\, 19:25)\nPoule M4H 
  – classement et résultats : https://volley83.github.io/championnats/#
  championnats/competlib/M4H
@@ -300,6 +309,7 @@ DTSTART;TZID=Europe/Paris:20261123T200000
 DTEND;TZID=Europe/Paris:20261123T220000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Méditerranée – Rocbaron C
  lub Volley-Ball 3 (3-0)
+LOCATION:Complexe Sportif des Lices
 DESCRIPTION:Résultat : 3-0 (25:23\, 26:24\, 25:14)\nPoule M4H – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4H

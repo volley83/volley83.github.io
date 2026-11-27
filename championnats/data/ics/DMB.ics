@@ -32,7 +32,6 @@ DTSTART;TZID=Europe/Paris:20261010T191500
 DTEND;TZID=Europe/Paris:20261010T211500
 SUMMARY:SENIORS M · Sud Sainte-Baume Volley Club – Volley Pradétan Ga
  rdéen 2
-LOCATION:F
 DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/seniors/DMB
 END:VEVENT
@@ -83,7 +82,6 @@ DTSTART;TZID=Europe/Paris:20261017T203000
 DTEND;TZID=Europe/Paris:20261017T223000
 SUMMARY:SENIORS M · Volley-Ball Ollioulais 1 – Sud Sainte-Baume Volley
   Club
-LOCATION:P
 DESCRIPTION:Poule DMB – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/seniors/DMB
 END:VEVENT
@@ -94,6 +92,7 @@ DTSTART;TZID=Europe/Paris:20261115T153000
 DTEND;TZID=Europe/Paris:20261115T173000
 SUMMARY:SENIORS M · Volley-Ball Ollioulais 1 – Volley Pradétan Gardé
  en 2 (3-0)
+LOCATION:Piemontesi
 DESCRIPTION:Résultat : 3-0 (25:11\, 25:13\, 25:13)\nPoule DMB – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/seniors/DMB
@@ -105,6 +104,7 @@ DTSTART;TZID=Europe/Paris:20261114T191500
 DTEND;TZID=Europe/Paris:20261114T211500
 SUMMARY:SENIORS M · Sud Sainte-Baume Volley Club – Vidauban Volley-Bal
  l (3-1)
+LOCATION:Gymnase du College le Vigneret
 DESCRIPTION:Résultat : 3-1 (25:12\, 25:10\, 24:26\, 25:20)\nPoule DMB 
  – classement et résultats : https://volley83.github.io/championnats/#
  championnats/seniors/DMB
@@ -125,6 +125,7 @@ DTSTART;TZID=Europe/Paris:20261108T100000
 DTEND;TZID=Europe/Paris:20261108T120000
 SUMMARY:SENIORS M · Volley Club Méditerranée 1 – Volley Pradétan Ga
  rdéen 2 (3-0)
+LOCATION:Complexe Sportif des Lices
 DESCRIPTION:Résultat : 3-0 (25:22\, 25:8\, 25:11)\nPoule DMB – classem
  ent et résultats : https://volley83.github.io/championnats/#championnat
  s/seniors/DMB
@@ -145,6 +146,7 @@ DTSTART;TZID=Europe/Paris:20261121T170000
 DTEND;TZID=Europe/Paris:20261121T190000
 SUMMARY:SENIORS M · Vidauban Volley-Ball – Volley-Ball Ollioulais 1 (1
  -3)
+LOCATION:Collège P.E Victor
 DESCRIPTION:Résultat : 1-3 (17:25\, 20:25\, 27:25\, 16:25)\nPoule DMB 
  – classement et résultats : https://volley83.github.io/championnats/#
  championnats/seniors/DMB

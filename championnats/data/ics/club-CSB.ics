@@ -40,6 +40,7 @@ DTSTART;TZID=Europe/Paris:20261105T213000
 DTEND;TZID=Europe/Paris:20261105T233000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Sud Sainte-Baume Volley Club 3 – Club S
  portif Brignolais (3-2)
+LOCATION:Compexe Sportif du Beausset
 DESCRIPTION:Résultat : 3-2 (23:25\, 25:11\, 20:25\, 25:10\, 16:14)\nPoul
  e M4D – classement et résultats : https://volley83.github.io/champion
  nats/#championnats/competlib/M4D
@@ -51,6 +52,7 @@ DTSTART;TZID=Europe/Paris:20261109T200000
 DTEND;TZID=Europe/Paris:20261109T220000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Club Sportif Brignolais – Sainte-Maxime
   Cogolin Volley 1 (0-3)
+LOCATION:Gymnase Jean-Jacques Marcel
 DESCRIPTION:Résultat : 0-3 (10:25\, 23:25\, 13:25)\nPoule M4D – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4D
@@ -62,6 +64,7 @@ DTSTART;TZID=Europe/Paris:20261123T203000
 DTEND;TZID=Europe/Paris:20261123T223000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Club Sportif Brignolais – Sud Sainte-Ba
  ume Volley Club 3 (3-1)
+LOCATION:Gymnase Jean-Jacques Marcel
 DESCRIPTION:Résultat : 3-1 (23:25\, 26:24\, 25:20\, 25:17)\nPoule M4D 
  – classement et résultats : https://volley83.github.io/championnats/#
  championnats/competlib/M4D

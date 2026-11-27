@@ -31,6 +31,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 1 – Volley Cl
  ub Hyères / Pierrefeu La Londe 2 (2-0)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 2-0 (15:9\, 15:7)\nPoule PMD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PMD
@@ -42,6 +43,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 2 – Fréjus V
  ar Volley (0-2)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 0-2 (5:15\, 12:15)\nPoule PMD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PMD
@@ -53,6 +55,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Volley Club Hyères / Pierrefeu La Londe 1 – Draguigna
  n Union Club Var VB 1 (1-1)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 1-1 (4:15\, 15:10)\nPoule PMD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PMD
@@ -64,6 +67,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Draguignan Union Club Var VB 2 – Volley Club Hyères /
   Pierrefeu La Londe 1 (0-2)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 0-2 (11:15\, 3:15)\nPoule PMD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PMD
@@ -75,6 +79,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M11 M · Volley Pradétan Gardéen – Volley Club Hyères / Pier
  refeu La Londe 2 (0-2)
+LOCATION:Salle Sainte-Croix (Frejus)
 DESCRIPTION:Résultat : 0-2 (13:15\, 7:15)\nPoule PMD – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /PMD
@@ -251,6 +256,7 @@ DTSTART;TZID=Europe/Paris:20261122T093000
 DTEND;TZID=Europe/Paris:20261122T113000
 SUMMARY:M13 F · Volley Pradétan Gardéen 1 – Volley Club Hyères / Pi
  errefeu La Londe (0-2)
+LOCATION:Jacques Troin (La Garde)
 DESCRIPTION:Résultat : 0-2 (22:25\, 17:25)\nPoule BFA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/BFA
@@ -262,6 +268,7 @@ DTSTART;TZID=Europe/Paris:20261122T093000
 DTEND;TZID=Europe/Paris:20261122T113000
 SUMMARY:M13 F · Volley Pradétan Gardéen 2 – Volley Club Hyères / Pi
  errefeu La Londe (0-2)
+LOCATION:Jacques Troin (La Garde)
 DESCRIPTION:Résultat : 0-2 (8:25\, 12:25)\nPoule BFA – classement et r
  ésultats : https://volley83.github.io/championnats/#championnats/jeunes
  /BFA
@@ -328,6 +335,7 @@ DTSTART;TZID=Europe/Paris:20261122T140000
 DTEND;TZID=Europe/Paris:20261122T160000
 SUMMARY:M13 M · Volley Club Hyères / Pierrefeu La Londe 1 – Vidauban 
  Volley-Ball (2-0)
+LOCATION:Gymnase Costebelle (Hyeres)
 DESCRIPTION:Résultat : 2-0 (25:11\, 25:22)\nPoule BMA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/BMA
@@ -339,6 +347,7 @@ DTSTART;TZID=Europe/Paris:20261122T140000
 DTEND;TZID=Europe/Paris:20261122T160000
 SUMMARY:M13 M · Vidauban Volley-Ball – Volley Club Hyères / Pierrefeu
   La Londe 2 (2-1)
+LOCATION:Gymnase Costebelle (Hyeres)
 DESCRIPTION:Résultat : 2-1 (25:27\, 25:23\, 18:16)\nPoule BMA – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/jeunes/BMA
@@ -350,6 +359,7 @@ DTSTART;TZID=Europe/Paris:20261122T140000
 DTEND;TZID=Europe/Paris:20261122T160000
 SUMMARY:M13 M · Volley Club Hyères / Pierrefeu La Londe 2 – Volley Cl
  ub Hyères / Pierrefeu La Londe 1 (0-2)
+LOCATION:Gymnase Costebelle (Hyeres)
 DESCRIPTION:Résultat : 0-2 (23:25\, 12:25)\nPoule BMA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/BMA
@@ -416,6 +426,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Volley Club
   Méditerranée 1 (0-2)
+LOCATION:Gymnase Piemontesi (Ollioules)
 DESCRIPTION:Résultat : 0-2 (22:25\, 17:25)\nPoule CFA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CFA
@@ -427,6 +438,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Volley Club
   Méditerranée 2 (2-0)
+LOCATION:Gymnase Piemontesi (Ollioules)
 DESCRIPTION:Résultat : 2-0 (25:17\, 25:17)\nPoule CFA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CFA
@@ -438,6 +450,7 @@ DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
 SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Union Athl
  étique Valettoise (2-0)
+LOCATION:Gymnase Costebelle (Hyeres)
 DESCRIPTION:Résultat : 2-0 (25:19\, 25:22)\nPoule CFA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CFA
@@ -449,6 +462,7 @@ DTSTART;TZID=Europe/Paris:20261121T133000
 DTEND;TZID=Europe/Paris:20261121T153000
 SUMMARY:M18 F · Volley Club Hyères / Pierrefeu La Londe – Volley-Ball
   Ollioulais (1-2)
+LOCATION:Gymnase Costebelle (Hyeres)
 DESCRIPTION:Résultat : 1-2 (23:25\, 25:23\, 10:15)\nPoule CFA – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/jeunes/CFA
@@ -504,6 +518,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 M · Union Athlétique Valettoise – Volley Club Hyères / P
  ierrefeu La Londe (0-2)
+LOCATION:Gymnase Santoni (La Valette)
 DESCRIPTION:Résultat : 0-2 (20:25\, 17:25)\nPoule CMA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CMA
@@ -515,6 +530,7 @@ DTSTART;TZID=Europe/Paris:20261107T140000
 DTEND;TZID=Europe/Paris:20261107T160000
 SUMMARY:M18 M · Volley Pradétan Gardéen – Volley Club Hyères / Pier
  refeu La Londe (1-2)
+LOCATION:Gymnase Santoni (La Valette)
 DESCRIPTION:Résultat : 1-2 (10:25\, 26:24\, 11:15)\nPoule CMA – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/jeunes/CMA
@@ -526,6 +542,7 @@ DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
 SUMMARY:M18 M · Volley Club Méditerranée – Volley Club Hyères / Pie
  rrefeu La Londe (2-0)
+LOCATION:Gymnase Piemontesi (Ollioules)
 DESCRIPTION:Résultat : 2-0 (25:19\, 25:18)\nPoule CMA – classement et 
  résultats : https://volley83.github.io/championnats/#championnats/jeune
  s/CMA
@@ -537,6 +554,7 @@ DTSTART;TZID=Europe/Paris:20261121T140000
 DTEND;TZID=Europe/Paris:20261121T160000
 SUMMARY:M18 M · Volley-Ball Ollioulais – Volley Club Hyères / Pierref
  eu La Londe (2-1)
+LOCATION:Gymnase Piemontesi (Ollioules)
 DESCRIPTION:Résultat : 2-1 (25:15\, 19:25\, 16:14)\nPoule CMA – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/jeunes/CMA
@@ -570,6 +588,7 @@ DTSTART;TZID=Europe/Paris:20261103T210000
 DTEND;TZID=Europe/Paris:20261103T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 1 – Volley Cl
  ub Hyères / Pierrefeu La Londe 3 (3-0)
+LOCATION:Gymnase Gassendi
 DESCRIPTION:Résultat : 3-0 (25:13\, 25:19\, 26:24)\nPoule M4B – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4B
@@ -581,6 +600,7 @@ DTSTART;TZID=Europe/Paris:20261106T210000
 DTEND;TZID=Europe/Paris:20261106T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Hyères / Pierrefeu La Londe 
  3 – Volley-Ball Ollioulais 2 (0-3)
+LOCATION:Complexe du Pas de la Garenne
 DESCRIPTION:Résultat : 0-3 (22:25\, 21:25\, 20:25)\nPoule M4B – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4B
@@ -592,6 +612,7 @@ DTSTART;TZID=Europe/Paris:20261113T210000
 DTEND;TZID=Europe/Paris:20261113T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Hyères / Pierrefeu La Londe 
  3 – Six-Fours Beach Volley 2 (3-0)
+LOCATION:Complexe du Pas de la Garenne
 DESCRIPTION:Résultat : 3-0 (25:18\, 25:20\, 25:23)\nPoule M4B – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4B
@@ -603,6 +624,7 @@ DTSTART;TZID=Europe/Paris:20261123T193000
 DTEND;TZID=Europe/Paris:20261123T213000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley-Ball Ollioulais 2 – Volley Club 
  Hyères / Pierrefeu La Londe 3 (3-0)
+LOCATION:La Cordeille
 DESCRIPTION:Résultat : 3-0 (28:26\, 29:27\, 25:14)\nPoule M4B – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4B
@@ -657,6 +679,7 @@ DTSTART;TZID=Europe/Paris:20261109T203000
 DTEND;TZID=Europe/Paris:20261109T223000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club de Saint-Maximin – Volley C
  lub Hyères / Pierrefeu La Londe 1 (0-3)
+LOCATION:College Leï Garrus
 DESCRIPTION:Résultat : 0-3 (8:25\, 8:25\, 12:25)\nPoule M4C – classeme
  nt et résultats : https://volley83.github.io/championnats/#championnats
  /competlib/M4C
@@ -711,6 +734,7 @@ DTSTART;TZID=Europe/Paris:20261106T210000
 DTEND;TZID=Europe/Paris:20261106T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Hyères / Pierrefeu La Londe 
  4 – Six-Fours Beach Volley 1 (2-3)
+LOCATION:Complexe du Pas de la Garenne
 DESCRIPTION:Résultat : 2-3 (27:25\, 21:25\, 11:25\, 25:22\, 13:15)\nPoul
  e M4E – classement et résultats : https://volley83.github.io/champion
  nats/#championnats/competlib/M4E
@@ -722,6 +746,7 @@ DTSTART;TZID=Europe/Paris:20261110T210000
 DTEND;TZID=Europe/Paris:20261110T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 2 – Volley Cl
  ub Hyères / Pierrefeu La Londe 4 (0-3)
+LOCATION:Gymnase Gassendi
 DESCRIPTION:Résultat : 0-3 (18:25\, 10:25\, 21:25)\nPoule M4E – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4E
@@ -777,6 +802,7 @@ DTSTART;TZID=Europe/Paris:20261116T203000
 DTEND;TZID=Europe/Paris:20261116T223000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Sainte-Maxime Cogolin Volley 2 – Volley
   Club Hyères / Pierrefeu La Londe 2 (3-1)
+LOCATION:Omnisports Pastorelli
 DESCRIPTION:Résultat : 3-1 (25:19\, 26:28\, 26:24\, 25:21)\nPoule M4F 
  – classement et résultats : https://volley83.github.io/championnats/#
  championnats/competlib/M4F
@@ -788,6 +814,7 @@ DTSTART;TZID=Europe/Paris:20261113T210000
 DTEND;TZID=Europe/Paris:20261113T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Hyères / Pierrefeu La Londe 
  2 – Volley Club Seynois 1 (2-3)
+LOCATION:Complexe du Pas de la Garenne
 DESCRIPTION:Résultat : 2-3 (25:22\, 19:25\, 17:25\, 25:23\, 10:15)\nPoul
  e M4F – classement et résultats : https://volley83.github.io/champion
  nats/#championnats/competlib/M4F
@@ -799,6 +826,7 @@ DTSTART;TZID=Europe/Paris:20261120T210000
 DTEND;TZID=Europe/Paris:20261120T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Hyères / Pierrefeu La Londe 
  2 – Sainte-Maxime Cogolin Volley 2 (1-3)
+LOCATION:Complexe du Pas de la Garenne
 DESCRIPTION:Résultat : 1-3 (19:25\, 20:25\, 25:23\, 15:25)\nPoule M4F 
  – classement et résultats : https://volley83.github.io/championnats/#
  championnats/competlib/M4F
@@ -854,6 +882,7 @@ DTSTART;TZID=Europe/Paris:20261114T190000
 DTEND;TZID=Europe/Paris:20261114T210000
 SUMMARY:SENIORS F · Sainte-Maxime Cogolin Volley (M21) – Volley Club H
  yères / Pierrefeu La Londe (3-0)
+LOCATION:Les Bosquettes
 DESCRIPTION:Résultat : 3-0 (25:9\, 25:14\, 25:20)\nPoule DFA – classem
  ent et résultats : https://volley83.github.io/championnats/#championnat
  s/seniors/DFA
@@ -865,6 +894,7 @@ DTSTART;TZID=Europe/Paris:20261121T200000
 DTEND;TZID=Europe/Paris:20261121T220000
 SUMMARY:SENIORS F · Volley Club Hyères / Pierrefeu La Londe – Volley 
  Club Méditerranée (2-3)
+LOCATION:Gymnase de Costebelle
 DESCRIPTION:Résultat : 2-3 (25:23\, 18:25\, 25:21\, 14:25\, 18:20)\nPoul
  e DFA – classement et résultats : https://volley83.github.io/champion
  nats/#championnats/seniors/DFA
@@ -953,6 +983,7 @@ DTSTART;TZID=Europe/Paris:20261114T203000
 DTEND;TZID=Europe/Paris:20261114T223000
 SUMMARY:SENIORS M · Union Athlétique Valettoise 2 – Volley Club Hyèr
  es / Pierrefeu La Londe (0-3)
+LOCATION:Santoni
 DESCRIPTION:Résultat : 0-3 (18:25\, 18:25\, 19:25)\nPoule DMC – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/seniors/DMC

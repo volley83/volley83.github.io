@@ -31,7 +31,6 @@ DTSTART;TZID=Europe/Paris:20261012T210000
 DTEND;TZID=Europe/Paris:20261012T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Six-Fours Beach Volley 1 – Rocbaron Clu
  b Volley-Ball 2
-LOCATION:3
 DESCRIPTION:Poule M4E – classement et résultats : https://volley83.git
  hub.io/championnats/#championnats/competlib/M4E
 END:VEVENT
@@ -53,6 +52,7 @@ DTSTART;TZID=Europe/Paris:20261106T210000
 DTEND;TZID=Europe/Paris:20261106T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Volley Club Hyères / Pierrefeu La Londe 
  4 – Six-Fours Beach Volley 1 (2-3)
+LOCATION:Complexe du Pas de la Garenne
 DESCRIPTION:Résultat : 2-3 (27:25\, 21:25\, 11:25\, 25:22\, 13:15)\nPoul
  e M4E – classement et résultats : https://volley83.github.io/champion
  nats/#championnats/competlib/M4E
@@ -64,6 +64,7 @@ DTSTART;TZID=Europe/Paris:20261112T210000
 DTEND;TZID=Europe/Paris:20261112T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 2 – Vidauban 
  Volley-Ball (3-2)
+LOCATION:Gymnase Gassendi
 DESCRIPTION:Résultat : 3-2 (25:16\, 25:27\, 22:25\, 25:20\, 23:21)\nPoul
  e M4E – classement et résultats : https://volley83.github.io/champion
  nats/#championnats/competlib/M4E
@@ -75,6 +76,7 @@ DTSTART;TZID=Europe/Paris:20261109T210000
 DTEND;TZID=Europe/Paris:20261109T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Vidauban Volley-Ball – Six-Fours Beach 
  Volley 1 (0-3)
+LOCATION:Collège P.E Victor
 DESCRIPTION:Résultat : 0-3 (7:25\, 9:25\, 9:25)\nPoule M4E – classemen
  t et résultats : https://volley83.github.io/championnats/#championnats/
  competlib/M4E
@@ -86,6 +88,7 @@ DTSTART;TZID=Europe/Paris:20261110T210000
 DTEND;TZID=Europe/Paris:20261110T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Rocbaron Club Volley-Ball 2 – Volley Cl
  ub Hyères / Pierrefeu La Londe 4 (0-3)
+LOCATION:Gymnase Gassendi
 DESCRIPTION:Résultat : 0-3 (18:25\, 10:25\, 21:25)\nPoule M4E – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4E
@@ -108,6 +111,7 @@ DTSTART;TZID=Europe/Paris:20261123T210000
 DTEND;TZID=Europe/Paris:20261123T230000
 SUMMARY:COMPET'LIB 4X4 MIXTE · Vidauban Volley-Ball – Rocbaron Club Vo
  lley-Ball 2 (0-3)
+LOCATION:Collège P.E Victor
 DESCRIPTION:Résultat : 0-3 (20:25\, 23:25\, 15:25)\nPoule M4E – classe
  ment et résultats : https://volley83.github.io/championnats/#championna
  ts/competlib/M4E
