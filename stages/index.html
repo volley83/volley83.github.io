@@ -646,7 +646,7 @@ function ouvrirInscription(sid) {
       </div>
       <div class="grid2">
         <div class="field"><label for="i-club-${sid}">Club</label><input id="i-club-${sid}" name="club" placeholder="Laisser vide si non licencié(e)"></div>
-        <div class="field"><label for="i-lic-${sid}">N° de licence FFVolley</label><input id="i-lic-${sid}" name="licence" inputmode="numeric" placeholder="Facultatif"></div>
+        <div class="field"><label for="i-lic-${sid}">N° de licence FF Volley</label><input id="i-lic-${sid}" name="licence" inputmode="numeric" placeholder="Facultatif"></div>
       </div>
       <div class="field"><label for="i-niv-${sid}">Niveau en beach-volley <span class="req">*</span></label><select id="i-niv-${sid}" name="niveau" required><option value="">Choisir…</option>${NIVEAUX.map(n => `<option>${esc(n)}</option>`).join('')}</select></div>
     </fieldset>

@@ -69,8 +69,8 @@
 <header><div class="head"><img src="logo-comite-carre.jpg" alt=""><div class="t"><span id="titre">Frais de déplacement</span><br><span style="font-size:15px;color:var(--muted)">Comité du Var de Volley-Ball</span></div></div></header>
 <main>
   <nav class="tabs"><button class="tab on" type="button" data-mode="dep">🚗 Frais de déplacement<small>kilomètres, péages, parking…</small></button><button class="tab" type="button" data-mode="note">🧾 Note de frais<small>achats et autres dépenses</small></button></nav>
-  <div class="msg info m-note" hidden>Ce formulaire permet aux bénévoles, intervenants et salariés du Comité de demander le <b>remboursement de dépenses engagées pour le Comité</b> (billet de train ou de bus, achat de matériel, fournitures…). Pour les kilomètres parcourus avec votre véhicule, utilisez l'onglet <b>Frais de déplacement</b>. Une fois rempli, le formulaire crée un <b>PDF</b> à envoyer par mail à <b>volley83@gmail.com</b> ou à remettre en main propre, <b>avec tous les justificatifs</b>. Rien n'est enregistré sur le site.</div>
-  <div class="msg info m-dep">Ce formulaire permet aux bénévoles et intervenants du Comité de déclarer leurs frais de déplacement. Vous pouvez déclarer <b>plusieurs déplacements sur la même fiche</b>. Une fois rempli, le formulaire crée un <b>PDF</b> à envoyer par mail à <b>volley83@gmail.com</b> ou à remettre en main propre, <b>avec les justificatifs</b> des frais annexes. Rien n'est enregistré sur le site.</div>
+  <div class="msg info m-note" hidden>Ce formulaire permet aux bénévoles, intervenants et salariés du Comité de demander le <b>remboursement de dépenses engagées pour le Comité</b> (billet de train ou de bus, achat de matériel, fournitures…). Pour les kilomètres parcourus avec votre véhicule, utilisez l'onglet <b>Frais de déplacement</b>. Une fois rempli, le formulaire crée un <b>PDF</b> à envoyer par mail à <b>contact@volley83.fr</b> ou à remettre en main propre, <b>avec tous les justificatifs</b>. Rien n'est enregistré sur le site.</div>
+  <div class="msg info m-dep">Ce formulaire permet aux bénévoles et intervenants du Comité de déclarer leurs frais de déplacement. Vous pouvez déclarer <b>plusieurs déplacements sur la même fiche</b>. Une fois rempli, le formulaire crée un <b>PDF</b> à envoyer par mail à <b>contact@volley83.fr</b> ou à remettre en main propre, <b>avec les justificatifs</b> des frais annexes. Rien n'est enregistré sur le site.</div>
 
   <div class="card m-dep">
     <h2>1. Votre demande</h2>
@@ -86,7 +86,7 @@
 
   <div class="card m-dep" style="border-color:#F0C24B;background:#FFFBEF">
     <h2>🚗 Certificat d'immatriculation (carte grise)</h2>
-    <p class="small">Pour tout remboursement ou abandon de frais kilométriques, <b>une copie du certificat d'immatriculation du véhicule utilisé est obligatoire</b>. Si vous ne l'avez pas encore fournie au Comité (ou si vous avez changé de véhicule), envoyez-la par mail à <b>volley83@gmail.com</b> avec votre fiche (photo ou scan), ou remettez-la avec la fiche papier.</p>
+    <p class="small">Pour tout remboursement ou abandon de frais kilométriques, <b>une copie du certificat d'immatriculation du véhicule utilisé est obligatoire</b>. Si vous ne l'avez pas encore fournie au Comité (ou si vous avez changé de véhicule), envoyez-la par mail à <b>contact@volley83.fr</b> avec votre fiche (photo ou scan), ou remettez-la avec la fiche papier.</p>
     <div class="field"><span class="lbl">Votre carte grise <span class="req">*</span></span>
       <label class="chk"><input type="radio" name="cg" value="fournie"> Le Comité a déjà la copie de la carte grise de mon véhicule actuel</label>
       <label class="chk"><input type="radio" name="cg" value="jointe"> Je joins la copie de ma carte grise à cet envoi</label>
@@ -149,10 +149,10 @@
     <button class="btn accent" id="envoi" type="button">✉ Envoyer au Comité</button>
   </div>
   <div id="ok" class="msg ok" hidden></div>
-  <p class="small muted">Comité du Var de Volley-Ball · Maison des sports du Var, 133 bd Général Brosset, 83200 Toulon · volley83@gmail.com</p>
+  <p class="small muted">Comité du Var de Volley-Ball · Maison des sports du Var, 133 bd Général Brosset, 83200 Toulon · contact@volley83.fr</p>
 </main>
 <script>
-const TAUX_DEF = 0.25, MAIL = 'volley83@gmail.com', PRESIDENT = 'Gérald HENRY';
+const TAUX_DEF = 0.25, MAIL = 'contact@volley83.fr', PRESIDENT = 'Gérald HENRY';
 // Familles de dépenses de la note de frais : [libellé, code comptable]. « Autre » est ajouté automatiquement (code attribué par le Comité).
 const FAMILLES = [
   ['Affranchissement', '626300'],

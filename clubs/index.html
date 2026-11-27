@@ -108,7 +108,7 @@
   <a class="back" href="/">← Accueil</a>
 </div></header>
 <main class="wrap" id="app"></main>
-<footer><div class="wrap"><span>Comité du Var de Volley-Ball · <a href="mailto:volley83@gmail.com">volley83@gmail.com</a></span><a href="#comite">Accès Comité</a></div></footer>
+<footer><div class="wrap"><span>Comité du Var de Volley-Ball · <a href="mailto:contact@volley83.fr">contact@volley83.fr</a></span><a href="#comite">Accès Comité</a></div></footer>
 
 <script>
 const SUPABASE_URL = 'https://nssdhgpvkdbgdewsnlgl.supabase.co';
@@ -129,7 +129,7 @@ const CATS = [
   ['senf', 'Seniors féminines'], ['senm', 'Seniors masculins'], ['loisir', "Loisir / Compet'Lib"], ['beach', 'Beach-volley'],
   ['sante', 'Volley santé / soft volley'], ['assis', 'Volley assis']
 ];
-/* ---------- Labels fédéraux (FFvolley) : un niveau par label ---------- */
+/* ---------- Labels fédéraux (FF Volley) : un niveau par label ---------- */
 const LABELS = [['formateur', 'Club Formateur'], ['sante', 'Volley Santé'], ['assis', 'Volley Assis']];
 const NIVEAUX = [['or', 'Or'], ['argent', 'Argent'], ['bronze', 'Bronze']];
 const labelsDe = f => LABELS.map(([k, t]) => { const n = NIVEAUX.find(x => x[0] === ((f && f.labels) || {})[k]); return n ? { k, t, n } : null; }).filter(Boolean);
@@ -360,7 +360,7 @@ function formHtml(f, comite) {
     </div>
     <div class="card">
       <h2>Labels fédéraux</h2>
-      <p class="muted small">Si le club a obtenu un label de la FFvolley, indiquez son niveau. Sinon, laissez « Aucun ».</p>
+      <p class="muted small">Si le club a obtenu un label de la FF Volley, indiquez son niveau. Sinon, laissez « Aucun ».</p>
       <div class="g2" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">${LABELS.map(([k, t]) => `<div class="field"><label for="f-lab-${k}">${esc(t)}</label><select id="f-lab-${k}" data-lab="${k}"><option value="">Aucun</option>${NIVEAUX.map(([n, nt]) => `<option value="${n}" ${((f.labels || {})[k]) === n ? 'selected' : ''}>${nt}</option>`).join('')}</select></div>`).join('')}</div>
     </div>
     <div class="card">
@@ -415,7 +415,7 @@ async function vueClub(code) {
   $('app').innerHTML = '<div class="muted">Chargement…</div>';
   let d;
   try { d = await rpc('clb_fiche', { p_code: code }); }
-  catch (e) { $('app').innerHTML = `<div class="card"><h2>Lien non reconnu</h2><p>Ce lien n'est pas valide ou n'est plus actif. Vérifiez qu'il est complet, ou demandez-en un nouveau au Comité : <a href="mailto:volley83@gmail.com">volley83@gmail.com</a>.</p><a class="btn ghost" href="./" style="align-self:flex-start">Voir l'annuaire des clubs</a></div>`; return; }
+  catch (e) { $('app').innerHTML = `<div class="card"><h2>Lien non reconnu</h2><p>Ce lien n'est pas valide ou n'est plus actif. Vérifiez qu'il est complet, ou demandez-en un nouveau au Comité : <a href="mailto:contact@volley83.fr">contact@volley83.fr</a>.</p><a class="btn ghost" href="./" style="align-self:flex-start">Voir l'annuaire des clubs</a></div>`; return; }
   $('app').innerHTML = `<div><h1>${esc(d.nom)}</h1><p class="muted" style="margin-top:6px">Fiche du club pour l'annuaire du site du Comité du Var de Volley-Ball. Remplissez ce que vous souhaitez afficher : seule la ville est obligatoire.</p></div>
     ${d.en_attente ? `<div class="msg warn">Votre fiche a bien été reçue le ${esc(fmtD(d.propose_le))}. Elle sera publiée après validation par le Comité. Vous pouvez encore la modifier ci-dessous.</div>` : d.publiee ? '<div class="msg ok">Votre fiche est en ligne. Vous pouvez la mettre à jour : les modifications seront publiées après validation par le Comité.</div>' : ''}
     <form id="fm" style="display:flex;flex-direction:column;gap:18px">${formHtml(d.fiche, false)}

@@ -276,7 +276,7 @@ function renderBordereaux() {
       const tot = totalDe(b.id), nb = new Set(lignesDe(b.id).map(l => l.club)).size;
       const rg = r2(clubsVisibles().reduce((s, c) => s + Math.min(etatClub(c.code).regle[b.id] || 0, totalDe(b.id, c.code)), 0));
       return `<a class="bord" href="#b/${b.id}"><div class="ttl"><span class="n">N° ${b.numero}</span>${b.statut === 'envoye' ? '<span class="badge b-sent">Envoyé</span>' : '<span class="badge b-draft">Brouillon</span>'}</div>
-        <span class="muted small">${fmtD(b.date)}${b.titre ? ' · ' + esc(b.titre) : ''}${b.origine === 'ffvb' ? ' · site FFVB' : ''}</span>
+        <span class="muted small">${fmtD(b.date)}${b.titre ? ' · ' + esc(b.titre) : ''}${b.origine === 'ffvb' ? ' · site FF Volley' : ''}</span>
         <span class="tot">${euros(tot)}</span><span class="small muted">${nb} club${nb > 1 ? 's' : ''} · encaissé ${euros(rg)}</span></a>`;
     }).join('')}
     <button class="bord new" onclick="nouveauBordereau()">+ Nouveau bordereau</button>

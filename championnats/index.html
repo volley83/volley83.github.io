@@ -359,7 +359,7 @@
 
 <footer>
   <div class="wrap">
-    <span>Comité Départemental du Var de Volley-Ball · Maison des sports du Var, 133 bd du Général Brosset, 83200 Toulon · <a href="mailto:volley83@gmail.com">volley83@gmail.com</a> · 06 13 30 34 25</span>
+    <span>Comité Départemental du Var de Volley-Ball · Maison des sports du Var, 133 bd du Général Brosset, 83200 Toulon · <a href="mailto:contact@volley83.fr">contact@volley83.fr</a> · 06 13 30 34 25</span>
     <span class="footlinks"><button class="adminlink" onclick="openAdmin()">Accès Comité</button></span>
   </div>
 </footer>
@@ -476,7 +476,7 @@ async function loadPublic() { D = await rpc('chp_public'); }
 // ======================== AJOUTER À MON AGENDA (abonnement .ics) ========================
 // Règlements (PDF dans championnats/docs/). Championnats fédéraux : ajouter ici les règlements par catégorie, ex. 'M11 FÉMININ': 'docs/reglement-M11.pdf'
 // Documents du club recevant (espace club)
-const MAIL_COMITE = 'volley83@gmail.com';
+const MAIL_COMITE = 'contact@volley83.fr';
 function docsClub(c) {
   const compo = c.code === 'O11' ? 'docs/composition-OPEN-2x2.pdf' : c.code === 'O13' ? 'docs/composition-OPEN-4x4.pdf' : 'docs/composition-M15-M18-4x4.pdf';
   return [[compo, 'Feuille de composition des équipes', 'à faire remplir par chaque club, puis à envoyer au Comité'],
@@ -519,7 +519,7 @@ function ouvrirAgenda(choix) {
 }
 document.addEventListener('click', e => { const b = e.target.closest('.agenda-b'); if (b) ouvrirAgenda(JSON.parse(b.dataset.agenda)); });
 
-// ======================== CHAMPIONNATS FÉDÉRAUX (données FFvolley) ========================
+// ======================== CHAMPIONNATS FÉDÉRAUX (données FF Volley) ========================
 let FED = null, FEDCLUB = store.get('chp_monclub', ''), FEDSEUL = false;
 const GROUPES = [['jeunes', 'Championnats jeunes'], ['seniors', 'Championnats seniors'], ['competlib', 'Compet\'Lib'], ['coupe', 'Coupe de France']];
 let COUPE = null;
@@ -534,9 +534,9 @@ function joli(s) {
     return w.toLowerCase();
   }).join(' ').replace(/^./, c => c.toUpperCase()).replace(/\s*-\s*/g, ' – ');
 }
-// Nom d'équipe FFvolley (« VOLLEY BALL OLLIOULAIS 2 ») -> nom du club de la liste du Comité (« Volley-Ball Ollioulais 2 »)
+// Nom d'équipe FF Volley (« VOLLEY BALL OLLIOULAIS 2 ») -> nom du club de la liste du Comité (« Volley-Ball Ollioulais 2 »)
 const CLUBS_DEFAUT = [['CSB', 'Club Sportif Brignolais'], ['DVVB', 'Draguignan Union Club Var VB'], ['FVV', 'Fréjus Var Volley'], ['LLVB', 'Le Luc Volley-Ball'], ['SMCV', 'Sainte-Maxime Cogolin Volley'], ['2SBVC', 'Sud Sainte-Baume Volley Club'], ['UAV', 'Union Athlétique Valettoise'], ['VVB', 'Vidauban Volley-Ball'], ['VBO', 'Volley-Ball Ollioulais'], ['VCHPL', 'Volley Club Hyères / Pierrefeu La Londe'], ['VCM', 'Volley Club Méditerranée'], ['VCS', 'Volley Club Seynois'], ['VPG', 'Volley Pradétan Gardéen']].map(([code, nom]) => ({ code, nom }));
-// Clubs qui ne jouent qu'en Compet'Lib (absents de la liste des compétitions OPEN) ; ffvb = nom écrit par la FFvolley
+// Clubs qui ne jouent qu'en Compet'Lib (absents de la liste des compétitions OPEN) ; ffvb = nom écrit par la FF Volley
 const CLUBS_COMPETLIB = [{ code: 'RCVB', nom: 'Rocbaron Club Volley-Ball', ffvb: 'ROCBARON CLUB VOLLEY-BALL - RCVB' }, { code: 'SFBV', nom: 'Six-Fours Beach Volley' }, { code: 'VCSM', nom: 'Volley Club de Saint-Maximin' }];
 const clubsFed = () => { const base = D.clubs && D.clubs.length ? D.clubs : CLUBS_DEFAUT; return base.concat(CLUBS_COMPETLIB.filter(k => !base.some(b => b.code === k.code))).sort((a, b) => normN(b.ffvb || b.nom).length - normN(a.ffvb || a.nom).length); };
 const clubTrouve = nom => { const n = normN(nom); return clubsFed().find(c => normN(c.ffvb || c.nom) && n.startsWith(normN(c.ffvb || c.nom))); };
@@ -544,7 +544,7 @@ function equipeFed(nom) {
   if (/^X{3,}$/i.test(String(nom).trim())) return 'Exempt';
   const k = clubTrouve(nom);
   if (!k) return String(nom).toLowerCase().replace(/(^|[\s\-/(])([a-zà-ÿ])/g, (m, a, b) => a + b.toUpperCase());
-  // on retire du nom FFvolley autant de lettres/chiffres que le nom du club en compte : il reste le n° d'équipe, (M21)…
+  // on retire du nom FF Volley autant de lettres/chiffres que le nom du club en compte : il reste le n° d'équipe, (M21)…
   let besoin = normN(k.ffvb || k.nom).length, i = 0; const s = String(nom);
   while (i < s.length && besoin > 0) { if (/[A-Za-z0-9À-ÿ]/.test(s[i])) besoin--; i++; }
   const reste = s.slice(i).trim();
@@ -557,7 +557,7 @@ const phase = p => { const t = p.titre.toUpperCase(); return /BRASSAGE/.test(t) 
 function catCourt(c) { return cap(joli(c.titre).replace(/^Départemental accession /, '').replace(/ qualification au championnat régional$/, ' · qualif. régionale').replace(/^Compet'Lib /, '')); }
 
 // ----- Gymnases : liste de référence (Admin › Gymnases), nom cliquable avec adresse et itinéraire -----
-let GYMS = {}, SALLES_FFVB = {};   // GYMS : liste validée (Admin › Gymnases) ; SALLES_FFVB : fiches clubs FFvolley (proposition)
+let GYMS = {}, SALLES_FFVB = {};   // GYMS : liste validée (Admin › Gymnases) ; SALLES_FFVB : fiches clubs FF Volley (proposition)
 async function loadSallesFfvb() {
   try { const r = await fetch('data/salles_ffvb.json?h=' + Math.floor(Date.now() / 36e5), { cache: 'no-store' }); if (r.ok) { const j = await r.json(); SALLES_FFVB = Object.fromEntries((j.salles || []).map(s => [s.cle, s])); } } catch(e) {}
 }
@@ -615,9 +615,9 @@ async function renderFederal(gr, code) {
   const nb = gg => FED.categories.filter(c => c.groupe === gg).reduce((s, c) => s + c.poules.length, 0);
   $('app').innerHTML = `
   <div class="hero fed"><div class="wrap">
-    <div class="k">Saison ${esc(FED.saison.replace('/', '-'))} · Résultats FFvolley</div>
+    <div class="k">Saison ${esc(FED.saison.replace('/', '-'))} · Résultats FF Volley</div>
     <h1>Championnats départementaux</h1>
-    <p>Calendriers, résultats et classements de toutes les poules du Comité du Var, mis à jour automatiquement depuis le site de la FFvolley${maj ? ` · dernière mise à jour le ${esc(maj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }))} à ${esc(maj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }))}` : ''}.</p>
+    <p>Calendriers, résultats et classements de toutes les poules du Comité du Var, mis à jour automatiquement depuis le site de la FF Volley${maj ? ` · dernière mise à jour le ${esc(maj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }))} à ${esc(maj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }))}` : ''}.</p>
   </div></div>
   <main class="wrap stack">
     <div class="seg" role="tablist">${GROUPES.map(([k, l]) => `<a class="seg-b ${k === g ? 'on' : ''}" href="#championnats/${k}" role="tab">${l}<span>${k === 'coupe' ? 'calendrier des tours' : nb(k) + ' poule' + (nb(k) > 1 ? 's' : '')}</span></a>`).join('')}</div>
@@ -655,7 +655,7 @@ function coupeHTML() {
           ${x.remarque ? `<div class="cal-meta">${esc(x.remarque)}</div>` : ''}
           ${x.lien && x.lien !== lien ? `<div class="cal-act"><a class="small" href="${esc(x.lien)}" target="_blank" rel="noopener">Résultats de ce tour ↗</a></div>` : ''}
         </div></div>`; }).join('')}</div>
-      ${lien ? `<div class="btnrow"><a class="btn primary" href="${esc(lien)}" target="_blank" rel="noopener">Tirages et résultats sur le site FFvolley ↗</a></div>` : ''}
+      ${lien ? `<div class="btnrow"><a class="btn primary" href="${esc(lien)}" target="_blank" rel="noopener">Tirages et résultats sur le site FF Volley ↗</a></div>` : ''}
     </section>`; }).join('')}</div>`;
 }
 
@@ -760,7 +760,7 @@ function drawPoule(sel) {
       : `<p class="muted" style="margin-top:6px">Le classement apparaîtra après les premiers matchs.</p>
         ${p.equipes.length ? `<div class="equipes">${p.equipes.map(e => `<span class="${estMien(e) ? 'mine' : ''}">${esc(equipeFed(e))}</span>`).join('')}</div>` : ''}`}
       ${reglBtnsCat(c.titre) ? `<div class="btnrow" style="margin-top:12px">${reglBtnsCat(c.titre)}</div>` : ''}
-      <p class="small muted" style="margin-top:14px">Source : <a href="${esc(p.url)}" target="_blank" rel="noopener">site de la FFvolley</a>. En cas de différence, le site fédéral fait foi.</p>
+      <p class="small muted" style="margin-top:14px">Source : <a href="${esc(p.url)}" target="_blank" rel="noopener">site de la FF Volley</a>. En cas de différence, le site fédéral fait foi.</p>
     </section>
     <section class="card fg-next">
       <div class="rank-head"><h2>À venir</h2>${FEDCLUB ? `<label class="chk-s"><input type="checkbox" id="fed-seul" ${FEDSEUL ? 'checked' : ''}> Seulement ${esc(FEDCLUB)}</label>` : ''}</div>
@@ -1039,7 +1039,7 @@ async function submitInscription(ev) {
       <div class="big">✅</div><h2 style="margin-top:8px">Inscription enregistrée</h2>
       <p style="margin-top:10px"><b>${n} équipe${n > 1 ? 's' : ''}</b> de ${esc(clubNom(club))} inscrite${n > 1 ? 's' : ''} au <b>${esc(tLabel(t))}</b><br>${esc(fmtD(t.date, true))}${t.lieu ? ' · ' + esc(lieuTxt(t)) : ''}.</p>
       ${c.famille === 'open' ? `<p class="small muted" style="margin-top:6px">${lignes.map(l => `${l.nb} × ${esc(l.niveau)} ${esc(l.sexe.toLowerCase())}`).join(' · ')}</p>` : ''}
-      <p class="muted" style="margin-top:12px">La formule sportive et les informations du tournoi seront envoyées à ${esc(contact.email)} après la clôture des inscriptions. Pour toute modification : <a href="mailto:volley83@gmail.com">volley83@gmail.com</a>.</p>
+      <p class="muted" style="margin-top:12px">La formule sportive et les informations du tournoi seront envoyées à ${esc(contact.email)} après la clôture des inscriptions. Pour toute modification : <a href="mailto:contact@volley83.fr">contact@volley83.fr</a>.</p>
       <div class="btnrow" style="justify-content:center"><a class="btn accent" href="#inscription" onclick="setTimeout(()=>renderInscription(),0)">Inscrire à un autre tournoi</a><a class="btn ghost" href="#${c.famille === 'open' ? 'open' : '4x4'}/${c.code}">Voir le calendrier</a></div>
     </div>`;
     window.scrollTo(0, 0);
@@ -1419,7 +1419,7 @@ async function adminGymnases() {
   try { await loadFed(); } catch(e) {}
   let ok = true; try { GYMS = await rpc('chp_gymnases_public') || {}; } catch(e) { ok = false; }
   if (!ok) { $('a-body').innerHTML = `<div class="card stack"><h2>Gymnases</h2><div class="msg warn" style="margin:0">Lancez une fois le script <b>supabase-championnats-gymnases.sql</b> dans Supabase (SQL Editor › coller › Run), puis rechargez la page.</div></div>`; return; }
-  const vus = {};   // clé → noms FFvolley rencontrés + nombre de matchs
+  const vus = {};   // clé → noms FF Volley rencontrés + nombre de matchs
   (FED ? FED.categories : []).forEach(c => c.poules.forEach(p => p.journees.forEach(j => j.matchs.forEach(m => { if (!m.lieu) return; const k = cleGym(m.lieu); (vus[k] = vus[k] || { bruts: new Set(), n: 0 }).bruts.add(m.lieu); vus[k].n++; }))));
   A.tournois.forEach(x => { if (x.lieu) { const k = cleGym(x.lieu); (vus[k] = vus[k] || { bruts: new Set(), n: 0 }).bruts.add(x.lieu + (x.ville ? ' (' + x.ville + ')' : '')); } });
   Object.keys(GYMS).forEach(k => vus[k] = vus[k] || { bruts: new Set(), n: 0 });
@@ -1431,9 +1431,9 @@ async function adminGymnases() {
   const aFaire = cles.filter(k => !valide(k)).length;
   $('a-body').innerHTML = `<div class="card stack">
     <div class="rank-head" style="margin:0"><h2>Gymnases</h2><span class="muted small">${cles.length} gymnases · ${aFaire} à valider</span></div>
-    ${Object.keys(SALLES_FFVB).length ? `<div class="msg" style="margin:0;background:#F6F8FC;color:var(--text)">💡 Les champs en <i>italique</i> sont repris des <b>fiches clubs FFvolley</b> (salle principale et salle de repli de chaque club, mises à jour chaque semaine). Vérifiez-les, corrigez si besoin, puis <b>Valider</b>. <button class="btn ghost sm" id="gy-all">✓ Valider toutes les propositions</button></div>` : ''}
+    ${Object.keys(SALLES_FFVB).length ? `<div class="msg" style="margin:0;background:#F6F8FC;color:var(--text)">💡 Les champs en <i>italique</i> sont repris des <b>fiches clubs FF Volley</b> (salle principale et salle de repli de chaque club, mises à jour chaque semaine). Vérifiez-les, corrigez si besoin, puis <b>Valider</b>. <button class="btn ghost sm" id="gy-all">✓ Valider toutes les propositions</button></div>` : ''}
     <p class="muted small" style="margin:0">Sur le site, le nom du gymnase est cliquable : adresse, « Itinéraire » et « Voir sur la carte ». Les matchs simples affichent le nom seul, les tournois le nom et la ville. Les gymnases à valider sont en haut. Chaque champ est enregistré dès que vous le quittez.</p>
-    <div class="tablebox"><table class="adm"><thead><tr><th>Nom(s) sur le site FFvolley</th><th>Nom affiché</th><th>Ville</th><th>Adresse</th><th></th></tr></thead><tbody>
+    <div class="tablebox"><table class="adm"><thead><tr><th>Nom(s) sur le site FF Volley</th><th>Nom affiché</th><th>Ville</th><th>Adresse</th><th></th></tr></thead><tbody>
     ${cles.map(k => { const g0 = GYMS[k], d = infoGym([...vus[k].bruts][0] || k), pr = propo(k), g = g0 && g0.adresse ? g0 : null, v = { nom: (g0 && g0.nom) || (pr && pr.nom) || d.nom, ville: (g0 && g0.ville) || (pr && pr.ville) || d.ville, adresse: (g0 && g0.adresse) || (pr && pr.adresse) || '' }, it = !g && pr ? 'font-style:italic;' : '', f = SALLES_FFVB[k]; return `<tr data-k="${esc(k)}" ${g ? '' : 'class="nv"'}>
       <td class="small">${[...vus[k].bruts].map(esc).join('<br>') || esc(k)}${vus[k].n ? `<br><span class="muted">${vus[k].n} match(s)</span>` : ''}${f && f.clubs.length ? `<br><span class="muted">${f.clubs.map(esc).join('<br>')}</span>` : ''}</td>
       <td><input data-f="nom" value="${esc(v.nom || '')}" style="${it}min-width:170px"></td>
@@ -1641,7 +1641,7 @@ async function adminMails() {
   <div class="card stack">
     <h2>${liste.length ? liste.length + ' club' + (liste.length > 1 ? 's' : '') + ' concerné' + (liste.length > 1 ? 's' : '') : 'Aucune poule cochée'}</h2>
     ${liste.length ? `<div style="display:flex;flex-direction:column;gap:4px">${liste.map(x => `<div class="small"><b>${esc(x.k.nom)}</b> <span class="muted">· ${esc([...x.poules].join(', '))}</span>${mailsDe(x.k.code).length ? '' : ' <span style="color:#A3231D;font-weight:700">· pas d\'adresse dans la Facturation</span>'}</div>`).join('')}</div>` : ''}
-    ${inconnues.size ? `<div class="small" style="color:#8A5A00">Équipes non reliées à un club (à ajouter dans l'onglet Clubs, nom FFVB) : ${esc([...inconnues].join(', '))}</div>` : ''}
+    ${inconnues.size ? `<div class="small" style="color:#8A5A00">Équipes non reliées à un club (à ajouter dans l'onglet Clubs, nom FF Volley) : ${esc([...inconnues].join(', '))}</div>` : ''}
     ${liste.length ? `
     <div class="field"><label>Destinataires en Cci (${adr.length} adresse${adr.length > 1 ? 's' : ''}, fiches clubs de la Facturation)</label><textarea readonly style="min-height:56px;font-size:12.5px">${esc(adr.join(', '))}</textarea></div>
     <div class="field"><label for="mp-extra">Autres destinataires (membres du Comité, arbitres…) · gardés sur cet ordinateur</label><textarea id="mp-extra" style="min-height:44px;font-size:12.5px" placeholder="adresse1@…, adresse2@…">${esc(extra)}</textarea></div>
@@ -1948,7 +1948,7 @@ Après le tournoi :
 ${q4 ? '* Vous connecter à l\'espace club organisateurs pour saisir le classement\n' : ''}* Envoyer par mail (${MAIL_COMITE}) la fiche de composition des équipes
 ${q4 ? `
 Pour tous :
-Le classement sera mis à jour très rapidement grâce à ce nouveau système, et n'apparaîtra que sur la nouvelle page (${SITE_URL}#4x4), plus sur le serveur FFvolley.
+Le classement sera mis à jour très rapidement grâce à ce nouveau système, et n'apparaîtra que sur la nouvelle page (${SITE_URL}#4x4), plus sur le serveur FF Volley.
 ` : ''}
 Bon tournoi à tous !
 Sportivement,
@@ -1987,9 +1987,9 @@ async function adminCoupe() {
   COUPE = null; const rows = await loadCoupe();
   const cats = [...new Set(rows.map(x => x.categorie))];
   $('a-body').innerHTML = `<div class="card stack">
-    <p class="small muted">Une ligne par tour. Le lien du premier tour d'une catégorie sert de bouton « Résultats sur le site FFvolley » ; un lien différent sur un autre tour s'affiche pour ce tour seulement. Les modifications sont enregistrées dès que vous quittez un champ.</p>
+    <p class="small muted">Une ligne par tour. Le lien du premier tour d'une catégorie sert de bouton « Résultats sur le site FF Volley » ; un lien différent sur un autre tour s'affiche pour ce tour seulement. Les modifications sont enregistrées dès que vous quittez un champ.</p>
     <datalist id="dl-cat">${cats.map(c => `<option value="${esc(c)}">`).join('')}<option value="M13 féminin"><option value="M13 masculin"><option value="M15 féminin"><option value="M15 masculin"><option value="M18 féminin"><option value="M18 masculin"><option value="M21 féminin"><option value="M21 masculin"></datalist>
-    <div class="tablebox"><table class="adm"><thead><tr><th>Catégorie</th><th>Tour</th><th>Date</th><th>Jusqu'au</th><th>Lieu</th><th>Lien FFvolley</th><th>Remarque</th><th></th></tr></thead><tbody>
+    <div class="tablebox"><table class="adm"><thead><tr><th>Catégorie</th><th>Tour</th><th>Date</th><th>Jusqu'au</th><th>Lieu</th><th>Lien FF Volley</th><th>Remarque</th><th></th></tr></thead><tbody>
       ${rows.map(x => `<tr data-id="${x.id}">
         <td><input data-f="categorie" list="dl-cat" value="${esc(x.categorie)}" style="min-width:130px"></td>
         <td><input data-f="tour" value="${esc(x.tour)}" style="min-width:120px"></td>
