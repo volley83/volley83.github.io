@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script src="/comite/session.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Espace club – Comité du Var de Volley-Ball</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --navy: #0B2149; --blue: #1E4FA3; --accent: #F6C21B; --bg: #F4F6FA; --line: #E2E7F0; --text: #14203A; --muted: #56627A;
+    --ok: #11672F; --ok-bg: #E7F6EC; --warn: #8A5A00; --warn-bg: #FFF4D6; --bad: #A3231D; --bad-bg: #FCE9E8; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; font-size: 15px; line-height: 1.5; min-height: 100vh; display: flex; flex-direction: column; }
+  [hidden] { display: none !important; }
+  a { color: var(--blue); } a:hover { color: var(--navy); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; width: 100%; }
+  header { background: #fff; border-bottom: 1px solid var(--line); }
+  .head { display: flex; align-items: center; gap: 14px; padding-top: 10px; padding-bottom: 10px; }
+  .head img { height: 48px; display: block; }
+  .head .t { flex: 1 1 auto; min-width: 0; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 28px; text-transform: uppercase; letter-spacing: .5px; color: var(--navy); line-height: 1; }
+  .head .back { font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; min-height: 44px; }
+  main.wrap { flex: 1; padding-top: 26px; padding-bottom: 56px; display: flex; flex-direction: column; gap: 18px; }
+  h1, h2, h3 { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; color: var(--navy); letter-spacing: .5px; font-weight: 800; }
+  h1 { font-size: 36px; line-height: 1; } h2 { font-size: 24px; line-height: 1.1; } h3 { font-size: 19px; }
+  .muted { color: var(--muted); } .small { font-size: 13px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .card .ttl { display: flex; align-items: center; gap: 12px; }
+  .card .ttl .ic { flex: none; width: 40px; height: 40px; border-radius: 10px; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: 20px; }
+  .field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  label, .lab { font-size: 14px; font-weight: 700; }
+  input, select { font-family: inherit; font-size: 16px; color: var(--text); background: #fff; border: 1px solid #C9D2E2; border-radius: 10px; padding: 10px 12px; width: 100%; outline: none; }
+  input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(30,79,163,.15); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 18px; border-radius: 10px; border: 1px solid transparent; font-weight: 700; font-size: 15px; font-family: inherit; cursor: pointer; text-decoration: none; }
+  .btn.primary { background: var(--navy); color: #fff; } .btn.primary:hover { color: #fff; background: #13306A; }
+  .btn.ghost { background: #fff; border-color: #C9D2E2; color: var(--text); } .btn.ghost:hover { border-color: var(--navy); }
+  .btn.red { background: #fff; border-color: #E5B5B2; color: var(--bad); }
+  .btn.sm { min-height: 38px; padding: 0 12px; font-size: 13px; }
+  .btn[disabled] { opacity: .5; cursor: default; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .msg { border-radius: 10px; padding: 12px 14px; }
+  .msg.ok { background: var(--ok-bg); color: var(--ok); } .msg.err { background: var(--bad-bg); color: var(--bad); } .msg.info { background: #E9EFFA; color: var(--navy); } .msg.warn { background: var(--warn-bg); color: var(--warn); }
+  .linkbtn { background: none; border: 0; color: var(--blue); font-weight: 600; cursor: pointer; font-family: inherit; font-size: 14px; text-decoration: underline; padding: 0; min-height: 32px; }
+  .badge { display: inline-flex; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .b-new { background: var(--warn-bg); color: var(--warn); } .b-ok { background: var(--ok-bg); color: var(--ok); } .b-no { background: #EEF1F5; color: #3F4B63; } .b-bad { background: var(--bad-bg); color: var(--bad); }
+  .chk { display: flex; gap: 9px; align-items: center; font-weight: 500; font-size: 14px; cursor: pointer; }
+  .chk input { width: 18px; height: 18px; flex: 0 0 18px; }
+  .ev { display: grid; grid-template-columns: 92px 1fr auto; gap: 6px 16px; align-items: center; border-top: 1px solid #EDF0F5; padding-top: 12px; }
+  .ev:first-of-type { border-top: 0; padding-top: 0; }
+  .ev .d { text-align: center; background: #E9EFFA; border-radius: 10px; padding: 6px 4px; color: var(--navy); line-height: 1.1; }
+  .ev .d b { display: block; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 26px; }
+  .ev .d span { font-size: 12px; font-weight: 700; text-transform: uppercase; }
+  .ev.passe { opacity: .7; } .ev.passe .d { background: #EEF1F5; }
+  .ev .n { font-weight: 700; color: var(--navy); }
+  @media (max-width: 640px) { .ev { grid-template-columns: 70px 1fr; } .ev .act { grid-column: 1 / -1; } .head .t { font-size: 22px; } h1 { font-size: 30px; } }
+  .soon { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; }
+  .soon > div { border: 1px dashed #C9D2E2; border-radius: 12px; padding: 14px; background: #FAFBFD; }
+  .soon b { color: var(--navy); }
+  .adm { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; align-items: center; border-top: 1px solid #EDF0F5; padding-top: 12px; }
+  .adm:first-of-type { border-top: 0; padding-top: 0; }
+  @media (max-width: 760px) { .adm { grid-template-columns: 1fr; } }
+  .mdp { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 20px; font-weight: 700; letter-spacing: 2px; background: #FFF8DD; border: 1px solid #E7C65A; border-radius: 8px; padding: 6px 12px; display: inline-block; }
+  footer { border-top: 1px solid var(--line); background: #fff; }
+  footer .wrap { padding-top: 14px; padding-bottom: 14px; display: flex; flex-wrap: wrap; gap: 6px 20px; justify-content: space-between; font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<header><div class="wrap head">
+  <a href="/" aria-label="Accueil du Comité"><img src="/accueil/logo-comite-var.jpg" alt=""></a>
+  <div class="t">Espace club</div>
+  <a class="back" href="/">← Accueil</a>
+</div></header>
+<main class="wrap" id="app"><div class="muted">Chargement…</div></main>
+<footer><div class="wrap"><span>Comité du Var de Volley-Ball · <a href="mailto:volley83@gmail.com">volley83@gmail.com</a></span><a href="#comite">Accès Comité</a></div></footer>
+
+<script>
+const SUPABASE_URL = 'https://nssdhgpvkdbgdewsnlgl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_GeMMc45mQbDOq-ZkU5vXZw_lYJe9KXf';
+const MAIL_COMITE = 'volley83@gmail.com';
+const $ = id => document.getElementById(id);
+const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function rpc(fn, args) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, { method: 'POST', headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(args || {}) });
+  const txt = await res.text();
+  if (!res.ok) { let m = txt; try { m = JSON.parse(txt).message || txt; } catch(e) {} throw new Error(m); }
+  return txt ? JSON.parse(txt) : null;
+}
+const dt = s => new Date(String(s).slice(0, 10) + 'T12:00:00');
+const fmtD = (s, an = true) => s ? dt(s).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', ...(an ? { year: 'numeric' } : {}) }) : '';
+const fmtJ = s => s ? new Date(s).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+const auj = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const pl = (n, s, p) => n + ' ' + (n > 1 ? (p || s + 's') : s);
+const urlEspace = () => location.origin + '/espace-club/';
+
+/* ---------- Session du club : jeton gardé le temps de l'onglet, ou sur l'appareil si « Rester connecté » ---------- */
+const JETON = {
+  get() { try { return sessionStorage.getItem('ecl_jeton') || localStorage.getItem('ecl_jeton') || ''; } catch (e) { return ''; } },
+  set(j, garder) { try { sessionStorage.setItem('ecl_jeton', j); if (garder) localStorage.setItem('ecl_jeton', j); else localStorage.removeItem('ecl_jeton'); } catch (e) {} },
+  off() { try { sessionStorage.removeItem('ecl_jeton'); localStorage.removeItem('ecl_jeton'); } catch (e) {} }
+};
+
+/* =====================================================================
+   1. CONNEXION DU CLUB
+   ===================================================================== */
+function vueConnexion(err) {
+  $('app').innerHTML = `<div><h1>Espace club</h1><p class="muted" style="margin-top:6px;max-width:640px">Réservé aux clubs du Var : les tournois que vous organisez, la fiche de votre club dans l'annuaire, et bientôt vos factures et les demandes de modification de rencontres.</p></div>
+    <form class="card" id="lg" style="max-width:460px">
+      <div class="field"><label for="num">N° de club</label><input id="num" inputmode="numeric" autocomplete="username" placeholder="Ex. : 0839914" required></div>
+      <div class="field"><label for="mdp">Mot de passe</label><input id="mdp" type="password" autocomplete="current-password" required></div>
+      <label class="chk"><input type="checkbox" id="garder"> Rester connecté sur cet appareil</label>
+      ${err ? `<div class="msg err">${esc(err)}</div>` : ''}
+      <div class="row"><button class="btn primary" type="submit" id="go">Se connecter</button></div>
+      <p class="small muted">Le n° de club est votre n° d'affiliation FFVB. Mot de passe oublié ou pas encore reçu : écrivez au Comité, <a href="mailto:${MAIL_COMITE}?subject=${encodeURIComponent('Espace club : mot de passe')}">${MAIL_COMITE}</a>.</p>
+    </form>`;
+  $('num').focus();
+  $('lg').onsubmit = async ev => {
+    ev.preventDefault(); $('go').disabled = true;
+    try {
+      const r = await rpc('ecl_login', { p_numero: $('num').value, p_mdp: $('mdp').value });
+      if (r.erreur) return vueConnexion(r.erreur);
+      JETON.set(r.jeton, $('garder').checked); vueClub();
+    } catch (e) { vueConnexion('Connexion impossible : ' + e.message); }
+  };
+}
+
+/* =====================================================================
+   2. ESPACE DU CLUB
+   ===================================================================== */
+let D = null;
+async function vueClub(msg) {
+  const j = JETON.get(); if (!j) return vueConnexion();
+  try { D = await rpc('ecl_get', { p_jeton: j }); }
+  catch (e) { JETON.off(); return vueConnexion(/session/i.test(e.message) ? 'Votre session a expiré : reconnectez-vous.' : e.message); }
+  const t0 = auj();
+  const tournois = D.tournois || [], plateaux = D.plateaux || [];
+  const aVenir = x => x.date >= t0;
+
+  // Tournois OPEN / M15-M18 4x4
+  const etatT = t => t.statut === 'annule' ? ['b-bad', 'Annulé'] : t.statut === 'valide' ? ['b-ok', 'Classement validé']
+    : t.statut === 'saisi' ? ['b-new', 'Classement envoyé au Comité'] : t.famille === '4x4' && !aVenir(t) ? ['b-bad', 'Classement à saisir'] : aVenir(t) ? ['b-no', 'À venir'] : ['b-no', 'Joué'];
+  const ligneT = t => { const [k, s] = etatT(t), d = dt(t.date);
+    return `<div class="ev ${aVenir(t) ? '' : 'passe'}">
+      <div class="d"><b>${d.getDate()}</b><span>${d.toLocaleDateString('fr-FR', { month: 'short' })}</span></div>
+      <div><div class="n">${esc(t.nom)} · Tournoi ${t.numero}</div>
+        <div class="small muted">${esc(fmtD(t.date))}${t.heure ? ' · ' + esc(t.heure) : ''}${t.lieu || t.ville ? ' · ' + esc([t.lieu, t.ville].filter(Boolean).join(', ')) : ''}</div>
+        <div class="row" style="gap:6px;margin-top:4px"><span class="badge ${k}">${s}</span><span class="small muted">${t.nb_equipes ? pl(t.nb_equipes, 'équipe inscrite', 'équipes inscrites') + ' · ' + pl(t.nb_clubs, 'club') : 'Aucune équipe inscrite pour l\'instant'}</span></div></div>
+      <div class="act">${t.statut === 'annule' ? '' : `<button class="btn ${k === 'b-bad' ? 'primary' : 'ghost'} sm" data-t="${t.id}">${t.famille === '4x4' && t.statut !== 'valide' ? 'Inscrits, documents et classement' : 'Inscrits et documents'}</button>`}</div>
+    </div>`; };
+
+  // Plateaux Pitchoun'
+  const etatP = p => p.statut === 'valide' ? ['b-ok', 'Résultats validés'] : p.statut === 'saisi' ? ['b-new', 'Résultats envoyés au Comité'] : aVenir(p) ? ['b-no', 'À venir'] : ['b-bad', 'Résultats à saisir'];
+  const ligneP = p => { const [k, s] = etatP(p), d = dt(p.date);
+    return `<div class="ev ${aVenir(p) ? '' : 'passe'}">
+      <div class="d"><b>${d.getDate()}</b><span>${d.toLocaleDateString('fr-FR', { month: 'short' })}</span></div>
+      <div><div class="n">Plateau Pitchoun' Volley</div>
+        <div class="small muted">${esc(fmtD(p.date))}${p.heure ? ' · ' + esc(p.heure) : ''}${p.lieu || p.ville ? ' · ' + esc([p.lieu, p.ville].filter(Boolean).join(', ')) : ''}</div>
+        <div class="row" style="gap:6px;margin-top:4px"><span class="badge ${k}">${s}</span><span class="small muted">${p.nb_enfants ? pl(p.nb_enfants, 'enfant inscrit', 'enfants inscrits') + ' · ' + pl(p.nb_clubs, 'club') : 'Aucun inscrit pour l\'instant'}</span></div></div>
+      <div class="act"><button class="btn ${k === 'b-bad' ? 'primary' : 'ghost'} sm" data-p="${p.id}">${p.statut === 'valide' ? 'Voir les inscrits' : 'Inscrits et résultats'}</button></div>
+    </div>`; };
+
+  const f = D.fiche;
+  const etatFiche = !f ? '' : f.en_attente ? `<span class="badge b-new">Envoyée le ${esc(fmtJ(f.propose_le))}, en attente de validation</span>`
+    : f.publiee ? `<span class="badge b-ok">En ligne dans l'annuaire</span>` : `<span class="badge b-no">Pas encore remplie</span>`;
+
+  $('app').innerHTML = `<div class="row" style="justify-content:space-between;align-items:flex-end">
+      <div><div class="small muted" style="font-weight:700;text-transform:uppercase;letter-spacing:1px">Espace club</div><h1>${esc(D.club.nom)}</h1><div class="small muted" style="margin-top:4px">N° de club ${esc(D.club.numero || '')}</div></div>
+      <button class="linkbtn" id="out">Se déconnecter</button></div>
+    ${msg ? `<div class="msg ok">${esc(msg)}</div>` : ''}
+    ${D.compte && !D.compte.mdp_change_le ? `<div class="msg info">Vous utilisez le mot de passe envoyé par le Comité. Vous pouvez le remplacer par le vôtre en bas de cette page.</div>` : ''}
+
+    <section class="card">
+      <div class="ttl"><span class="ic" aria-hidden="true">🏐</span><div><h2>Tournois que vous organisez</h2><div class="small muted">Compétitions OPEN 2x2 / 4x4 et M15 / M18 4x4 de la saison</div></div></div>
+      ${tournois.length ? `<div>${tournois.filter(aVenir).concat(tournois.filter(t => !aVenir(t)).reverse()).map(ligneT).join('')}</div>`
+        : '<p class="muted">Aucun tournoi à votre nom cette saison.</p>'}
+      ${tournois.length ? `<p class="small muted">Pour chaque tournoi : liste des équipes inscrites, feuilles de poule et de composition à imprimer${tournois.some(t => t.famille === '4x4') ? ', et en M15 / M18 4x4 saisie du classement final, validé ensuite par le Comité' : ''}. Pensez à envoyer la feuille de composition des équipes à <a href="mailto:${MAIL_COMITE}">${MAIL_COMITE}</a>.</p>` : ''}
+    </section>
+
+    ${plateaux.length ? `<section class="card">
+      <div class="ttl"><span class="ic" aria-hidden="true">🧒</span><div><h2>Plateaux Pitchoun' Volley</h2><div class="small muted">Plateaux que vous accueillez cette saison</div></div></div>
+      <div>${plateaux.filter(aVenir).concat(plateaux.filter(p => !aVenir(p)).reverse()).map(ligneP).join('')}</div>
+      <p class="small muted">Liste des enfants inscrits, ajout d'un enfant le jour du plateau, saisie des résultats et envoi au Comité.</p>
+    </section>` : ''}
+
+    <section class="card">
+      <div class="ttl"><span class="ic" aria-hidden="true">🏠</span><div><h2>Fiche du club</h2><div class="small muted">Votre présentation dans l'annuaire « Clubs du Var » du site</div></div></div>
+      ${f ? `<div class="row">${etatFiche}</div>
+        <p class="small muted">Villes, gymnases et créneaux, catégories accueillies, labels fédéraux, contact et logo. Chaque modification est publiée après validation par le Comité.</p>
+        <div class="row"><a class="btn primary" href="/clubs/?club=${encodeURIComponent(f.acces)}">${f.publiee || f.en_attente ? 'Modifier ma fiche' : 'Remplir ma fiche'}</a><a class="btn ghost" href="/clubs/">Voir l'annuaire</a></div>`
+        : '<p class="muted">Votre club n\'a pas encore de fiche dans l\'annuaire : contactez le Comité.</p>'}
+    </section>
+
+    <section class="card">
+      <div class="ttl"><span class="ic" aria-hidden="true">🛠️</span><div><h2>Bientôt dans votre espace</h2></div></div>
+      <div class="soon">
+        <div><b>Facturation</b><p class="small muted">Vos bordereaux et factures du Comité : montant, PDF à télécharger, paiement enregistré ou non.</p></div>
+        <div><b>Demandes de modification</b><p class="small muted">Championnats jeunes en tournoi : demander aux autres clubs un changement de date, d'horaire ou de gymnase, et répondre à leurs demandes.</p></div>
+      </div>
+    </section>
+
+    <section class="card" style="max-width:560px">
+      <div class="ttl"><span class="ic" aria-hidden="true">🔑</span><div><h2>Mot de passe</h2></div></div>
+      <form id="fm-mdp" style="display:flex;flex-direction:column;gap:12px">
+        <div class="field"><label for="m-old">Mot de passe actuel</label><input id="m-old" type="password" autocomplete="current-password" required></div>
+        <div class="field"><label for="m-new">Nouveau mot de passe (8 caractères au moins)</label><input id="m-new" type="password" autocomplete="new-password" minlength="8" required></div>
+        <div class="field"><label for="m-new2">Nouveau mot de passe, une deuxième fois</label><input id="m-new2" type="password" autocomplete="new-password" minlength="8" required></div>
+        <div class="msg err" id="m-err" hidden></div>
+        <div class="row"><button class="btn ghost" type="submit">Changer le mot de passe</button></div>
+        <p class="small muted">Le mot de passe est commun à tout le club : communiquez-le seulement aux dirigeants qui en ont besoin.</p>
+      </form>
+    </section>`;
+
+  $('out').onclick = async () => { try { await rpc('ecl_logout', { p_jeton: JETON.get() }); } catch (e) {} JETON.off(); vueConnexion(); };
+  $('app').onclick = ev => {
+    const bt = ev.target.closest('[data-t]'), bp = ev.target.closest('[data-p]');
+    if (bt) { const t = tournois.find(x => String(x.id) === bt.dataset.t); if (!t) return;
+      try { sessionStorage.setItem('chp_orga', JSON.stringify({ t: t.id, code: t.code })); } catch (e) {}
+      location.href = '/championnats/#club'; }
+    if (bp) { const p = plateaux.find(x => String(x.id) === bp.dataset.p); if (!p) return;
+      try { sessionStorage.setItem('pitchoun-orga', JSON.stringify({ plateau: p.id, code: p.code })); } catch (e) {}
+      location.href = '/pitchounvolley/#organisateur'; }
+  };
+  $('fm-mdp').onsubmit = async ev => {
+    ev.preventDefault(); const e = $('m-err'); e.hidden = true;
+    if ($('m-new').value !== $('m-new2').value) { e.textContent = 'Les deux nouveaux mots de passe ne sont pas identiques.'; e.hidden = false; return; }
+    try { await rpc('ecl_mdp', { p_jeton: JETON.get(), p_ancien: $('m-old').value, p_nouveau: $('m-new').value }); vueClub('Mot de passe changé. Il sert désormais pour toutes les connexions du club.'); window.scrollTo(0, 0); }
+    catch (x) { e.textContent = x.message; e.hidden = false; }
+  };
+}
+
+/* =====================================================================
+   3. ACCÈS COMITÉ : identifiants des clubs
+   ===================================================================== */
+let PWD = '', ADM = [];
+function vueLoginComite(err) {
+  $('app').innerHTML = `<form class="card" id="lg" style="max-width:460px"><h2>Accès Comité</h2>
+    <div class="field"><label for="pwd">Mot de passe</label><input id="pwd" type="password" autocomplete="current-password" required></div>
+    ${err ? `<div class="msg err">${esc(err)}</div>` : ''}
+    <div class="row"><button class="btn primary" type="submit">Entrer</button><a href="./" class="small">Espace club</a></div></form>`;
+  $('pwd').focus();
+  $('lg').onsubmit = ev => { ev.preventDefault(); entrerComite($('pwd').value); };
+}
+async function entrerComite(pwd) {
+  try { ADM = await rpc('ecl_admin_get', { pwd }); PWD = pwd; try { sessionStorage.setItem('ecl_admin', pwd); } catch (e) {} vueComite(); }
+  catch (e) { try { sessionStorage.removeItem('ecl_admin'); } catch (x) {} vueLoginComite(/refus/i.test(e.message) ? 'Mot de passe incorrect.' : e.message); }
+}
+function vueComite(msg, nouveau) {
+  const nb = ADM.filter(c => c.acces).length, vus = ADM.filter(c => c.derniere_connexion).length;
+  $('app').innerHTML = `<div class="row" style="justify-content:space-between"><h1>Accès des clubs</h1><button class="linkbtn" id="out">Se déconnecter</button></div>
+    ${msg ? `<div class="msg ok">${esc(msg)}</div>` : ''}
+    ${nouveau ? `<div class="msg warn">Mot de passe de <b>${esc(nouveau.nom)}</b> : <span class="mdp">${esc(nouveau.mdp)}</span><br><span class="small">Il n'est affiché qu'une fois. Le brouillon Gmail s'est ouvert avec les identifiants ; si ce n'est pas le cas, autorisez les fenêtres pour ce site ou notez-le maintenant.</span></div>` : ''}
+    <div class="card">
+      <div class="row"><span class="badge b-ok">${nb} club(s) avec un accès</span><span class="badge b-no">${vus} déjà connecté(s)</span><span class="badge b-new">${ADM.length - nb} sans accès</span></div>
+      <p class="small muted">Identifiant = n° de club (onglet Clubs de la Facturation). « Créer l'accès » fabrique un mot de passe et ouvre un brouillon Gmail aux contacts du club. Un nouveau mot de passe remplace l'ancien et déconnecte le club partout. Le club peut ensuite choisir le sien.</p>
+      <div class="row"><a class="btn ghost sm" href="./" target="_blank" rel="noopener">Ouvrir l'espace club</a></div>
+    </div>
+    <div class="card" id="rows">${ADM.map(c => `<div class="adm">
+        <div><b>${esc(c.nom)}</b> <span class="muted">· ${esc(c.code)} · n° ${esc(c.numero || '—')}</span>
+          ${c.acces ? '<span class="badge b-ok">Accès créé</span>' : '<span class="badge b-no">Pas d\'accès</span>'}
+          ${c.mdp_change_le ? '<span class="badge b-no">Mot de passe choisi par le club</span>' : ''}
+          <div class="small muted">${c.email ? esc(c.email) : 'Pas de mail connu'}${c.envoye_le ? ' · identifiants envoyés le ' + esc(fmtJ(c.envoye_le)) : ''}${c.derniere_connexion ? ' · dernière connexion le ' + esc(fmtJ(c.derniere_connexion)) : c.acces ? ' · jamais connecté' : ''}</div>
+          ${c.numero ? '' : '<div class="small" style="color:var(--bad)">N° de club manquant : à ajouter dans l\'onglet Clubs de la Facturation.</div>'}</div>
+        <div class="row">
+          <button class="btn ${c.acces ? 'ghost' : 'primary'} sm" data-a="nouveau" data-c="${esc(c.code)}" ${c.numero ? '' : 'disabled'}>${c.acces ? 'Nouveau mot de passe' : 'Créer l\'accès et envoyer'}</button>
+          ${c.acces ? `<button class="btn red sm" data-a="supprimer" data-c="${esc(c.code)}">Couper l'accès</button>` : ''}
+        </div></div>`).join('') || '<div class="muted">Aucun club actif dans la Facturation.</div>'}</div>`;
+  $('out').onclick = () => { PWD = ''; try { sessionStorage.removeItem('ecl_admin'); } catch (e) {} location.hash = ''; route(); };
+  $('rows').onclick = async ev => {
+    const b = ev.target.closest('[data-a]'); if (!b) return;
+    const c = ADM.find(x => x.code === b.dataset.c); if (!c) return;
+    if (b.dataset.a === 'nouveau') {
+      if (c.acces && !confirm('Créer un nouveau mot de passe pour ' + c.nom + ' ? L\'ancien ne marchera plus' + (c.mdp_change_le ? ' (y compris celui choisi par le club)' : '') + '.')) return;
+      const w = window.open('', '_blank');   // ouverte tout de suite, sinon le navigateur bloque la fenêtre
+      try {
+        const r = await rpc('ecl_admin_acces', { pwd: PWD, p_club: c.code, p_action: 'nouveau' });
+        const url = mailAcces(c, r.mdp, !c.acces);
+        if (w) w.location = url; else window.open(url, '_blank');
+        await rpc('ecl_admin_acces', { pwd: PWD, p_club: c.code, p_action: 'envoye' });
+        ADM = await rpc('ecl_admin_get', { pwd: PWD }); vueComite('', { nom: c.nom, mdp: r.mdp }); window.scrollTo(0, 0);
+      } catch (e) { if (w) w.close(); alert(e.message); }
+    }
+    if (b.dataset.a === 'supprimer') {
+      if (!confirm('Couper l\'accès de ' + c.nom + ' ? Le club ne pourra plus se connecter tant que vous ne lui aurez pas créé un nouveau mot de passe.')) return;
+      try { await rpc('ecl_admin_acces', { pwd: PWD, p_club: c.code, p_action: 'supprimer' }); ADM = await rpc('ecl_admin_get', { pwd: PWD }); vueComite('Accès de ' + c.nom + ' coupé.'); } catch (e) { alert(e.message); }
+    }
+  };
+}
+function mailAcces(c, mdp, premier) {
+  const corps = `Bonjour,
+
+${premier ? `Le Comité du Var de Volley-Ball ouvre un espace réservé à chaque club sur son site. Vous y retrouvez :
+- les tournois que vous organisez (OPEN 2x2 / 4x4, M15 / M18 4x4) : équipes inscrites, documents à imprimer et saisie du classement ;
+- les plateaux Pitchoun' Volley que vous accueillez : inscrits et saisie des résultats ;
+- la fiche de votre club dans l'annuaire du site, à mettre à jour quand vous le souhaitez.
+
+D'autres services suivront : vos factures du Comité et les demandes de modification des rencontres des championnats jeunes.
+` : `Voici un nouveau mot de passe pour l'espace club de ${c.nom} sur le site du Comité. L'ancien ne fonctionne plus.
+`}
+Adresse : ${urlEspace()}
+N° de club (identifiant) : ${c.numero}
+Mot de passe : ${mdp}
+
+Vous pourrez remplacer ce mot de passe par le vôtre une fois connecté. Il est commun à tout le club : merci de le communiquer seulement aux dirigeants qui en ont besoin.
+
+Sportivement,
+
+Clément ROBEAU
+Comité du Var de Volley-Ball`;
+  return 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(c.email || '') + '&su=' + encodeURIComponent((premier ? 'Votre espace club sur le site du Comité du Var – ' : 'Nouveau mot de passe de votre espace club – ') + c.nom) + '&body=' + encodeURIComponent(corps);
+}
+
+/* ---------- Aiguillage ---------- */
+function route() {
+  if (location.hash === '#comite') {
+    if (PWD) return vueComite();
+    let mem = ''; try { mem = sessionStorage.getItem('ecl_admin') || ''; } catch (e) {}
+    return mem ? entrerComite(mem) : vueLoginComite();
+  }
+  return JETON.get() ? vueClub() : vueConnexion();
+}
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>

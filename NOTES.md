@@ -207,6 +207,19 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - **Tableau de bord** : « À traiter » (infractions signalées, classements OPEN/4x4 saisis, plateaux Pitchoun' saisis, fiches clubs reçues, factures non réglées), « À venir » (stages à 60 jours avec convoqués / sans réponse / présents non payés, tournois OPEN-4x4 à 30 jours avec équipes inscrites, prochain plateau Pitchoun'), puis les tuiles de toutes les fonctions et des outils (Supabase, GitHub, Gmail).
   - Données : fonction `comite_resume(pwd)` (script `sql/comite/supabase-comite.sql`). Sans ce script, la page marche quand même (mot de passe vérifié par `doc_admin_get`) mais sans compteurs.
 
+## Espace club — `espace-club/index.html` (commencé le 27/11/2026)
+
+- **Adresse** : https://volley83.fr/espace-club/ (noindex). **Pas encore reliée** : le lien « Espace club » de l'accueil pointe toujours vers `/championnats/#club` (décision de Clément du 27/11 : on ne relie qu'une fois l'espace prêt et annoncé).
+- **Connexion permanente** (décision du 27/11) : identifiant = **n° de club** (`fac_clubs.numero`, zéros de tête et espaces ignorés), mot de passe créé par le Comité (format `XXXX-XXXX`), que le club peut remplacer (8 caractères mini). Session = jeton de 90 jours (`sessionStorage`, ou `localStorage` si « Rester connecté »).
+- **Base** (script `sql/espace-club/supabase-espace-club.sql`) : `ecl_comptes` (mot de passe bcrypt), `ecl_sessions`, `ecl_essais` (8 échecs / 15 min par n°, 60 au total). `ecl_login` renvoie `{erreur}` au lieu d'une exception (sinon l'essai raté serait annulé). RPC club : `ecl_login`, `ecl_logout`, `ecl_mdp`, `ecl_get` ; Comité : `ecl_admin_get`, `ecl_admin_acces` (`nouveau` / `envoye` / `supprimer`).
+- **Contenu** : tournois OPEN / M15-M18 4x4 de la saison dont le club est `organisateur` ; plateaux Pitchoun' dont l'organisateur (nom, autres noms de `fac_clubs.alias`, nom de `clb_clubs` ou adresse mail) correspond au club ; fiche annuaire (bouton vers `clubs/?club=<acces>`).
+  - Plus de code à taper : `ecl_get` crée le code club recevant s'il manque (`chp_tournois.code_orga`, `pitchoun_codes`), et le bouton met `{t, code}` dans `sessionStorage.chp_orga` (ou `{plateau, code}` dans `pitchoun-orga`) puis ouvre `/championnats/#club` ou `/pitchounvolley/#organisateur`, qui se connectent seuls. Les pages championnats et Pitchoun' ne sont pas modifiées.
+- **Accès Comité** (`#comite`, clé `ecl_admin` dans `session.js`, tuile « Espace club » dans l'Espace Comité) : liste des clubs actifs de la Facturation, « Créer l'accès et envoyer » / « Nouveau mot de passe » (mot de passe affiché une fois + brouillon Gmail aux contacts `fac_clubs.email`), « Couper l'accès ».
+- **À faire, dans l'ordre décidé** :
+  1. au lancement : relier « Espace club » de l'accueil ; mail « ✉ Envoyer le code » des championnats → garder le mail d'infos au club recevant mais remplacer le code par « connectez-vous à votre espace club » ;
+  2. **Facturation** du club : bordereaux / factures envoyés (n°, date, montant, PDF identique à celui du Comité, réglé ou non) ; jamais les brouillons ;
+  3. **Demandes de modification** des tournois des championnats jeunes FFVB (M11 à M18) : tout club participant peut demander (date, horaire, gymnase, commentaire) ; les autres clubs du tournoi acceptent / refusent dans leur espace ; **mail automatique** aux clubs concernés (gratuit : pistes Google Apps Script depuis volley83@gmail.com, ou Brevo/Resend) ; onglet Comité : réponses, relance, « fait sur le site FFVB ». Prérequis : gymnase dans `ffvb.json` (robot) et correspondance équipes FFVB → clubs (`clubTrouve()` existe déjà dans les championnats).
+
 ## Scripts SQL — dossier `sql/`
 
 - `sql/stages/supabase-stages.sql`, `sql/championnats/supabase-championnats.sql` et `sql/facturation/supabase-facturation.sql` : installation complète. Ils contiennent les dernières versions des fonctions.

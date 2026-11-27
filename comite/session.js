@@ -8,7 +8,7 @@
    - « Se déconnecter » sur une partie déconnecte partout ;
    - « Rester connecté sur cet ordinateur » (Espace Comité) garde le mot de passe après la fermeture du navigateur. */
 (function () {
-  var KEYS = ['stg_admin', 'chp_admin', 'fac_admin', 'doc_admin', 'clb_admin', 'tip_admin', 'pit_admin'];
+  var KEYS = ['stg_admin', 'chp_admin', 'fac_admin', 'doc_admin', 'clb_admin', 'ecl_admin', 'tip_admin', 'pit_admin'];
   var NO_COPY = ['tip_admin'];        // le TIP accepte aussi un mot de passe « saisie des résultats » : on ne le propage pas
   var SHARED = 'v83_admin';
   var proto = window.Storage && Storage.prototype;
