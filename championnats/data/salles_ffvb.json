@@ -1,0 +1,345 @@
+{
+ "maj": "2026-11-27T16:13+00:00",
+ "salles": [
+  {
+   "cle": "ARMAND SAUVAT",
+   "nom": "GYMNASE ARMAND SAUVAT",
+   "adresse": "7 RUE DU LOTISSEMENT EVESCAT",
+   "cp": "83550",
+   "ville": "LA SEYNE SUR MER",
+   "clubs": [
+    "VOLLEY CLUB SEYNOIS (salle principale)"
+   ]
+  },
+  {
+   "cle": "CHARLES COSTE",
+   "nom": "CHARLES COSTE",
+   "adresse": "BOULEVARD MARCEL PAGNOL",
+   "cp": "83190",
+   "ville": "OLLIOULES",
+   "clubs": [
+    "VOLLEY BALL OLLIOULAIS (salle de repli)"
+   ]
+  },
+  {
+   "cle": "COLEGE LE VIGNERET",
+   "nom": "GYMNASE DU COLEGE LE VIGNERET",
+   "adresse": "RTE DES SOURCES",
+   "cp": "83330",
+   "ville": "LEPAN DU CASTELLET",
+   "clubs": [
+    "SUD SAINTE-BAUME VOLLEY CLUB (salle de repli)"
+   ]
+  },
+  {
+   "cle": "COLLEGE LE VIGNERET",
+   "nom": "GYMNASE DU COLLEGE LE VIGNERET",
+   "adresse": "RTE DES SOURCES",
+   "cp": "83330",
+   "ville": "LE PLAN DU CASTELLET",
+   "clubs": [
+    "SUD SAINTE-BAUME VOLLEY CLUB (salle principale)"
+   ]
+  },
+  {
+   "cle": "COLLEGE LEI GARRUS",
+   "nom": "COLLEGE LEÏ GARRUS",
+   "adresse": "394 ALLÉE DES CHÊNES KERMÈS",
+   "cp": "83470",
+   "ville": "SAINT MAXIMIN LA SAINTE BEAUME",
+   "clubs": [
+    "VOLLEY CLUB DE SAINT-MAXIMIN (salle principale)"
+   ]
+  },
+  {
+   "cle": "COLLEGE P.E VICTOR",
+   "nom": "COLLÈGE P.E VICTOR",
+   "adresse": "500 BLD COUA DE CAN",
+   "cp": "83550",
+   "ville": "VIDAUBAN",
+   "clubs": [
+    "VIDAUBAN VOLLEY-BALL (salle principale)"
+   ]
+  },
+  {
+   "cle": "COLLEGE ROSTAND",
+   "nom": "GYMNASE COLLÈGE ROSTAND",
+   "adresse": "",
+   "cp": "83300",
+   "ville": "DRAGUIGNAN",
+   "clubs": [
+    "DRAGUIGNAN UNION CLUB VAR VB (salle principale)"
+   ]
+  },
+  {
+   "cle": "COMPEXE SPORTIF DU BEAUSSET",
+   "nom": "COMPEXE SPORTIF DU BEAUSSET",
+   "adresse": "QUARTIER DE LA FOURMIGUE",
+   "cp": "83330",
+   "ville": "LE BEAUSSET",
+   "clubs": [
+    "SUD SAINTE-BAUME VOLLEY CLUB (salle principale)"
+   ]
+  },
+  {
+   "cle": "COMPLEXE DU PAS DE LA GARENNE",
+   "nom": "COMPLEXE DU PAS DE LA GARENNE",
+   "adresse": "CHEM. DE LA JOSELETTE",
+   "cp": "83390",
+   "ville": "PIERREFEU",
+   "clubs": [
+    "VOLLEY CLUB HYERES/PIERREFEU LA LONDE (salle principale)"
+   ]
+  },
+  {
+   "cle": "COMPLEXE SAINT EXUPERY",
+   "nom": "COMPLEXE SAINT EXUPERY",
+   "adresse": "PLACE DE LA PAIX",
+   "cp": "83300",
+   "ville": "DRAGUIGNAN",
+   "clubs": [
+    "DRAGUIGNAN UNION CLUB VAR VB (salle de repli)"
+   ]
+  },
+  {
+   "cle": "COMPLEXE SPORTIF DES LICES",
+   "nom": "COMPLEXE SPORTIF DES LICES",
+   "adresse": "BOULEVARD LOUVOIS",
+   "cp": "83000",
+   "ville": "TOULON",
+   "clubs": [
+    "VOLLEY CLUB MEDITERRANEE (salle principale)"
+   ]
+  },
+  {
+   "cle": "COMPLEXE SPORTIF DU BEAUSSET",
+   "nom": "COMPLEXE SPORTIF DU BEAUSSET",
+   "adresse": "QUARTIER DE LA FOURMIGUE",
+   "cp": "83330",
+   "ville": "LE BEAUSSET",
+   "clubs": [
+    "SUD SAINTE-BAUME VOLLEY CLUB (salle de repli)"
+   ]
+  },
+  {
+   "cle": "COMPLEXE SPORTIF DU VERGER",
+   "nom": "COMPLEXE SPORTIF DU VERGER",
+   "adresse": "45 RUE DU STADE",
+   "cp": "83140",
+   "ville": "SIX FOURS",
+   "clubs": [
+    "SIX FOURS BEACH VOLLEY (salle principale)"
+   ]
+  },
+  {
+   "cle": "COSEC COULONY",
+   "nom": "COSEC COULONY",
+   "adresse": "ROUTE DES MINES",
+   "cp": "83310",
+   "ville": "COGOLIN",
+   "clubs": [
+    "SAINTE-MAXIME COGOLIN VOLLEY (salle principale)"
+   ]
+  },
+  {
+   "cle": "COSEC VALLIS LAETA",
+   "nom": "COSEC VALLIS LAETA",
+   "adresse": "AVENUE PABLO PICASSO",
+   "cp": "83160",
+   "ville": "LA VALETTE",
+   "clubs": [
+    "UNION ATHLETIQUE VALETTOISE (salle de repli)"
+   ]
+  },
+  {
+   "cle": "COSTEBELLE",
+   "nom": "GYMNASE DE COSTEBELLE",
+   "adresse": "101 RUE FRANCIS GARNIER",
+   "cp": "83400",
+   "ville": "HYERES",
+   "clubs": [
+    "VOLLEY CLUB HYERES/PIERREFEU LA LONDE (salle principale)"
+   ]
+  },
+  {
+   "cle": "FRANCOIS DE LEUSSE",
+   "nom": "GYMNASE FRANCOIS DE LEUSSE",
+   "adresse": "AV. DOCTEUR ALFRED HENRY",
+   "cp": "83250",
+   "ville": "LA LONDE LES MAURES",
+   "clubs": [
+    "VOLLEY CLUB HYERES/PIERREFEU LA LONDE (salle de repli)"
+   ]
+  },
+  {
+   "cle": "GASSENDI",
+   "nom": "GYMNASE GASSENDI",
+   "adresse": "COLLEGE ROCBARON",
+   "cp": "83136",
+   "ville": "NEOULES",
+   "clubs": [
+    "ROCBARON CLUB VOLLEY-BALL - RCVB (salle principale)"
+   ]
+  },
+  {
+   "cle": "GERARD SEBASTIA",
+   "nom": "GERARD SÉBASTIA",
+   "adresse": "",
+   "cp": "83120",
+   "ville": "LE PRADET",
+   "clubs": [
+    "VOLLEY PRADETAN GARDEEN (salle de repli)"
+   ]
+  },
+  {
+   "cle": "GOLF HOTEL",
+   "nom": "GYMNASE DU GOLF HOTEL",
+   "adresse": "ALL. GEORGES DUSSAUGE",
+   "cp": "83400",
+   "ville": "HYERES",
+   "clubs": [
+    "VOLLEY CLUB HYERES/PIERREFEU LA LONDE (salle de repli)"
+   ]
+  },
+  {
+   "cle": "GUY MOQUET 1",
+   "nom": "GUY MOQUET 1",
+   "adresse": "1 IMPASSE GUY MOQUET",
+   "cp": "83130",
+   "ville": "LA GARDE",
+   "clubs": [
+    "VOLLEY PRADETAN GARDEEN (salle principale)"
+   ]
+  },
+  {
+   "cle": "HALLE ST CROIX",
+   "nom": "HALLE ST CROIX",
+   "adresse": "AVENUE DU 15 EME CORPS",
+   "cp": "83600",
+   "ville": "FREJUS",
+   "clubs": [
+    "FREJUS VAR VOLLEY (salle principale)"
+   ]
+  },
+  {
+   "cle": "JACQUES TROIN",
+   "nom": "JACQUES TROIN",
+   "adresse": "",
+   "cp": "83130",
+   "ville": "LA GARDE",
+   "clubs": [
+    "VOLLEY PRADETAN GARDEEN (salle principale)"
+   ]
+  },
+  {
+   "cle": "JEAN YVES GOSSE",
+   "nom": "JEAN YVES GOSSE",
+   "adresse": "4 AVENUE DES LAURIERS",
+   "cp": "83340",
+   "ville": "LE LUC EN PROVENCE",
+   "clubs": [
+    "LE LUC VOLLEY BALL (salle principale)"
+   ]
+  },
+  {
+   "cle": "JEAN-JACQUES MARCEL",
+   "nom": "GYMNASE JEAN-JACQUES MARCEL",
+   "adresse": "",
+   "cp": "83170",
+   "ville": "BRIGNOLES",
+   "clubs": [
+    "CLUB SPORTIF BRIGNOLAIS (salle principale)"
+   ]
+  },
+  {
+   "cle": "LES BOSQUETTES",
+   "nom": "LES BOSQUETTES",
+   "adresse": "",
+   "cp": "83120",
+   "ville": "SAINTE-MAXIME",
+   "clubs": [
+    "SAINTE-MAXIME COGOLIN VOLLEY (salle de repli)"
+   ]
+  },
+  {
+   "cle": "LYCEE PAUL LANGEVIN",
+   "nom": "GYMNASE LYCÉE PAUL LANGEVIN",
+   "adresse": "BOULEVARD DE L'EUROPE",
+   "cp": "83500",
+   "ville": "LA SEYNE SUR MER",
+   "clubs": [
+    "VOLLEY CLUB SEYNOIS (salle de repli)"
+   ]
+  },
+  {
+   "cle": "LYCEE RAYNOUARD",
+   "nom": "GYMNASE LYCÉE RAYNOUARD",
+   "adresse": "BOULEVARD DES MARTYRS DE LA",
+   "cp": "83170",
+   "ville": "BRIGNOLES",
+   "clubs": [
+    "CLUB SPORTIF BRIGNOLAIS (salle de repli)"
+   ]
+  },
+  {
+   "cle": "OMNISPORTS PASTORELLI",
+   "nom": "OMNISPORTS PASTORELLI",
+   "adresse": "32 ROUTE DU PLAN DE LA TOUR",
+   "cp": "83120",
+   "ville": "SAINTE MAXIME",
+   "clubs": [
+    "SAINTE-MAXIME COGOLIN VOLLEY (salle principale)"
+   ]
+  },
+  {
+   "cle": "PIEMONTESI",
+   "nom": "PIEMONTESI",
+   "adresse": "34 ALLÉE DES BLEUETS",
+   "cp": "83190",
+   "ville": "OLLIOULES",
+   "clubs": [
+    "VOLLEY BALL OLLIOULAIS (salle principale)"
+   ]
+  },
+  {
+   "cle": "PIERRE CLERE",
+   "nom": "PIERRE CLÈRE",
+   "adresse": "1 AVENUE THÉODORE RIVIERE",
+   "cp": "83700",
+   "ville": "SAINT RAPHAEL",
+   "clubs": [
+    "FREJUS VAR VOLLEY (salle de repli)"
+   ]
+  },
+  {
+   "cle": "PIERRE GAUDIN",
+   "nom": "PIERRE GAUDIN",
+   "adresse": "AVENUE PIERRE DE COUBERTIN",
+   "cp": "83340",
+   "ville": "LE LUC EN PROVENCE",
+   "clubs": [
+    "LE LUC VOLLEY BALL (salle de repli)"
+   ]
+  },
+  {
+   "cle": "SANTONI",
+   "nom": "SANTONI",
+   "adresse": "CHEMIN DES TERRES ROUGES",
+   "cp": "83160",
+   "ville": "LA VALETTE DU VAR",
+   "clubs": [
+    "UNION ATHLETIQUE VALETTOISE (salle principale)"
+   ]
+  },
+  {
+   "cle": "VERGER",
+   "nom": "GYMNASE DU VERGER",
+   "adresse": "45 RUE DU STADE",
+   "cp": "83140",
+   "ville": "SIX-FOURS LES PLAGES",
+   "clubs": [
+    "VOLLEY CLUB MEDITERRANEE (salle de repli)"
+   ]
+  }
+ ]
+}
