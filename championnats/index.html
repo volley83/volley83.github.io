@@ -298,6 +298,8 @@
   .doc-l:hover { border-color: var(--navy); } .doc-l b { display: block; color: var(--navy); font-size: 14px; } .doc-l small { color: var(--muted); font-size: 12.5px; } .doc-i { font-size: 20px; line-height: 1; }
   .adm tr.grp td { background: var(--navy); color: #fff; font-weight: 700; font-size: 12.5px; letter-spacing: .4px; text-transform: uppercase; padding: 6px 10px; }
   .adm tr.addrow td { background: #F6F8FC; border-top: 2px dashed var(--line); }
+  .gym { background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; text-align: left; }
+  .gym:hover { color: var(--navy); text-decoration-style: solid; }
   .tlist { display: flex; flex-direction: column; gap: 10px; }
   .trow { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
   .tr-l { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: flex-end; }
@@ -554,11 +556,43 @@ const pouleCourt = p => { const m = p.titre.match(/POULE\s+([A-Z0-9]+)/i); retur
 const phase = p => { const t = p.titre.toUpperCase(); return /BRASSAGE/.test(t) ? 'Brassage' : /QUALIFICATION/.test(t) ? 'Qualification régionale' : /(1ERE|PREMI[EÈ]RE) PHASE/.test(t) ? '1re phase' : /(2EME|DEUXI[EÈ]ME) PHASE/.test(t) ? '2e phase' : ''; };
 function catCourt(c) { return cap(joli(c.titre).replace(/^Départemental accession /, '').replace(/ qualification au championnat régional$/, ' · qualif. régionale').replace(/^Compet'Lib /, '')); }
 
+// ----- Gymnases : liste de référence (Admin › Gymnases), nom cliquable avec adresse et itinéraire -----
+let GYMS = {};
+const sansAccents = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '');
+function cleGym(s) {   // « GYMNASE DE COSTEBELLE », « GYMNASE COSTEBELLE (HYERES) » → « COSTEBELLE »
+  return sansAccents(s).toUpperCase().replace(/\s*\([^)]*\)\s*/g, ' ').replace(/^(GYMNASE|GYM\.?)\s+(DE LA |DE L'|DES |DU |DE |D')?/, '').replace(/\s+/g, ' ').trim();
+}
+function infoGym(brut) {
+  const g = GYMS[cleGym(brut)] || {}, villeFed = (String(brut).match(/\(([^)]*)\)/) || [])[1] || '';
+  return { nom: g.nom || lieuJoli(String(brut).replace(/\s*\([^)]*\)\s*/g, ' ').trim()), ville: g.ville || lieuJoli(villeFed), adresse: g.adresse || '' };
+}
+// avecVille : tournois (plusieurs clubs, on précise la ville) ; matchs simples : le nom seul
+function gymHTML(brut, avecVille) {
+  if (!brut) return '';
+  const g = infoGym(brut);
+  return `<button type="button" class="gym" data-gym="${esc(brut)}" title="Adresse et itinéraire">📍 ${esc(g.nom)}${avecVille && g.ville ? ' (' + esc(g.ville) + ')' : ''}</button>`;
+}
+function ouvrirGym(brut) {
+  const g = infoGym(brut), dest = [g.adresse || g.nom, g.ville].filter(Boolean).join(', ') + (g.ville ? '' : ', Var');
+  const o = document.createElement('div'); o.className = 'overlay';
+  o.innerHTML = `<div class="modal" role="dialog" aria-modal="true" aria-labelledby="gy-t" style="max-width:440px">
+    <h3 class="cond" id="gy-t" style="font-size:24px">${esc(g.nom)}</h3>
+    <p style="margin:6px 0 14px">${g.adresse ? esc(g.adresse) + '<br>' : ''}${esc(g.ville || '')}${!g.adresse ? '<br><span class="small muted">Adresse précise pas encore renseignée : l\'itinéraire cherche le gymnase par son nom.</span>' : ''}</p>
+    <div class="btnrow" style="margin:0">
+      <a class="btn primary" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dest)}">🧭 Itinéraire</a>
+      <a class="btn ghost" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dest)}">Voir sur la carte</a>
+      <button class="btn ghost" type="button" id="gy-x">Fermer</button></div></div>`;
+  document.body.appendChild(o);
+  $('gy-x').onclick = () => o.remove(); o.onclick = e => { if (e.target === o) o.remove(); };
+}
+document.addEventListener('click', e => { const b = e.target.closest('.gym'); if (b) { e.preventDefault(); ouvrirGym(b.dataset.gym); } });
+
 async function loadFed() {
   if (FED) return FED;
   const r = await fetch('data/ffvb.json?h=' + Math.floor(Date.now() / 6e5), { cache: 'no-store' });
   if (!r.ok) throw new Error('données indisponibles');
   FED = await r.json();
+  try { GYMS = await rpc('chp_gymnases_public') || {}; } catch(e) { GYMS = {}; }
   return FED;
 }
 
@@ -638,11 +672,11 @@ function infosJournee(j) {
 }
 function enteteJournee(j, inf) {
   const quand = !inf.dates.length ? 'Date à venir' : inf.unJour ? cap(fmtD(inf.dates[0], true, false)) : 'Du ' + fmtD(inf.dates[0], false, false) + ' au ' + fmtD(inf.dates[inf.dates.length - 1], false, false);
-  return `<div class="jh"><b>${esc(joli(j.titre) || 'Rencontres')}${j.decale ? ' · match ' + j.decale : ''}</b><span>${esc(quand)}${inf.uneHeure && inf.heures[0] ? ' · ' + esc(fmtH(inf.heures[0])) : ''}${inf.unLieu && inf.lieux[0] ? ' · 📍 ' + esc(lieuJoli(inf.lieux[0])) : ''}</span></div>`;
+  return `<div class="jh"><b>${esc(joli(j.titre) || 'Rencontres')}${j.decale ? ' · match ' + j.decale : ''}</b><span>${esc(quand)}${inf.uneHeure && inf.heures[0] ? ' · ' + esc(fmtH(inf.heures[0])) : ''}${inf.unLieu && inf.lieux[0] ? ' · ' + gymHTML(inf.lieux[0], true) : ''}</span></div>`;
 }
 function detailMatch(m, inf) {   // ce qui diffère de l'en-tête du tournoi (journées seniors étalées sur plusieurs jours)
   const d = parseD(m.date);
-  return [!inf.unJour && d ? cap(JOURS[d.getDay()]) + ' ' + d.getDate() + ' ' + MOIS_C[d.getMonth()] : '', !inf.uneHeure && m.heure ? fmtH(m.heure) : '', !inf.unLieu && m.lieu ? lieuJoli(m.lieu) : ''].filter(Boolean).join(' · ');
+  return [!inf.unJour && d ? esc(cap(JOURS[d.getDay()]) + ' ' + d.getDate() + ' ' + MOIS_C[d.getMonth()]) : '', !inf.uneHeure && m.heure ? esc(fmtH(m.heure)) : '', !inf.unLieu && m.lieu ? gymHTML(m.lieu, false) : ''].filter(Boolean).join(' · ');   // HTML
 }
 const tri = ms => ms.slice().sort((a, b) => String(a.date).localeCompare(String(b.date)) || String(a.heure || '').localeCompare(String(b.heure || '')) || a.code.localeCompare(b.code));
 // Résultats : grande liste lisible
@@ -656,13 +690,13 @@ function blocResultats(j, ms) {
   ms.filter(m => dec.includes(m)).sort((a, b) => a.code.localeCompare(b.code)).forEach(m => { const k = rows.findIndex(r => r.code > m.code); rows.splice(k < 0 ? rows.length : k, 0, m); });
   return `<div class="jb">${enteteJournee(j, inf)}${rows.map(m => {
     const joue = m.sd != null, w = joue ? (m.sd > m.se ? 'dom' : m.se > m.sd ? 'ext' : '') : '';
-    const det = dec.includes(m) ? [cap(fmtD(m.date, true, false)), m.heure ? fmtH(m.heure) : '', m.lieu ? lieuJoli(m.lieu) : ''].filter(Boolean).join(' · ') + ' (match ' + sensDecale(j, m) + ')' : detailMatch(m, inf);
+    const det = dec.includes(m) ? [esc(cap(fmtD(m.date, true, false))), m.heure ? esc(fmtH(m.heure)) : '', m.lieu ? gymHTML(m.lieu, false) : ''].filter(Boolean).join(' · ') + ' (match ' + sensDecale(j, m) + ')' : detailMatch(m, inf);
     return `<div class="rm ${estMien(m.dom) || estMien(m.ext) ? 'mine' : ''}">
       <span class="rm-code">${esc(m.code)}</span>
       <span class="rm-dom ${w === 'dom' ? 'win' : ''}">${esc(equipeFed(m.dom))}</span>
       <span class="rm-score">${joue ? `<b class="${w === 'dom' ? 'w' : ''}">${m.sd}</b><i>–</i><b class="${w === 'ext' ? 'w' : ''}">${m.se}</b>` : `<i>${[m.dom, m.ext].some(x => equipeFed(x) === 'Exempt') ? 'exempt' : 'non joué'}</i>`}</span>
       <span class="rm-ext ${w === 'ext' ? 'win' : ''}">${esc(equipeFed(m.ext))}</span>
-      <span class="rm-sets">${joue ? esc((m.sets || '').replace(/:/g, '-')) : ''}${det ? (joue ? ' · ' : '') + esc(det) : ''}</span>
+      <span class="rm-sets">${joue ? esc((m.sets || '').replace(/:/g, '-')) : ''}${det ? (joue ? ' · ' : '') + det : ''}</span>
     </div>`; }).join('')}${noteDecales(j, true)}</div>`;
 }
 // À venir : colonne de droite, compacte
@@ -670,7 +704,7 @@ function blocAvenir(j, ms) {
   const inf = infosJournee(j);
   return `<div class="jb">${enteteJournee(j, inf)}${tri(ms).map(m => { const det = detailMatch(m, inf); return `<div class="um ${estMien(m.dom) || estMien(m.ext) ? 'mine' : ''}">
       <span class="rm-code">${esc(m.code)}</span>
-      <span class="um-t"><span>${esc(equipeFed(m.dom))}</span><span>${esc(equipeFed(m.ext))}</span>${det ? `<small>${esc(det)}</small>` : ''}</span>
+      <span class="um-t"><span>${esc(equipeFed(m.dom))}</span><span>${esc(equipeFed(m.ext))}</span>${det ? `<small>${det}</small>` : ''}</span>
     </div>`; }).join('')}${noteDecales(j, true)}</div>`;
 }
 
@@ -1157,7 +1191,7 @@ async function renderAdmin(tab) {
   if (!ADMIN_PWD) { location.hash = '4x4'; return; }
   if (tab) ATAB = tab;
   if (!A) await loadAdmin();
-  const aTitre = { inscriptions: 'Inscriptions', rappel: 'Rappel week-end', mails: 'Mails aux clubs', formules: 'Formules sportives', participations: 'Participations', classements: 'Classements', tournois: 'Calendrier et codes', clubs: 'Clubs', coupe: 'Coupe de France' };
+  const aTitre = { inscriptions: 'Inscriptions', rappel: 'Rappel week-end', mails: 'Mails aux clubs', formules: 'Formules sportives', gymnases: 'Gymnases', participations: 'Participations', classements: 'Classements', tournois: 'Calendrier et codes', clubs: 'Clubs', coupe: 'Coupe de France' };
   const aValider = A.tournois.filter(t => t.statut === 'saisi').length;
   $('app').innerHTML = `
   <div class="hero"><div class="wrap"><div class="k">Espace Comité</div><h1>Gestion des championnats</h1></div></div>
@@ -1166,7 +1200,7 @@ async function renderAdmin(tab) {
       <span><span id="a-save" class="save"></span> <button class="linkbtn" onclick="ADMIN_PWD='';A=null;try{sessionStorage.removeItem('chp_admin')}catch(e){};location.hash='4x4'">Se déconnecter</button></span></div>
     <div id="a-body"></div>
   </main>`;
-  ({ inscriptions: adminInscriptions, rappel: adminRappel, mails: adminMails, formules: adminFormules, participations: adminParticipations, classements: adminClassements, tournois: adminTournois, clubs: adminClubs, coupe: adminCoupe })[ATAB]();
+  ({ inscriptions: adminInscriptions, rappel: adminRappel, mails: adminMails, formules: adminFormules, gymnases: adminGymnases, participations: adminParticipations, classements: adminClassements, tournois: adminTournois, clubs: adminClubs, coupe: adminCoupe })[ATAB]();
 }
 const tSel = (list, cur, id = 'a-t') => `<select id="${id}" style="max-width:560px">${A.competitions.map(c => { const l = list.filter(t => t.competition === c.code); return l.length ? `<optgroup label="${esc(c.nom)}">${l.map(t => `<option value="${t.id}" ${t.id === cur ? 'selected' : ''}>${esc(c.nom)} · ${tNom(t)} · ${esc(fmtShort(t.date))}${t.ville ? ' · ' + esc(t.ville) : ''}${t.statut === 'saisi' ? ' · À VALIDER' : ''}</option>`).join('')}</optgroup>` : ''; }).join('')}</select>`;
 
@@ -1371,6 +1405,36 @@ function adminTournois() {
     tr.querySelector('[data-del]').onclick = async () => { if (!confirm('Supprimer ce tournoi, ses inscriptions et son classement ?')) return; await rpc('chp_admin_delete_tournoi', { pwd: ADMIN_PWD, tid: id }); await loadAdmin(); await loadPublic(); adminTournois(); };
   });
   $('a-add').onclick = async () => { const n = Math.max(0, ...ts.map(t => t.numero)) + 1, d = today(); await put(null, { competition: ACOMP, numero: n, date: d, date_limite: jeudiAvant(d), heure_limite: '12:00' }); adminTournois(); };
+}
+
+// ----- Onglet « Gymnases » : liste de référence (nom affiché, ville, adresse) -----
+async function adminGymnases() {
+  $('a-body').innerHTML = '<div class="card muted">Chargement des gymnases…</div>';
+  try { await loadFed(); } catch(e) {}
+  let ok = true; try { GYMS = await rpc('chp_gymnases_public') || {}; } catch(e) { ok = false; }
+  if (!ok) { $('a-body').innerHTML = `<div class="card stack"><h2>Gymnases</h2><div class="msg warn" style="margin:0">Lancez une fois le script <b>supabase-championnats-gymnases.sql</b> dans Supabase (SQL Editor › coller › Run), puis rechargez la page.</div></div>`; return; }
+  const vus = {};   // clé → noms FFvolley rencontrés + nombre de matchs
+  (FED ? FED.categories : []).forEach(c => c.poules.forEach(p => p.journees.forEach(j => j.matchs.forEach(m => { if (!m.lieu) return; const k = cleGym(m.lieu); (vus[k] = vus[k] || { bruts: new Set(), n: 0 }).bruts.add(m.lieu); vus[k].n++; }))));
+  A.tournois.forEach(x => { if (x.lieu) { const k = cleGym(x.lieu); (vus[k] = vus[k] || { bruts: new Set(), n: 0 }).bruts.add(x.lieu + (x.ville ? ' (' + x.ville + ')' : '')); } });
+  Object.keys(GYMS).forEach(k => vus[k] = vus[k] || { bruts: new Set(), n: 0 });
+  const cles = Object.keys(vus).sort((a, b) => !!(GYMS[a] && GYMS[a].ville) - !!(GYMS[b] && GYMS[b].ville) || a.localeCompare(b));
+  const aFaire = cles.filter(k => !(GYMS[k] && GYMS[k].ville)).length;
+  $('a-body').innerHTML = `<div class="card stack">
+    <div class="rank-head" style="margin:0"><h2>Gymnases</h2><span class="muted small">${cles.length} gymnases · ${aFaire} sans ville</span></div>
+    <p class="muted small" style="margin:0">Sur le site, le nom du gymnase est cliquable : adresse, « Itinéraire » et « Voir sur la carte ». Les matchs simples affichent le nom seul, les tournois le nom et la ville. Les gymnases sans ville sont en haut. Chaque champ est enregistré dès que vous le quittez.</p>
+    <div class="tablebox"><table class="adm"><thead><tr><th>Nom(s) sur le site FFvolley</th><th>Nom affiché</th><th>Ville</th><th>Adresse</th><th></th></tr></thead><tbody>
+    ${cles.map(k => { const g = GYMS[k] || {}, d = infoGym([...vus[k].bruts][0] || k); return `<tr data-k="${esc(k)}">
+      <td class="small">${[...vus[k].bruts].map(esc).join('<br>') || esc(k)}${vus[k].n ? `<br><span class="muted">${vus[k].n} match(s)</span>` : ''}</td>
+      <td><input data-f="nom" value="${esc(g.nom || d.nom)}" style="min-width:170px"></td>
+      <td><input data-f="ville" value="${esc(g.ville || d.ville)}" placeholder="Ville" style="min-width:120px"></td>
+      <td><input data-f="adresse" value="${esc(g.adresse || '')}" placeholder="N°, rue" style="min-width:200px"></td>
+      <td><button class="linkbtn gym" data-gym="${esc([...vus[k].bruts][0] || k)}">Tester</button></td></tr>`; }).join('')}
+    </tbody></table></div></div>`;
+  $('a-body').querySelectorAll('tr[data-k]').forEach(tr => tr.querySelectorAll('[data-f]').forEach(el => el.onchange = async () => {
+    const k = tr.dataset.k, p = Object.fromEntries([...tr.querySelectorAll('[data-f]')].map(i => [i.dataset.f, i.value.trim()]));
+    saveMark('wait', 'Enregistrement…');
+    try { await rpc('chp_admin_gymnase', { pwd: ADMIN_PWD, k, p }); GYMS[k] = p; saveMark('ok', '✓ ' + (p.nom || k) + ' enregistré'); } catch(e) { saveMark('err', '⚠ ' + e.message); }
+  }));
 }
 
 // ----- Onglet « Formules sportives » : bibliothèque des formules -----

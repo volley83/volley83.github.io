@@ -349,7 +349,7 @@ def garder_lieux(cats):
                 for m in j['matchs']:
                     if m.get('lieu') and len(m['lieu']) >= 4:
                         memo[m['code']] = m['lieu']
-                    elif memo.get(m['code']):
+                    elif memo.get(m['code']) and m.get('sd') is not None:   # seulement les matchs joués : un match à venir garde ce qu'affiche la FFvolley
                         m['lieu'] = memo[m['code']]
     os.makedirs(os.path.dirname(LIEUX), exist_ok=True)
     with open(LIEUX, 'w', encoding='utf-8') as fh:

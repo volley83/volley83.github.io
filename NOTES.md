@@ -252,3 +252,8 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - 1re phase : `ordreClubs` (clubs en alternance) + `repartir(..., ['club', 'k'])` (serpentin + équilibrage des clubs ET des n° d'équipe). 2e phase : `phase2` (tri par place, « Meilleur 2ème A ou B » quand un seul 2ème part dans la poule précédente ; poules égales et ≥3 poules → une poule par place). Vérifié sur les 9 formules PDF de Clément (2025-2026).
 - Document A4 dans une nouvelle fenêtre, modifiable (contenteditable), « Imprimer / Enregistrer en PDF » ; 2e phase sur une nouvelle page.
 
+### Gymnases
+- Le robot reprend bien les changements de gymnase (vérifié dans l'historique : DFA015 Jean-Yves Gosse → Pierre Gaudin). Après le match, la FFvolley remplace le gymnase par le score : `scripts/ffvb.py` garde le dernier gymnase connu dans `championnats/data/lieux.json` et ne le recopie que sur les matchs joués. Codes « F », « P », « 3 » (forfait/pénalité) ignorés.
+- Table `chp_gymnases` (clé = `cleGym()` : majuscules sans accents, sans « GYMNASE DE », sans la ville entre parenthèses ; nom, ville, adresse), RPC `chp_gymnases_public` / `chp_admin_gymnase`. Admin › Gymnases.
+- Affichage : tournois = nom + ville en tête du tournoi ; matchs simples = nom seul. Nom cliquable (`gymHTML` / `ouvrirGym`) : adresse, Itinéraire (Google Maps dir), Voir sur la carte.
+

@@ -479,3 +479,45 @@ Composition de la poule :
 
 3 rotations de matchs.$t$
 where not exists (select 1 from chp_formules where famille = '4x4' and nb_equipes = 3);
+
+create table if not exists chp_gymnases (
+  cle        text primary key,
+  nom        text not null default '',
+  ville      text not null default '',
+  adresse    text not null default '',
+  updated_at timestamptz not null default now()
+);
+alter table chp_gymnases enable row level security;
+
+create or replace function chp_gymnases_public() returns jsonb
+language sql stable security definer set search_path = public as $$
+  select coalesce(jsonb_object_agg(cle, jsonb_build_object('nom', nom, 'ville', ville, 'adresse', adresse)), '{}'::jsonb) from chp_gymnases;
+$$;
+
+create or replace function chp_admin_gymnase(pwd text, k text, p jsonb) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  if not chp_is_admin(pwd) then raise exception 'Accès refusé'; end if;
+  if p is null then delete from chp_gymnases where cle = k; return; end if;
+  insert into chp_gymnases (cle, nom, ville, adresse) values (k, coalesce(p->>'nom', ''), coalesce(p->>'ville', ''), coalesce(p->>'adresse', ''))
+  on conflict (cle) do update set nom = excluded.nom, ville = excluded.ville, adresse = excluded.adresse, updated_at = now();
+end $$;
+
+grant execute on function chp_gymnases_public() to anon, authenticated;
+grant execute on function chp_admin_gymnase(text, text, jsonb) to anon, authenticated;
+
+-- Premières villes connues (à compléter dans Admin › Gymnases)
+insert into chp_gymnases (cle, nom, ville) values
+  ('COSTEBELLE', 'Gymnase de Costebelle', 'Hyères'),
+  ('PIEMONTESI', 'Gymnase Piemontesi', 'Ollioules'),
+  ('SANTONI', 'Gymnase Santoni', 'La Valette-du-Var'),
+  ('LES BOSQUETTES', 'Gymnase des Bosquettes', 'Sainte-Maxime'),
+  ('JACQUES TROIN', 'Gymnase Jacques Troin', 'La Garde'),
+  ('COMPLEXE SPORTIF DES LICES', 'Complexe sportif des Lices', 'Toulon'),
+  ('LES LICES', 'Complexe sportif des Lices', 'Toulon'),
+  ('COLLEGE P.E VICTOR', 'Collège Paul-Émile Victor', 'Vidauban'),
+  ('ROSTAND', 'Gymnase Rostand', 'Draguignan'),
+  ('COLLEGE ROSTAND', 'Gymnase Rostand', 'Draguignan'),
+  ('SALLE SAINTE-CROIX', 'Salle Sainte-Croix', 'Fréjus'),
+  ('HALLE ST CROIX', 'Salle Sainte-Croix', 'Fréjus')
+on conflict (cle) do nothing;
