@@ -136,6 +136,12 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - **2 onglets** : « Frais de déplacement » (par défaut) et « Note de frais » (`/frais/#note`) pour les autres dépenses (billet, achat de matériel…) : date, **famille** (liste `FAMILLES` [libellé, code compta] en haut du script, + « Autre » sans code), précisions, montant ; pas de « Vous intervenez en tant que » ; justificatifs toujours obligatoires (case à cocher) ; remboursement uniquement ; PDF A4 portrait reprenant le modèle Word « Note de frais » (colonne Code, 8 lignes mini, récapitulatif des totaux par code comptable, Le demandeur / Le président : constante `PRESIDENT` = Gérald HENRY).
 - Taux kilométrique selon l'imputation (objet `IMPUT` en haut du script) : 0,25 €/km bénévoles et intervenants, 0,60 €/km salariés (abandon de frais impossible pour un salarié : option grisée).
 
+## Bascule volley83.fr (préparée le 27/11/2026)
+
+- La page d'accueil est maintenant à la **racine** (`/index.html`, chemins absolus `/championnats/`, `/accueil/data/actus.json`…). `accueil/` ne garde que les logos et `data/` (écrit par le robot Facebook) ; `accueil/index.html` redirige vers `/`.
+- `404.html` renvoie les anciennes adresses Sportsregions vers la bonne page selon des mots-clés (documents, clubs, stages, championnats…), sinon propose l'accueil.
+- Domaine : volley83.fr dans le compte OVH du Comité (contacts admin/tech/facturation OK, renouvellement manuel avant le 27/09/2027). Jour J : zone OVH (4 A GitHub 185.199.108-111.153, CNAME www → volley83.github.io., MX OVH + redirections e-mail gratuites « Redirect »), Custom domain `volley83.fr` dans Settings › Pages, puis serveurs DNS Sportsregions → OVH, retirer les `noindex`, Enforce HTTPS.
+
 ## Championnats — onglet « Mails aux clubs » de l'Espace Comité (ajouté le 24/11/2026)
 
 - Demande de Clément : envoyer un mail aux clubs de certaines poules des championnats FFVB. On coche une catégorie entière (toutes ses poules) ou des poules précises (coche partielle affichée), ou « Tout cocher ».
