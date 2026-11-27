@@ -1,0 +1,22 @@
+name: sonde (temporaire)
+on:
+  push:
+    branches: [sonde-gymnases]
+permissions:
+  contents: write
+jobs:
+  sonde:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Télécharger
+        run: |
+          mkdir -p sonde
+          UA="Mozilla/5.0 (compatible; Comite-Var-Volley/1.0; +https://volley83.github.io/championnats/)"
+          B="https://www.ffvbbeach.org/ffvbapp/resu"
+          curl -sSL -A "$UA" "$B/vbspo_home.php?codent=PTCA83" -o sonde/home.html || true
+          curl -sSL -A "$UA" "$B/vbspo_calendrier.php?saison=2026%2F2027&codent=PTCA83&poule=DFA" -o sonde/cal_DFA.html || true
+          curl -sSL -A "$UA" "$B/vbspo_calendrier.php?saison=2026%2F2027&codent=PTCA83&poule=CFA" -o sonde/cal_CFA.html || true
+          grep -oiE 'href="[^"]+"' sonde/*.html | sort -u > sonde/liens.txt || true
+          git config user.name volley83; git config user.email volley83@users.noreply.github.com
+          git add sonde && git commit -m "sonde" && git push
