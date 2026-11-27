@@ -111,6 +111,9 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - **Mémoires** (remboursements faits par le Comité : parent, club extérieur…) : même table, `type` = 'memoire', numéro `2627-M001`, `modalite` (« À régler par virement sur le RIB ci-joint » par défaut). PDF « MÉMOIRE » sur le modèle Word (Toulon, le…, bénéficiaire, tableau, TOTAL À RECEVOIR EN EUROS, modalité, signataire + signature des reçus). Remboursement effectué saisi dans les champs règlement. Hors des totaux « facturés » et de l'export Excel. Mail : `memoire_objet` / `memoire_modele`.
 - Mention TVA (réglage `mention_tva`, modifiable dans Réglages) imprimée sous le total de toutes les factures (clubs et hors clubs) et des devis. Défaut : « TVA non applicable – article 261-7-1° b du CGI ». Recodification de la TVA dans le CIBS au 1er janvier 2027 (anciennes références CGI tolérées jusqu'au 31/12/2027).
 
+## Bordereaux : mail d'information (espace club)
+- « Marquer comme envoyé » propose ensuite `mailInfoClubs` : un seul mail Gmail, clubs ayant une facture sur le bordereau en copie cachée (email_finances + email), sans pièce jointe, réglages `info_objet` / `info_modele` ({numero}, {saison}, {date}, {contenu}, {lien} = https://volley83.fr/espace-club/). Bouton « ✉ Informer les clubs » sur un bordereau envoyé. Le mail individuel avec PDF reste (« ✉ Mail + PDF »), le rappel est inchangé.
+
 ## Franchises URSSAF — onglet « Franchises » de la facturation
 - Tables `fac_fr_personnes` (personnes mémorisées) et `fac_franchises` (états numérotés par année civile 2026-001…, lignes jsonb {date, libelle, paiement, montant}). RPC `fac_admin_franchise` (création/maj, `supprimer`, `supprimer_personne`).
 - Réglages `franchise_plafond` (154 € en 2026 = 70 % du plafond journalier SS, à mettre à jour chaque 1er janvier) et `franchise_mention` ({plafond}, {annee}).

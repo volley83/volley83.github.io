@@ -316,6 +316,20 @@ async function envoyerBordereau(bid) {
   if (!confirm(`Marquer le bordereau n° ${b.numero} comme envoyé ?${change ? `\n\nSa date passera du ${fmtD(b.date)} au ${fmtD(t)} (date d'envoi), sur l'en-tête des factures${n ? ` et sur les ${n} ligne(s) datées du ${fmtD(b.date)}` : ''}.` : ''}\nLes factures ne seront plus modifiables (vous pourrez le rouvrir).`)) return;
   try { if (change) await passerDateDuJour(b); } catch(e) { return fail(e); }
   await majBordereau(b, { statut: 'envoye' });
+  const n2 = clubsInformes(b).length;
+  if (n2 && confirm(`Préparer maintenant le mail d'information aux ${n2} club${n2 > 1 ? 's' : ''} concerné${n2 > 1 ? 's' : ''} ?\n\nUn seul mail, clubs en copie cachée : il annonce que le bordereau n° ${b.numero} est disponible dans l'espace club (pas de pièce jointe).`)) mailInfoClubs(b.id);
+}
+// Clubs qui ont une facture sur ce bordereau
+const clubsInformes = b => clubsVisibles().filter(c => Math.abs(totalDe(b.id, c.code)) > 0.005);
+const LIEN_ESPACE_CLUB = 'https://volley83.fr/espace-club/';
+function mailInfoClubs(bid) {
+  const b = bord(bid), cs = clubsInformes(b);
+  const adr = [...new Set(cs.flatMap(c => [c.email_finances, c.email]).flatMap(x => String(x || '').split(/[,;\s]+/)).map(x => x.trim()).filter(x => x.includes('@')))];
+  const sans = cs.filter(c => !c.email_finances && !c.email).map(c => c.code);
+  const vars = { numero: b.numero, saison: b.saison.replace('-', '/'), date: fmtD(b.date), contenu: b.mail_contenu || contenuPropose(b.id), lien: LIEN_ESPACE_CLUB };
+  const rep = t => String(t || '').replace(/\{(\w+)\}/g, (m, k) => vars[k] != null ? vars[k] : m);
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&bcc=' + encodeURIComponent(adr.join(',')) + '&su=' + encodeURIComponent(rep(reglage('info_objet', 'Bordereau de facturation N° {numero} – saison {saison}'))) + '&body=' + encodeURIComponent(rep(reglage('info_modele', '{contenu}'))), '_blank');
+  toast(sans.length ? `Mail préparé. Pas d'adresse pour : ${sans.join(', ')} (onglet Clubs)` : `✓ Mail préparé : ${cs.length} clubs en copie cachée`, sans.length ? 'err' : 'ok');
 }
 async function supprBordereau(b) {
   const n = lignesDe(b.id).length;
@@ -330,7 +344,7 @@ function renderBordereau(b) {
     const st = !t ? '' : cl === 'paid' ? '<span class="badge b-ok">Réglé</span>' : cl === 'part' ? `<span class="badge b-warn">Réglé ${euros(e.regle[b.id])}</span>` : lock ? '<span class="badge b-bad">À régler</span>' : '<span class="badge b-draft">Brouillon</span>';
     return `<tr class="clk ${t ? '' : 'off'}" onclick="location.hash='b/${b.id}/${encodeURIComponent(c.code)}'"><td class="club"><b>${esc(c.code)}</b><small>${esc(c.nom)}</small></td>
       <td class="c">${n || ''}</td><td class="num"><b>${t ? euros(t) : '—'}</b></td><td>${st}</td>
-      <td class="r nw" onclick="event.stopPropagation()">${t ? `<button class="btn sm ghost" onclick="pdfClubs(${b.id},['${esc(c.code)}'])">PDF</button> <button class="btn sm ghost" onclick="mailClub(${b.id},'${esc(c.code)}')">✉ Mail</button>` : ''}${lock && t && cl !== 'paid' && cl !== 'zero' ? ` <button class="btn sm danger" onclick="rappelClub('${esc(c.code)}')">✉ Rappel</button>` : ''}</td></tr>`;
+      <td class="r nw" onclick="event.stopPropagation()">${t ? `<button class="btn sm ghost" onclick="pdfClubs(${b.id},['${esc(c.code)}'])">PDF</button> <button class="btn sm ghost" title="Mail individuel avec la facture en pièce jointe" onclick="mailClub(${b.id},'${esc(c.code)}')">✉ Mail + PDF</button>` : ''}${lock && t && cl !== 'paid' && cl !== 'zero' ? ` <button class="btn sm danger" onclick="rappelClub('${esc(c.code)}')">✉ Rappel</button>` : ''}</td></tr>`;
   }).join('');
   const avec = clubs.filter(c => totalDe(b.id, c.code)).map(c => c.code);
   setTimeout(() => { if (!$('b-mail-ok')) return;
@@ -343,7 +357,7 @@ function renderBordereau(b) {
     <div class="ttl"><div><h2>Bordereau n° ${b.numero} <span style="font-size:18px" class="muted">· ${esc(SAISON)}</span></h2>
       <p class="muted">${b.statut === 'envoye' ? '<span class="badge b-sent">Envoyé aux clubs</span> Les factures ne sont plus modifiables.' : '<span class="badge b-draft">Brouillon</span> Préparez les factures, puis marquez le bordereau comme envoyé.'}</p></div>
       <div class="btnrow">
-        ${lock ? `<button class="btn ghost" onclick="majBordereau(bord(${b.id}),{statut:'brouillon'})">Rouvrir pour modifier</button>` : `<button class="btn ok" onclick="envoyerBordereau(${b.id})">✓ Marquer comme envoyé</button>`}
+        ${lock ? `<button class="btn primary" onclick="mailInfoClubs(${b.id})">✉ Informer les clubs</button><button class="btn ghost" onclick="majBordereau(bord(${b.id}),{statut:'brouillon'})">Rouvrir pour modifier</button>` : `<button class="btn ok" onclick="envoyerBordereau(${b.id})">✓ Marquer comme envoyé</button>`}
         <button class="btn danger" onclick="supprBordereau(bord(${b.id}))">Supprimer</button></div></div>
     <div class="grid g3">
       <div class="field"><label>Date du bordereau</label><input type="date" value="${esc(b.date || '')}" ${lock ? 'disabled' : ''} onchange="majBordereau(bord(${b.id}),{date:this.value})"></div>
@@ -386,7 +400,7 @@ function renderFacture(b, code) {
   <div class="clubnav noprint">${clubs.map(k => `<a class="chip ${k.code === code ? 'on' : ''} ${totalDe(b.id, k.code) ? 'has' : ''}" href="#b/${b.id}/${encodeURIComponent(k.code)}">${esc(k.code)}</a>`).join('')}</div>
   <div class="card stack">
     <div class="ttl"><div><h2>${esc(c.nom)}</h2><p class="muted">${c.numero ? 'N° ' + esc(c.numero) + ' · ' : ''}Facture ${esc(facNum(b, code))} · Bordereau n° ${b.numero} du ${fmtD(b.date)}${lock ? ' · <span class="badge b-sent">Envoyé</span>' : ''}</p></div>
-      <div class="btnrow">${ls.length ? `<button class="btn ghost" onclick="pdfClubs(${b.id},['${esc(code)}'])">⬇ PDF</button><button class="btn ghost" onclick="mailClub(${b.id},'${esc(code)}')">✉ Préparer le mail</button>` : ''}
+      <div class="btnrow">${ls.length ? `<button class="btn ghost" onclick="pdfClubs(${b.id},['${esc(code)}'])">⬇ PDF</button><button class="btn ghost" onclick="mailClub(${b.id},'${esc(code)}')">✉ Mail + PDF</button>` : ''}
         <button class="btn ghost" onclick="openPaiement({club:'${esc(code)}',bordereau_id:${b.id}})">+ Paiement</button>${lock && impayes(code).some(i => i.b.id === b.id) ? `<button class="btn danger" onclick="rappelClub('${esc(code)}')">✉ Rappel</button>` : ''}</div></div>
     ${lock ? '' : `<div class="picker"><div class="grid" style="grid-template-columns:minmax(0,1fr) auto"><input id="pk-q" placeholder="🔍 Rechercher un article : code, désignation… puis cliquez pour l'ajouter" value="${esc(PICK_Q)}" autocomplete="off">
       <button class="btn ghost" onclick="ajoutLibre()">+ Ligne libre</button></div><div id="pk-list" class="picker-list"></div></div>`}
@@ -760,7 +774,12 @@ function renderReglages() {
     <div class="field"><label>Mention en bas des RIS (délai d'observations)</label><textarea id="r-rm" rows="3">${esc(reglage('ris_mention', '') || RIS_MENTION_DEF)}</textarea></div>
     <div class="field"><label>Pied de page des RIS</label><textarea id="r-rp" rows="3">${esc(reglage('ris_pied', ''))}</textarea></div>
     <div class="btnrow"><button class="btn primary" id="r-ok1">Enregistrer</button></div></div>
-  <div class="card stack"><h3>Mail d'envoi des bordereaux</h3>
+  <div class="card stack"><h3>Mail d'information aux clubs (bordereau disponible dans l'espace club)</h3>
+    <p class="small muted">Proposé quand vous marquez un bordereau comme envoyé, puis avec le bouton « ✉ Informer les clubs ». Un seul mail, sans pièce jointe, avec tous les clubs concernés en copie cachée. Champs : <span class="code">{numero}</span>, <span class="code">{saison}</span>, <span class="code">{date}</span>, <span class="code">{contenu}</span> (liste « comprend notamment » du bordereau), <span class="code">{lien}</span> adresse de l'espace club.</p>
+    <div class="field"><label>Objet</label><input id="r-io" value="${esc(reglage('info_objet', ''))}"></div>
+    <div class="field"><label>Texte du mail</label><textarea id="r-im" rows="16">${esc(reglage('info_modele', ''))}</textarea></div>
+    <div class="btnrow"><button class="btn primary" id="r-ok11">Enregistrer</button></div></div>
+  <div class="card stack"><h3>Mail individuel avec la facture jointe (bouton « ✉ Mail + PDF », si besoin)</h3>
     <p class="small muted">Champs remplacés automatiquement : <span class="code">{numero}</span> n° du bordereau, <span class="code">{saison}</span> 2026/2027, <span class="code">{club}</span> nom du club, <span class="code">{sigle}</span>, <span class="code">{montant}</span> total de la facture, <span class="code">{facture}</span> n° de facture, <span class="code">{date}</span> date du bordereau, <span class="code">{contenu}</span> liste « comprend notamment » (réglée sur chaque bordereau).</p>
     <div class="field"><label>Objet</label><input id="r-mo" value="${esc(reglage('mail_objet', ''))}"></div>
     <div class="field"><label>Texte du mail</label><textarea id="r-mm" rows="18">${esc(reglage('mail_modele', ''))}</textarea></div>
@@ -816,6 +835,7 @@ function renderReglages() {
     <div class="grid g3"><div class="field"><label>1 tournoi</label><input id="r-t1" value="${fmtN(t[0])}" inputmode="decimal"></div><div class="field"><label>2 tournois</label><input id="r-t2" value="${fmtN(t[1])}" inputmode="decimal"></div><div class="field"><label>3 tournois ou plus</label><input id="r-t3" value="${fmtN(t[2])}" inputmode="decimal"></div></div>
     <div class="btnrow"><button class="btn primary" id="r-ok2">Enregistrer</button></div></div>`);
   $('r-ok1').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'emetteur', p_valeur: $('r-em').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mentions', p_valeur: $('r-me').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mention_tva', p_valeur: $('r-tva').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'banque', p_valeur: $('r-bq').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_pied', p_valeur: $('r-rp').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'ris_mention', p_valeur: $('r-rm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
+  $('r-ok11').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'info_objet', p_valeur: $('r-io').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'info_modele', p_valeur: $('r-im').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok3').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_total', p_valeur: $('r-at').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_avoir_partiel', p_valeur: $('r-ap').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_objet', p_valeur: $('r-mo').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'mail_modele', p_valeur: $('r-mm').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok10').onclick = async () => { try { await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'franchise_plafond', p_valeur: num($('r-fpl').value) }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'franchise_mention', p_valeur: $('r-fme').value }); await rpc('fac_admin_reglage', { pwd: PWD, p_cle: 'franchise_autres', p_valeur: $('r-fau').value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
   $('r-ok9').onclick = async () => { try { for (const [k, i] of [['courrier_tarifs', 'r-ct'], ['courrier_signataires', 'r-cs'], ['courrier_mail_objet', 'r-cmo'], ['courrier_mail_modele', 'r-cmm']]) await rpc('fac_admin_reglage', { pwd: PWD, p_cle: k, p_valeur: $(i).value }); await load(); toast('✓ Enregistré'); } catch(e) { fail(e); } };
