@@ -20,6 +20,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Outil de lecture des PDF (fiches de match)
+        run: which pdftotext || (sudo apt-get -qq update && sudo apt-get -qq install -y poppler-utils)
       - name: Récupérer les données FFvolley
         run: python3 scripts/ffvb.py
       - name: Enregistrer si quelque chose a changé

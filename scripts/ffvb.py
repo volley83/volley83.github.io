@@ -5,7 +5,7 @@ sur le site de la FFvolley et les enregistre dans championnats/data/ffvb.json.
 Lancé automatiquement par GitHub Actions (.github/workflows/ffvb.yml).
 Usage local : python3 scripts/ffvb.py [dossier_de_pages_html]  (sinon téléchargement en ligne)
 """
-import json, re, sys, os, time, hashlib, urllib.request
+import json, re, sys, os, time, hashlib, unicodedata, urllib.request, urllib.parse
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 
@@ -356,12 +356,65 @@ def garder_lieux(cats):
         json.dump(dict(sorted(memo.items())), fh, ensure_ascii=False, indent=0)
 
 
+# Salles des clubs (nom, adresse, ville), lues dans les fiches de match PDF de la FFvolley,
+# une fois par semaine : base de départ de la liste des gymnases (Admin › Gymnases).
+SALLES = os.path.join(os.path.dirname(SORTIE), 'salles_ffvb.json')
+
+
+def cle_gym(s):
+    s = unicodedata.normalize('NFD', str(s or '')).encode('ascii', 'ignore').decode().upper()
+    s = re.sub(r'\s*\([^)]*\)\s*', ' ', s)
+    s = re.sub(r"^(GYMNASE|GYM\.?)\s+(DE LA |DE L'|DES |DU |DE |D')?", '', s.strip())
+    return re.sub(r'\s+', ' ', s).strip()
+
+
+def maj_salles(cats, a_venir):
+    from salles import texte_pdf, salles_fiche
+    try:
+        ancien = json.load(open(SALLES, encoding='utf-8'))
+        if (datetime.now(timezone.utc) - datetime.fromisoformat(ancien['maj'])).days < 6:
+            return
+    except Exception:
+        pass
+    matchs = [m for c in cats for p in c['poules'] for j in p['journees'] for m in j['matchs'] if m['code'] in a_venir]
+    restants = {m['dom'] for m in matchs} | {m['ext'] for m in matchs}
+    choisis = []
+    for m in sorted(matchs, key=lambda m: m['code']):   # assez de fiches pour couvrir chaque club une fois
+        if m['dom'] in restants or m['ext'] in restants:
+            choisis.append(m['code'])
+            restants -= {m['dom'], m['ext']}
+    salles = {}
+    for code in choisis:
+        try:
+            req = urllib.request.Request(BASE.replace('/resu/', '/adressier/') + 'fiche_match_ffvb.php', headers={'User-Agent': UA},
+                                         data=urllib.parse.urlencode({'wss_saison': SAISON, 'codmatch': code, 'codent': CODENT}).encode())
+            with urllib.request.urlopen(req, timeout=30) as r:
+                _, liste = salles_fiche(texte_pdf(r.read()))
+        except Exception as e:
+            print('ERREUR fiche', code, e, file=sys.stderr)
+            continue
+        for s in liste:
+            k = cle_gym(s['nom'])
+            e = salles.setdefault(k, {'cle': k, 'nom': s['nom'], 'adresse': s['adresse'], 'cp': s['cp'], 'ville': s['ville'], 'clubs': []})
+            for champ in ('adresse', 'cp', 'ville'):
+                e[champ] = e[champ] or s[champ]
+            lib = f"{s['club']} ({'salle principale' if s['role'] == 'principale' else 'salle de repli'})"
+            if lib not in e['clubs']:
+                e['clubs'].append(lib)
+        time.sleep(1)
+    if salles:
+        with open(SALLES, 'w', encoding='utf-8') as fh:
+            json.dump({'maj': datetime.now(timezone.utc).isoformat(timespec='minutes'), 'salles': sorted(salles.values(), key=lambda s: s['cle'])},
+                      fh, ensure_ascii=False, indent=1)
+        print(f'{len(salles)} salles ({len(choisis)} fiches de match)')
+
+
 def main():
     local = sys.argv[1] if len(sys.argv) > 1 else None
     home = lire(f'{BASE}vbspo_home.php?codent={CODENT}', local and os.path.join(local, 'home.html'))
     s = Sommaire()
     s.feed(home)
-    cats, vues = [], set()
+    cats, vues, a_venir = [], set(), set()
     for c in s.cats:
         if c['titre'].strip().upper() in ('CONTACTS', 'CONTACT'):
             continue
@@ -378,7 +431,9 @@ def main():
             if local and not os.path.exists(f):
                 continue
             try:
-                d = poule(pl['code'], lire(url, f))
+                h = lire(url, f)
+                d = poule(pl['code'], h)
+                a_venir.update(re.findall(r"name=codmatch value='([A-Z0-9]+)'", h))   # matchs non joués : leur fiche PDF donne les salles
             except Exception as e:
                 print('ERREUR', pl['code'], e, file=sys.stderr)
                 continue
@@ -388,6 +443,11 @@ def main():
         if poules:
             cats.append({'titre': c['titre'], 'groupe': groupe(c['titre']), 'poules': poules})
     garder_lieux(cats)
+    if not local:
+        try:
+            maj_salles(cats, a_venir)
+        except Exception as e:
+            print('ERREUR salles', e, file=sys.stderr)
     data = {'saison': SAISON, 'source': f'{BASE}vbspo_home.php?codent={CODENT}', 'categories': cats}
     if not local:
         ecrire_ics(cats)

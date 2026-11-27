@@ -557,14 +557,19 @@ const phase = p => { const t = p.titre.toUpperCase(); return /BRASSAGE/.test(t) 
 function catCourt(c) { return cap(joli(c.titre).replace(/^Départemental accession /, '').replace(/ qualification au championnat régional$/, ' · qualif. régionale').replace(/^Compet'Lib /, '')); }
 
 // ----- Gymnases : liste de référence (Admin › Gymnases), nom cliquable avec adresse et itinéraire -----
-let GYMS = {};
+let GYMS = {}, SALLES_FFVB = {};   // GYMS : liste validée (Admin › Gymnases) ; SALLES_FFVB : fiches clubs FFvolley (proposition)
+async function loadSallesFfvb() {
+  try { const r = await fetch('data/salles_ffvb.json?h=' + Math.floor(Date.now() / 36e5), { cache: 'no-store' }); if (r.ok) { const j = await r.json(); SALLES_FFVB = Object.fromEntries((j.salles || []).map(s => [s.cle, s])); } } catch(e) {}
+}
+const villeJolie = v => lieuJoli(String(v || '').replace(/\bLA VALETTE DU VAR\b/i, 'La Valette-du-Var'));
 const sansAccents = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '');
 function cleGym(s) {   // « GYMNASE DE COSTEBELLE », « GYMNASE COSTEBELLE (HYERES) » → « COSTEBELLE »
   return sansAccents(s).toUpperCase().replace(/\s*\([^)]*\)\s*/g, ' ').replace(/^(GYMNASE|GYM\.?)\s+(DE LA |DE L'|DES |DU |DE |D')?/, '').replace(/\s+/g, ' ').trim();
 }
 function infoGym(brut) {
-  const g = GYMS[cleGym(brut)] || {}, villeFed = (String(brut).match(/\(([^)]*)\)/) || [])[1] || '';
-  return { nom: g.nom || lieuJoli(String(brut).replace(/\s*\([^)]*\)\s*/g, ' ').trim()), ville: g.ville || lieuJoli(villeFed), adresse: g.adresse || '' };
+  const k = cleGym(brut), g = GYMS[k] || {}, f = SALLES_FFVB[k] || {}, villeFed = (String(brut).match(/\(([^)]*)\)/) || [])[1] || '';
+  return { nom: g.nom || lieuJoli(String(brut).replace(/\s*\([^)]*\)\s*/g, ' ').trim()), ville: g.ville || villeJolie(f.ville) || lieuJoli(villeFed),
+    adresse: g.adresse || (f.adresse ? lieuJoli(f.adresse) + (f.cp ? ', ' + f.cp : '') : '') };
 }
 // avecVille : tournois (plusieurs clubs, on précise la ville) ; matchs simples : le nom seul
 function gymHTML(brut, avecVille) {
@@ -593,6 +598,7 @@ async function loadFed() {
   if (!r.ok) throw new Error('données indisponibles');
   FED = await r.json();
   try { GYMS = await rpc('chp_gymnases_public') || {}; } catch(e) { GYMS = {}; }
+  await loadSallesFfvb();
   return FED;
 }
 
@@ -1417,24 +1423,40 @@ async function adminGymnases() {
   (FED ? FED.categories : []).forEach(c => c.poules.forEach(p => p.journees.forEach(j => j.matchs.forEach(m => { if (!m.lieu) return; const k = cleGym(m.lieu); (vus[k] = vus[k] || { bruts: new Set(), n: 0 }).bruts.add(m.lieu); vus[k].n++; }))));
   A.tournois.forEach(x => { if (x.lieu) { const k = cleGym(x.lieu); (vus[k] = vus[k] || { bruts: new Set(), n: 0 }).bruts.add(x.lieu + (x.ville ? ' (' + x.ville + ')' : '')); } });
   Object.keys(GYMS).forEach(k => vus[k] = vus[k] || { bruts: new Set(), n: 0 });
+  await loadSallesFfvb();
+  Object.keys(SALLES_FFVB).forEach(k => vus[k] = vus[k] || { bruts: new Set([SALLES_FFVB[k].nom]), n: 0 });
+  const propo = k => { const f = SALLES_FFVB[k]; return f ? { nom: lieuJoli(f.nom), ville: villeJolie(f.ville), adresse: f.adresse ? lieuJoli(f.adresse) + (f.cp ? ', ' + f.cp : '') : (f.cp || '') } : null; };
   const cles = Object.keys(vus).sort((a, b) => !!(GYMS[a] && GYMS[a].ville) - !!(GYMS[b] && GYMS[b].ville) || a.localeCompare(b));
   const aFaire = cles.filter(k => !(GYMS[k] && GYMS[k].ville)).length;
   $('a-body').innerHTML = `<div class="card stack">
-    <div class="rank-head" style="margin:0"><h2>Gymnases</h2><span class="muted small">${cles.length} gymnases · ${aFaire} sans ville</span></div>
+    <div class="rank-head" style="margin:0"><h2>Gymnases</h2><span class="muted small">${cles.length} gymnases · ${aFaire} à valider</span></div>
+    ${Object.keys(SALLES_FFVB).length ? `<div class="msg" style="margin:0;background:#F6F8FC;color:var(--text)">💡 Les champs en <i>italique</i> sont repris des <b>fiches clubs FFvolley</b> (salle principale et salle de repli de chaque club, mises à jour chaque semaine). Vérifiez-les, corrigez si besoin, puis <b>Valider</b>. <button class="btn ghost sm" id="gy-all">✓ Valider toutes les propositions</button></div>` : ''}
     <p class="muted small" style="margin:0">Sur le site, le nom du gymnase est cliquable : adresse, « Itinéraire » et « Voir sur la carte ». Les matchs simples affichent le nom seul, les tournois le nom et la ville. Les gymnases sans ville sont en haut. Chaque champ est enregistré dès que vous le quittez.</p>
     <div class="tablebox"><table class="adm"><thead><tr><th>Nom(s) sur le site FFvolley</th><th>Nom affiché</th><th>Ville</th><th>Adresse</th><th></th></tr></thead><tbody>
-    ${cles.map(k => { const g = GYMS[k] || {}, d = infoGym([...vus[k].bruts][0] || k); return `<tr data-k="${esc(k)}">
-      <td class="small">${[...vus[k].bruts].map(esc).join('<br>') || esc(k)}${vus[k].n ? `<br><span class="muted">${vus[k].n} match(s)</span>` : ''}</td>
-      <td><input data-f="nom" value="${esc(g.nom || d.nom)}" style="min-width:170px"></td>
-      <td><input data-f="ville" value="${esc(g.ville || d.ville)}" placeholder="Ville" style="min-width:120px"></td>
-      <td><input data-f="adresse" value="${esc(g.adresse || '')}" placeholder="N°, rue" style="min-width:200px"></td>
-      <td><button class="linkbtn gym" data-gym="${esc([...vus[k].bruts][0] || k)}">Tester</button></td></tr>`; }).join('')}
+    ${cles.map(k => { const g = GYMS[k], d = infoGym([...vus[k].bruts][0] || k), pr = propo(k), v = g || pr || d, it = !g && pr ? 'font-style:italic;' : '', f = SALLES_FFVB[k]; return `<tr data-k="${esc(k)}" ${g ? '' : 'class="nv"'}>
+      <td class="small">${[...vus[k].bruts].map(esc).join('<br>') || esc(k)}${vus[k].n ? `<br><span class="muted">${vus[k].n} match(s)</span>` : ''}${f && f.clubs.length ? `<br><span class="muted">${f.clubs.map(esc).join('<br>')}</span>` : ''}</td>
+      <td><input data-f="nom" value="${esc(v.nom || '')}" style="${it}min-width:170px"></td>
+      <td><input data-f="ville" value="${esc(v.ville || '')}" placeholder="Ville" style="${it}min-width:120px"></td>
+      <td><input data-f="adresse" value="${esc(v.adresse || '')}" placeholder="N°, rue" style="${it}min-width:200px"></td>
+      <td style="white-space:nowrap">${g ? '<span class="ok small">✓ validé</span>' : '<button class="btn ok sm" data-ok>Valider</button>'} <button class="linkbtn gym" data-gym="${esc([...vus[k].bruts][0] || k)}">Tester</button></td></tr>`; }).join('')}
     </tbody></table></div></div>`;
-  $('a-body').querySelectorAll('tr[data-k]').forEach(tr => tr.querySelectorAll('[data-f]').forEach(el => el.onchange = async () => {
+  const valider = async tr => {
     const k = tr.dataset.k, p = Object.fromEntries([...tr.querySelectorAll('[data-f]')].map(i => [i.dataset.f, i.value.trim()]));
+    await rpc('chp_admin_gymnase', { pwd: ADMIN_PWD, k, p }); GYMS[k] = p;
+    tr.classList.remove('nv'); tr.querySelectorAll('[data-f]').forEach(i => i.style.fontStyle = 'normal');
+    const b = tr.querySelector('[data-ok]'); if (b) b.outerHTML = '<span class="ok small">✓ validé</span>';
+    return p;
+  };
+  $('a-body').querySelectorAll('tr[data-k]').forEach(tr => {
+    tr.querySelectorAll('[data-f]').forEach(el => el.onchange = async () => { saveMark('wait', 'Enregistrement…'); try { const p = await valider(tr); saveMark('ok', '✓ ' + (p.nom || tr.dataset.k) + ' enregistré'); } catch(e) { saveMark('err', '⚠ ' + e.message); } });
+    const b = tr.querySelector('[data-ok]'); if (b) b.onclick = () => tr.querySelector('[data-f]').onchange();
+  });
+  if ($('gy-all')) $('gy-all').onclick = async () => {
+    const lignes = [...$('a-body').querySelectorAll('tr.nv')].filter(tr => SALLES_FFVB[tr.dataset.k]);
+    if (!confirm(`Valider les ${lignes.length} gymnases proposés d'après les fiches clubs ?`)) return;
     saveMark('wait', 'Enregistrement…');
-    try { await rpc('chp_admin_gymnase', { pwd: ADMIN_PWD, k, p }); GYMS[k] = p; saveMark('ok', '✓ ' + (p.nom || k) + ' enregistré'); } catch(e) { saveMark('err', '⚠ ' + e.message); }
-  }));
+    try { for (const tr of lignes) await valider(tr); saveMark('ok', `✓ ${lignes.length} gymnases validés`); } catch(e) { saveMark('err', '⚠ ' + e.message); }
+  };
 }
 
 // ----- Onglet « Formules sportives » : bibliothèque des formules -----
