@@ -89,12 +89,12 @@
   <a class="back" href="/">← Accueil</a>
 </div></header>
 <main class="wrap" id="app"><div class="muted">Chargement…</div></main>
-<footer><div class="wrap"><span>Comité du Var de Volley-Ball · <a href="mailto:volley83@gmail.com">volley83@gmail.com</a></span><a href="#comite">Accès Comité</a></div></footer>
+<footer><div class="wrap"><span>Comité du Var de Volley-Ball · <a href="mailto:contact@volley83.fr">contact@volley83.fr</a></span><a href="#comite">Accès Comité</a></div></footer>
 
 <script>
 const SUPABASE_URL = 'https://nssdhgpvkdbgdewsnlgl.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_GeMMc45mQbDOq-ZkU5vXZw_lYJe9KXf';
-const MAIL_COMITE = 'volley83@gmail.com';
+const MAIL_COMITE = 'contact@volley83.fr';
 const $ = id => document.getElementById(id);
 const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function rpc(fn, args) {
@@ -128,7 +128,7 @@ function vueConnexion(err) {
       <label class="chk"><input type="checkbox" id="garder"> Rester connecté sur cet appareil</label>
       ${err ? `<div class="msg err">${esc(err)}</div>` : ''}
       <div class="row"><button class="btn primary" type="submit" id="go">Se connecter</button></div>
-      <p class="small muted">Le n° de club est votre n° d'affiliation FFVB. Mot de passe oublié ou pas encore reçu : écrivez au Comité, <a href="mailto:${MAIL_COMITE}?subject=${encodeURIComponent('Espace club : mot de passe')}">${MAIL_COMITE}</a>.</p>
+      <p class="small muted">Le n° de club est votre n° d'affiliation FF Volley. Mot de passe oublié ou pas encore reçu : écrivez au Comité, <a href="mailto:${MAIL_COMITE}?subject=${encodeURIComponent('Espace club : mot de passe')}">${MAIL_COMITE}</a>.</p>
     </form>`;
   $('num').focus();
   $('lg').onsubmit = async ev => {
