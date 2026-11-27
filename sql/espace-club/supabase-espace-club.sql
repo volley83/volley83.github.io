@@ -186,6 +186,38 @@ begin
   );
 end $$;
 
+-- Facturation du club : bordereaux ENVOYÉS seulement (jamais les brouillons), ses lignes et ses paiements,
+-- au même format que fac_admin_get pour que la page dessine exactement la même facture que le Comité.
+create or replace function ecl_factures(p_jeton text, p_saison text) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare c text := ecl_club(p_jeton); s text;
+begin
+  s := coalesce(nullif(p_saison, ''),
+                (select max(b.saison) from fac_bordereaux b where b.statut = 'envoye'
+                   and exists (select 1 from fac_lignes l where l.bordereau_id = b.id and l.club = c)),
+                extract(year from ecl_debut_saison())::int || '-' || (extract(year from ecl_debut_saison())::int + 1));
+  return jsonb_build_object(
+    'saison', s,
+    'saisons', (select coalesce(jsonb_agg(distinct b.saison), '[]') from fac_bordereaux b
+                 where b.statut = 'envoye' and exists (select 1 from fac_lignes l where l.bordereau_id = b.id and l.club = c)),
+    'clubs', (select jsonb_agg(jsonb_build_object('code', f.code, 'nom', f.nom, 'numero', f.numero, 'adresse', f.adresse)) from fac_clubs f where f.code = c),
+    'reglages', (select coalesce(jsonb_object_agg(r.cle, r.valeur), '{}') from fac_reglages r
+                  where r.cle in ('emetteur', 'mentions', 'banque', 'mention_tva')),
+    'bordereaux', (select coalesce(jsonb_agg(jsonb_build_object('id', b.id, 'saison', b.saison, 'numero', b.numero, 'date', b.date,
+                     'titre', b.titre, 'statut', b.statut) order by b.numero), '[]')
+                   from fac_bordereaux b where b.saison = s and b.statut = 'envoye'
+                     and exists (select 1 from fac_lignes l where l.bordereau_id = b.id and l.club = c)),
+    'lignes', (select coalesce(jsonb_agg(jsonb_build_object('id', l.id, 'bordereau_id', l.bordereau_id, 'club', l.club, 'date_ligne', l.date_ligne,
+                 'code_compta', l.code_compta, 'designation', l.designation, 'precisions', l.precisions, 'quantite', l.quantite, 'prix', l.prix)
+                 order by l.bordereau_id, l.ordre, l.id), '[]')
+               from fac_lignes l join fac_bordereaux b on b.id = l.bordereau_id
+              where l.club = c and b.saison = s and b.statut = 'envoye'),
+    'paiements', (select coalesce(jsonb_agg(jsonb_build_object('id', p.id, 'club', p.club, 'bordereau_id', p.bordereau_id, 'date', p.date,
+                    'montant', p.montant, 'mode', p.mode) order by p.date nulls first, p.id), '[]')
+                  from fac_paiements p where p.club = c and p.saison = s)
+  );
+end $$;
+
 -- ---------- Comité ----------
 -- Liste des clubs et état de leur accès
 create or replace function ecl_admin_get(pwd text) returns jsonb
@@ -235,6 +267,7 @@ grant execute on function
   ecl_logout(text),
   ecl_mdp(text, text, text),
   ecl_get(text),
+  ecl_factures(text, text),
   ecl_admin_get(text),
   ecl_admin_acces(text, text, text)
 to anon;

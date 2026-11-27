@@ -6,6 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Espace club – Comité du Var de Volley-Ball</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<script src="/facturation/facture-commun.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -62,6 +64,20 @@
   .adm:first-of-type { border-top: 0; padding-top: 0; }
   @media (max-width: 760px) { .adm { grid-template-columns: 1fr; } }
   .mdp { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 20px; font-weight: 700; letter-spacing: 2px; background: #FFF8DD; border: 1px solid #E7C65A; border-radius: 8px; padding: 6px 12px; display: inline-block; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .tbl th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); padding: 6px 8px; border-bottom: 2px solid var(--line); }
+  .tbl td { padding: 10px 8px; border-bottom: 1px solid #EDF0F5; vertical-align: middle; }
+  .tbl .r { text-align: right; white-space: nowrap; }
+  .tbl tfoot td { font-weight: 700; border-bottom: 0; }
+  @media (max-width: 700px) {
+    .tbl thead { display: none; } .tbl, .tbl tbody, .tbl tr, .tbl td, .tbl tfoot { display: block; width: 100%; }
+    .tbl tr { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; margin-bottom: 10px; }
+    .tbl td { border: 0; padding: 3px 0; display: flex; justify-content: space-between; gap: 10px; text-align: right; }
+    .tbl td::before { content: attr(data-l); font-weight: 600; color: var(--muted); text-align: left; }
+    .tbl td.r { text-align: right; }
+  }
+  .solde { display: flex; flex-wrap: wrap; gap: 10px 28px; padding: 12px 14px; border-radius: 10px; background: #F4F6FA; }
+  .solde b { font-size: 18px; color: var(--navy); }
   footer { border-top: 1px solid var(--line); background: #fff; }
   footer .wrap { padding-top: 14px; padding-bottom: 14px; display: flex; flex-wrap: wrap; gap: 6px 20px; justify-content: space-between; font-size: 13px; color: var(--muted); }
 </style>
@@ -88,7 +104,7 @@ async function rpc(fn, args) {
   return txt ? JSON.parse(txt) : null;
 }
 const dt = s => new Date(String(s).slice(0, 10) + 'T12:00:00');
-const fmtD = (s, an = true) => s ? dt(s).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', ...(an ? { year: 'numeric' } : {}) }) : '';
+const fmtLong = (s, an = true) => s ? dt(s).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', ...(an ? { year: 'numeric' } : {}) }) : '';
 const fmtJ = s => s ? new Date(s).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
 const auj = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
 const pl = (n, s, p) => n + ' ' + (n > 1 ? (p || s + 's') : s);
@@ -105,7 +121,7 @@ const JETON = {
    1. CONNEXION DU CLUB
    ===================================================================== */
 function vueConnexion(err) {
-  $('app').innerHTML = `<div><h1>Espace club</h1><p class="muted" style="margin-top:6px;max-width:640px">Réservé aux clubs du Var : les tournois que vous organisez, la fiche de votre club dans l'annuaire, et bientôt vos factures et les demandes de modification de rencontres.</p></div>
+  $('app').innerHTML = `<div><h1>Espace club</h1><p class="muted" style="margin-top:6px;max-width:640px">Réservé aux clubs du Var : les tournois que vous organisez, vos factures du Comité, la fiche de votre club dans l'annuaire, et bientôt les demandes de modification de rencontres.</p></div>
     <form class="card" id="lg" style="max-width:460px">
       <div class="field"><label for="num">N° de club</label><input id="num" inputmode="numeric" autocomplete="username" placeholder="Ex. : 0839914" required></div>
       <div class="field"><label for="mdp">Mot de passe</label><input id="mdp" type="password" autocomplete="current-password" required></div>
@@ -128,13 +144,13 @@ function vueConnexion(err) {
 /* =====================================================================
    2. ESPACE DU CLUB
    ===================================================================== */
-let D = null;
+let CLUB = null;
 async function vueClub(msg) {
   const j = JETON.get(); if (!j) return vueConnexion();
-  try { D = await rpc('ecl_get', { p_jeton: j }); }
+  try { CLUB = await rpc('ecl_get', { p_jeton: j }); }
   catch (e) { JETON.off(); return vueConnexion(/session/i.test(e.message) ? 'Votre session a expiré : reconnectez-vous.' : e.message); }
   const t0 = auj();
-  const tournois = D.tournois || [], plateaux = D.plateaux || [];
+  const tournois = CLUB.tournois || [], plateaux = CLUB.plateaux || [];
   const aVenir = x => x.date >= t0;
 
   // Tournois OPEN / M15-M18 4x4
@@ -144,7 +160,7 @@ async function vueClub(msg) {
     return `<div class="ev ${aVenir(t) ? '' : 'passe'}">
       <div class="d"><b>${d.getDate()}</b><span>${d.toLocaleDateString('fr-FR', { month: 'short' })}</span></div>
       <div><div class="n">${esc(t.nom)} · Tournoi ${t.numero}</div>
-        <div class="small muted">${esc(fmtD(t.date))}${t.heure ? ' · ' + esc(t.heure) : ''}${t.lieu || t.ville ? ' · ' + esc([t.lieu, t.ville].filter(Boolean).join(', ')) : ''}</div>
+        <div class="small muted">${esc(fmtLong(t.date))}${t.heure ? ' · ' + esc(t.heure) : ''}${t.lieu || t.ville ? ' · ' + esc([t.lieu, t.ville].filter(Boolean).join(', ')) : ''}</div>
         <div class="row" style="gap:6px;margin-top:4px"><span class="badge ${k}">${s}</span><span class="small muted">${t.nb_equipes ? pl(t.nb_equipes, 'équipe inscrite', 'équipes inscrites') + ' · ' + pl(t.nb_clubs, 'club') : 'Aucune équipe inscrite pour l\'instant'}</span></div></div>
       <div class="act">${t.statut === 'annule' ? '' : `<button class="btn ${k === 'b-bad' ? 'primary' : 'ghost'} sm" data-t="${t.id}">${t.famille === '4x4' && t.statut !== 'valide' ? 'Inscrits, documents et classement' : 'Inscrits et documents'}</button>`}</div>
     </div>`; };
@@ -155,20 +171,20 @@ async function vueClub(msg) {
     return `<div class="ev ${aVenir(p) ? '' : 'passe'}">
       <div class="d"><b>${d.getDate()}</b><span>${d.toLocaleDateString('fr-FR', { month: 'short' })}</span></div>
       <div><div class="n">Plateau Pitchoun' Volley</div>
-        <div class="small muted">${esc(fmtD(p.date))}${p.heure ? ' · ' + esc(p.heure) : ''}${p.lieu || p.ville ? ' · ' + esc([p.lieu, p.ville].filter(Boolean).join(', ')) : ''}</div>
+        <div class="small muted">${esc(fmtLong(p.date))}${p.heure ? ' · ' + esc(p.heure) : ''}${p.lieu || p.ville ? ' · ' + esc([p.lieu, p.ville].filter(Boolean).join(', ')) : ''}</div>
         <div class="row" style="gap:6px;margin-top:4px"><span class="badge ${k}">${s}</span><span class="small muted">${p.nb_enfants ? pl(p.nb_enfants, 'enfant inscrit', 'enfants inscrits') + ' · ' + pl(p.nb_clubs, 'club') : 'Aucun inscrit pour l\'instant'}</span></div></div>
       <div class="act"><button class="btn ${k === 'b-bad' ? 'primary' : 'ghost'} sm" data-p="${p.id}">${p.statut === 'valide' ? 'Voir les inscrits' : 'Inscrits et résultats'}</button></div>
     </div>`; };
 
-  const f = D.fiche;
+  const f = CLUB.fiche;
   const etatFiche = !f ? '' : f.en_attente ? `<span class="badge b-new">Envoyée le ${esc(fmtJ(f.propose_le))}, en attente de validation</span>`
     : f.publiee ? `<span class="badge b-ok">En ligne dans l'annuaire</span>` : `<span class="badge b-no">Pas encore remplie</span>`;
 
   $('app').innerHTML = `<div class="row" style="justify-content:space-between;align-items:flex-end">
-      <div><div class="small muted" style="font-weight:700;text-transform:uppercase;letter-spacing:1px">Espace club</div><h1>${esc(D.club.nom)}</h1><div class="small muted" style="margin-top:4px">N° de club ${esc(D.club.numero || '')}</div></div>
+      <div><div class="small muted" style="font-weight:700;text-transform:uppercase;letter-spacing:1px">Espace club</div><h1>${esc(CLUB.club.nom)}</h1><div class="small muted" style="margin-top:4px">N° de club ${esc(CLUB.club.numero || '')}</div></div>
       <button class="linkbtn" id="out">Se déconnecter</button></div>
     ${msg ? `<div class="msg ok">${esc(msg)}</div>` : ''}
-    ${D.compte && !D.compte.mdp_change_le ? `<div class="msg info">Vous utilisez le mot de passe envoyé par le Comité. Vous pouvez le remplacer par le vôtre en bas de cette page.</div>` : ''}
+    ${CLUB.compte && !CLUB.compte.mdp_change_le ? `<div class="msg info">Vous utilisez le mot de passe envoyé par le Comité. Vous pouvez le remplacer par le vôtre en bas de cette page.</div>` : ''}
 
     <section class="card">
       <div class="ttl"><span class="ic" aria-hidden="true">🏐</span><div><h2>Tournois que vous organisez</h2><div class="small muted">Compétitions OPEN 2x2 / 4x4 et M15 / M18 4x4 de la saison</div></div></div>
@@ -191,10 +207,14 @@ async function vueClub(msg) {
         : '<p class="muted">Votre club n\'a pas encore de fiche dans l\'annuaire : contactez le Comité.</p>'}
     </section>
 
+    <section class="card" id="factu">
+      <div class="ttl"><span class="ic" aria-hidden="true">🧾</span><div><h2>Facturation</h2><div class="small muted">Bordereaux de facturation du Comité et paiements enregistrés</div></div></div>
+      <div id="factu-in" class="muted">Chargement…</div>
+    </section>
+
     <section class="card">
       <div class="ttl"><span class="ic" aria-hidden="true">🛠️</span><div><h2>Bientôt dans votre espace</h2></div></div>
       <div class="soon">
-        <div><b>Facturation</b><p class="small muted">Vos bordereaux et factures du Comité : montant, PDF à télécharger, paiement enregistré ou non.</p></div>
         <div><b>Demandes de modification</b><p class="small muted">Championnats jeunes en tournoi : demander aux autres clubs un changement de date, d'horaire ou de gymnase, et répondre à leurs demandes.</p></div>
       </div>
     </section>
@@ -221,12 +241,62 @@ async function vueClub(msg) {
       try { sessionStorage.setItem('pitchoun-orga', JSON.stringify({ plateau: p.id, code: p.code })); } catch (e) {}
       location.href = '/pitchounvolley/#organisateur'; }
   };
+  chargeFactures();
   $('fm-mdp').onsubmit = async ev => {
     ev.preventDefault(); const e = $('m-err'); e.hidden = true;
     if ($('m-new').value !== $('m-new2').value) { e.textContent = 'Les deux nouveaux mots de passe ne sont pas identiques.'; e.hidden = false; return; }
     try { await rpc('ecl_mdp', { p_jeton: JETON.get(), p_ancien: $('m-old').value, p_nouveau: $('m-new').value }); vueClub('Mot de passe changé. Il sert désormais pour toutes les connexions du club.'); window.scrollTo(0, 0); }
     catch (x) { e.textContent = x.message; e.hidden = false; }
   };
+}
+
+/* ---------- Facturation du club (calcul et PDF : /facturation/facture-commun.js, communs avec le Comité) ---------- */
+let D = null;      // données de facturation, au format de la Facturation du Comité
+async function chargeFactures(saison) {
+  const box = $('factu-in'); if (!box) return;
+  try { D = await rpc('ecl_factures', { p_jeton: JETON.get(), p_saison: saison || null }); }
+  catch (e) { box.innerHTML = `<div class="msg err">Facturation indisponible pour le moment : ${esc(e.message)}</div>`; return; }
+  const code = CLUB.club.code, bs = bordsTries(), e = etatClub(code);
+  const saisons = (D.saisons || []).slice().sort().reverse();
+  const choix = saisons.length > 1 ? `<div class="field" style="max-width:220px"><label for="f-saison">Saison</label><select id="f-saison">${saisons.map(x => `<option ${x === D.saison ? 'selected' : ''}>${esc(x)}</option>`).join('')}</select></div>` : '';
+  if (!bs.length) { box.className = ''; box.innerHTML = choix + `<p class="muted">Aucun bordereau pour la saison ${esc(D.saison.replace('-', '/'))}.</p>`; lierSaison(); return; }
+  const ligne = b => {
+    const du = e.du[b.id] || 0, rg = r2(e.regle[b.id] || 0), reste = r2(Math.max(0, du - rg));
+    const st = du < -0.005 ? ['b-ok', 'Avoir'] : rg >= du - 0.005 ? ['b-ok', 'Réglé'] : rg > 0.005 ? ['b-new', 'Réglé en partie'] : ['b-bad', 'À régler'];
+    return `<tr><td data-l="Facture"><b>${esc(facNum(b, code))}</b>${b.titre ? `<div class="small muted">${esc(b.titre)}</div>` : ''}</td>
+      <td data-l="Bordereau">N° ${b.numero} du ${esc(fmtD(b.date))}</td>
+      <td data-l="Montant" class="r">${euros(du)}</td>
+      <td data-l="Réglé" class="r">${du < -0.005 ? '—' : euros(rg)}</td>
+      <td data-l="Reste" class="r">${du < -0.005 ? '—' : euros(reste)}</td>
+      <td data-l="État"><span class="badge ${st[0]}">${st[1]}</span></td>
+      <td class="r"><button class="btn ghost sm" data-pdf="${b.id}">⬇ PDF</button></td></tr>`;
+  };
+  const pays = D.paiements || [], reste = r2(Math.max(0, e.reste));
+  box.className = '';
+  box.innerHTML = `${choix}
+    <div class="solde"><span>Facturé : <b>${euros(e.totDu)}</b></span><span>Réglé : <b>${euros(e.totRegle)}</b></span>
+      <span>Reste à payer : <b style="color:${reste > 0.005 ? 'var(--bad)' : 'var(--ok)'}">${euros(reste)}</b></span>${e.creditRestant > 0.005 ? `<span>Avoir restant : <b>${euros(e.creditRestant)}</b></span>` : ''}</div>
+    <table class="tbl"><thead><tr><th>Facture</th><th>Bordereau</th><th class="r">Montant</th><th class="r">Réglé</th><th class="r">Reste</th><th>État</th><th></th></tr></thead>
+      <tbody>${bs.map(ligne).join('')}</tbody></table>
+    ${pays.length ? `<details><summary class="small" style="cursor:pointer;font-weight:600">Paiements enregistrés par le Comité (${pays.length})</summary>
+      <table class="tbl" style="margin-top:8px"><tbody>${pays.map(p => `<tr><td data-l="Date">${esc(fmtD(p.date))}</td><td data-l="Mode">${esc(p.mode || '')}</td><td data-l="Montant" class="r">${euros(p.montant)}</td></tr>`).join('')}</tbody></table></details>` : ''}
+    <p class="small muted">Un paiement apparaît ici une fois enregistré par le trésorier du Comité, ce qui peut prendre quelques jours. Une question sur une facture : <a href="mailto:${MAIL_COMITE}">${MAIL_COMITE}</a>.</p>`;
+  lierSaison();
+  box.onclick = async ev => { const b = ev.target.closest('[data-pdf]'); if (b) pdfFacture(b.dataset.pdf, b); };
+}
+function lierSaison() { const s = $('f-saison'); if (s) s.onchange = () => chargeFactures(s.value); }
+let LOGO_PDF = null;
+async function logoPdf() {
+  if (LOGO_PDF !== null) return LOGO_PDF;
+  try { const bl = await (await fetch('/facturation/logo-comite-var.jpg')).blob(); LOGO_PDF = await new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(bl); }); } catch (e) { LOGO_PDF = ''; }
+  return LOGO_PDF;
+}
+async function pdfFacture(bid, btn) {
+  if (!window.jspdf) { alert('Le module PDF n\'a pas pu se charger. Vérifiez votre connexion et réessayez.'); return; }
+  const b = D.bordereaux.find(x => String(x.id) === String(bid)), code = CLUB.club.code; if (!b) return;
+  if (btn) btn.disabled = true;
+  try { const img = await logoPdf(), doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' }); pageFacture(doc, b, code, img); doc.save(`Facture-${facNum(b, code)}.pdf`); }
+  finally { if (btn) btn.disabled = false; }
 }
 
 /* =====================================================================
@@ -292,9 +362,10 @@ function mailAcces(c, mdp, premier) {
 ${premier ? `Le Comité du Var de Volley-Ball ouvre un espace réservé à chaque club sur son site. Vous y retrouvez :
 - les tournois que vous organisez (OPEN 2x2 / 4x4, M15 / M18 4x4) : équipes inscrites, documents à imprimer et saisie du classement ;
 - les plateaux Pitchoun' Volley que vous accueillez : inscrits et saisie des résultats ;
+- vos factures du Comité : bordereaux, PDF à télécharger et paiements enregistrés ;
 - la fiche de votre club dans l'annuaire du site, à mettre à jour quand vous le souhaitez.
 
-D'autres services suivront : vos factures du Comité et les demandes de modification des rencontres des championnats jeunes.
+Prochainement : les demandes de modification des rencontres des championnats jeunes.
 ` : `Voici un nouveau mot de passe pour l'espace club de ${c.nom} sur le site du Comité. L'ancien ne fonctionne plus.
 `}
 Adresse : ${urlEspace()}

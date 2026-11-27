@@ -217,8 +217,13 @@ Ces notes servent à reprendre le projet dans une nouvelle conversation avec Cla
 - **Accès Comité** (`#comite`, clé `ecl_admin` dans `session.js`, tuile « Espace club » dans l'Espace Comité) : liste des clubs actifs de la Facturation, « Créer l'accès et envoyer » / « Nouveau mot de passe » (mot de passe affiché une fois + brouillon Gmail aux contacts `fac_clubs.email`), « Couper l'accès ».
 - **À faire, dans l'ordre décidé** :
   1. au lancement : relier « Espace club » de l'accueil ; mail « ✉ Envoyer le code » des championnats → garder le mail d'infos au club recevant mais remplacer le code par « connectez-vous à votre espace club » ;
-  2. **Facturation** du club : bordereaux / factures envoyés (n°, date, montant, PDF identique à celui du Comité, réglé ou non) ; jamais les brouillons ;
+  2. ~~Facturation~~ : faite le 27/11 (voir ci-dessous) ;
   3. **Demandes de modification** des tournois des championnats jeunes FFVB (M11 à M18) : tout club participant peut demander (date, horaire, gymnase, commentaire) ; les autres clubs du tournoi acceptent / refusent dans leur espace ; **mail automatique** aux clubs concernés (gratuit : pistes Google Apps Script depuis volley83@gmail.com, ou Brevo/Resend) ; onglet Comité : réponses, relance, « fait sur le site FFVB ». Prérequis : gymnase dans `ffvb.json` (robot) et correspondance équipes FFVB → clubs (`clubTrouve()` existe déjà dans les championnats).
+
+### Facturation dans l'espace club (27/11/2026)
+- `ecl_factures(jeton, saison)` : bordereaux **envoyés** de la saison où le club a des lignes (jamais les brouillons), ses lignes, ses paiements, réglages `emetteur` / `mentions` / `banque` / `mention_tva`, saisons disponibles. Même format que `fac_admin_get`.
+- **Code commun** `facturation/facture-commun.js` (sorti de `facturation/index.html` le 27/11, sans modification ; PDF vérifié identique avant/après) : `etatClub`, `pageFacture`, `dessinFacture` et leurs petits outils (`r2`, `num`, `euros`, `fmtD`, `facNum`, `reglage`…). Ils lisent la variable globale `D` de la page. **Toute retouche des factures se fait dans ce fichier** et vaut pour le Comité et pour les clubs.
+- Page club : solde de la saison (facturé, réglé, reste, avoir restant), tableau par bordereau (n° de facture, montant, réglé, reste, état, PDF), paiements enregistrés, choix de la saison s'il y en a plusieurs. Le calcul ignore les brouillons : il peut différer de celui du Comité seulement si un brouillon est plus ancien qu'un bordereau envoyé ou négatif (avoir pas encore envoyé).
 
 ## Scripts SQL — dossier `sql/`
 
