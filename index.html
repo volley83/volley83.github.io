@@ -81,6 +81,7 @@
   .post .top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 16px 20px 0; }
   .post .pg { padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; background: #E9EFFA; color: #17407F; }
   .post .pg.beach { background: #FFF4D6; color: #6B4700; }
+  .post .pg.tip { background: #E6F4EA; color: #1E5631; }
   .post .dt { color: var(--muted); font-size: 13px; }
   .post p { padding: 10px 20px 0; white-space: pre-line; overflow-wrap: anywhere; }
   .post img { display: block; width: 100%; height: auto; max-height: 400px; object-fit: contain; margin-top: 14px; background: var(--bg); }
@@ -216,6 +217,7 @@
         <button type="button" class="tab" id="tab-tout" aria-pressed="true" onclick="choisir('tout')">Toutes</button>
         <button type="button" class="tab" id="tab-comite" aria-pressed="false" onclick="choisir('comite')">Comité</button>
         <button type="button" class="tab" id="tab-beach" aria-pressed="false" onclick="choisir('beach')">Beach-volley</button>
+        <button type="button" class="tab" id="tab-tip" aria-pressed="false" onclick="choisir('tip')" hidden>Tournoi International</button>
       </div>
       <div class="posts" id="posts" aria-live="polite"></div>
       <button type="button" class="btn" id="plus" onclick="plus()" hidden>Voir plus d'actualités</button>
@@ -390,7 +392,8 @@ function agenda() {
 /* ---------- Actualités : publications Facebook récupérées par le robot (scripts/facebook.py -> data/actus.json) ---------- */
 const PAGES = {
   comite: { nom: 'Comité', url: 'https://www.facebook.com/varvolley' },
-  beach: { nom: 'Beach-volley', url: 'https://www.facebook.com/beachvolley83' }
+  beach: { nom: 'Beach-volley', url: 'https://www.facebook.com/beachvolley83' },
+  tip: { nom: 'Tournoi International', url: '' }
 };
 const LONG = 420, DEBUT = 2, PAS = 4;   // DEBUT : publications affichées à l'ouverture · PAS : ajoutées par « Voir plus »
 let POSTS = [], filtre = 'tout', montre = DEBUT;
@@ -411,7 +414,8 @@ function liens(h) {   // rend cliquables les adresses contenues dans le texte (d
 }
 function actus() {
   const liste = POSTS.filter(p => filtre === 'tout' || p.page === filtre);
-  ['tout', 'comite', 'beach'].forEach(k => $('tab-' + k).setAttribute('aria-pressed', filtre === k));
+  ['tout', 'comite', 'beach', 'tip'].forEach(k => $('tab-' + k).setAttribute('aria-pressed', filtre === k));
+  $('tab-tip').hidden = !POSTS.some(p => p.page === 'tip');
   if (!liste.length) {
     $('posts').innerHTML = `<div class="vide"><b>Suivez l'actualité du Comité</b><span class="muted small">Les dernières publications sont à retrouver sur nos pages Facebook.</span></div>`;
     $('plus').hidden = true;
@@ -420,7 +424,7 @@ function actus() {
   $('posts').innerHTML = liste.slice(0, montre).map(p => {
     const pg = PAGES[p.page] || PAGES.comite, [txt, long] = coupe(p.texte || '');
     return `<article class="post">
-      <div class="top"><span class="pg ${p.page === 'beach' ? 'beach' : ''}">${esc(pg.nom)}</span><span class="dt">${esc(dateFr(p.date))}</span></div>
+      <div class="top"><span class="pg ${p.page === 'beach' || p.page === 'tip' ? p.page : ''}">${esc(pg.nom)}</span><span class="dt">${esc(dateFr(p.date))}</span></div>
       ${txt ? `<p>${liens(esc(txt))}</p>` : ''}
       ${p.image ? `<img src="${esc(/^(https?:)?\//.test(p.image) ? p.image : '/accueil/' + p.image)}" alt="" loading="lazy">` : ''}
       <div class="bas"><a class="lnk" href="${esc(p.lien)}" target="_blank" rel="noopener">${long ? 'Lire la suite sur Facebook' : 'Voir sur Facebook'}</a></div>

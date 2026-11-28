@@ -1,7 +1,7 @@
 name: Actualités Facebook - mise à jour
 # Récupère les dernières publications des pages Facebook du Comité
 # et met à jour accueil/data/actus.json (lu par la page d'accueil).
-# Clés d'accès : secrets FB_TOKEN_COMITE et FB_TOKEN_BEACH (Settings > Secrets and variables > Actions).
+# Clés d'accès : secrets FB_TOKEN_COMITE, FB_TOKEN_BEACH et FB_TOKEN_TIP (Settings > Secrets and variables > Actions).
 on:
   schedule:
     - cron: '41 5-21/2 * * *'       # toutes les 2 heures en journée (heure UTC)
@@ -24,6 +24,7 @@ jobs:
         env:
           FB_TOKEN_COMITE: ${{ secrets.FB_TOKEN_COMITE }}
           FB_TOKEN_BEACH: ${{ secrets.FB_TOKEN_BEACH }}
+          FB_TOKEN_TIP: ${{ secrets.FB_TOKEN_TIP }}
         run: python3 scripts/facebook.py
       - name: Enregistrer si quelque chose a changé
         if: always()

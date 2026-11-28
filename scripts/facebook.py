@@ -5,6 +5,7 @@ et écrit accueil/data/actus.json (+ les images dans accueil/data/img/).
 Les clés d'accès (jetons de Page) viennent des secrets GitHub :
   FB_TOKEN_COMITE  -> page facebook.com/varvolley
   FB_TOKEN_BEACH   -> page facebook.com/beachvolley83
+  FB_TOKEN_TIP     -> page du Tournoi International Poussins / Poussines
 Elles ne doivent JAMAIS figurer dans le dépôt. Sans clé, le script ne fait rien.
 """
 import hashlib
@@ -23,9 +24,10 @@ SORTIE = os.path.join(DOSSIER, 'actus.json')
 PAGES = [
     ('comite', 'FB_TOKEN_COMITE'),
     ('beach', 'FB_TOKEN_BEACH'),
+    ('tip', 'FB_TOKEN_TIP'),
 ]
 PAR_PAGE = 8          # publications demandées par page
-GARDEES = 12          # publications gardées au total
+GARDEES = 15          # publications gardées au total
 CHAMPS = ('id,message,created_time,permalink_url,full_picture,'
           'attachments{type,title,description,media,subattachments{media}}')
 
