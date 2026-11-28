@@ -34,6 +34,10 @@ def piece_jointe(p):
     """Texte et image d'une publication partagée (pas de « message » propre, tout est dans la pièce jointe)."""
     texte, img = '', ''
     for a in (p.get('attachments') or {}).get('data', []):
+        desc = (a.get('description') or '').lower()
+        if a.get('type') == 'unavailable' or 'propriétaire' in desc or "isn't available" in desc or 'pas disponible' in desc:
+            # Partage d'une publication d'une autre page que Facebook ne nous laisse pas lire
+            return 'Publication partagée depuis une autre page : à découvrir sur Facebook 👉', ''
         if not texte:
             texte = (a.get('description') or a.get('title') or '').strip()
         if not img:
