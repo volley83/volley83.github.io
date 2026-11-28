@@ -26,7 +26,24 @@ PAGES = [
 ]
 PAR_PAGE = 8          # publications demandées par page
 GARDEES = 12          # publications gardées au total
-CHAMPS = 'id,message,created_time,permalink_url,full_picture'
+CHAMPS = ('id,message,created_time,permalink_url,full_picture,'
+          'attachments{type,title,description,media,subattachments{media}}')
+
+
+def piece_jointe(p):
+    """Texte et image d'une publication partagée (pas de « message » propre, tout est dans la pièce jointe)."""
+    texte, img = '', ''
+    for a in (p.get('attachments') or {}).get('data', []):
+        if not texte:
+            texte = (a.get('description') or a.get('title') or '').strip()
+        if not img:
+            img = ((a.get('media') or {}).get('image') or {}).get('src', '')
+        if not img:
+            for s in (a.get('subattachments') or {}).get('data', []):
+                img = ((s.get('media') or {}).get('image') or {}).get('src', '')
+                if img:
+                    break
+    return texte, img
 
 
 def lire(url, binaire=False):
@@ -56,15 +73,18 @@ def publications(cle, jeton):
     for p in rep.get('data', []):
         if not p.get('permalink_url'):
             continue
-        if not (p.get('message') or p.get('full_picture')):
+        texte_pj, img_pj = piece_jointe(p)
+        texte = (p.get('message') or '').strip() or texte_pj
+        img = p.get('full_picture') or img_pj
+        if not (texte or img):
             continue
         res.append({
             'page': cle,
             'id': p['id'],
             'date': p.get('created_time', ''),
-            'texte': (p.get('message') or '').strip(),
+            'texte': texte,
             'lien': p['permalink_url'],
-            '_img': p.get('full_picture') or '',
+            '_img': img,
         })
     print(f'[{cle}] {len(res)} publication(s)')
     return res
